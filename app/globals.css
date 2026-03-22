@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Brug .dark på <html> til Tailwind dark:-varianter (ikke kun OS-præference) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -12,15 +15,271 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Light-profil: ingen .dark på html — følger :root lys */
+html[data-theme="light"] {
+  color-scheme: light;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Unicorn: lys pastel-baggrund — light scheme for scrollbars/native */
+html[data-theme="unicorn"] {
+  color-scheme: light;
+}
+
+html[data-theme="light"] body {
+  background: #fafafa;
+  color: #18181b;
+}
+
+html.dark:not([data-theme="unicorn"]) body {
+  background: #09090b;
+  color: #fafafa;
+}
+
+/*
+ * Unicorn — tre primærfarver (ingen grå/sort baggrund):
+ * Primær lilla #C1B3F2 · Blå #4A90E2 · Lime #9FD36E
+ */
+html.theme-unicorn.dark {
+  --uni-purple: #c1b3f2;
+  --uni-blue: #4a90e2;
+  --uni-lime: #9fd36e;
+  --uni-text: #4a0e75;
+  --uni-surface-lime: #f4fbe8;
+  --uni-surface-blue: #eaf3fc;
+  --uni-surface-purple: #f3e8ff;
+  /* Sidens hovedbaggrund (ønsket lilla) */
+  --uni-page-base: #c1b3f2;
+}
+
+html.theme-unicorn.dark body {
+  background:
+    radial-gradient(ellipse 100% 80% at 10% 20%, rgb(159 211 110 / 0.42) 0%, transparent 45%),
+    radial-gradient(ellipse 90% 70% at 92% 15%, rgb(74 144 226 / 0.45) 0%, transparent 48%),
+    radial-gradient(ellipse 85% 60% at 55% 88%, rgb(193 179 242 / 0.28) 0%, transparent 52%),
+    linear-gradient(
+      118deg,
+      #e0d8fa 0%,
+      var(--uni-page-base) 34%,
+      #d4c8f7 68%,
+      #cdc2f5 100%
+    );
+  background-attachment: fixed;
+  color: var(--uni-text);
+}
+
+html.theme-unicorn.dark ::selection {
+  background: var(--uni-lime);
+  color: var(--uni-purple);
+}
+
+/* Sidebar: lodret lilla → blå → lime */
+html.theme-unicorn.dark aside[class*="border-r"] {
+  background: linear-gradient(180deg, #c1b3f2 0%, #4a90e2 52%, #9fd36e 100%) !important;
+  border-color: rgb(255 255 255 / 0.55) !important;
+  border-width: 2px !important;
+  box-shadow:
+    0 0 36px rgb(193 179 242 / 0.55),
+    0 0 64px rgb(74 144 226 / 0.45),
+    0 0 48px rgb(159 211 110 / 0.4),
+    inset 0 0 40px rgb(255 255 255 / 0.12);
+}
+
+html.theme-unicorn.dark aside a[class*="rounded-lg"]:hover,
+html.theme-unicorn.dark aside button[class*="rounded-lg"]:hover {
+  box-shadow:
+    0 0 18px rgb(255 255 255 / 0.65),
+    0 0 32px rgb(159 211 110 / 0.75);
+}
+
+html.theme-unicorn.dark aside nav a,
+html.theme-unicorn.dark aside nav button {
+  color: #fffef8 !important;
+}
+html.theme-unicorn.dark aside nav a[class*="bg-zinc-800"] {
+  background: linear-gradient(135deg, #4a148c, #2563b8) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 20px rgb(159 211 110 / 0.5);
+}
+html.theme-unicorn.dark aside nav svg {
+  color: #e0f7e8 !important;
+}
+html.theme-unicorn.dark aside nav a[class*="bg-zinc-800"] svg {
+  color: #ffffff !important;
+}
+html.theme-unicorn.dark aside p.uppercase {
+  color: #f5e6ff !important;
+}
+
+html.theme-unicorn.dark main {
+  background: transparent;
+}
+
+html.theme-unicorn.dark [class*="rounded-2xl"][class*="border"][class*="bg-white"],
+html.theme-unicorn.dark [class*="rounded-lg"][class*="border"][class*="bg-white"] {
+  border-color: rgb(74 144 226 / 0.85) !important;
+  border-width: 2px !important;
+  background: linear-gradient(
+    145deg,
+    rgb(244 251 232 / 0.92),
+    rgb(234 243 252 / 0.92),
+    rgb(243 232 255 / 0.9)
+  ) !important;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 0 24px rgb(193 179 242 / 0.2),
+    0 0 40px rgb(74 144 226 / 0.18),
+    0 0 32px rgb(159 211 110 / 0.22),
+    inset 0 1px 0 rgb(255 255 255 / 0.7);
+}
+
+html.theme-unicorn.dark input,
+html.theme-unicorn.dark select,
+html.theme-unicorn.dark textarea {
+  border-color: rgb(193 179 242 / 0.65) !important;
+  border-width: 2px !important;
+  background: linear-gradient(180deg, #f4fbe8, #eaf3fc) !important;
+  color: var(--uni-text) !important;
+  box-shadow:
+    0 0 16px rgb(74 144 226 / 0.25),
+    inset 0 0 0 1px rgb(159 211 110 / 0.35);
+}
+
+/* Erstat sort/zinc-baggrunde med lime/blå/lilla toner */
+html.theme-unicorn.dark [class*="dark:bg-zinc-9"],
+html.theme-unicorn.dark [class*="dark:bg-zinc-8"] {
+  background-image: linear-gradient(
+    165deg,
+    var(--uni-surface-lime) 0%,
+    var(--uni-surface-blue) 48%,
+    var(--uni-surface-purple) 100%
+  ) !important;
+  background-color: transparent !important;
+}
+
+html.theme-unicorn.dark [class*="dark:bg-zinc-100"],
+html.theme-unicorn.dark [class*="dark:bg-zinc-50"] {
+  background-color: rgb(234 243 252 / 0.85) !important;
+  background-image: none !important;
+}
+
+html.theme-unicorn.dark [class*="border-zinc-8"],
+html.theme-unicorn.dark [class*="border-zinc-7"] {
+  border-color: rgb(74 144 226 / 0.45) !important;
+}
+
+html.theme-unicorn.dark [class*="border-zinc-2"],
+html.theme-unicorn.dark [class*="border-zinc-3"] {
+  border-color: rgb(193 179 242 / 0.25) !important;
+}
+
+/* Logo-kasse: ingen sort — dyb lilla */
+html.theme-unicorn.dark [class*="bg-zinc-950"] {
+  background: linear-gradient(145deg, #c1b3f2, #4a148c) !important;
+}
+
+/* Mobil overlay: lilla glas, ikke sort */
+html.theme-unicorn.dark [class*="bg-black/"] {
+  background-color: rgb(193 179 242 / 0.38) !important;
+  backdrop-filter: blur(2px);
+}
+
+/* Admin-kalender: dato, timer, medarbejder — én farve #41A8BF */
+html.theme-unicorn.dark table.admin-shift-calendar thead th {
+  background: linear-gradient(180deg, #f0f9fb, #e5f3f7) !important;
+}
+
+html.theme-unicorn.dark table.admin-shift-calendar thead tr:first-child th:first-child {
+  color: #41a8bf !important;
+  font-weight: 700;
+}
+
+html.theme-unicorn.dark table.admin-shift-calendar thead tr:first-child th:not(:first-child) {
+  color: #41a8bf !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+html.theme-unicorn.dark table.admin-shift-calendar thead tr:last-child th {
+  color: #41a8bf !important;
+  font-weight: 700;
+  font-size: 0.7rem !important;
+  text-shadow: 0 0 1px rgb(255 255 255 / 0.85);
+}
+
+html.theme-unicorn.dark table.admin-shift-calendar tbody td:first-child {
+  font-weight: 600;
+}
+
+/*
+ * Unicorn: tekstmarker bag lys/hvid tekst (#4695ad).
+ * Lilla tekst for kontrast. Undtag: knapper, felter, svg.
+ */
+html.theme-unicorn.dark main [class*="dark:text-zinc-50"]:not(button):not(input):not(textarea):not(select):not(svg),
+html.theme-unicorn.dark main [class*="dark:text-zinc-100"]:not(button):not(input):not(textarea):not(select):not(svg),
+html.theme-unicorn.dark main [class*="dark:text-zinc-200"]:not(button):not(input):not(textarea):not(select):not(svg),
+html.theme-unicorn.dark main [class*="dark:text-zinc-300"]:not(button):not(input):not(textarea):not(select):not(svg),
+html.theme-unicorn.dark main [class*="dark:text-white"]:not(button):not(input):not(textarea):not(select):not(svg),
+html.theme-unicorn.dark main [class*="text-white"]:not(button):not(input):not(textarea):not(select):not(svg) {
+  background-color: rgb(70 149 173 / 0.92);
+  color: var(--uni-purple) !important;
+  border-radius: 0.25rem;
+  padding: 0.12em 0.38em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+}
+
+/*
+ * Unicorn: dark:text-zinc-500 matcher fejlagtigt [class*="dark:text-zinc-50"] (substring).
+ * Tekstmarker-reglen sætter display:inline-block på thead th og ødelægger tabellen — gendan table-cell efter.
+ */
+html.theme-unicorn.dark table.admin-shift-calendar thead th {
+  display: table-cell !important;
+  white-space: nowrap !important;
+  background: linear-gradient(180deg, #f0f9fb, #e5f3f7) !important;
+  background-image: linear-gradient(180deg, #f0f9fb, #e5f3f7) !important;
+  background-color: transparent !important;
+  color: #41a8bf !important;
+  font-weight: 700;
+  border-radius: 0 !important;
+  box-decoration-break: unset !important;
+  -webkit-box-decoration-break: unset !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+html.theme-unicorn.dark table.admin-shift-calendar thead tr:first-child th {
+  padding: 0.5rem 0.75rem !important;
+}
+
+html.theme-unicorn.dark table.admin-shift-calendar thead tr:last-child th {
+  padding: 0.5rem 0 !important;
+  font-size: 0.7rem !important;
+  text-shadow: 0 0 1px rgb(255 255 255 / 0.85);
+}
+
+html.theme-unicorn.dark table.admin-shift-calendar thead tr:first-child th:not(:first-child) {
+  letter-spacing: 0.02em;
+}
+
+/* Medarbejdernavn i kalender — følger valgt layout-tema (ikke fast violet) */
+html[data-theme="light"] .employee-calendar-name {
+  color: #18181b;
+  font-weight: 600;
+}
+
+html[data-theme="dark"] .employee-calendar-name {
+  color: #e4e4e7;
+  font-weight: 600;
+}
+
+html[data-theme="unicorn"] .employee-calendar-name {
+  color: #41a8bf;
+  font-weight: 600;
 }
