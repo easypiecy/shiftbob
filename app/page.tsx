@@ -1,8 +1,25 @@
 import Image from "next/image";
+import { HomeTopBar } from "./home-top-bar";
+import { createTranslator } from "@/src/lib/translations-server";
+import {
+  getUiTranslations,
+  resolveRequestUiLanguage,
+} from "@/src/lib/ui-language-server";
 
-export default function Home() {
+export default async function Home() {
+  const [map, lang] = await Promise.all([
+    getUiTranslations(),
+    resolveRequestUiLanguage(),
+  ]);
+  const t = createTranslator(map);
+
   return (
-    <div className="flex min-h-full flex-1 flex-col items-center justify-center bg-zinc-50 px-6 py-16 dark:bg-zinc-950">
+    <div className="relative flex min-h-full flex-1 flex-col items-center justify-center bg-white px-6 py-24 text-black dark:bg-white dark:text-black">
+      <HomeTopBar
+        currentLanguage={lang}
+        loginLabel={t("home.nav.login", "Log ind")}
+        languageAriaLabel={t("login.language_picker.label", "Language")}
+      />
       <main className="flex max-w-lg flex-col items-center text-center">
         <Image
           src="/ShiftBob-circle-logo-light-1024.png"
@@ -12,7 +29,7 @@ export default function Home() {
           priority
           className="h-auto w-[min(280px,80vw)] sm:w-[min(320px,70vw)]"
         />
-        <p className="mt-8 text-lg font-medium tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-xl">
+        <p className="mt-8 text-lg font-medium tracking-tight text-black dark:text-black sm:text-xl">
           We&apos;re working on a tight schedule!
         </p>
       </main>
