@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { SHIFTBOB_SITE_ICON } from "@/src/lib/brand-assets";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -11,14 +12,14 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#18181b",
     icons: [
       {
-        src: "/ShiftBob-logo-90-light-512-trans.png",
-        sizes: "512x512",
+        src: SHIFTBOB_SITE_ICON,
+        sizes: "256x256",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/ShiftBob-logo-90-light-512-trans.png",
-        sizes: "512x512",
+        src: SHIFTBOB_SITE_ICON,
+        sizes: "256x256",
         type: "image/png",
         purpose: "maskable",
       },

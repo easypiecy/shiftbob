@@ -35,7 +35,7 @@ html[data-theme="light"] body {
 }
 
 html.dark:not([data-theme="unicorn"]) body {
-  background: #09090b;
+  background: #0d0d0d;
   color: #fafafa;
 }
 
@@ -69,6 +69,38 @@ html.theme-unicorn.dark body {
     );
   background-attachment: fixed;
   color: var(--uni-text);
+}
+
+/* Login: samme canvas som mørk layout (#0d0d0d) — efter tema-body-regler */
+.login-page-shell {
+  box-sizing: border-box;
+  min-height: 100dvh;
+  min-height: 100vh;
+  background-color: #0d0d0d;
+}
+
+html:has(.login-page-shell) {
+  background: #0d0d0d;
+}
+
+html:has(.login-page-shell) body {
+  background: #0d0d0d;
+}
+
+/* Login e-mail/adgangskode: #d3d3d3 (samme som LOGIN_INPUT_BACKGROUND i brand-assets) */
+.login-page-shell .login-form-input {
+  background-color: #d3d3d3 !important;
+  color: #000000;
+  -webkit-text-fill-color: #000000;
+}
+
+.login-page-shell .login-form-input:-webkit-autofill,
+.login-page-shell .login-form-input:-webkit-autofill:hover,
+.login-page-shell .login-form-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #000000;
+  /* Bevar #d3d3d3 ved browser-autofill (WebKit) */
+  -webkit-box-shadow: 0 0 0 1000px #d3d3d3 inset;
+  transition: background-color 99999s ease-out;
 }
 
 html.theme-unicorn.dark ::selection {
@@ -114,12 +146,28 @@ html.theme-unicorn.dark aside p.uppercase {
   color: #f5e6ff !important;
 }
 
+/* Unicorn: lyst logo — fyld (baggrund) omkring logoet #ffffc5, ingen ekstra ramme/glow */
+html.theme-unicorn.dark aside .sidebar-logo-wrap {
+  border: none !important;
+  background: #ffffc5 !important;
+  box-shadow: none !important;
+}
+
+html.theme-unicorn.dark aside img.sidebar-logo-light {
+  display: block !important;
+}
+
+html.theme-unicorn.dark aside img.sidebar-logo-dark {
+  display: none !important;
+}
+
 html.theme-unicorn.dark main {
   background: transparent;
 }
 
-html.theme-unicorn.dark [class*="rounded-2xl"][class*="border"][class*="bg-white"],
-html.theme-unicorn.dark [class*="rounded-lg"][class*="border"][class*="bg-white"] {
+/* :not(.sidebar-logo-wrap) — ellers overskrives logo-boksens #ffffc5 af gradienten */
+html.theme-unicorn.dark [class*="rounded-2xl"][class*="border"][class*="bg-white"]:not(.sidebar-logo-wrap),
+html.theme-unicorn.dark [class*="rounded-lg"][class*="border"][class*="bg-white"]:not(.sidebar-logo-wrap) {
   border-color: rgb(74 144 226 / 0.85) !important;
   border-width: 2px !important;
   background: linear-gradient(

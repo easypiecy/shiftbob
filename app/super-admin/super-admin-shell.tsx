@@ -14,29 +14,36 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { signOutAndRedirectToLogin } from "@/src/lib/auth-client";
+import { useTranslations } from "@/src/contexts/translations-context";
+import type { UiThemeId } from "@/src/lib/ui-theme";
 
+/** Fallbacks (da) hvis ui_translations mangler. */
 const links = [
   {
     href: "/super-admin",
-    label: "Oversigt",
+    navKey: "super_admin.nav.overview",
+    labelDa: "Oversigt",
     icon: LayoutDashboard,
     match: "exact",
   },
   {
     href: "/super-admin/users",
-    label: "Brugere & arbejdspladser",
+    navKey: "super_admin.nav.users_workplaces",
+    labelDa: "Brugere & arbejdspladser",
     icon: Building2,
     match: "users-default",
   },
   {
     href: "/super-admin/workplace-templates",
-    label: "Standard vagt- og medarbejdertyper",
+    navKey: "super_admin.nav.templates",
+    labelDa: "Standard vagt- og medarbejdertyper",
     icon: Tags,
     match: "path",
   },
   {
     href: "/super-admin/translations",
-    label: "Sprog & oversættelser",
+    navKey: "super_admin.nav.languages",
+    labelDa: "Sprog & oversættelser",
     icon: Languages,
     match: "path",
   },
@@ -67,10 +74,25 @@ function isSuperAdminNavActive(
   return false;
 }
 
-export function SuperAdminShell({ children }: { children: React.ReactNode }) {
+export function SuperAdminShell({
+  children,
+  initialLayoutTheme,
+}: {
+  children: React.ReactNode;
+  initialLayoutTheme?: UiThemeId;
+}) {
+  const { t } = useTranslations();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [signingOut, setSigningOut] = useState(false);
+
+  const sidebarLightLogoSrc =
+    initialLayoutTheme === "unicorn"
+      ? "/ShiftBob-logo-90-light-512-trans.png"
+      : "/ShiftBob-logo-90-light-512.png";
+
+  const sidebarLightLogoOpacityClass =
+    initialLayoutTheme === "light" ? "opacity-50" : "opacity-80";
 
   useEffect(() => {
     setSidebarOpen(typeof window !== "undefined" && window.innerWidth >= 768);
@@ -81,7 +103,7 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
       {sidebarOpen ? (
         <button
           type="button"
-          aria-label="Luk menu"
+          aria-label={t("common.menu.close_overlay", "Luk menu")}
           className="fixed inset-0 z-[90] bg-black/40 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
@@ -102,34 +124,42 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
                 className="block outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
                 prefetch={false}
               >
-                <span className="inline-block rounded-lg bg-zinc-950 px-3 py-2.5 dark:bg-zinc-950">
+                <span className="sidebar-logo-wrap inline-block rounded-lg border border-zinc-200 bg-white px-3 py-2.5 dark:border-zinc-800 dark:bg-zinc-950">
                   <Image
-                    src="/ShiftBob-logo-90-light-512.png"
-                    alt="ShiftBob"
+                    src={sidebarLightLogoSrc}
+                    alt={t("common.brand_name", "ShiftBob")}
                     width={320}
                     height={90}
-                    className="h-14 w-auto max-w-full object-contain object-left sm:h-16"
+                    className={`sidebar-logo-light h-[4.9rem] w-auto max-w-full object-contain object-left sm:h-[5.6rem] dark:hidden ${sidebarLightLogoOpacityClass}`}
+                    priority
+                  />
+                  <Image
+                    src="/ShiftBob-logo-90-dark-512.png"
+                    alt={t("common.brand_name", "ShiftBob")}
+                    width={320}
+                    height={90}
+                    className="sidebar-logo-dark hidden h-[4.9rem] w-auto max-w-full object-contain object-left sm:h-[5.6rem] dark:block"
                     priority
                   />
                 </span>
               </Link>
               <p className="mt-2.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
-                Super Admin
+                {t("super_admin.badge", "Super Admin")}
               </p>
             </div>
             <button
               type="button"
               onClick={() => setSidebarOpen(false)}
               className="shrink-0 rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-              aria-label="Skjul menu"
-              title="Skjul menu"
+              aria-label={t("common.menu.hide_sidebar", "Skjul menu")}
+              title={t("common.menu.hide_sidebar", "Skjul menu")}
             >
               <ChevronLeft className="h-5 w-5" aria-hidden />
             </button>
           </div>
         </div>
         <nav className="flex flex-col gap-0.5 p-2">
-          {links.map(({ href, label, icon: Icon, match }) => {
+          {links.map(({ href, navKey, labelDa, icon: Icon, match }) => {
             const active = isSuperAdminNavActive(pathname, match, href);
             return (
               <Link
@@ -142,7 +172,7 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
                 }
               >
                 <Icon className="h-4 w-4 shrink-0 text-zinc-500" aria-hidden />
-                {label}
+                {t(navKey, labelDa)}
               </Link>
             );
           })}
@@ -159,7 +189,9 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
               className="relative z-[100] flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 disabled:opacity-50 dark:text-zinc-200 dark:hover:bg-zinc-800"
             >
               <LogOut className="h-4 w-4 shrink-0 text-zinc-500" aria-hidden />
-              {signingOut ? "Logger ud…" : "Log ud"}
+              {signingOut
+                ? t("common.logout.loading", "Logger ud…")
+                : t("common.logout", "Log ud")}
             </button>
           </div>
         </nav>
@@ -170,8 +202,8 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
           type="button"
           onClick={() => setSidebarOpen(true)}
           className="fixed left-3 top-3 z-[100] flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-200 bg-white text-zinc-700 shadow-md transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
-          aria-label="Vis menu"
-          title="Vis menu"
+          aria-label={t("common.menu.show_sidebar", "Vis menu")}
+          title={t("common.menu.show_sidebar", "Vis menu")}
         >
           <ChevronRight className="h-5 w-5" aria-hidden />
         </button>

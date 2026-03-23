@@ -5,6 +5,10 @@ import { revalidatePath } from "next/cache";
 import { assertWorkplaceAdminOrSuperAdmin } from "@/src/lib/workplace-admin-server";
 import { assertSuperAdminAccess } from "@/src/lib/super-admin";
 import {
+  normalizeSeasonTemplate,
+  type SeasonTemplatePayload,
+} from "@/src/types/season-template";
+import {
   isEmployeeCountBand,
   isNotificationChannel,
   type EmployeeCountBand,
@@ -21,6 +25,7 @@ async function requireSuperAdmin() {
 function revalidateWorkplaceDetailPages(workplaceId: string) {
   revalidatePath(`/super-admin/workplaces/${workplaceId}`);
   revalidatePath("/dashboard/indstillinger");
+  revalidatePath("/dashboard/fremtiden");
 }
 
 /** PostgREST / Postgres når tabeller ikke findes eller cache er forældet */
@@ -62,6 +67,12 @@ export type WorkplaceDetail = {
   push_include_shift_type_ids: string[];
   push_include_employee_type_ids: string[];
   created_at: string;
+  /** Ufrigivet kalender-vindue (uger), standard 8 */
+  future_planning_weeks: number;
+  /** Sidste dato medarbejdere kan se; derefter kun admin indtil frigivelse */
+  calendar_released_until: string | null;
+  /** Sæson-skabelon (perioder / ugedage) */
+  season_template_json: SeasonTemplatePayload;
 };
 
 export type TypeTemplateRow = {
@@ -106,6 +117,8 @@ export type WorkplaceMemberDepartmentsRow = {
   email: string | null;
   role: string;
   department_ids: string[];
+  /** Valgfri — kræver `supabase_patch_workplace_members_employee_type.sql` */
+  employee_type_id: string | null;
   /** Vist navn: override → OAuth (Google/Facebook) → e-mail */
   display_name: string;
   oauth_display_name: string | null;
@@ -409,6 +422,7 @@ export async function createWorkplaceLegacy(
 }
 
 function mapDetail(row: Record<string, unknown>): WorkplaceDetail {
+  const fw = row.future_planning_weeks;
   return {
     id: row.id as string,
     name: row.name as string,
@@ -428,8 +442,20 @@ function mapDetail(row: Record<string, unknown>): WorkplaceDetail {
     push_include_employee_type_ids:
       (row.push_include_employee_type_ids as string[]) ?? [],
     created_at: row.created_at as string,
+    future_planning_weeks:
+      typeof fw === "number" && Number.isFinite(fw) ? fw : 8,
+    calendar_released_until:
+      row.calendar_released_until == null || row.calendar_released_until === ""
+        ? null
+        : String(row.calendar_released_until).slice(0, 10),
+    season_template_json: normalizeSeasonTemplate(row.season_template_json),
   };
 }
+
+const WORKPLACE_DETAIL_SELECT_BASE =
+  "id, name, company_name, vat_number, street_name, street_number, address_extra, postal_code, city, country_code, contact_email, phone, employee_count_band, stripe_customer_id, push_include_shift_type_ids, push_include_employee_type_ids, created_at";
+
+const WORKPLACE_DETAIL_SELECT_EXTENDED = `${WORKPLACE_DETAIL_SELECT_BASE}, future_planning_weeks, calendar_released_until, season_template_json`;
 
 export async function getWorkplaceById(
   id: string
@@ -441,13 +467,30 @@ export async function getWorkplaceById(
     const admin = getAdminClient();
     const { data, error } = await admin
       .from("workplaces")
-      .select(
-        "id, name, company_name, vat_number, street_name, street_number, address_extra, postal_code, city, country_code, contact_email, phone, employee_count_band, stripe_customer_id, push_include_shift_type_ids, push_include_employee_type_ids, created_at"
-      )
+      .select(WORKPLACE_DETAIL_SELECT_EXTENDED)
       .eq("id", id)
       .maybeSingle();
 
     if (error) {
+      if (/column|does not exist|schema cache/i.test(error.message)) {
+        const { data: d2, error: e2 } = await admin
+          .from("workplaces")
+          .select(WORKPLACE_DETAIL_SELECT_BASE)
+          .eq("id", id)
+          .maybeSingle();
+        if (e2 || !d2) {
+          return { ok: false, error: error.message };
+        }
+        return {
+          ok: true,
+          data: mapDetail({
+            ...(d2 as Record<string, unknown>),
+            future_planning_weeks: 8,
+            calendar_released_until: null,
+            season_template_json: {},
+          }),
+        };
+      }
       return { ok: false, error: error.message };
     }
     if (!data) {
@@ -643,6 +686,9 @@ export type UpdateWorkplaceInput = Partial<{
   stripe_customer_id: string | null;
   push_include_shift_type_ids: string[];
   push_include_employee_type_ids: string[];
+  future_planning_weeks: number;
+  calendar_released_until: string | null;
+  season_template_json: SeasonTemplatePayload;
 }>;
 
 export async function updateWorkplace(
@@ -654,6 +700,12 @@ export async function updateWorkplace(
     if (patch.employee_count_band !== undefined) {
       if (!isEmployeeCountBand(patch.employee_count_band)) {
         return { ok: false, error: "Ugyldigt interval for antal ansatte." };
+      }
+    }
+    if (patch.future_planning_weeks !== undefined) {
+      const w = patch.future_planning_weeks;
+      if (!Number.isFinite(w) || w < 1 || w > 104) {
+        return { ok: false, error: "Antal uger skal være mellem 1 og 104." };
       }
     }
     const admin = getAdminClient();
@@ -1053,13 +1105,15 @@ export async function getWorkplaceDepartmentsOverview(
       ok: true;
       departments: WorkplaceDepartmentRow[];
       members: WorkplaceMemberDepartmentsRow[];
+      shiftTypes: WorkplaceShiftTypeRow[];
+      employeeTypes: WorkplaceEmployeeTypeRow[];
     }
   | { ok: false; error: string }
 > {
   try {
     await assertWorkplaceAdminOrSuperAdmin(workplaceId);
     const admin = getAdminClient();
-    const [dRes, mRes, dmRes, pRes] = await Promise.all([
+    const [dRes, mRes, dmRes, pRes, eTypesRes, sTypesRes] = await Promise.all([
       admin
         .from("workplace_departments")
         .select("id, workplace_id, name, created_at")
@@ -1067,7 +1121,7 @@ export async function getWorkplaceDepartmentsOverview(
         .order("name"),
       admin
         .from("workplace_members")
-        .select("user_id, role")
+        .select("user_id, role, employee_type_id")
         .eq("workplace_id", workplaceId)
         .order("role"),
       admin
@@ -1078,26 +1132,77 @@ export async function getWorkplaceDepartmentsOverview(
         .from("workplace_member_calendar_profiles")
         .select("user_id, display_name_override")
         .eq("workplace_id", workplaceId),
+      admin
+        .from("workplace_employee_types")
+        .select("id, template_id, label, sort_order")
+        .eq("workplace_id", workplaceId)
+        .order("sort_order"),
+      admin
+        .from("workplace_shift_types")
+        .select("id, template_id, label, sort_order")
+        .eq("workplace_id", workplaceId)
+        .order("sort_order"),
     ]);
 
     if (dRes.error) {
       if (isMissingSchemaError(dRes.error.message)) {
-        return { ok: true, departments: [], members: [] };
+        return {
+          ok: true,
+          departments: [],
+          members: [],
+          shiftTypes: [],
+          employeeTypes: [],
+        };
       }
       return { ok: false, error: dRes.error.message };
     }
+
+    type OverviewMemberRow = {
+      user_id: string;
+      role: string;
+      employee_type_id?: string | null;
+    };
+    let memberRows = (mRes.data ?? []) as OverviewMemberRow[];
     if (mRes.error) {
-      return { ok: false, error: mRes.error.message };
+      const retry = await admin
+        .from("workplace_members")
+        .select("user_id, role")
+        .eq("workplace_id", workplaceId)
+        .order("role");
+      if (retry.error) {
+        return { ok: false, error: mRes.error.message };
+      }
+      memberRows = (retry.data ?? []) as OverviewMemberRow[];
     }
+
     if (dmRes.error) {
       if (isMissingSchemaError(dmRes.error.message)) {
         return {
           ok: true,
           departments: (dRes.data ?? []) as WorkplaceDepartmentRow[],
           members: [],
+          shiftTypes: [],
+          employeeTypes: [],
         };
       }
       return { ok: false, error: dmRes.error.message };
+    }
+
+    let shiftTypes: WorkplaceShiftTypeRow[] = [];
+    let employeeTypes: WorkplaceEmployeeTypeRow[] = [];
+    if (eTypesRes.error) {
+      if (!isMissingSchemaError(eTypesRes.error.message)) {
+        return { ok: false, error: eTypesRes.error.message };
+      }
+    } else {
+      employeeTypes = (eTypesRes.data ?? []) as WorkplaceEmployeeTypeRow[];
+    }
+    if (sTypesRes.error) {
+      if (!isMissingSchemaError(sTypesRes.error.message)) {
+        return { ok: false, error: sTypesRes.error.message };
+      }
+    } else {
+      shiftTypes = (sTypesRes.data ?? []) as WorkplaceShiftTypeRow[];
     }
 
     if (pRes.error && !isMissingSchemaError(pRes.error.message)) {
@@ -1124,7 +1229,7 @@ export async function getWorkplaceDepartmentsOverview(
     }
 
     const members: WorkplaceMemberDepartmentsRow[] = [];
-    for (const m of mRes.data ?? []) {
+    for (const m of memberRows) {
       const uid = m.user_id as string;
       const { data: u } = await admin.auth.admin.getUserById(uid);
       const email = u.user?.email ?? null;
@@ -1137,11 +1242,14 @@ export async function getWorkplaceDepartmentsOverview(
         email,
         uid
       );
+      const empTypeRaw = m.employee_type_id;
       members.push({
         user_id: uid,
         email,
         role: m.role as string,
         department_ids: deptByUser.get(uid) ?? [],
+        employee_type_id:
+          empTypeRaw === undefined || empTypeRaw === null ? null : String(empTypeRaw),
         display_name: resolved.display_name,
         oauth_display_name: resolved.oauth_display_name,
         display_name_override: resolved.display_name_override,
@@ -1152,6 +1260,8 @@ export async function getWorkplaceDepartmentsOverview(
       ok: true,
       departments: (dRes.data ?? []) as WorkplaceDepartmentRow[],
       members,
+      shiftTypes,
+      employeeTypes,
     };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Ukendt fejl";

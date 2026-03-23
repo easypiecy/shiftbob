@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { assertSuperAdminAccess } from "@/src/lib/super-admin";
+import { resolveUiThemeForRequest } from "@/src/lib/ui-theme-server";
 import { createServerSupabase } from "@/src/utils/supabase/server";
 import { SuperAdminShell } from "./super-admin-shell";
 
@@ -15,5 +16,11 @@ export default async function SuperAdminLayout({
     redirect("/dashboard");
   }
 
-  return <SuperAdminShell>{children}</SuperAdminShell>;
+  const initialLayoutTheme = await resolveUiThemeForRequest();
+
+  return (
+    <SuperAdminShell initialLayoutTheme={initialLayoutTheme}>
+      {children}
+    </SuperAdminShell>
+  );
 }

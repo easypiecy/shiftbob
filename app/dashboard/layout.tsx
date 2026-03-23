@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { AdminWorkspaceShell } from "@/src/components/admin-workspace-shell";
+import { DashboardOnboardingGuard } from "@/src/components/dashboard-onboarding-guard";
 import { ACTIVE_ROLE_COOKIE } from "@/src/lib/roles";
 import { resolveUiThemeForRequest } from "@/src/lib/ui-theme-server";
 import { isRole } from "@/src/types/roles";
@@ -22,7 +23,7 @@ export default async function DashboardLayout({
       showAdminNav={showAdminNav}
       initialLayoutTheme={initialLayoutTheme}
     >
-      {children}
+      <DashboardOnboardingGuard>{children}</DashboardOnboardingGuard>
     </AdminWorkspaceShell>
   );
 }

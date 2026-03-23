@@ -3,17 +3,13 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { setUserLayoutTheme } from "@/src/app/user-ui-actions";
+import { useTranslations } from "@/src/contexts/translations-context";
 import type { UiThemeId } from "@/src/lib/ui-theme";
 
-type Item = { id: UiThemeId; label: string };
-
-const ITEMS: Item[] = [
-  { id: "dark", label: "Mørkt layout" },
-  { id: "light", label: "Lyst layout" },
-  { id: "unicorn", label: "Unicorn-layout" },
-];
+const THEME_IDS = ["dark", "light", "unicorn"] as const satisfies readonly UiThemeId[];
 
 export function LayoutThemeSidebar({ initialTheme }: { initialTheme: UiThemeId }) {
+  const { t } = useTranslations();
   const router = useRouter();
   const [theme, setTheme] = useState<UiThemeId>(initialTheme);
   const [pending, startTransition] = useTransition();
@@ -39,10 +35,16 @@ export function LayoutThemeSidebar({ initialTheme }: { initialTheme: UiThemeId }
     <div
       className="flex shrink-0 items-center justify-end gap-1.5"
       role="group"
-      aria-label="Side-layout"
+      aria-label={t("layout.theme.group_aria", "Side-layout")}
     >
-      {ITEMS.map(({ id, label }) => {
+      {THEME_IDS.map((id) => {
         const active = theme === id;
+        const label =
+          id === "dark"
+            ? t("layout.theme.dark", "Mørkt layout")
+            : id === "light"
+              ? t("layout.theme.light", "Lyst layout")
+              : t("layout.theme.unicorn", "Unicorn-layout");
 
         return (
           <button

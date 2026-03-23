@@ -1,5 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AppRootProviders } from "@/src/components/app-root-providers";
+import { SHIFTBOB_SITE_ICON } from "@/src/lib/brand-assets";
+import {
+  getUiTranslations,
+  resolveRequestUiLanguage,
+} from "@/src/lib/ui-language-server";
 import { resolveUiThemeForRequest } from "@/src/lib/ui-theme-server";
 import "./globals.css";
 
@@ -19,15 +25,15 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/ShiftBob-logo-90-light-512-trans.png",
-        sizes: "512x512",
+        url: SHIFTBOB_SITE_ICON,
+        sizes: "256x256",
         type: "image/png",
       },
     ],
     apple: [
       {
-        url: "/ShiftBob-logo-90-light-512-trans.png",
-        sizes: "512x512",
+        url: SHIFTBOB_SITE_ICON,
+        sizes: "256x256",
         type: "image/png",
       },
     ],
@@ -42,7 +48,7 @@ export const metadata: Metadata = {
 export async function generateViewport(): Promise<Viewport> {
   const theme = await resolveUiThemeForRequest();
   const themeColor =
-    theme === "light" ? "#fafafa" : theme === "unicorn" ? "#c1b3f2" : "#09090b";
+    theme === "light" ? "#fafafa" : theme === "unicorn" ? "#c1b3f2" : "#0d0d0d";
   return { themeColor };
 }
 
@@ -52,6 +58,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const theme = await resolveUiThemeForRequest();
+  const [translations, htmlLang] = await Promise.all([
+    getUiTranslations(),
+    resolveRequestUiLanguage(),
+  ]);
   const htmlClass = [
     geistSans.variable,
     geistMono.variable,
@@ -63,8 +73,10 @@ export default async function RootLayout({
     .join(" ");
 
   return (
-    <html lang="da" className={htmlClass} data-theme={theme}>
-      <body className="flex min-h-full flex-col font-sans">{children}</body>
+    <html lang={htmlLang} className={htmlClass} data-theme={theme}>
+      <body className="flex min-h-full flex-col font-sans">
+        <AppRootProviders translations={translations}>{children}</AppRootProviders>
+      </body>
     </html>
   );
 }

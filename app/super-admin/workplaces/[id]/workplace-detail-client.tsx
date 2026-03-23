@@ -29,6 +29,7 @@ import {
   type WorkplaceMemberDepartmentsRow,
   type WorkplaceShiftTypeRow,
 } from "@/src/app/super-admin/workplaces/actions";
+import { useTranslations } from "@/src/contexts/translations-context";
 import { EMPLOYEE_COUNT_BANDS } from "@/src/types/workplace";
 
 /** Tom liste = ingen filter = alle typer på aksen. Fuld liste = samme som ingen filter → normalisér til []. */
@@ -81,6 +82,7 @@ export default function WorkplaceDetailClient({
   navUi,
   children,
 }: Props) {
+  const { t: tr } = useTranslations();
   const backHref = navUi?.backHref ?? "/super-admin/users";
   const backLabel = navUi?.backLabel ?? "← Arbejdspladser";
   const showStandardCatalogEditLink =
@@ -208,6 +210,7 @@ export default function WorkplaceDetailClient({
           d.push_include_employee_type_ids,
           empAllIds
         ),
+        future_planning_weeks: d.future_planning_weeks,
       });
       if (!res.ok) {
         setMsg(res.error);
@@ -598,6 +601,43 @@ export default function WorkplaceDetailClient({
             Kort gemmes i Stripe; indsæt customer-id efter oprettelse i Stripe
             Dashboard.
           </span>
+        </label>
+      </section>
+
+      <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          {tr("settings.calendar_future.title")}
+        </h2>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          {tr("settings.calendar_future.intro_prefix")}{" "}
+          <Link
+            href="/dashboard/fremtiden"
+            className="font-medium text-zinc-800 underline dark:text-zinc-200"
+          >
+            {tr("admin.nav.future")}
+          </Link>
+          {tr("settings.calendar_future.intro_suffix")}
+        </p>
+        <label className="block max-w-xs">
+          <span className="mb-1 block text-sm font-medium">
+            {tr("settings.calendar_future.weeks_label")}
+          </span>
+          <input
+            type="number"
+            min={1}
+            max={104}
+            value={d.future_planning_weeks}
+            onChange={(e) => {
+              const v = parseInt(e.target.value, 10);
+              setD((x) => ({
+                ...x,
+                future_planning_weeks: Number.isFinite(v)
+                  ? Math.min(104, Math.max(1, v))
+                  : x.future_planning_weeks,
+              }));
+            }}
+            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+          />
         </label>
       </section>
 

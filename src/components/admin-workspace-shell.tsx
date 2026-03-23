@@ -6,15 +6,21 @@ import { usePathname } from "next/navigation";
 import {
   Bell,
   Building2,
+  CalendarClock,
   ChevronLeft,
   ChevronRight,
+  FileSpreadsheet,
   LayoutDashboard,
   LogOut,
+  Scale,
   Settings,
+  ShieldCheck,
+  UserPlus,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { signOutAndRedirectToLogin } from "@/src/lib/auth-client";
 import type { UiThemeId } from "@/src/lib/ui-theme";
+import { useTranslations } from "@/src/contexts/translations-context";
 import { LayoutThemeSidebar } from "@/src/components/layout-theme-sidebar";
 
 type Props = {
@@ -24,10 +30,16 @@ type Props = {
   initialLayoutTheme?: UiThemeId;
 };
 
+/** Fallbacks (da) hvis ui_translations mangler — undgår rå nøgle-navne i menuen. */
 const baseLinks = [
-  { href: "/dashboard", label: "Kalender", icon: LayoutDashboard },
-  { href: "/dashboard/notifikationer", label: "Notifikationer", icon: Bell },
-  { href: "/dashboard/indstillinger", label: "Indstillinger", icon: Settings },
+  { href: "/dashboard", navKey: "admin.nav.calendar", labelDa: "Kalender", icon: LayoutDashboard },
+  { href: "/dashboard/fremtiden", navKey: "admin.nav.future", labelDa: "Fremtiden", icon: CalendarClock },
+  { href: "/dashboard/notifikationer", navKey: "admin.nav.notifications", labelDa: "Notifikationer", icon: Bell },
+  { href: "/dashboard/join-requests", navKey: "admin.nav.join_requests", labelDa: "Adgangsanmodninger", icon: UserPlus },
+  { href: "/dashboard/regler", navKey: "admin.nav.rules", labelDa: "Regler", icon: Scale },
+  { href: "/dashboard/data-eksport", navKey: "admin.nav.data_export", labelDa: "Data eksport", icon: FileSpreadsheet },
+  { href: "/dashboard/compliance", navKey: "admin.nav.compliance", labelDa: "Compliance", icon: ShieldCheck },
+  { href: "/dashboard/indstillinger", navKey: "admin.nav.settings", labelDa: "Indstillinger", icon: Settings },
 ] as const;
 
 export function AdminWorkspaceShell({
@@ -35,6 +47,7 @@ export function AdminWorkspaceShell({
   children,
   initialLayoutTheme,
 }: Props) {
+  const { t } = useTranslations();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [signingOut, setSigningOut] = useState(false);
@@ -54,12 +67,22 @@ export function AdminWorkspaceShell({
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
+  /** Unicorn: transparent PNG så #ffffc5 ses; light: standard lys logo-fil */
+  const sidebarLightLogoSrc =
+    initialLayoutTheme === "unicorn"
+      ? "/ShiftBob-logo-90-light-512-trans.png"
+      : "/ShiftBob-logo-90-light-512.png";
+
+  /** Kun layout «light»: 50 % alpha; dark / unicorn: 80 % på lyst logo */
+  const sidebarLightLogoOpacityClass =
+    initialLayoutTheme === "light" ? "opacity-50" : "opacity-80";
+
   return (
     <div className="relative flex min-h-screen flex-1 bg-zinc-100 dark:bg-zinc-950">
       {sidebarOpen ? (
         <button
           type="button"
-          aria-label="Luk menu"
+          aria-label={t("common.menu.close_overlay", "Luk menu")}
           className="fixed inset-0 z-[90] bg-black/40 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
@@ -79,26 +102,34 @@ export function AdminWorkspaceShell({
                 href="/dashboard"
                 className="block outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
               >
-                <span className="inline-block rounded-lg bg-zinc-950 px-3 py-2.5 dark:bg-zinc-950">
+                <span className="sidebar-logo-wrap inline-block rounded-lg border border-zinc-200 bg-white px-3 py-2.5 dark:border-zinc-800 dark:bg-zinc-950">
                   <Image
-                    src="/ShiftBob-logo-90-light-512.png"
-                    alt="ShiftBob"
+                    src={sidebarLightLogoSrc}
+                    alt={t("common.brand_name", "ShiftBob")}
                     width={320}
                     height={90}
-                    className="h-12 w-auto max-w-full object-contain object-left sm:h-14"
+                    className={`sidebar-logo-light h-[4.2rem] w-auto max-w-full object-contain object-left sm:h-[4.9rem] dark:hidden ${sidebarLightLogoOpacityClass}`}
+                    priority
+                  />
+                  <Image
+                    src="/ShiftBob-logo-90-dark-512.png"
+                    alt={t("common.brand_name", "ShiftBob")}
+                    width={320}
+                    height={90}
+                    className="sidebar-logo-dark hidden h-[4.2rem] w-auto max-w-full object-contain object-left sm:h-[4.9rem] dark:block"
                     priority
                   />
                 </span>
               </Link>
               <div className="mt-2.5 flex items-center justify-between gap-2">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
-                  Administrator
+                  {t("admin.sidebar.administrator", "Administrator")}
                 </p>
                 <Link
                   href="/select-workplace"
                   className="shrink-0 rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-                  title="Skift arbejdsplads"
-                  aria-label="Skift arbejdsplads"
+                  title={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
+                  aria-label={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
                 >
                   <Building2 className="h-4 w-4" aria-hidden />
                 </Link>
@@ -108,8 +139,8 @@ export function AdminWorkspaceShell({
               type="button"
               onClick={() => setSidebarOpen(false)}
               className="shrink-0 rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-              aria-label="Skjul menu"
-              title="Skjul menu"
+              aria-label={t("common.menu.hide_sidebar", "Skjul menu")}
+              title={t("common.menu.hide_sidebar", "Skjul menu")}
             >
               <ChevronLeft className="h-5 w-5" aria-hidden />
             </button>
@@ -118,7 +149,7 @@ export function AdminWorkspaceShell({
         <div className="flex min-h-0 flex-1 flex-col px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-0">
           <nav className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden py-2">
             <div className="flex flex-col gap-0.5">
-              {baseLinks.map(({ href, label, icon: Icon }) => {
+              {baseLinks.map(({ href, navKey, labelDa, icon: Icon }) => {
                 const active = isActive(href);
                 return (
                   <Link
@@ -131,7 +162,7 @@ export function AdminWorkspaceShell({
                     }
                   >
                     <Icon className="h-4 w-4 shrink-0 text-zinc-500" aria-hidden />
-                    {label}
+                    {t(navKey, labelDa)}
                   </Link>
                 );
               })}
@@ -152,7 +183,9 @@ export function AdminWorkspaceShell({
               >
                 <LogOut className="h-4 w-4 shrink-0 text-zinc-500" aria-hidden />
                 <span className="truncate">
-                  {signingOut ? "Logger ud…" : "Log ud"}
+                  {signingOut
+                    ? t("common.logout.loading", "Logger ud…")
+                    : t("common.logout", "Log ud")}
                 </span>
               </button>
               {initialLayoutTheme ? (
@@ -168,8 +201,8 @@ export function AdminWorkspaceShell({
           type="button"
           onClick={() => setSidebarOpen(true)}
           className="fixed left-3 top-3 z-[100] flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-200 bg-white text-zinc-700 shadow-md transition hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
-          aria-label="Vis menu"
-          title="Vis menu"
+          aria-label={t("common.menu.show_sidebar", "Vis menu")}
+          title={t("common.menu.show_sidebar", "Vis menu")}
         >
           <ChevronRight className="h-5 w-5" aria-hidden />
         </button>

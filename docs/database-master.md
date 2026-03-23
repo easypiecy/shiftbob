@@ -11,6 +11,7 @@ Single source of truth for `public` schema objects defined in this repo’s SQL 
 5. `supabase_i18n_setup.sql` — languages, EU countries, UI translations (defines `is_workplace_admin()`)
 6. `supabase_workplace_shifts.sql` — planlagte vagter (`workplace_shifts`) til kalender (kør efter `supabase_departments_setup.sql`)
 7. `supabase_user_ui_preferences.sql` — bruger-UI (`user_ui_preferences`: layout/tema) — kør efter `supabase_workplaces_setup.sql`
+8. `supabase_workplace_join_requests.sql` — OAuth/ny bruger: `workplace_join_requests`, `workplaces.allow_join_requests`, `workplace_members.profile_onboarding_completed`, RPC `list_workplaces_open_for_join()` og `request_workplace_join(uuid)` (kør efter `supabase_workplaces_setup.sql`, gerne efter `supabase_workplace_extended.sql`)
 
 **Eksisterende databaser (migration / patch):**
 
@@ -22,7 +23,11 @@ Single source of truth for `public` schema objects defined in this repo’s SQL 
 | `supabase_patch_workplace_members_select_own.sql` | Ret `workplace_members` SELECT-RLS så brugeren altid kan læse egne rækker (klient `fetchUserWorkplaces` m.m.) |
 | `supabase_rpc_workplace_session_reads.sql` | RPC’er `get_my_workplaces`, `get_my_roles_for_workplace`, `has_super_admin_membership` (SECURITY DEFINER, filtrerer på `auth.uid()`) — app bruger dem først så arbejdsplads/roller virker selv ved RLS-problemer |
 | `supabase_seed_philip_workplace_member.sql` | Dev: tilknyt `philip.schoenbaum@gmail.com` til en arbejdsplads (`ADMIN`) — se `user_roles`-kun Super Admin viser ikke arbejdspladser uden `workplace_members` |
+| `supabase_patch_workplace_future_planning.sql` | `future_planning_weeks`, `calendar_released_until`, `season_template_json` på `workplaces` (Fremtiden / frigivelse) |
+| `supabase_seed_ui_translations_app.sql` | Udvider `ui_translations` med app-strenge (`en-US` + `da`): admin-menu, super-admin-menu, layout-tema, upload, dashboard-sider, Fremtiden, indstillinger, Compliance m.m. — idempotent (`ON CONFLICT DO UPDATE`). Kør efter `supabase_i18n_setup.sql`. |
+| `supabase_seed_ui_translations_compliance.sql` | Kun Compliance + `admin.nav.compliance` i `ui_translations` (samme som del af app-seed). Alternativ: `npm run seed:compliance-translations` med `SUPABASE_SERVICE_ROLE_KEY` i `.env.local` — nødvendigt for at rækkerne vises i `/super-admin/translations` (kildesprog `en-US`). |
 | `supabase_reload_api_schema.sql` | Valgfrit: `NOTIFY pgrst, 'reload schema';` hvis API stadig mangler ny tabel i cache |
+| `supabase_workplace_join_requests.sql` | Anmodning om adgang til arbejdsplads (pending → godkend/afvis), profil-onboarding-flag på `workplace_members` |
 
 `supabase_verify.sql` contains read-only diagnostic queries; it does not define schema.
 
@@ -53,7 +58,7 @@ Rolle-værdier i databasen (`workplace_members.role`, `user_roles.role`) er de s
 
 Når cookien `active_role` er **`ADMIN`**, vises sidemenuen **Administrator** (`AdminWorkspaceShell`, `src/components/admin-workspace-shell.tsx`) på:
 
-- `/dashboard` (inkl. `/dashboard/indstillinger`)
+- `/dashboard` (inkl. understier som `/dashboard/indstillinger`, `/dashboard/fremtiden`, `/dashboard/compliance`)
 - `/select-workplace`
 
 **Rolle** (admin vs. medarbejder m.m.) vælges ved login på **`/select-role`**, når brugeren har flere roller — ikke via sidemenuen.
@@ -63,8 +68,13 @@ Når cookien `active_role` er **`ADMIN`**, vises sidemenuen **Administrator** (`
 | Menupunkt | Route |
 |-----------|--------|
 | Kalender | `/dashboard` |
+| Fremtiden | `/dashboard/fremtiden` |
 | Notifikationer | `/dashboard/notifikationer` |
-| Indstillinger | `/dashboard/indstillinger` (samme arbejdsplads-UI som Super Admin `/super-admin/workplaces/[id]`; kræver `active_workplace`-cookie; herunder **Side-layout** / tema gemt i `user_ui_preferences`) |
+| Adgangsanmodninger | `/dashboard/join-requests` (godkend/afvis OAuth-brugere uden medlemskab) |
+| Regler | `/dashboard/regler` |
+| Data eksport | `/dashboard/data-eksport` |
+| Compliance | `/dashboard/compliance` (rullende lov-/GDPR-/AI-dokumentation; aktiv arbejdsplads fra `active_workplace`-cookie) |
+| Indstillinger | `/dashboard/indstillinger` (samme arbejdsplads-UI som Super Admin `/super-admin/workplaces/[id]`; kræver `active_workplace`-cookie; herunder **Side-layout** / tema i `user_ui_preferences` og **Kalender & fremtid** / `future_planning_weeks` i `workplaces`) |
 | Skift arbejdsplads | Ikon ved **Administrator** → `/select-workplace` |
 
 Øvrige roller (`MANAGER`, `EMPLOYEE`) får **ikke** denne menu; de ser kun sideindhold uden administrator-skallen.
@@ -144,6 +154,9 @@ Where `role` appears (`user_roles.role`, `workplace_members.role`), allowed valu
 | `stripe_customer_id` | `text` | Stripe |
 | `push_include_shift_type_ids` | `uuid[]` | Tom = intet filter på vagttyper; ellers kun disse `workplace_shift_types.id` (Push/SMS-målgruppe) |
 | `push_include_employee_type_ids` | `uuid[]` | Samme for medarbejdertyper → `workplace_employee_types.id` |
+| `future_planning_weeks` | `integer` | Default `8`, check `1…104` — antal uger af ufrigivet kalender vist under **Administrator → Fremtiden** |
+| `calendar_released_until` | `date` | Valgfri — sidste dato medarbejdere kan se planlagte vagter; efter denne dato er planen kun synlig for admin indtil frigivelse |
+| `season_template_json` | `jsonb` | Sæson-skabelon (perioder, krav pr. ugedag) til AI-analyse og planlægning |
 | `created_at` | `timestamptz` | |
 
 **Fjernet fra nuværende schema:** kolonnen `push_send_none` bruges ikke længere (styring via typer/kanal; patch ovenfor dropper den på gamle DB’er).
@@ -422,8 +435,14 @@ Used by i18n RLS write policies. Super Admin UI gemmer oversættelser med **serv
 
 | | |
 |---|---|
-| **Source** | `supabase_i18n_setup.sql` |
+| **Source** | `supabase_i18n_setup.sql` (skema + grunddata: login, rollevalg) + `supabase_seed_ui_translations_app.sql` (resten af appen) |
 | **Purpose** | **i18n** — UI strings keyed by stable `translation_key` per `language_code`. |
+
+### App (Next.js)
+
+- **Kilde‑sprog i UI:** `/super-admin/translations` bruger **engelsk** (`en-US`) som kilderækker (se `app/super-admin/translations/page.tsx`).
+- **Standardvisning i appen:** Root layout (`app/layout.tsx`) loader **`da`** via `getTranslationsCached()` + service role (`src/lib/translations-server.ts`) og leverer `Record<translation_key, text_value>` til `AppTranslationsProvider` (`src/contexts/translations-context.tsx`). Klientkomponenter bruger `useTranslations()`; serverkomponenter bruger `getTranslationsCached()` + `createTranslator()`.
+- **Nøgle‑navne:** punktum‑notation, fx `admin.nav.calendar`, `future.season.title`, `calendar.weekday.0` (mandag … `6` søndag). Oversættelser kan redigeres under **Super Admin → Sprog & oversættelser**; seed‑scriptet kan køres igen for at opdatere tekster uden at slette rækker.
 
 ### Columns
 

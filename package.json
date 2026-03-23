@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed:compliance-translations": "node --env-file=.env.local scripts/seed-compliance-ui-translations.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.46.0",

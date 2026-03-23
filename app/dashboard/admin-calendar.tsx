@@ -5,7 +5,9 @@ import { ChevronLeft, ChevronRight, Plus, Search, X } from "lucide-react";
 import {
   getWorkplaceDepartmentsOverview,
   type WorkplaceDepartmentRow,
+  type WorkplaceEmployeeTypeRow,
   type WorkplaceMemberDepartmentsRow,
+  type WorkplaceShiftTypeRow,
 } from "@/src/app/super-admin/workplaces/actions";
 import {
   getWorkplaceShiftsInRange,
@@ -83,6 +85,19 @@ function shiftOverlapsSlot(
   return a < end && b > start;
 }
 
+function firstDepartmentLabel(
+  m: WorkplaceMemberDepartmentsRow,
+  deptById: Map<string, WorkplaceDepartmentRow>
+): string {
+  const names = m.department_ids
+    .map((id) => deptById.get(id)?.name ?? "")
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b, "da"));
+  return names[0] ?? "";
+}
+
+type EmployeeSortKey = "name_asc" | "name_desc" | "department" | "employee_type";
+
 function distinctEmployeesOnShiftForDay(
   shifts: WorkplaceShiftRow[],
   day: Date
@@ -110,6 +125,8 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [departments, setDepartments] = useState<WorkplaceDepartmentRow[]>([]);
   const [members, setMembers] = useState<WorkplaceMemberDepartmentsRow[]>([]);
+  const [shiftTypes, setShiftTypes] = useState<WorkplaceShiftTypeRow[]>([]);
+  const [employeeTypes, setEmployeeTypes] = useState<WorkplaceEmployeeTypeRow[]>([]);
 
   const [viewMode, setViewMode] = useState<CalendarViewMode>("rolling");
   const [anchorDate, setAnchorDate] = useState(() => startOfDay(new Date()));
@@ -118,6 +135,11 @@ export default function AdminCalendar({ workplaceId }: Props) {
   );
   const [selectedDeptId, setSelectedDeptId] = useState<string | null>(null);
   const [employeeQuery, setEmployeeQuery] = useState("");
+  /** Filtrér celler i gitteret efter vagttype (alle / én type / uden type) */
+  const [filterShiftTypeId, setFilterShiftTypeId] = useState<string | null>(null);
+  /** Filtrér medarbejderrækker efter medarbejdertype */
+  const [filterEmployeeTypeId, setFilterEmployeeTypeId] = useState<string | null>(null);
+  const [employeeSort, setEmployeeSort] = useState<EmployeeSortKey>("name_asc");
   const [clock, setClock] = useState(formatTimeNow);
   const [addShiftOpen, setAddShiftOpen] = useState(false);
 
@@ -142,6 +164,8 @@ export default function AdminCalendar({ workplaceId }: Props) {
     }
     setDepartments(res.departments);
     setMembers(res.members);
+    setShiftTypes(res.shiftTypes);
+    setEmployeeTypes(res.employeeTypes);
     setLoading(false);
   }, [workplaceId]);
 
@@ -165,7 +189,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
     }
     setSelectedDeptId((prev) => {
       if (prev && departments.some((d) => d.id === prev)) return prev;
-      return departments[0].id;
+      return null;
     });
   }, [departments]);
 
@@ -213,16 +237,82 @@ export default function AdminCalendar({ workplaceId }: Props) {
     if (departments.length === 0) return members;
     if (!selectedDeptId) return members;
     return members.filter((m) => m.department_ids.includes(selectedDeptId));
-  }, [members, departments.length, selectedDeptId]);
+  }, [members, departments, selectedDeptId]);
+
+  const departmentById = useMemo(() => {
+    const m = new Map<string, WorkplaceDepartmentRow>();
+    for (const d of departments) m.set(d.id, d);
+    return m;
+  }, [departments]);
 
   const visibleEmployees = useMemo(() => {
+    let list = departmentFiltered;
+    if (filterEmployeeTypeId) {
+      if (filterEmployeeTypeId === "__none__") {
+        list = list.filter((m) => !m.employee_type_id);
+      } else {
+        list = list.filter((m) => m.employee_type_id === filterEmployeeTypeId);
+      }
+    }
     const q = employeeQuery.trim().toLowerCase();
-    if (!q) return departmentFiltered;
-    return departmentFiltered.filter((m) => {
-      const label = `${m.display_name} ${m.email ?? ""} ${m.user_id}`.toLowerCase();
-      return label.includes(q);
+    if (q) {
+      list = list.filter((m) => {
+        const label = `${m.display_name} ${m.email ?? ""} ${m.user_id}`.toLowerCase();
+        return label.includes(q);
+      });
+    }
+    const empTypeLabel = (id: string | null) =>
+      id ? (employeeTypes.find((e) => e.id === id)?.label ?? "") : "";
+    const sorted = [...list];
+    sorted.sort((a, b) => {
+      switch (employeeSort) {
+        case "name_asc":
+          return a.display_name.localeCompare(b.display_name, "da");
+        case "name_desc":
+          return b.display_name.localeCompare(a.display_name, "da");
+        case "department": {
+          const cmp = firstDepartmentLabel(a, departmentById).localeCompare(
+            firstDepartmentLabel(b, departmentById),
+            "da"
+          );
+          return cmp !== 0 ? cmp : a.display_name.localeCompare(b.display_name, "da");
+        }
+        case "employee_type": {
+          const cmp = empTypeLabel(a.employee_type_id).localeCompare(
+            empTypeLabel(b.employee_type_id),
+            "da"
+          );
+          return cmp !== 0 ? cmp : a.display_name.localeCompare(b.display_name, "da");
+        }
+        default:
+          return 0;
+      }
     });
-  }, [departmentFiltered, employeeQuery]);
+    return sorted;
+  }, [
+    departmentFiltered,
+    employeeQuery,
+    filterEmployeeTypeId,
+    employeeSort,
+    employeeTypes,
+    departmentById,
+  ]);
+
+  const rollingShiftsFiltered = useMemo(() => {
+    if (!filterShiftTypeId) return rollingShifts;
+    if (filterShiftTypeId === "__none__") {
+      return rollingShifts.filter((s) => !s.shift_type_id);
+    }
+    return rollingShifts.filter((s) => s.shift_type_id === filterShiftTypeId);
+  }, [rollingShifts, filterShiftTypeId]);
+
+  const monthShiftsFiltered = useMemo(() => {
+    if (!filterShiftTypeId) return monthShifts;
+    if (filterShiftTypeId === "__none__") {
+      return monthShifts.filter((s) => !s.shift_type_id);
+    }
+    return monthShifts.filter((s) => s.shift_type_id === filterShiftTypeId);
+  }, [monthShifts, filterShiftTypeId]);
 
   const days30 = useMemo(() => {
     const out: Date[] = [];
@@ -235,10 +325,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const countsByDayKey = useMemo(() => {
     const m: Record<string, number> = {};
     for (const d of days30) {
-      m[dayKeyLocal(d)] = distinctEmployeesOnShiftForDay(monthShifts, d);
+      m[dayKeyLocal(d)] = distinctEmployeesOnShiftForDay(monthShiftsFiltered, d);
     }
     return m;
-  }, [days30, monthShifts]);
+  }, [days30, monthShiftsFiltered]);
 
   function goToday() {
     const t = startOfDay(new Date());
@@ -404,6 +494,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
               onChange={(e) => setSelectedDeptId(e.target.value || null)}
               className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
             >
+              <option value="">Alle afdelinger</option>
               {departments.map((d) => (
                 <option key={d.id} value={d.id}>
                   {d.name}
@@ -429,6 +520,58 @@ export default function AdminCalendar({ workplaceId }: Props) {
             />
           </div>
         </label>
+
+        <label className="flex min-w-[180px] flex-col gap-1 text-sm">
+          <span className="font-medium text-zinc-700 dark:text-zinc-300">Sortér efter</span>
+          <select
+            value={employeeSort}
+            onChange={(e) => setEmployeeSort(e.target.value as EmployeeSortKey)}
+            className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+          >
+            <option value="name_asc">Navn A–Å</option>
+            <option value="name_desc">Navn Å–A</option>
+            <option value="department">Afdeling</option>
+            <option value="employee_type">Medarbejdertype</option>
+          </select>
+        </label>
+
+        {shiftTypes.length > 0 ? (
+          <label className="flex min-w-[200px] flex-col gap-1 text-sm">
+            <span className="font-medium text-zinc-700 dark:text-zinc-300">Vagttype (visning)</span>
+            <select
+              value={filterShiftTypeId ?? ""}
+              onChange={(e) => setFilterShiftTypeId(e.target.value || null)}
+              className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+            >
+              <option value="">Alle vagttyper</option>
+              <option value="__none__">Uden vagttype</option>
+              {shiftTypes.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
+
+        {employeeTypes.length > 0 ? (
+          <label className="flex min-w-[200px] flex-col gap-1 text-sm">
+            <span className="font-medium text-zinc-700 dark:text-zinc-300">Medarbejdertype</span>
+            <select
+              value={filterEmployeeTypeId ?? ""}
+              onChange={(e) => setFilterEmployeeTypeId(e.target.value || null)}
+              className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+            >
+              <option value="">Alle</option>
+              <option value="__none__">Uden medarbejdertype</option>
+              {employeeTypes.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
       </div>
 
       {viewMode === "month30" ? (
@@ -538,7 +681,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                         </td>
                         {rollingDays.flatMap((d) =>
                           HOURS.map((h) => {
-                            const has = rollingShifts.some((s) =>
+                            const has = rollingShiftsFiltered.some((s) =>
                               shiftOverlapsSlot(s, emp.user_id, d, h)
                             );
                             return (
