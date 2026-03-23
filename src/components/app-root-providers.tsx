@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { AppTranslationsProvider } from "@/src/contexts/translations-context";
+import { SupabaseSessionRefresh } from "@/src/components/supabase-session-refresh";
 
 export function AppRootProviders({
   children,
@@ -12,6 +13,7 @@ export function AppRootProviders({
 }) {
   return (
     <AppTranslationsProvider initialMap={translations}>
+      <SupabaseSessionRefresh />
       {children}
     </AppTranslationsProvider>
   );
