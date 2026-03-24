@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  ArrowLeftRight,
   Bell,
-  Building2,
   CalendarClock,
   ChevronLeft,
   ChevronRight,
@@ -89,16 +89,26 @@ export function AdminWorkspaceShell({
         }
       >
         <div className="relative shrink-0 border-b border-zinc-200 px-3 py-4 dark:border-zinc-800">
-          <button
-            type="button"
-            onClick={() => setSidebarOpen(false)}
-            className="absolute right-2 top-3 z-10 rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-            aria-label={t("common.menu.hide_sidebar", "Skjul menu")}
-            title={t("common.menu.hide_sidebar", "Skjul menu")}
-          >
-            <ChevronLeft className="h-5 w-5" aria-hidden />
-          </button>
-          <div className="flex flex-col items-center px-1 pt-1">
+          <div className="relative flex items-start justify-between gap-2">
+            <Link
+              href="/select-workplace"
+              className="-m-1 shrink-0 rounded-lg p-2 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+              title={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
+              aria-label={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
+            >
+              <ArrowLeftRight className="h-5 w-5" strokeWidth={2} aria-hidden />
+            </Link>
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(false)}
+              className="shrink-0 rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+              aria-label={t("common.menu.hide_sidebar", "Skjul menu")}
+              title={t("common.menu.hide_sidebar", "Skjul menu")}
+            >
+              <ChevronLeft className="h-5 w-5" aria-hidden />
+            </button>
+          </div>
+          <div className="mt-3 flex flex-col items-center px-1">
             <Link
               href="/dashboard"
               className="outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
@@ -126,19 +136,9 @@ export function AdminWorkspaceShell({
                 />
               </span>
             </Link>
-            <div className="mt-3 flex w-full max-w-[15rem] items-center justify-between gap-2">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
-                {t("admin.sidebar.administrator", "Administrator")}
-              </p>
-              <Link
-                href="/select-workplace"
-                className="shrink-0 rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-                title={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
-                aria-label={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
-              >
-                <Building2 className="h-4 w-4" aria-hidden />
-              </Link>
-            </div>
+            <p className="mt-3 w-full max-w-[15rem] text-center text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+              {t("admin.sidebar.administrator", "Administrator")}
+            </p>
           </div>
         </div>
         <div className="flex min-h-0 flex-1 flex-col px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-0">
