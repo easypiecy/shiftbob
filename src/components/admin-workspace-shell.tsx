@@ -67,15 +67,8 @@ export function AdminWorkspaceShell({
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-  /** Unicorn: transparent PNG så #ffffc5 ses; light: standard lys logo-fil */
-  const sidebarLightLogoSrc =
-    initialLayoutTheme === "unicorn"
-      ? "/ShiftBob-logo-90-light-512-trans.png"
-      : "/ShiftBob-logo-90-light-512.png";
-
-  /** Kun layout «light»: 50 % alpha; dark / unicorn: 80 % på lyst logo */
-  const sidebarLightLogoOpacityClass =
-    initialLayoutTheme === "light" ? "opacity-50" : "opacity-80";
+  /** Dark: mørkt cirkel-logo. Light + unicorn: lyst cirkel-logo (unicorn bruger også `dark` på `<html>`). */
+  const showDarkCircleLogo = initialLayoutTheme === "dark";
 
   return (
     <div className="relative flex min-h-screen flex-1 bg-zinc-100 dark:bg-zinc-950">
@@ -95,55 +88,57 @@ export function AdminWorkspaceShell({
             : "hidden"
         }
       >
-        <div className="shrink-0 border-b border-zinc-200 px-3 py-4 dark:border-zinc-800">
-          <div className="flex items-start gap-2">
-            <div className="min-w-0 flex-1">
-              <Link
-                href="/dashboard"
-                className="block outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
-              >
-                <span className="sidebar-logo-wrap inline-block rounded-lg border border-zinc-200 bg-white px-3 py-2.5 dark:border-zinc-800 dark:bg-zinc-950">
-                  <Image
-                    src={sidebarLightLogoSrc}
-                    alt={t("common.brand_name", "ShiftBob")}
-                    width={320}
-                    height={90}
-                    className={`sidebar-logo-light h-[4.2rem] w-auto max-w-full object-contain object-left sm:h-[4.9rem] dark:hidden ${sidebarLightLogoOpacityClass}`}
-                    priority
-                  />
-                  <Image
-                    src="/ShiftBob-logo-90-dark-512.png"
-                    alt={t("common.brand_name", "ShiftBob")}
-                    width={320}
-                    height={90}
-                    className="sidebar-logo-dark hidden h-[4.2rem] w-auto max-w-full object-contain object-left sm:h-[4.9rem] dark:block"
-                    priority
-                  />
-                </span>
-              </Link>
-              <div className="mt-2.5 flex items-center justify-between gap-2">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
-                  {t("admin.sidebar.administrator", "Administrator")}
-                </p>
-                <Link
-                  href="/select-workplace"
-                  className="shrink-0 rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-                  title={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
-                  aria-label={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
-                >
-                  <Building2 className="h-4 w-4" aria-hidden />
-                </Link>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setSidebarOpen(false)}
-              className="shrink-0 rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-              aria-label={t("common.menu.hide_sidebar", "Skjul menu")}
-              title={t("common.menu.hide_sidebar", "Skjul menu")}
+        <div className="relative shrink-0 border-b border-zinc-200 px-3 py-4 dark:border-zinc-800">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(false)}
+            className="absolute right-2 top-3 z-10 rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+            aria-label={t("common.menu.hide_sidebar", "Skjul menu")}
+            title={t("common.menu.hide_sidebar", "Skjul menu")}
+          >
+            <ChevronLeft className="h-5 w-5" aria-hidden />
+          </button>
+          <div className="flex flex-col items-center px-1 pt-1">
+            <Link
+              href="/dashboard"
+              className="outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
             >
-              <ChevronLeft className="h-5 w-5" aria-hidden />
-            </button>
+              <span className="sidebar-logo-wrap inline-flex items-center justify-center rounded-2xl border border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-950">
+                <Image
+                  src="/ShiftBob-circle-logo-light-1024.png"
+                  alt={t("common.brand_name", "ShiftBob")}
+                  width={1024}
+                  height={1024}
+                  className={`h-[5.75rem] w-[5.75rem] object-contain object-center sm:h-[6.75rem] sm:w-[6.75rem] ${
+                    showDarkCircleLogo ? "hidden" : "block"
+                  }`}
+                  priority
+                />
+                <Image
+                  src="/ShiftBob-circle-logo-dark-1024.png"
+                  alt={t("common.brand_name", "ShiftBob")}
+                  width={1024}
+                  height={1024}
+                  className={`h-[5.75rem] w-[5.75rem] object-contain object-center sm:h-[6.75rem] sm:w-[6.75rem] ${
+                    showDarkCircleLogo ? "block" : "hidden"
+                  }`}
+                  priority
+                />
+              </span>
+            </Link>
+            <div className="mt-3 flex w-full max-w-[15rem] items-center justify-between gap-2">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+                {t("admin.sidebar.administrator", "Administrator")}
+              </p>
+              <Link
+                href="/select-workplace"
+                className="shrink-0 rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                title={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
+                aria-label={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
+              >
+                <Building2 className="h-4 w-4" aria-hidden />
+              </Link>
+            </div>
           </div>
         </div>
         <div className="flex min-h-0 flex-1 flex-col px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-0">
