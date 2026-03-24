@@ -6,7 +6,7 @@ import { updateSession } from "./src/utils/supabase/update-session";
  * Skal ligge i projektroden (ikke kun under `src/`), så Vercel/Next altid resolver
  * samme edge-entry som i dokumentationen. Brug relative imports — ikke `@/`.
  */
-export async function proxy(request: NextRequest) {
+async function proxy(request: NextRequest) {
   /* HEAD bruges af curl -I; undgå tung auth/session så healthchecks ikke fejler */
   if (request.method === "HEAD" || request.method === "OPTIONS") {
     return NextResponse.next({ request });
@@ -17,6 +17,10 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next({ request });
   }
 }
+
+/** Navngiven + default — Next.js 16-proxy-skabelonen læser `proxy` eller `default` (begge er gyldige). */
+export { proxy };
+export default proxy;
 
 /**
  * Kør kun session-proxy på relevante ruter — ikke på `/` (forside).
