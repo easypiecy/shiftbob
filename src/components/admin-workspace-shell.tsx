@@ -91,38 +91,28 @@ export function AdminWorkspaceShell({
             : "hidden"
         }
       >
-        <div className="relative shrink-0 border-b border-zinc-200 px-3 py-4 dark:border-zinc-800">
-          <div className="relative flex items-start justify-between gap-2">
-            <Link
-              href="/select-workplace"
-              className="-m-1 shrink-0 rounded-lg p-2 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-              title={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
-              aria-label={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
-            >
-              <ArrowLeftRight className="h-5 w-5" strokeWidth={2} aria-hidden />
-            </Link>
-            <button
-              type="button"
-              onClick={() => setSidebarOpen(false)}
-              className="shrink-0 rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-              aria-label={t("common.menu.hide_sidebar", "Skjul menu")}
-              title={t("common.menu.hide_sidebar", "Skjul menu")}
-            >
-              <ChevronLeft className="h-5 w-5" aria-hidden />
-            </button>
-          </div>
-          <div className="mt-3 flex flex-col items-center px-1">
+        <div className="relative shrink-0 border-b border-zinc-200 px-3 pb-3 pt-1 dark:border-zinc-800">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(false)}
+            className="absolute right-0 top-0 z-10 rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+            aria-label={t("common.menu.hide_sidebar", "Skjul menu")}
+            title={t("common.menu.hide_sidebar", "Skjul menu")}
+          >
+            <ChevronLeft className="h-5 w-5" aria-hidden />
+          </button>
+          <div className="flex flex-col items-center px-1 pr-7">
             <Link
               href="/dashboard"
               className="outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
             >
-              <span className="sidebar-logo-wrap inline-flex items-center justify-center rounded-2xl border border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-950">
+              <span className="sidebar-logo-wrap inline-flex items-center justify-center rounded-2xl border border-zinc-200 bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-950">
                 <Image
                   src="/ShiftBob-circle-logo-light-1024.png"
                   alt={t("common.brand_name", "ShiftBob")}
                   width={1024}
                   height={1024}
-                  className={`h-[5.75rem] w-[5.75rem] object-contain object-center sm:h-[6.75rem] sm:w-[6.75rem] ${
+                  className={`h-[5.5rem] w-[5.5rem] object-contain object-center sm:h-[6.5rem] sm:w-[6.5rem] ${
                     showDarkCircleLogo ? "hidden" : "block"
                   }`}
                   priority
@@ -132,21 +122,31 @@ export function AdminWorkspaceShell({
                   alt={t("common.brand_name", "ShiftBob")}
                   width={1024}
                   height={1024}
-                  className={`h-[5.75rem] w-[5.75rem] object-contain object-center sm:h-[6.75rem] sm:w-[6.75rem] ${
+                  className={`h-[5.5rem] w-[5.5rem] object-contain object-center sm:h-[6.5rem] sm:w-[6.5rem] ${
                     showDarkCircleLogo ? "block" : "hidden"
                   }`}
                   priority
                 />
               </span>
             </Link>
-            <p
-              className="mt-3 w-full max-w-[15rem] break-words text-center text-xs font-semibold leading-snug text-zinc-600 dark:text-zinc-400"
-              title={activeWorkplaceName ?? undefined}
-            >
-              {activeWorkplaceName?.trim()
-                ? activeWorkplaceName.trim()
-                : t("admin.sidebar.workplace_name_missing", "—")}
-            </p>
+            <div className="mt-2.5 flex w-full max-w-[15rem] items-center justify-center gap-2">
+              <p
+                className="min-w-0 flex-1 break-words text-center text-xs font-semibold leading-snug text-zinc-600 dark:text-zinc-400"
+                title={activeWorkplaceName ?? undefined}
+              >
+                {activeWorkplaceName?.trim()
+                  ? activeWorkplaceName.trim()
+                  : t("admin.sidebar.workplace_name_missing", "—")}
+              </p>
+              <Link
+                href="/select-workplace"
+                className="-m-1 shrink-0 rounded-lg p-1.5 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                title={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
+                aria-label={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
+              >
+                <ArrowLeftRight className="h-4 w-4" strokeWidth={2} aria-hidden />
+              </Link>
+            </div>
           </div>
         </div>
         <div className="flex min-h-0 flex-1 flex-col px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-0">
