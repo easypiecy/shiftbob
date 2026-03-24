@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import { HomeTopBar } from "./home-top-bar";
 import { createTranslator } from "@/src/lib/translations-server";
 import {
@@ -6,7 +7,36 @@ import {
   resolveRequestUiLanguage,
 } from "@/src/lib/ui-language-server";
 
-export default async function Home() {
+/**
+ * Supabase kan sende PKCE `code` til Site URL (`/`) hvis `redirectTo` ikke matcher
+ * allowlist (fx apex vs `www`). Send brugeren til route handler der udveksler code.
+ */
+function redirectRootOAuthToCallback(
+  searchParams: Record<string, string | string[] | undefined>
+) {
+  const code = searchParams.code;
+  if (typeof code !== "string" || !code) return;
+
+  const qs = new URLSearchParams();
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (value === undefined) continue;
+    if (Array.isArray(value)) {
+      value.forEach((v) => qs.append(key, v));
+    } else {
+      qs.set(key, value);
+    }
+  }
+  redirect(`/auth/callback?${qs.toString()}`);
+}
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const sp = await searchParams;
+  redirectRootOAuthToCallback(sp);
+
   const [map, lang] = await Promise.all([
     getUiTranslations(),
     resolveRequestUiLanguage(),
