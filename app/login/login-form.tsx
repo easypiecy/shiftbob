@@ -57,7 +57,8 @@ export function LoginForm({
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=/select-workplace`,
+          /* Kun path — ingen `?next=` (OAuth kan give tom `next=` → redirect til `/`). Destination styres i `app/auth/callback/route.ts`. */
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       });
       if (error) {
