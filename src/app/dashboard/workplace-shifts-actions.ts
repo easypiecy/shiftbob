@@ -1,7 +1,23 @@
 "use server";
 
-import { assertWorkplaceAdminOrSuperAdmin } from "@/src/lib/workplace-admin-server";
+import {
+  assertWorkplaceMember,
+  isWorkplaceCalendarAdminView,
+} from "@/src/lib/workplace-admin-server";
 import { getAdminClient } from "@/src/utils/supabase/admin";
+
+export async function getCalendarViewerNameMode(workplaceId: string): Promise<
+  { ok: true; adminView: boolean } | { ok: false; error: string }
+> {
+  try {
+    await assertWorkplaceMember(workplaceId);
+    const adminView = await isWorkplaceCalendarAdminView(workplaceId);
+    return { ok: true, adminView };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Ukendt fejl";
+    return { ok: false, error: msg };
+  }
+}
 
 function isMissingSchemaError(message: string): boolean {
   const m = message.toLowerCase();
@@ -39,7 +55,7 @@ export async function getWorkplaceShiftsInRange(
   | { ok: false; error: string }
 > {
   try {
-    await assertWorkplaceAdminOrSuperAdmin(workplaceId);
+    await assertWorkplaceMember(workplaceId);
     const admin = getAdminClient();
     let q = admin
       .from("workplace_shifts")

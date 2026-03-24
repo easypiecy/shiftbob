@@ -26,15 +26,13 @@ export const metadata: Metadata = {
     icon: [
       {
         url: SHIFTBOB_SITE_ICON,
-        sizes: "256x256",
-        type: "image/png",
+        type: "image/jpeg",
       },
     ],
     apple: [
       {
         url: SHIFTBOB_SITE_ICON,
-        sizes: "256x256",
-        type: "image/png",
+        type: "image/jpeg",
       },
     ],
   },

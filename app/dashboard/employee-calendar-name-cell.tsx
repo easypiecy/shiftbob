@@ -30,16 +30,42 @@ function runMarqueeScroll(container: HTMLDivElement) {
   requestAnimationFrame(tick);
 }
 
+function firstNameFromDisplay(displayName: string): string {
+  const t = displayName.trim();
+  if (!t) return "";
+  return t.split(/\s+/)[0] ?? t;
+}
+
+function shortWorkplaceMemberId(id: string): string {
+  return id.replace(/-/g, "").slice(0, 8);
+}
+
+function calendarNameLabel(
+  emp: WorkplaceMemberDepartmentsRow,
+  viewerUserId: string | null,
+  nameMode: "full" | "privacy"
+): string {
+  if (nameMode === "full") return emp.display_name;
+  if (viewerUserId && emp.user_id === viewerUserId) return emp.display_name;
+  return `${firstNameFromDisplay(emp.display_name)} · ${shortWorkplaceMemberId(emp.workplace_member_id)}`;
+}
+
 type Props = {
   workplaceId: string;
   emp: WorkplaceMemberDepartmentsRow;
   onSaved: () => void;
+  viewerUserId: string | null;
+  nameMode: "full" | "privacy";
+  canEdit: boolean;
 };
 
 export default function EmployeeCalendarNameCell({
   workplaceId,
   emp,
   onSaved,
+  viewerUserId,
+  nameMode,
+  canEdit,
 }: Props) {
   const [editOpen, setEditOpen] = useState(false);
   const [overrideDraft, setOverrideDraft] = useState("");
@@ -74,11 +100,12 @@ export default function EmployeeCalendarNameCell({
   }, [clearLongPress]);
 
   const onClickOpen = useCallback(() => {
+    if (!canEdit) return;
     if (Date.now() < suppressClickUntil.current) return;
     setOverrideDraft(emp.display_name_override ?? "");
     setSaveError(null);
     setEditOpen(true);
-  }, [emp.display_name_override]);
+  }, [canEdit, emp.display_name_override]);
 
   const handleSave = useCallback(async () => {
     setSaving(true);
@@ -192,31 +219,42 @@ export default function EmployeeCalendarNameCell({
       </div>
     ) : null;
 
+  const label = calendarNameLabel(emp, viewerUserId, nameMode);
+
   return (
     <>
       <div className="flex min-w-0 max-w-[220px] items-center">
         <button
           type="button"
-          className="min-w-0 flex-1 cursor-pointer rounded px-0 py-0 text-left text-sm font-medium focus-visible:outline focus-visible:ring-2 focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-500"
-          onPointerDown={onPointerDown}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
-          onPointerLeave={onPointerUp}
+          disabled={!canEdit}
+          className={
+            canEdit
+              ? "min-w-0 flex-1 cursor-pointer rounded px-0 py-0 text-left text-sm font-medium focus-visible:outline focus-visible:ring-2 focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-500"
+              : "min-w-0 flex-1 cursor-default rounded px-0 py-0 text-left text-sm font-medium"
+          }
+          onPointerDown={canEdit ? onPointerDown : undefined}
+          onPointerUp={canEdit ? onPointerUp : undefined}
+          onPointerCancel={canEdit ? onPointerUp : undefined}
+          onPointerLeave={canEdit ? onPointerUp : undefined}
           onClick={onClickOpen}
-          aria-label={`Medarbejder ${emp.display_name}, rediger`}
+          aria-label={
+            canEdit
+              ? `Medarbejder ${emp.display_name}, rediger`
+              : `Medarbejder ${label}`
+          }
         >
           <div
             ref={scrollRef}
             className="overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             <span className="employee-calendar-name inline-block whitespace-nowrap">
-              {emp.display_name}
+              {label}
             </span>
           </div>
         </button>
       </div>
 
-      {modal && createPortal(modal, document.body)}
+      {canEdit && modal && createPortal(modal, document.body)}
     </>
   );
 }

@@ -10,10 +10,12 @@ import {
   type WorkplaceShiftTypeRow,
 } from "@/src/app/super-admin/workplaces/actions";
 import {
+  getCalendarViewerNameMode,
   getWorkplaceShiftsInRange,
   type WorkplaceShiftRow,
 } from "@/src/app/dashboard/workplace-shifts-actions";
 import EmployeeCalendarNameCell from "@/app/dashboard/employee-calendar-name-cell";
+import { shiftCalendarCellStyle } from "@/src/lib/calendar-shift-style";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
@@ -85,6 +87,21 @@ function shiftOverlapsSlot(
   return a < end && b > start;
 }
 
+function firstShiftOverlappingSlot(
+  shifts: WorkplaceShiftRow[],
+  userId: string,
+  dayStart: Date,
+  hour: number
+): WorkplaceShiftRow | null {
+  const matches = shifts.filter((s) => shiftOverlapsSlot(s, userId, dayStart, hour));
+  if (matches.length === 0) return null;
+  matches.sort(
+    (a, b) =>
+      new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime()
+  );
+  return matches[0] ?? null;
+}
+
 function firstDepartmentLabel(
   m: WorkplaceMemberDepartmentsRow,
   deptById: Map<string, WorkplaceDepartmentRow>
@@ -145,6 +162,8 @@ export default function AdminCalendar({ workplaceId }: Props) {
 
   const [rollingShifts, setRollingShifts] = useState<WorkplaceShiftRow[]>([]);
   const [monthShifts, setMonthShifts] = useState<WorkplaceShiftRow[]>([]);
+  const [viewerUserId, setViewerUserId] = useState<string | null>(null);
+  const [calendarAdminNameView, setCalendarAdminNameView] = useState(true);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const rollingDaysRef = useRef(rollingDays);
@@ -329,6 +348,22 @@ export default function AdminCalendar({ workplaceId }: Props) {
     }
     return m;
   }, [days30, monthShiftsFiltered]);
+
+  const shiftColorById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const t of shiftTypes) {
+      map.set(t.id, t.calendar_color ?? "#94a3b8");
+    }
+    return map;
+  }, [shiftTypes]);
+
+  const employeePatternById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const t of employeeTypes) {
+      map.set(t.id, t.calendar_pattern ?? "none");
+    }
+    return map;
+  }, [employeeTypes]);
 
   function goToday() {
     const t = startOfDay(new Date());
@@ -677,21 +712,44 @@ export default function AdminCalendar({ workplaceId }: Props) {
                             workplaceId={workplaceId}
                             emp={emp}
                             onSaved={() => void load()}
+                            viewerUserId={viewerUserId}
+                            nameMode={
+                              calendarAdminNameView ? "full" : "privacy"
+                            }
+                            canEdit={calendarAdminNameView}
                           />
                         </td>
                         {rollingDays.flatMap((d) =>
                           HOURS.map((h) => {
-                            const has = rollingShiftsFiltered.some((s) =>
-                              shiftOverlapsSlot(s, emp.user_id, d, h)
+                            const shift = firstShiftOverlappingSlot(
+                              rollingShiftsFiltered,
+                              emp.user_id,
+                              d,
+                              h
                             );
+                            const has = Boolean(shift);
+                            const shiftColor = shift?.shift_type_id
+                              ? shiftColorById.get(shift.shift_type_id) ?? "#94a3b8"
+                              : "#94a3b8";
+                            const empPattern = emp.employee_type_id
+                              ? employeePatternById.get(emp.employee_type_id) ??
+                                "none"
+                              : "none";
+                            const cellStyle = has
+                              ? shiftCalendarCellStyle({
+                                  shiftTypeColor: shiftColor,
+                                  employeePattern: empPattern,
+                                })
+                              : undefined;
                             return (
                               <td
                                 key={`${emp.user_id}-${dayKeyLocal(d)}-${h}`}
                                 className={
                                   has
-                                    ? "border-b border-l border-emerald-200/80 bg-emerald-500/15 px-0 py-2 dark:border-emerald-900/50 dark:bg-emerald-500/10"
+                                    ? "border-b border-l border-zinc-300/60 px-0 py-2 dark:border-zinc-600/50"
                                     : "border-b border-l border-zinc-100 bg-zinc-50/50 px-0 py-2 dark:border-zinc-800 dark:bg-zinc-950/50"
                                 }
+                                style={cellStyle}
                               >
                                 <span className="sr-only">
                                   {has ? "Vagt" : "Ledig"} {h}:00

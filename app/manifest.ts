@@ -13,14 +13,14 @@ export default function manifest(): MetadataRoute.Manifest {
     icons: [
       {
         src: SHIFTBOB_SITE_ICON,
-        sizes: "256x256",
-        type: "image/png",
+        sizes: "512x512",
+        type: "image/jpeg",
         purpose: "any",
       },
       {
         src: SHIFTBOB_SITE_ICON,
-        sizes: "256x256",
-        type: "image/png",
+        sizes: "512x512",
+        type: "image/jpeg",
         purpose: "maskable",
       },
     ],

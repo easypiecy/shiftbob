@@ -65,8 +65,11 @@ create table if not exists public.employee_type_templates (
   name text not null,
   slug text not null,
   sort_order int not null default 0,
+  calendar_pattern text not null default 'none',
   created_at timestamptz not null default now(),
-  constraint employee_type_templates_slug_unique unique (slug)
+  constraint employee_type_templates_slug_unique unique (slug),
+  constraint employee_type_templates_calendar_pattern_check
+    check (calendar_pattern in ('none', 'stripes', 'dots', 'grid', 'diagonal'))
 );
 
 create table if not exists public.shift_type_templates (
@@ -74,6 +77,7 @@ create table if not exists public.shift_type_templates (
   name text not null,
   slug text not null,
   sort_order int not null default 0,
+  calendar_color text not null default '#22c55e',
   created_at timestamptz not null default now(),
   constraint shift_type_templates_slug_unique unique (slug)
 );
@@ -93,7 +97,10 @@ create table if not exists public.workplace_employee_types (
   template_id uuid references public.employee_type_templates (id) on delete set null,
   label text not null,
   sort_order int not null default 0,
-  created_at timestamptz not null default now()
+  calendar_pattern text,
+  created_at timestamptz not null default now(),
+  constraint workplace_employee_types_calendar_pattern_check
+    check (calendar_pattern is null or calendar_pattern in ('none', 'stripes', 'dots', 'grid', 'diagonal'))
 );
 
 create table if not exists public.workplace_shift_types (
@@ -102,6 +109,7 @@ create table if not exists public.workplace_shift_types (
   template_id uuid references public.shift_type_templates (id) on delete set null,
   label text not null,
   sort_order int not null default 0,
+  calendar_color text,
   created_at timestamptz not null default now()
 );
 
@@ -187,16 +195,16 @@ grant select on public.workplace_api_keys to authenticated;
 -- ---------------------------------------------------------------------------
 -- Seed: standardtyper (kan redigeres i Super Admin)
 -- ---------------------------------------------------------------------------
-insert into public.employee_type_templates (name, slug, sort_order) values
-  ('Fastansat', 'permanent', 10),
-  ('Deltid', 'part_time', 20),
-  ('Vikar', 'substitute', 30),
-  ('Elev / lærling', 'trainee', 40)
+insert into public.employee_type_templates (name, slug, sort_order, calendar_pattern) values
+  ('Fastansat', 'permanent', 10, 'none'),
+  ('Deltid', 'part_time', 20, 'stripes'),
+  ('Vikar', 'substitute', 30, 'dots'),
+  ('Elev / lærling', 'trainee', 40, 'grid')
 on conflict (slug) do nothing;
 
-insert into public.shift_type_templates (name, slug, sort_order) values
-  ('Dag', 'day', 10),
-  ('Aften', 'evening', 20),
-  ('Nat', 'night', 30),
-  ('Weekend', 'weekend', 40)
+insert into public.shift_type_templates (name, slug, sort_order, calendar_color) values
+  ('Dag', 'day', 10, '#3b82f6'),
+  ('Aften', 'evening', 20, '#f97316'),
+  ('Nat', 'night', 30, '#6366f1'),
+  ('Weekend', 'weekend', 40, '#14b8a6')
 on conflict (slug) do nothing;

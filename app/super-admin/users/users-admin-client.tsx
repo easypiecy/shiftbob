@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Building2,
+  FileText,
   Link2,
   Loader2,
+  Pencil,
   Plus,
   UserCircle,
   Users,
@@ -15,8 +17,12 @@ import {
 import type { WorkplaceRow } from "@/src/app/super-admin/workplaces/actions";
 import {
   assignWorkplaceRole,
+  getUserCvSignedUrl,
   impersonateUser,
+  removeUserCv,
   type UserAdminRow,
+  updateUserProfile,
+  uploadUserCv,
 } from "@/src/app/super-admin/users/actions";
 
 const ROLES = ["SUPER_ADMIN", "ADMIN", "MANAGER", "EMPLOYEE"] as const;
@@ -37,6 +43,31 @@ function formatDate(iso: string | null) {
   } catch {
     return iso;
   }
+}
+
+type ProfileFormState = {
+  first_name: string;
+  last_name: string;
+  street_name: string;
+  street_number: string;
+  postal_code: string;
+  city: string;
+  mobile_phone: string;
+  note: string;
+};
+
+function profileToForm(u: UserAdminRow): ProfileFormState {
+  const p = u.profile;
+  return {
+    first_name: p?.first_name ?? "",
+    last_name: p?.last_name ?? "",
+    street_name: p?.street_name ?? "",
+    street_number: p?.street_number ?? "",
+    postal_code: p?.postal_code ?? "",
+    city: p?.city ?? "",
+    mobile_phone: p?.mobile_phone ?? "",
+    note: p?.note ?? "",
+  };
 }
 
 type Props = {
@@ -86,6 +117,27 @@ export default function UsersAdminClient({
     null
   );
 
+  const [editUser, setEditUser] = useState<UserAdminRow | null>(null);
+  const [profileForm, setProfileForm] = useState<ProfileFormState>({
+    first_name: "",
+    last_name: "",
+    street_name: "",
+    street_number: "",
+    postal_code: "",
+    city: "",
+    mobile_phone: "",
+    note: "",
+  });
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileMsg, setProfileMsg] = useState<string | null>(null);
+  const [cvBusy, setCvBusy] = useState(false);
+
+  useEffect(() => {
+    if (!editUser) return;
+    const next = users.find((u) => u.id === editUser.id);
+    if (next) setEditUser(next);
+  }, [users, editUser?.id]);
+
   const refresh = useCallback(() => {
     router.refresh();
   }, [router]);
@@ -107,6 +159,90 @@ export default function UsersAdminClient({
       window.location.href = res.actionLink;
     } finally {
       setImpersonatingEmail(null);
+    }
+  }
+
+  function openEditUser(u: UserAdminRow) {
+    setEditUser(u);
+    setProfileForm(profileToForm(u));
+    setProfileMsg(null);
+  }
+
+  async function handleSaveProfile(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editUser) return;
+    setProfileSaving(true);
+    setProfileMsg(null);
+    try {
+      const res = await updateUserProfile(editUser.id, {
+        first_name: profileForm.first_name,
+        last_name: profileForm.last_name,
+        street_name: profileForm.street_name,
+        street_number: profileForm.street_number,
+        postal_code: profileForm.postal_code,
+        city: profileForm.city,
+        mobile_phone: profileForm.mobile_phone,
+        note: profileForm.note,
+      });
+      if (!res.ok) {
+        setProfileMsg(res.error);
+        return;
+      }
+      setEditUser(null);
+      refresh();
+    } finally {
+      setProfileSaving(false);
+    }
+  }
+
+  async function handleCvFileChange(file: File | undefined) {
+    if (!editUser || !file) return;
+    setCvBusy(true);
+    setProfileMsg(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await uploadUserCv(editUser.id, fd);
+      if (!res.ok) {
+        setProfileMsg(res.error);
+        return;
+      }
+      refresh();
+    } finally {
+      setCvBusy(false);
+    }
+  }
+
+  async function handleViewCv() {
+    if (!editUser) return;
+    setCvBusy(true);
+    setProfileMsg(null);
+    try {
+      const res = await getUserCvSignedUrl(editUser.id);
+      if (!res.ok) {
+        setProfileMsg(res.error);
+        return;
+      }
+      window.open(res.url, "_blank", "noopener,noreferrer");
+    } finally {
+      setCvBusy(false);
+    }
+  }
+
+  async function handleRemoveCv() {
+    if (!editUser) return;
+    if (!window.confirm("Fjerne CV fra denne bruger?")) return;
+    setCvBusy(true);
+    setProfileMsg(null);
+    try {
+      const res = await removeUserCv(editUser.id);
+      if (!res.ok) {
+        setProfileMsg(res.error);
+        return;
+      }
+      refresh();
+    } finally {
+      setCvBusy(false);
     }
   }
 
@@ -277,6 +413,14 @@ export default function UsersAdminClient({
                       <div className="flex flex-wrap items-center gap-2">
                         <button
                           type="button"
+                          onClick={() => openEditUser(u)}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-800 hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                        >
+                          <Pencil className="h-3.5 w-3.5" aria-hidden />
+                          Rediger
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => handleImpersonate(u.email)}
                           disabled={!u.email || impersonatingEmail !== null}
                           className="inline-flex items-center gap-1.5 rounded-lg border border-transparent bg-transparent px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 disabled:opacity-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
@@ -412,6 +556,254 @@ export default function UsersAdminClient({
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     "Gem tilknytning"
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {editUser && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center overflow-y-auto p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="edit-user-title"
+        >
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/50"
+            aria-label="Luk"
+            onClick={() => setEditUser(null)}
+          />
+          <div className="relative z-10 my-8 w-full max-w-lg rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
+            <div className="flex items-start justify-between gap-4">
+              <h2
+                id="edit-user-title"
+                className="text-lg font-semibold text-zinc-900 dark:text-zinc-50"
+              >
+                Rediger bruger
+              </h2>
+              <button
+                type="button"
+                onClick={() => setEditUser(null)}
+                className="rounded-lg p-1 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+              {editUser.email}
+            </p>
+
+            <form onSubmit={handleSaveProfile} className="mt-6 space-y-4">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <label className="block text-sm">
+                  <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                    Fornavn
+                  </span>
+                  <input
+                    value={profileForm.first_name}
+                    onChange={(e) =>
+                      setProfileForm((f) => ({
+                        ...f,
+                        first_name: e.target.value,
+                      }))
+                    }
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    autoComplete="given-name"
+                  />
+                </label>
+                <label className="block text-sm">
+                  <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                    Efternavn
+                  </span>
+                  <input
+                    value={profileForm.last_name}
+                    onChange={(e) =>
+                      setProfileForm((f) => ({
+                        ...f,
+                        last_name: e.target.value,
+                      }))
+                    }
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    autoComplete="family-name"
+                  />
+                </label>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <label className="block text-sm">
+                  <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                    Vejnavn
+                  </span>
+                  <input
+                    value={profileForm.street_name}
+                    onChange={(e) =>
+                      setProfileForm((f) => ({
+                        ...f,
+                        street_name: e.target.value,
+                      }))
+                    }
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    autoComplete="street-address"
+                  />
+                </label>
+                <label className="block text-sm">
+                  <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                    Vej nr.
+                  </span>
+                  <input
+                    value={profileForm.street_number}
+                    onChange={(e) =>
+                      setProfileForm((f) => ({
+                        ...f,
+                        street_number: e.target.value,
+                      }))
+                    }
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                  />
+                </label>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <label className="block text-sm">
+                  <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                    Postnummer
+                  </span>
+                  <input
+                    value={profileForm.postal_code}
+                    onChange={(e) =>
+                      setProfileForm((f) => ({
+                        ...f,
+                        postal_code: e.target.value,
+                      }))
+                    }
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    autoComplete="postal-code"
+                  />
+                </label>
+                <label className="block text-sm">
+                  <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                    By
+                  </span>
+                  <input
+                    value={profileForm.city}
+                    onChange={(e) =>
+                      setProfileForm((f) => ({ ...f, city: e.target.value }))
+                    }
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    autoComplete="address-level2"
+                  />
+                </label>
+              </div>
+              <label className="block text-sm">
+                <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                  Mobilnummer
+                </span>
+                <input
+                  value={profileForm.mobile_phone}
+                  onChange={(e) =>
+                    setProfileForm((f) => ({
+                      ...f,
+                      mobile_phone: e.target.value,
+                    }))
+                  }
+                  className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                  autoComplete="tel"
+                  inputMode="tel"
+                />
+              </label>
+
+              <label className="block text-sm">
+                <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                  Note om medarbejderen
+                </span>
+                <span className="mb-2 block text-xs text-zinc-500 dark:text-zinc-400">
+                  Kun synlig for Super Admin. Kort intern bemærkning.
+                </span>
+                <textarea
+                  value={profileForm.note}
+                  onChange={(e) =>
+                    setProfileForm((f) => ({ ...f, note: e.target.value }))
+                  }
+                  rows={4}
+                  className="w-full resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                  placeholder="Fx kursus, særlige hensyn, kontaktperson …"
+                />
+              </label>
+
+              <div className="rounded-xl border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-700 dark:bg-zinc-950/50">
+                <p className="mb-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                  CV
+                </p>
+                <p className="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+                  PDF eller Word, max 10 MB.
+                </p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-800 hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800">
+                    <FileText className="h-4 w-4" aria-hidden />
+                    Upload CV
+                    <input
+                      type="file"
+                      className="sr-only"
+                      accept=".pdf,.doc,.docx,application/pdf"
+                      disabled={cvBusy}
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        e.target.value = "";
+                        void handleCvFileChange(f);
+                      }}
+                    />
+                  </label>
+                  {editUser.profile?.cv_storage_path ? (
+                    <>
+                      <button
+                        type="button"
+                        disabled={cvBusy}
+                        onClick={() => void handleViewCv()}
+                        className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-800 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                      >
+                        Se CV
+                      </button>
+                      <button
+                        type="button"
+                        disabled={cvBusy}
+                        onClick={() => void handleRemoveCv()}
+                        className="rounded-lg px-3 py-2 text-xs font-medium text-red-700 hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-950/50"
+                      >
+                        Fjern CV
+                      </button>
+                    </>
+                  ) : null}
+                  {cvBusy ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-zinc-500" />
+                  ) : null}
+                </div>
+              </div>
+
+              {profileMsg ? (
+                <p className="text-sm text-red-600 dark:text-red-400">
+                  {profileMsg}
+                </p>
+              ) : null}
+
+              <div className="flex justify-end gap-2 border-t border-zinc-200 pt-4 dark:border-zinc-700">
+                <button
+                  type="button"
+                  onClick={() => setEditUser(null)}
+                  className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium dark:border-zinc-600"
+                >
+                  Luk
+                </button>
+                <button
+                  type="submit"
+                  disabled={profileSaving}
+                  className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                >
+                  {profileSaving ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    "Gem profil"
                   )}
                 </button>
               </div>

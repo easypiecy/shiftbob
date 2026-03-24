@@ -2,7 +2,11 @@
 
 import { createHash, randomBytes } from "node:crypto";
 import { revalidatePath } from "next/cache";
-import { assertWorkplaceAdminOrSuperAdmin } from "@/src/lib/workplace-admin-server";
+import {
+  assertWorkplaceAdminOrSuperAdmin,
+  assertWorkplaceMember,
+  isWorkplaceCalendarAdminView,
+} from "@/src/lib/workplace-admin-server";
 import { assertSuperAdminAccess } from "@/src/lib/super-admin";
 import {
   normalizeSeasonTemplate,
@@ -80,6 +84,10 @@ export type TypeTemplateRow = {
   name: string;
   slug: string;
   sort_order: number;
+  /** Vagttyper — hex (#rrggbb) */
+  calendar_color: string | null;
+  /** Medarbejdertyper — none | stripes | dots | grid | diagonal */
+  calendar_pattern: string | null;
 };
 
 export type WorkplaceEmployeeTypeRow = {
@@ -87,6 +95,7 @@ export type WorkplaceEmployeeTypeRow = {
   template_id: string | null;
   label: string;
   sort_order: number;
+  calendar_pattern: string | null;
 };
 
 export type WorkplaceShiftTypeRow = {
@@ -94,6 +103,7 @@ export type WorkplaceShiftTypeRow = {
   template_id: string | null;
   label: string;
   sort_order: number;
+  calendar_color: string | null;
 };
 
 export type WorkplaceApiKeyMeta = {
@@ -113,6 +123,8 @@ export type WorkplaceDepartmentRow = {
 
 /** Medlem med e-mail og liste af afdelings-id’er på samme arbejdsplads */
 export type WorkplaceMemberDepartmentsRow = {
+  /** Række-id i workplace_members (bruges som kort medarbejder-id i kalender for EMPLOYEE-visning) */
+  workplace_member_id: string;
   user_id: string;
   email: string | null;
   role: string;
@@ -266,7 +278,7 @@ async function copyTemplatesToWorkplace(
 
   const { data: et, error: e1 } = await admin
     .from("employee_type_templates")
-    .select("id, name, sort_order")
+    .select("id, name, sort_order, calendar_pattern")
     .order("sort_order");
   if (e1) {
     if (isMissingSchemaError(e1.message)) {
@@ -277,7 +289,7 @@ async function copyTemplatesToWorkplace(
 
   const { data: st, error: e2 } = await admin
     .from("shift_type_templates")
-    .select("id, name, sort_order")
+    .select("id, name, sort_order, calendar_color")
     .order("sort_order");
   if (e2) {
     if (isMissingSchemaError(e2.message)) {
@@ -294,6 +306,7 @@ async function copyTemplatesToWorkplace(
       template_id: tid,
       label: row.name as string,
       sort_order: row.sort_order as number,
+      calendar_pattern: (row as { calendar_pattern?: string | null }).calendar_pattern ?? "none",
     });
     if (error) {
       if (isMissingSchemaError(error.message)) {
@@ -311,6 +324,7 @@ async function copyTemplatesToWorkplace(
       template_id: tid,
       label: row.name as string,
       sort_order: row.sort_order as number,
+      calendar_color: (row as { calendar_color?: string | null }).calendar_color ?? "#94a3b8",
     });
     if (error) {
       if (isMissingSchemaError(error.message)) {
@@ -519,12 +533,12 @@ export async function getWorkplaceTypes(
     const [eRes, sRes] = await Promise.all([
       admin
         .from("workplace_employee_types")
-        .select("id, template_id, label, sort_order")
+        .select("id, template_id, label, sort_order, calendar_pattern")
         .eq("workplace_id", workplaceId)
         .order("sort_order"),
       admin
         .from("workplace_shift_types")
-        .select("id, template_id, label, sort_order")
+        .select("id, template_id, label, sort_order, calendar_color")
         .eq("workplace_id", workplaceId)
         .order("sort_order"),
     ]);
@@ -607,7 +621,7 @@ export async function createWorkplaceEmployeeType(
         label,
         sort_order,
       })
-      .select("id, template_id, label, sort_order")
+      .select("id, template_id, label, sort_order, calendar_pattern")
       .single();
     if (error) {
       if (isMissingSchemaError(error.message)) {
@@ -650,7 +664,7 @@ export async function createWorkplaceShiftType(
         label,
         sort_order,
       })
-      .select("id, template_id, label, sort_order")
+      .select("id, template_id, label, sort_order, calendar_color")
       .single();
     if (error) {
       if (isMissingSchemaError(error.message)) {
@@ -741,12 +755,23 @@ export async function listEmployeeTypeTemplates(
     const admin = getAdminClient();
     const { data, error } = await admin
       .from("employee_type_templates")
-      .select("id, name, slug, sort_order")
+      .select("id, name, slug, sort_order, calendar_pattern")
       .order("sort_order");
     if (error) {
       return { ok: false, error: error.message };
     }
-    return { ok: true, data: (data ?? []) as TypeTemplateRow[] };
+    const rows = (data ?? []) as Record<string, unknown>[];
+    return {
+      ok: true,
+      data: rows.map((r) => ({
+        id: r.id as string,
+        name: r.name as string,
+        slug: r.slug as string,
+        sort_order: r.sort_order as number,
+        calendar_color: null,
+        calendar_pattern: (r.calendar_pattern as string | null) ?? "none",
+      })) as TypeTemplateRow[],
+    };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Ukendt fejl";
     return { ok: false, error: msg };
@@ -767,12 +792,23 @@ export async function listShiftTypeTemplates(
     const admin = getAdminClient();
     const { data, error } = await admin
       .from("shift_type_templates")
-      .select("id, name, slug, sort_order")
+      .select("id, name, slug, sort_order, calendar_color")
       .order("sort_order");
     if (error) {
       return { ok: false, error: error.message };
     }
-    return { ok: true, data: (data ?? []) as TypeTemplateRow[] };
+    const rows = (data ?? []) as Record<string, unknown>[];
+    return {
+      ok: true,
+      data: rows.map((r) => ({
+        id: r.id as string,
+        name: r.name as string,
+        slug: r.slug as string,
+        sort_order: r.sort_order as number,
+        calendar_color: (r.calendar_color as string | null) ?? "#94a3b8",
+        calendar_pattern: null,
+      })) as TypeTemplateRow[],
+    };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Ukendt fejl";
     return { ok: false, error: msg };
@@ -820,6 +856,7 @@ export async function createEmployeeTypeTemplate(input: {
   name: string;
   slug?: string;
   sort_order?: number;
+  calendar_pattern?: string;
 }): Promise<{ ok: true; data: TypeTemplateRow } | { ok: false; error: string }> {
   try {
     await requireSuperAdmin();
@@ -839,10 +876,11 @@ export async function createEmployeeTypeTemplate(input: {
       input.sort_order !== undefined
         ? input.sort_order
         : await nextEmployeeTemplateSortOrder(admin);
+    const calendar_pattern = input.calendar_pattern?.trim() || "none";
     const { data, error } = await admin
       .from("employee_type_templates")
-      .insert({ name, slug, sort_order })
-      .select("id, name, slug, sort_order")
+      .insert({ name, slug, sort_order, calendar_pattern })
+      .select("id, name, slug, sort_order, calendar_pattern")
       .single();
     if (error) {
       if (error.code === "23505") {
@@ -851,7 +889,18 @@ export async function createEmployeeTypeTemplate(input: {
       return { ok: false, error: error.message };
     }
     revalidatePath("/super-admin/workplace-templates");
-    return { ok: true, data: data as TypeTemplateRow };
+    const row = data as Record<string, unknown>;
+    return {
+      ok: true,
+      data: {
+        id: row.id as string,
+        name: row.name as string,
+        slug: row.slug as string,
+        sort_order: row.sort_order as number,
+        calendar_color: null,
+        calendar_pattern: (row.calendar_pattern as string) ?? "none",
+      },
+    };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Ukendt fejl";
     return { ok: false, error: msg };
@@ -860,7 +909,12 @@ export async function createEmployeeTypeTemplate(input: {
 
 export async function updateEmployeeTypeTemplate(
   id: string,
-  patch: { name?: string; slug?: string; sort_order?: number }
+  patch: {
+    name?: string;
+    slug?: string;
+    sort_order?: number;
+    calendar_pattern?: string;
+  }
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   try {
     await requireSuperAdmin();
@@ -884,6 +938,9 @@ export async function updateEmployeeTypeTemplate(
     }
     if (patch.sort_order !== undefined) {
       row.sort_order = patch.sort_order;
+    }
+    if (patch.calendar_pattern !== undefined) {
+      row.calendar_pattern = patch.calendar_pattern.trim() || "none";
     }
     if (Object.keys(row).length === 0) {
       return { ok: true };
@@ -929,6 +986,7 @@ export async function createShiftTypeTemplate(input: {
   name: string;
   slug?: string;
   sort_order?: number;
+  calendar_color?: string;
 }): Promise<{ ok: true; data: TypeTemplateRow } | { ok: false; error: string }> {
   try {
     await requireSuperAdmin();
@@ -948,10 +1006,11 @@ export async function createShiftTypeTemplate(input: {
       input.sort_order !== undefined
         ? input.sort_order
         : await nextShiftTemplateSortOrder(admin);
+    const calendar_color = (input.calendar_color?.trim() || "#94a3b8").slice(0, 16);
     const { data, error } = await admin
       .from("shift_type_templates")
-      .insert({ name, slug, sort_order })
-      .select("id, name, slug, sort_order")
+      .insert({ name, slug, sort_order, calendar_color })
+      .select("id, name, slug, sort_order, calendar_color")
       .single();
     if (error) {
       if (error.code === "23505") {
@@ -960,7 +1019,18 @@ export async function createShiftTypeTemplate(input: {
       return { ok: false, error: error.message };
     }
     revalidatePath("/super-admin/workplace-templates");
-    return { ok: true, data: data as TypeTemplateRow };
+    const row = data as Record<string, unknown>;
+    return {
+      ok: true,
+      data: {
+        id: row.id as string,
+        name: row.name as string,
+        slug: row.slug as string,
+        sort_order: row.sort_order as number,
+        calendar_color: (row.calendar_color as string) ?? "#94a3b8",
+        calendar_pattern: null,
+      },
+    };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Ukendt fejl";
     return { ok: false, error: msg };
@@ -969,7 +1039,12 @@ export async function createShiftTypeTemplate(input: {
 
 export async function updateShiftTypeTemplate(
   id: string,
-  patch: { name?: string; slug?: string; sort_order?: number }
+  patch: {
+    name?: string;
+    slug?: string;
+    sort_order?: number;
+    calendar_color?: string;
+  }
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   try {
     await requireSuperAdmin();
@@ -993,6 +1068,9 @@ export async function updateShiftTypeTemplate(
     }
     if (patch.sort_order !== undefined) {
       row.sort_order = patch.sort_order;
+    }
+    if (patch.calendar_color !== undefined) {
+      row.calendar_color = patch.calendar_color.trim().slice(0, 16) || "#94a3b8";
     }
     if (Object.keys(row).length === 0) {
       return { ok: true };
@@ -1099,7 +1177,8 @@ export async function generateWorkplaceApiKey(
 
 /** Super Admin: afdelinger + medlemskaber til UI (validerer workplace_id i alle skrivekald). */
 export async function getWorkplaceDepartmentsOverview(
-  workplaceId: string
+  workplaceId: string,
+  options?: { access?: "admin_console" | "calendar_member" }
 ): Promise<
   | {
       ok: true;
@@ -1111,7 +1190,12 @@ export async function getWorkplaceDepartmentsOverview(
   | { ok: false; error: string }
 > {
   try {
-    await assertWorkplaceAdminOrSuperAdmin(workplaceId);
+    const access = options?.access ?? "admin_console";
+    if (access === "admin_console") {
+      await assertWorkplaceAdminOrSuperAdmin(workplaceId);
+    } else {
+      await assertWorkplaceMember(workplaceId);
+    }
     const admin = getAdminClient();
     const [dRes, mRes, dmRes, pRes, eTypesRes, sTypesRes] = await Promise.all([
       admin
@@ -1121,7 +1205,7 @@ export async function getWorkplaceDepartmentsOverview(
         .order("name"),
       admin
         .from("workplace_members")
-        .select("user_id, role, employee_type_id")
+        .select("id, user_id, role, employee_type_id")
         .eq("workplace_id", workplaceId)
         .order("role"),
       admin
@@ -1134,12 +1218,12 @@ export async function getWorkplaceDepartmentsOverview(
         .eq("workplace_id", workplaceId),
       admin
         .from("workplace_employee_types")
-        .select("id, template_id, label, sort_order")
+        .select("id, template_id, label, sort_order, calendar_pattern")
         .eq("workplace_id", workplaceId)
         .order("sort_order"),
       admin
         .from("workplace_shift_types")
-        .select("id, template_id, label, sort_order")
+        .select("id, template_id, label, sort_order, calendar_color")
         .eq("workplace_id", workplaceId)
         .order("sort_order"),
     ]);
@@ -1158,6 +1242,7 @@ export async function getWorkplaceDepartmentsOverview(
     }
 
     type OverviewMemberRow = {
+      id: string;
       user_id: string;
       role: string;
       employee_type_id?: string | null;
@@ -1166,7 +1251,7 @@ export async function getWorkplaceDepartmentsOverview(
     if (mRes.error) {
       const retry = await admin
         .from("workplace_members")
-        .select("user_id, role")
+        .select("id, user_id, role")
         .eq("workplace_id", workplaceId)
         .order("role");
       if (retry.error) {
@@ -1228,7 +1313,7 @@ export async function getWorkplaceDepartmentsOverview(
       deptByUser.set(uid, arr);
     }
 
-    const members: WorkplaceMemberDepartmentsRow[] = [];
+    let members: WorkplaceMemberDepartmentsRow[] = [];
     for (const m of memberRows) {
       const uid = m.user_id as string;
       const { data: u } = await admin.auth.admin.getUserById(uid);
@@ -1244,6 +1329,7 @@ export async function getWorkplaceDepartmentsOverview(
       );
       const empTypeRaw = m.employee_type_id;
       members.push({
+        workplace_member_id: m.id,
         user_id: uid,
         email,
         role: m.role as string,
@@ -1254,6 +1340,14 @@ export async function getWorkplaceDepartmentsOverview(
         oauth_display_name: resolved.oauth_display_name,
         display_name_override: resolved.display_name_override,
       });
+    }
+
+    if (access === "calendar_member") {
+      const adminCalendar =
+        await isWorkplaceCalendarAdminView(workplaceId);
+      if (!adminCalendar) {
+        members = members.map((row) => ({ ...row, email: null }));
+      }
     }
 
     return {

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  ArrowLeftRight,
   Building2,
   ChevronLeft,
   ChevronRight,
@@ -15,7 +16,6 @@ import {
 import { useEffect, useState } from "react";
 import { signOutAndRedirectToLogin } from "@/src/lib/auth-client";
 import { useTranslations } from "@/src/contexts/translations-context";
-import type { UiThemeId } from "@/src/lib/ui-theme";
 
 /** Fallbacks (da) hvis ui_translations mangler. */
 const links = [
@@ -74,25 +74,11 @@ function isSuperAdminNavActive(
   return false;
 }
 
-export function SuperAdminShell({
-  children,
-  initialLayoutTheme,
-}: {
-  children: React.ReactNode;
-  initialLayoutTheme?: UiThemeId;
-}) {
+export function SuperAdminShell({ children }: { children: React.ReactNode }) {
   const { t } = useTranslations();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [signingOut, setSigningOut] = useState(false);
-
-  const sidebarLightLogoSrc =
-    initialLayoutTheme === "unicorn"
-      ? "/ShiftBob-logo-90-light-512-trans.png"
-      : "/ShiftBob-logo-90-light-512.png";
-
-  const sidebarLightLogoOpacityClass =
-    initialLayoutTheme === "light" ? "opacity-50" : "opacity-80";
 
   useEffect(() => {
     setSidebarOpen(typeof window !== "undefined" && window.innerWidth >= 768);
@@ -116,46 +102,46 @@ export function SuperAdminShell({
             : "hidden"
         }
       >
-        <div className="border-b border-zinc-200 px-3 py-4 dark:border-zinc-800">
-          <div className="flex items-start gap-2">
-            <div className="min-w-0 flex-1">
-              <Link
-                href="/super-admin"
-                className="block outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
-                prefetch={false}
-              >
-                <span className="sidebar-logo-wrap inline-block rounded-lg border border-zinc-200 bg-white px-3 py-2.5 dark:border-zinc-800 dark:bg-zinc-950">
-                  <Image
-                    src={sidebarLightLogoSrc}
-                    alt={t("common.brand_name", "ShiftBob")}
-                    width={320}
-                    height={90}
-                    className={`sidebar-logo-light h-[4.9rem] w-auto max-w-full object-contain object-left sm:h-[5.6rem] dark:hidden ${sidebarLightLogoOpacityClass}`}
-                    priority
-                  />
-                  <Image
-                    src="/ShiftBob-logo-90-dark-512.png"
-                    alt={t("common.brand_name", "ShiftBob")}
-                    width={320}
-                    height={90}
-                    className="sidebar-logo-dark hidden h-[4.9rem] w-auto max-w-full object-contain object-left sm:h-[5.6rem] dark:block"
-                    priority
-                  />
-                </span>
-              </Link>
-              <p className="mt-2.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+        <div className="relative shrink-0 border-b border-zinc-200 px-3 pb-3 pt-1 dark:border-zinc-800">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(false)}
+            className="absolute right-0 top-0 z-10 rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+            aria-label={t("common.menu.hide_sidebar", "Skjul menu")}
+            title={t("common.menu.hide_sidebar", "Skjul menu")}
+          >
+            <ChevronLeft className="h-5 w-5" aria-hidden />
+          </button>
+          <div className="flex flex-col items-center px-1 pr-7">
+            <Link
+              href="/super-admin"
+              className="outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
+              prefetch={false}
+            >
+              <span className="sidebar-logo-wrap inline-flex items-center justify-center rounded-2xl border border-zinc-200 bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-950">
+                <Image
+                  src="/ShiftBob-circle-logo-dark-1024.png"
+                  alt={t("common.brand_name", "ShiftBob")}
+                  width={1024}
+                  height={1024}
+                  className="h-[5.5rem] w-[5.5rem] object-contain object-center sm:h-[6.5rem] sm:w-[6.5rem]"
+                  priority
+                />
+              </span>
+            </Link>
+            <div className="mt-2.5 flex w-full max-w-[15rem] items-center justify-center gap-2">
+              <p className="min-w-0 flex-1 text-center text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
                 {t("super_admin.badge", "Super Admin")}
               </p>
+              <Link
+                href="/select-workplace"
+                className="-m-1 shrink-0 rounded-lg p-1.5 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                title={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
+                aria-label={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
+              >
+                <ArrowLeftRight className="h-4 w-4" strokeWidth={2} aria-hidden />
+              </Link>
             </div>
-            <button
-              type="button"
-              onClick={() => setSidebarOpen(false)}
-              className="shrink-0 rounded-lg p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-              aria-label={t("common.menu.hide_sidebar", "Skjul menu")}
-              title={t("common.menu.hide_sidebar", "Skjul menu")}
-            >
-              <ChevronLeft className="h-5 w-5" aria-hidden />
-            </button>
           </div>
         </div>
         <nav className="flex flex-col gap-0.5 p-2">
