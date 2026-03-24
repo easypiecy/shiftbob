@@ -28,6 +28,8 @@ type Props = {
   children: React.ReactNode;
   /** Aktivt layout-tema (tre cirkler ved siden af Log ud i bunden af sidemenuen). */
   initialLayoutTheme?: UiThemeId;
+  /** Navn på valgt arbejdsplads (under logo); hentes i layout via cookie + DB. */
+  activeWorkplaceName?: string | null;
 };
 
 /** Fallbacks (da) hvis ui_translations mangler — undgår rå nøgle-navne i menuen. */
@@ -46,6 +48,7 @@ export function AdminWorkspaceShell({
   showAdminNav,
   children,
   initialLayoutTheme,
+  activeWorkplaceName = null,
 }: Props) {
   const { t } = useTranslations();
   const pathname = usePathname();
@@ -136,8 +139,13 @@ export function AdminWorkspaceShell({
                 />
               </span>
             </Link>
-            <p className="mt-3 w-full max-w-[15rem] text-center text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
-              {t("admin.sidebar.administrator", "Administrator")}
+            <p
+              className="mt-3 w-full max-w-[15rem] break-words text-center text-xs font-semibold leading-snug text-zinc-600 dark:text-zinc-400"
+              title={activeWorkplaceName ?? undefined}
+            >
+              {activeWorkplaceName?.trim()
+                ? activeWorkplaceName.trim()
+                : t("admin.sidebar.workplace_name_missing", "—")}
             </p>
           </div>
         </div>
