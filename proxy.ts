@@ -1,10 +1,10 @@
-import "./edge-node-globals-polyfill";
+import "./src/edge-node-globals-polyfill";
 import { type NextRequest, NextResponse } from "next/server";
-import { updateSession } from "./utils/supabase/update-session";
+import { updateSession } from "./src/utils/supabase/update-session";
 
 /**
- * Polyfill først (sideeffekt), derefter session. Filen ligger under `src/`, så
- * imports er rene relative stier — Turbopack fejler undertiden på `@/` fra rod-`proxy.ts`.
+ * Skal ligge i projektroden (ikke kun under `src/`), så Vercel/Next altid resolver
+ * samme edge-entry som i dokumentationen. Brug relative imports — ikke `@/`.
  */
 export async function proxy(request: NextRequest) {
   try {
