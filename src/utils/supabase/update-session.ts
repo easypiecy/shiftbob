@@ -21,7 +21,7 @@ function mergeCookieRequestHeader(
 }
 
 /**
- * Opfrisker auth-session (cookies). Bruges fra `proxy.ts` i projektroden.
+ * Opfrisker auth-session (cookies). Bruges fra `src/proxy.ts`.
  * Undgår `request.cookies` / `response.cookies` fra Next — brug Headers + serializeCookieHeader.
  */
 export async function updateSession(request: NextRequest) {

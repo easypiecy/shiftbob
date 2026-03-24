@@ -15,13 +15,14 @@ import {
   Scale,
   Settings,
   ShieldCheck,
-  UserPlus,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { signOutAndRedirectToLogin } from "@/src/lib/auth-client";
 import type { UiThemeId } from "@/src/lib/ui-theme";
+import { getActiveWorkplaceIdFromCookie } from "@/src/lib/workplaces";
 import { useTranslations } from "@/src/contexts/translations-context";
 import { LayoutThemeSidebar } from "@/src/components/layout-theme-sidebar";
+import { createClient } from "@/src/utils/supabase/client";
 
 type Props = {
   showAdminNav: boolean;
@@ -32,17 +33,82 @@ type Props = {
   activeWorkplaceName?: string | null;
 };
 
-/** Fallbacks (da) hvis ui_translations mangler — undgår rå nøgle-navne i menuen. */
-const baseLinks = [
+/**
+ * Hovedmenu — kun importerede Lucide-ikoner (ingen `UserPlus` / join-requests her).
+ * Konstantnavnet skifter ved ændringer så Turbopack ikke genbruger gammel bundlet kode.
+ */
+const ADMIN_NAV_LINKS = [
   { href: "/dashboard", navKey: "admin.nav.calendar", labelDa: "Kalender", icon: LayoutDashboard },
   { href: "/dashboard/fremtiden", navKey: "admin.nav.future", labelDa: "Fremtiden", icon: CalendarClock },
   { href: "/dashboard/notifikationer", navKey: "admin.nav.notifications", labelDa: "Notifikationer", icon: Bell },
-  { href: "/dashboard/join-requests", navKey: "admin.nav.join_requests", labelDa: "Adgangsanmodninger", icon: UserPlus },
   { href: "/dashboard/regler", navKey: "admin.nav.rules", labelDa: "Regler", icon: Scale },
   { href: "/dashboard/data-eksport", navKey: "admin.nav.data_export", labelDa: "Data eksport", icon: FileSpreadsheet },
   { href: "/dashboard/compliance", navKey: "admin.nav.compliance", labelDa: "Compliance", icon: ShieldCheck },
   { href: "/dashboard/indstillinger", navKey: "admin.nav.settings", labelDa: "Indstillinger", icon: Settings },
 ] as const;
+
+/** Klient-fallback hvis layout ikke når at få navn (cookie/session timing). */
+function SidebarWorkplaceTitle({
+  serverName,
+  fallback,
+}: {
+  serverName: string | null;
+  fallback: string;
+}) {
+  const [label, setLabel] = useState(serverName);
+
+  useEffect(() => {
+    setLabel(serverName);
+  }, [serverName]);
+
+  useEffect(() => {
+    if (serverName?.trim()) return;
+    const wpId = getActiveWorkplaceIdFromCookie();
+    if (!wpId) return;
+    const supabase = createClient();
+    let cancelled = false;
+    void (async () => {
+      const direct = await supabase
+        .from("workplaces")
+        .select("name, company_name")
+        .eq("id", wpId)
+        .maybeSingle();
+      if (cancelled) return;
+      if (direct.data) {
+        const row = direct.data as {
+          name?: string | null;
+          company_name?: string | null;
+        };
+        const c =
+          typeof row.company_name === "string" ? row.company_name.trim() : "";
+        const n = typeof row.name === "string" ? row.name.trim() : "";
+        const d = c.length > 0 ? c : n;
+        if (d.length > 0) setLabel(d);
+        return;
+      }
+      const { data: rpcRows } = await supabase.rpc("get_my_workplaces");
+      if (cancelled || !Array.isArray(rpcRows)) return;
+      const row = (
+        rpcRows as { id: string; name: string }[]
+      ).find((r) => r.id === wpId);
+      const n = row?.name?.trim();
+      if (n) setLabel(n);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [serverName]);
+
+  const text = label?.trim() ? label.trim() : fallback;
+  return (
+    <p
+      className="min-w-0 flex-1 break-words text-center text-xs font-semibold leading-snug text-zinc-600 dark:text-zinc-400"
+      title={text !== fallback ? text : undefined}
+    >
+      {text}
+    </p>
+  );
+}
 
 export function AdminWorkspaceShell({
   showAdminNav,
@@ -130,14 +196,10 @@ export function AdminWorkspaceShell({
               </span>
             </Link>
             <div className="mt-2.5 flex w-full max-w-[15rem] items-center justify-center gap-2">
-              <p
-                className="min-w-0 flex-1 break-words text-center text-xs font-semibold leading-snug text-zinc-600 dark:text-zinc-400"
-                title={activeWorkplaceName ?? undefined}
-              >
-                {activeWorkplaceName?.trim()
-                  ? activeWorkplaceName.trim()
-                  : t("admin.sidebar.workplace_name_missing", "—")}
-              </p>
+              <SidebarWorkplaceTitle
+                serverName={activeWorkplaceName}
+                fallback={t("admin.sidebar.workplace_name_missing", "—")}
+              />
               <Link
                 href="/select-workplace"
                 className="-m-1 shrink-0 rounded-lg p-1.5 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
@@ -152,7 +214,7 @@ export function AdminWorkspaceShell({
         <div className="flex min-h-0 flex-1 flex-col px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-0">
           <nav className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden py-2">
             <div className="flex flex-col gap-0.5">
-              {baseLinks.map(({ href, navKey, labelDa, icon: Icon }) => {
+              {ADMIN_NAV_LINKS.map(({ href, navKey, labelDa, icon: Icon }) => {
                 const active = isActive(href);
                 return (
                   <Link
