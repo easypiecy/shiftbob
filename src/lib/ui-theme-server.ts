@@ -20,22 +20,27 @@ export async function resolveUiThemeForRequest(): Promise<UiThemeId> {
   const c = jar.get(UI_THEME_COOKIE)?.value;
   if (isUiThemeId(c)) return c;
 
-  const supabase = await createServerSupabase();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return "dark";
+  try {
+    const supabase = await createServerSupabase();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return "dark";
 
-  const { data, error } = await supabase
-    .from("user_ui_preferences")
-    .select("layout_theme")
-    .eq("user_id", user.id)
-    .maybeSingle();
+    const { data, error } = await supabase
+      .from("user_ui_preferences")
+      .select("layout_theme")
+      .eq("user_id", user.id)
+      .maybeSingle();
 
-  if (error) {
-    if (isMissingPrefsTable(error.message)) return "dark";
+    if (error) {
+      if (isMissingPrefsTable(error.message)) return "dark";
+      return "dark";
+    }
+    const t = data?.layout_theme;
+    return isUiThemeId(t) ? t : "dark";
+  } catch {
+    /* Mangler env eller Supabase utilgængelig lokalt */
     return "dark";
   }
-  const t = data?.layout_theme;
-  return isUiThemeId(t) ? t : "dark";
 }

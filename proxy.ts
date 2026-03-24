@@ -7,6 +7,10 @@ import { updateSession } from "./src/utils/supabase/update-session";
  * samme edge-entry som i dokumentationen. Brug relative imports — ikke `@/`.
  */
 export async function proxy(request: NextRequest) {
+  /* HEAD bruges af curl -I; undgå tung auth/session så healthchecks ikke fejler */
+  if (request.method === "HEAD" || request.method === "OPTIONS") {
+    return NextResponse.next({ request });
+  }
   try {
     return await updateSession(request);
   } catch {

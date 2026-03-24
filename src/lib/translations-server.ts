@@ -10,6 +10,15 @@ const DEFAULT_UI_LANGUAGE = "da";
 export async function getTranslationsServer(
   languageCode: string
 ): Promise<Record<string, string>> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url?.trim() || !serviceKey?.trim()) {
+    console.warn(
+      "[translations] Mangler NEXT_PUBLIC_SUPABASE_URL eller SUPABASE_SERVICE_ROLE_KEY — tom strengmap (sæt i .env.local).",
+    );
+    return {};
+  }
+
   const admin = getAdminClient();
   const { data, error } = await admin
     .from("ui_translations")
