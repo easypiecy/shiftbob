@@ -331,3 +331,80 @@ html[data-theme="unicorn"] .employee-calendar-name {
   color: #41a8bf;
   font-weight: 600;
 }
+
+.bob-loader-shell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 15rem;
+  min-height: 6rem;
+}
+
+.bob-loader-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: auto;
+  height: auto;
+}
+
+.bob-orb {
+  position: relative;
+  display: flex;
+  height: 3.7rem;
+  width: 3.7rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-size: 1.75rem;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  color: #111111;
+  background: #ffffff;
+  border: 2px solid #111111;
+  box-shadow: 0 8px 14px rgb(0 0 0 / 0.16);
+}
+
+.bob-orb-1 {
+  animation: bob-hop-1 1.2s ease-in-out infinite;
+}
+
+.bob-orb-2 {
+  animation: bob-hop-2 1.2s ease-in-out infinite;
+}
+
+.bob-orb-3 {
+  animation: bob-hop-3 1.2s ease-in-out infinite;
+}
+
+@keyframes bob-hop-1 {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-0.52rem);
+  }
+}
+
+@keyframes bob-hop-2 {
+  0%,
+  100% {
+    transform: translateY(-0.16rem);
+  }
+  50% {
+    transform: translateY(0.42rem);
+  }
+}
+
+@keyframes bob-hop-3 {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  38% {
+    transform: translateY(-0.58rem);
+  }
+}

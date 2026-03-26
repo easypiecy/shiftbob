@@ -10,7 +10,8 @@
     "start": "next start",
     "preview": "next build && next start",
     "lint": "eslint",
-    "seed:compliance-translations": "node --env-file=.env.local scripts/seed-compliance-ui-translations.mjs"
+    "seed:compliance-translations": "node --env-file=.env.local scripts/seed-compliance-ui-translations.mjs",
+    "seed:great-restaurant": "node --env-file=.env.local scripts/seed-great-restaurant-fixture.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.46.0",
