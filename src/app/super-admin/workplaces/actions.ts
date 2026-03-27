@@ -1189,6 +1189,7 @@ export async function getWorkplaceDepartmentsOverview(
     }
   | { ok: false; error: string }
 > {
+  const startedAtMs = Date.now();
   try {
     const access = options?.access ?? "admin_console";
     if (access === "admin_console") {
@@ -1349,20 +1350,29 @@ export async function getWorkplaceDepartmentsOverview(
       deptByUser.set(uid, arr);
     }
 
+    const usersById = new Map<
+      string,
+      { email: string | null; userMetadata: Record<string, unknown> | undefined }
+    >();
+    await Promise.all(
+      memberRows.map(async (m) => {
+        const uid = m.user_id as string;
+        const { data: u } = await admin.auth.admin.getUserById(uid);
+        usersById.set(uid, {
+          email: u.user?.email ?? null,
+          userMetadata: u.user?.user_metadata as Record<string, unknown> | undefined,
+        });
+      })
+    );
+
     let members: WorkplaceMemberDepartmentsRow[] = [];
     for (const m of memberRows) {
       const uid = m.user_id as string;
-      const { data: u } = await admin.auth.admin.getUserById(uid);
-      const email = u.user?.email ?? null;
-      const meta = u.user?.user_metadata as Record<string, unknown> | undefined;
-      const oauthName = oauthDisplayNameFromUserMetadata(meta);
+      const userData = usersById.get(uid);
+      const email = userData?.email ?? null;
+      const oauthName = oauthDisplayNameFromUserMetadata(userData?.userMetadata);
       const override = overrideByUser.get(uid);
-      const resolved = resolveMemberDisplayName(
-        oauthName,
-        override,
-        email,
-        uid
-      );
+      const resolved = resolveMemberDisplayName(oauthName, override, email, uid);
       const empTypeRaw = m.employee_type_id;
       members.push({
         workplace_member_id: m.id,
@@ -1396,6 +1406,13 @@ export async function getWorkplaceDepartmentsOverview(
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Ukendt fejl";
     return { ok: false, error: msg };
+  } finally {
+    if (process.env.NODE_ENV !== "production") {
+      const elapsedMs = Date.now() - startedAtMs;
+      console.info(
+        `[calendar-server] getWorkplaceDepartmentsOverview wp=${workplaceId} ms=${elapsedMs}`
+      );
+    }
   }
 }
 

@@ -63,6 +63,10 @@ export async function getWorkplaceShiftsInRange(
   | { ok: true; shifts: WorkplaceShiftRow[] }
   | { ok: false; error: string }
 > {
+  const startedAtMs = Date.now();
+  let status: "ok" | "error" = "ok";
+  let rowCount = 0;
+  let errorMessage: string | null = null;
   try {
     await assertWorkplaceMember(workplaceId);
     const admin = getAdminClient();
@@ -81,14 +85,28 @@ export async function getWorkplaceShiftsInRange(
     const { data, error } = await q.order("starts_at");
     if (error) {
       if (isMissingSchemaError(error.message)) {
+        rowCount = 0;
         return { ok: true, shifts: [] };
       }
+      status = "error";
+      errorMessage = error.message;
       return { ok: false, error: error.message };
     }
+    rowCount = (data ?? []).length;
     return { ok: true, shifts: (data ?? []) as WorkplaceShiftRow[] };
   } catch (e) {
+    status = "error";
     const msg = e instanceof Error ? e.message : "Ukendt fejl";
+    errorMessage = msg;
     return { ok: false, error: msg };
+  } finally {
+    if (process.env.NODE_ENV !== "production") {
+      const elapsedMs = Date.now() - startedAtMs;
+      const suffix = status === "error" ? ` error="${errorMessage ?? "unknown"}"` : "";
+      console.info(
+        `[calendar-server] getWorkplaceShiftsInRange wp=${workplaceId} dept=${departmentId ?? "all"} user=${userId ?? "all"} rows=${rowCount} status=${status} ms=${elapsedMs}${suffix}`
+      );
+    }
   }
 }
 

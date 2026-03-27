@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Fragment,
+  memo,
   type TouchEvent as ReactTouchEvent,
   type WheelEvent as ReactWheelEvent,
   useCallback,
@@ -11,6 +11,7 @@ import {
   useState,
 } from "react";
 import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   getWorkplaceDepartmentsOverview,
   type WorkplaceDepartmentRow,
@@ -30,8 +31,6 @@ import {
 } from "@/src/app/dashboard/workplace-shifts-actions";
 import EmployeeCalendarNameCell from "@/app/dashboard/employee-calendar-name-cell";
 import { shiftCalendarCellStyle } from "@/src/lib/calendar-shift-style";
-
-const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
 type CalendarViewMode = "rolling" | "month30";
 
@@ -141,6 +140,10 @@ function localDateAt(day: Date, hour: number, minute = 0): Date {
   return d;
 }
 
+function truncateTowardZero(value: number): number {
+  return value < 0 ? Math.ceil(value) : Math.floor(value);
+}
+
 function shiftSlotKey(userId: string, day: Date, hour: number): string {
   return `${userId}|${dayKeyLocal(day)}|${hour}`;
 }
@@ -193,6 +196,10 @@ type ActiveShiftDrag = {
   shift: WorkplaceShiftRow;
   pointerStartX: number;
   pxPer5Min: number;
+  hourColWidth: number;
+  timelineStartMs: number;
+  previewTopPx: number;
+  previewHeightPx: number;
   originalStartMs: number;
   originalEndMs: number;
   nextStartMs: number;
@@ -207,9 +214,24 @@ type CreateShiftDraft = {
   shiftTypeId: string | null;
 };
 
+type CalendarRow =
+  | {
+      kind: "group";
+      key: string;
+      name: string;
+      deptId: string | null;
+    }
+  | {
+      kind: "employee";
+      key: string;
+      emp: WorkplaceMemberDepartmentsRow;
+      groupDeptId: string | null;
+    };
+
 const BASE_HOUR_COL = 34;
 const MIN_HOUR_COL = 22;
 const MAX_HOUR_COL = 150;
+const NAME_COL_WIDTH = 200;
 
 type ActivePinch = {
   startDistance: number;
@@ -218,7 +240,147 @@ type ActivePinch = {
   anchorContentX: number;
 };
 
+type ShiftGridCellProps = {
+  cellKey: string;
+  day: Date;
+  dayKey: string;
+  hour: number;
+  userId: string;
+  groupDeptId: string | null;
+  shift: WorkplaceShiftRow | null;
+  startsHere: boolean;
+  endsHere: boolean;
+  has: boolean;
+  shiftLabel: string;
+  renderedCellStyle: ReturnType<typeof shiftCalendarCellStyle> | undefined;
+  styleToken: string;
+  hoverDetails?: string;
+  onCellPointerDown: (
+    e: {
+      pointerType?: string;
+    },
+    shift: WorkplaceShiftRow | null
+  ) => void;
+  onCellPointerUp: () => void;
+  onCellClick: (
+    shift: WorkplaceShiftRow | null,
+    userId: string,
+    departmentId: string | null,
+    day: Date,
+    hour: number
+  ) => void;
+  onStartShiftDrag: (
+    e: {
+      preventDefault: () => void;
+      stopPropagation: () => void;
+      clientX: number;
+      clientY: number;
+      currentTarget: EventTarget & HTMLElement;
+    },
+    shift: WorkplaceShiftRow,
+    mode: ShiftDragMode
+  ) => void;
+};
+
+const ShiftGridCell = memo(function ShiftGridCell({
+  cellKey,
+  day,
+  dayKey,
+  hour,
+  userId,
+  groupDeptId,
+  shift,
+  startsHere,
+  endsHere,
+  has,
+  shiftLabel,
+  renderedCellStyle,
+  hoverDetails,
+  onCellPointerDown,
+  onCellPointerUp,
+  onCellClick,
+  onStartShiftDrag,
+}: ShiftGridCellProps) {
+  return (
+    <td
+      key={cellKey}
+      className={
+        has
+          ? "relative border-b border-l border-zinc-300/60 px-0 py-2 dark:border-zinc-600/50"
+          : "border-b border-l border-zinc-100 bg-zinc-50/50 px-0 py-2 dark:border-zinc-800 dark:bg-zinc-950/50"
+      }
+      style={renderedCellStyle}
+      title={hoverDetails}
+      onPointerDown={(e) => onCellPointerDown(e, shift)}
+      onPointerUp={onCellPointerUp}
+      onPointerCancel={onCellPointerUp}
+      onPointerLeave={onCellPointerUp}
+      onClick={() => onCellClick(shift, userId, groupDeptId, day, hour)}
+      data-shift-id={shift?.id ?? ""}
+      data-user-id={userId}
+      data-day-key={dayKey}
+      data-hour={hour}
+    >
+      {has && startsHere ? (
+        <span className="pointer-events-none block w-full truncate pl-2 pr-0.5 text-left text-[12px] font-bold text-black [text-shadow:0_0_2px_rgba(255,255,255,0.95),0_0_6px_rgba(255,255,255,0.9)]">
+          {shiftLabel}
+        </span>
+      ) : null}
+      {has && endsHere ? (
+        <button
+          type="button"
+          className="absolute inset-0 cursor-grab bg-transparent active:cursor-grabbing"
+          onPointerDown={(e) => {
+            if (!shift) return;
+            onStartShiftDrag(e, shift, "move");
+          }}
+          title="Træk i mønster-området for at flytte vagt"
+        />
+      ) : null}
+      {has && startsHere ? (
+        <button
+          type="button"
+          className="absolute inset-y-0 left-0 w-1.5 cursor-ew-resize bg-black/30 hover:bg-black/45"
+          onPointerDown={(e) => {
+            if (!shift) return;
+            onStartShiftDrag(e, shift, "resize_start");
+          }}
+          title="Træk for at forkorte/forlænge start"
+        />
+      ) : null}
+      {has && endsHere ? (
+        <button
+          type="button"
+          className="absolute inset-y-0 right-0 w-1.5 cursor-ew-resize bg-black/30 hover:bg-black/45"
+          onPointerDown={(e) => {
+            if (!shift) return;
+            onStartShiftDrag(e, shift, "resize_end");
+          }}
+          title="Træk for at forkorte/forlænge slut"
+        />
+      ) : null}
+      <span className="sr-only">
+        {has ? "Vagt" : "Ledig"} {hour}:00
+      </span>
+    </td>
+  );
+},
+(prev, next) =>
+  prev.cellKey === next.cellKey &&
+  prev.has === next.has &&
+  prev.startsHere === next.startsHere &&
+  prev.endsHere === next.endsHere &&
+  prev.shift?.id === next.shift?.id &&
+  prev.shift?.starts_at === next.shift?.starts_at &&
+  prev.shift?.ends_at === next.shift?.ends_at &&
+  prev.shiftLabel === next.shiftLabel &&
+  prev.styleToken === next.styleToken &&
+  prev.hoverDetails === next.hoverDetails &&
+  prev.day.getTime() === next.day.getTime()
+);
+
 export default function AdminCalendar({ workplaceId }: Props) {
+  const isDevBuild = process.env.NODE_ENV !== "production";
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [departments, setDepartments] = useState<WorkplaceDepartmentRow[]>([]);
@@ -255,16 +417,23 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const [loadingDeptIds, setLoadingDeptIds] = useState<string[]>([]);
   const [viewerUserId, setViewerUserId] = useState<string | null>(null);
   const [calendarAdminNameView, setCalendarAdminNameView] = useState(true);
-  const [activeShiftDrag, setActiveShiftDrag] = useState<ActiveShiftDrag | null>(null);
+  const [isShiftDragActive, setIsShiftDragActive] = useState(false);
   const [isGridPointerActive, setIsGridPointerActive] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const dragContentRef = useRef<HTMLDivElement>(null);
+  const dragPreviewRef = useRef<HTMLDivElement>(null);
   const dragTimeOverlayRef = useRef<HTMLDivElement>(null);
+  const dragTimeOverlayModeRef = useRef<HTMLDivElement>(null);
+  const dragTimeOverlayRangeRef = useRef<HTMLDivElement>(null);
+  const activeShiftDragRef = useRef<ActiveShiftDrag | null>(null);
   const rollingDaysRef = useRef(rollingDays);
   const pinchRef = useRef<ActivePinch | null>(null);
   const dragPointerRef = useRef({ x: 0, y: 0 });
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const suppressClickUntilRef = useRef(0);
+  const shiftLoadQueueRef = useRef<Promise<void>>(Promise.resolve());
+  const shiftLoadReqIdRef = useRef(0);
 
   useEffect(() => {
     rollingDaysRef.current = rollingDays;
@@ -277,6 +446,21 @@ export default function AdminCalendar({ workplaceId }: Props) {
       }
     };
   }, []);
+
+  const enqueueShiftLoad = useCallback(
+    (runner: (isStale: () => boolean) => Promise<void>) => {
+      const reqId = ++shiftLoadReqIdRef.current;
+      shiftLoadQueueRef.current = shiftLoadQueueRef.current
+        .then(async () => {
+          if (reqId !== shiftLoadReqIdRef.current) return;
+          await runner(() => reqId !== shiftLoadReqIdRef.current);
+        })
+        .catch(() => {
+          // Keep queue alive even if a load fails.
+        });
+    },
+    []
+  );
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -323,72 +507,88 @@ export default function AdminCalendar({ workplaceId }: Props) {
       rangeStartIso: string,
       rangeEndIso: string,
       onChunk: (rows: WorkplaceShiftRow[]) => void,
-      onLoadingDept: (deptId: string | null) => void
+      onLoadingDept: (deptId: string | null) => void,
+      isCancelled?: () => boolean
     ) => {
+      const shouldStop = () => (isCancelled ? isCancelled() : false);
+      const logClientFetch = (
+        mode: "ok" | "error",
+        deptId: string | null,
+        elapsedMs: number,
+        shiftCount: number
+      ) => {
+        if (!isDevBuild) return;
+        const rangeLabel = `${rangeStartIso.slice(0, 16)}..${rangeEndIso.slice(0, 16)}`;
+        console.debug(
+          `[calendar-client] dept=${deptId ?? "all"} ${mode} ${elapsedMs.toFixed(1)}ms shifts=${shiftCount} range=${rangeLabel}`
+        );
+      };
+
       if (selectedDeptId) {
+        if (shouldStop()) return;
         onLoadingDept(selectedDeptId);
+        const t0 = performance.now();
         const res = await getWorkplaceShiftsInRange(
           workplaceId,
           selectedDeptId,
           rangeStartIso,
           rangeEndIso
         );
-        if (res.ok) onChunk(res.shifts);
+        const elapsedMs = performance.now() - t0;
+        if (shouldStop()) return;
+        if (res.ok) {
+          onChunk(res.shifts);
+          logClientFetch("ok", selectedDeptId, elapsedMs, res.shifts.length);
+        } else {
+          logClientFetch("error", selectedDeptId, elapsedMs, 0);
+        }
+        if (shouldStop()) return;
         onLoadingDept(null);
         return;
       }
 
       if (departments.length === 0) {
+        if (shouldStop()) return;
         onLoadingDept(null);
+        const t0 = performance.now();
         const res = await getWorkplaceShiftsInRange(workplaceId, null, rangeStartIso, rangeEndIso);
-        if (res.ok) onChunk(res.shifts);
+        const elapsedMs = performance.now() - t0;
+        if (shouldStop()) return;
+        if (res.ok) {
+          onChunk(res.shifts);
+          logClientFetch("ok", null, elapsedMs, res.shifts.length);
+        } else {
+          logClientFetch("error", null, elapsedMs, 0);
+        }
         return;
       }
 
       let acc: WorkplaceShiftRow[] = [];
       for (const dept of departments) {
+        if (shouldStop()) return;
         onLoadingDept(dept.id);
+        const t0 = performance.now();
         const res = await getWorkplaceShiftsInRange(
           workplaceId,
           dept.id,
           rangeStartIso,
           rangeEndIso
         );
-        if (!res.ok) continue;
+        const elapsedMs = performance.now() - t0;
+        if (shouldStop()) return;
+        if (!res.ok) {
+          logClientFetch("error", dept.id, elapsedMs, 0);
+          continue;
+        }
         acc = [...acc, ...res.shifts];
         onChunk(acc);
+        logClientFetch("ok", dept.id, elapsedMs, res.shifts.length);
       }
+      if (shouldStop()) return;
       onLoadingDept(null);
     },
-    [selectedDeptId, workplaceId, departments]
+    [selectedDeptId, workplaceId, departments, isDevBuild]
   );
-
-  useEffect(() => {
-    if (loading) return;
-    if (viewMode !== "rolling" || rollingDays.length === 0) return;
-    const first = rollingDays[0];
-    const last = rollingDays[rollingDays.length - 1];
-    const rangeStartIso = startOfDay(first).toISOString();
-    const rangeEndIso = addDays(startOfDay(last), 1).toISOString();
-    let cancelled = false;
-    setRollingShifts([]);
-    setLoadingDeptIds([]);
-    void (async () => {
-      await loadShiftsRangeDeptByDept(
-        rangeStartIso,
-        rangeEndIso,
-        (rows) => {
-          if (!cancelled) setRollingShifts(rows);
-        },
-        (deptId) => {
-          if (!cancelled) setLoadingDeptIds(deptId ? [deptId] : []);
-        }
-      );
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [loading, viewMode, rollingDays, loadShiftsRangeDeptByDept]);
 
   useEffect(() => {
     if (loading) return;
@@ -396,24 +596,25 @@ export default function AdminCalendar({ workplaceId }: Props) {
     const rangeStartIso = startOfDay(anchorDate).toISOString();
     const rangeEndIso = addDays(startOfDay(anchorDate), 30).toISOString();
     let cancelled = false;
-    setMonthShifts([]);
     setLoadingDeptIds([]);
-    void (async () => {
+    enqueueShiftLoad(async (isStale) => {
+      if (cancelled || isStale()) return;
       await loadShiftsRangeDeptByDept(
         rangeStartIso,
         rangeEndIso,
         (rows) => {
-          if (!cancelled) setMonthShifts(rows);
+          if (!cancelled && !isStale()) setMonthShifts(rows);
         },
         (deptId) => {
-          if (!cancelled) setLoadingDeptIds(deptId ? [deptId] : []);
-        }
+          if (!cancelled && !isStale()) setLoadingDeptIds(deptId ? [deptId] : []);
+        },
+        () => cancelled || isStale()
       );
-    })();
+    });
     return () => {
       cancelled = true;
     };
-  }, [loading, viewMode, anchorDate, loadShiftsRangeDeptByDept]);
+  }, [loading, viewMode, anchorDate, loadShiftsRangeDeptByDept, enqueueShiftLoad]);
 
   const departmentFiltered = useMemo(() => {
     if (departments.length === 0) return members;
@@ -424,12 +625,6 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const departmentById = useMemo(() => {
     const m = new Map<string, WorkplaceDepartmentRow>();
     for (const d of departments) m.set(d.id, d);
-    return m;
-  }, [departments]);
-
-  const departmentIdByName = useMemo(() => {
-    const m = new Map<string, string>();
-    for (const d of departments) m.set(d.name, d.id);
     return m;
   }, [departments]);
 
@@ -653,12 +848,12 @@ export default function AdminCalendar({ workplaceId }: Props) {
     });
   }, [selectedShift, replacementCandidates, swapCandidates]);
 
-  function clearLongPressTimer() {
+  const clearLongPressTimer = useCallback(() => {
     if (longPressTimerRef.current) {
       clearTimeout(longPressTimerRef.current);
       longPressTimerRef.current = null;
     }
-  }
+  }, []);
 
   async function deleteShiftLocalAndServer(shiftId: string) {
     setShiftActionBusy(true);
@@ -677,12 +872,12 @@ export default function AdminCalendar({ workplaceId }: Props) {
     }
   }
 
-  function handleCellPointerDown(
+  const handleCellPointerDown = useCallback((
     e: {
       pointerType?: string;
     },
     shift: WorkplaceShiftRow | null
-  ) {
+  ) => {
     if (!canManageShifts || !shift) return;
     // Keep long-press delete for touch/pen; avoid desktop mouse delays.
     if (e.pointerType === "mouse") return;
@@ -691,18 +886,18 @@ export default function AdminCalendar({ workplaceId }: Props) {
       suppressClickUntilRef.current = Date.now() + 800;
       setPendingDeleteShift(shift);
     }, 520);
-  }
+  }, [canManageShifts, clearLongPressTimer]);
 
-  function handleCellPointerUp() {
+  const handleCellPointerUp = useCallback(() => {
     clearLongPressTimer();
-  }
+  }, [clearLongPressTimer]);
 
-  function handleCellClick(shift: WorkplaceShiftRow | null) {
+  const handleCellClick = useCallback((shift: WorkplaceShiftRow | null) => {
     if (!canManageShifts || !shift) return;
     if (Date.now() < suppressClickUntilRef.current) return;
     setSelectedShift(shift);
     setShiftActionMsg(null);
-  }
+  }, [canManageShifts]);
 
   function openDeleteConfirmFromActions() {
     if (!selectedShift) return;
@@ -717,12 +912,12 @@ export default function AdminCalendar({ workplaceId }: Props) {
     await deleteShiftLocalAndServer(shiftId);
   }
 
-  function openCreateShiftFromCell(
+  const openCreateShiftFromCell = useCallback((
     userId: string,
     departmentId: string | null,
     day: Date,
     hour: number
-  ) {
+  ) => {
     if (!canManageShifts) return;
     const startsAt = localDateAt(day, hour);
     const endsAt = localDateAt(day, Math.min(hour + 8, 23), 55);
@@ -734,7 +929,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
       shiftTypeId: shiftTypes[0]?.id ?? null,
     });
     setCreateShiftMsg(null);
-  }
+  }, [canManageShifts, shiftTypes]);
 
   async function handleCreateShiftSave() {
     if (!createShiftDraft) return;
@@ -911,11 +1106,15 @@ export default function AdminCalendar({ workplaceId }: Props) {
     }
   }
 
-  function toIsoFromMs(ms: number): string {
+  const toIsoFromMs = useCallback((ms: number): string => {
     return new Date(ms).toISOString();
-  }
+  }, []);
 
-  function applyShiftTimingOptimistic(shiftId: string, nextStartMs: number, nextEndMs: number) {
+  const applyShiftTimingOptimistic = useCallback((
+    shiftId: string,
+    nextStartMs: number,
+    nextEndMs: number
+  ) => {
     const startsAt = toIsoFromMs(nextStartMs);
     const endsAt = toIsoFromMs(nextEndMs);
     setRollingShifts((list) =>
@@ -927,17 +1126,109 @@ export default function AdminCalendar({ workplaceId }: Props) {
     setSelectedShift((s) =>
       s?.id === shiftId ? { ...s, starts_at: startsAt, ends_at: endsAt } : s
     );
-  }
+  }, [toIsoFromMs]);
 
-  function syncDragTimeOverlayPosition() {
+  const syncDragTimeOverlayPosition = useCallback(() => {
     const overlay = dragTimeOverlayRef.current;
     if (!overlay) return;
     const { x, y } = dragPointerRef.current;
     overlay.style.left = `clamp(8px, ${x}px, calc(100vw - 280px))`;
     overlay.style.top = `clamp(8px, calc(${y}px - 54px), calc(100vh - 90px))`;
-  }
+  }, []);
 
-  function startShiftDrag(
+  const syncDragPreview = useCallback((drag: ActiveShiftDrag) => {
+    const preview = dragPreviewRef.current;
+    if (!preview) return;
+    const leftPx =
+      NAME_COL_WIDTH +
+      ((drag.nextStartMs - drag.timelineStartMs) / (60 * 60 * 1000)) * drag.hourColWidth;
+    const widthPx = Math.max(
+      drag.hourColWidth / 12,
+      ((drag.nextEndMs - drag.nextStartMs) / (60 * 60 * 1000)) * drag.hourColWidth
+    );
+    preview.style.display = "block";
+    preview.style.transform = `translate3d(${leftPx}px, ${drag.previewTopPx}px, 0)`;
+    preview.style.width = `${widthPx}px`;
+    preview.style.height = `${drag.previewHeightPx}px`;
+  }, []);
+
+  const syncDragOverlayContent = useCallback((drag: ActiveShiftDrag) => {
+    const modeEl = dragTimeOverlayModeRef.current;
+    const rangeEl = dragTimeOverlayRangeRef.current;
+    if (modeEl) {
+      modeEl.textContent =
+        drag.mode === "move" ? "Flyt vagt" : drag.mode === "resize_start" ? "Juster start" : "Juster slut";
+    }
+    if (rangeEl) {
+      rangeEl.textContent = `${formatClockDate(toIsoFromMs(drag.nextStartMs))} - ${formatClockDate(
+        toIsoFromMs(drag.nextEndMs)
+      )}`;
+    }
+  }, [toIsoFromMs]);
+
+  const handleShiftDragMove = useCallback((e: PointerEvent) => {
+    const drag = activeShiftDragRef.current;
+    if (!drag) return;
+    dragPointerRef.current = { x: e.clientX, y: e.clientY };
+    syncDragTimeOverlayPosition();
+
+    const dx = e.clientX - drag.pointerStartX;
+    const rawSteps = dx / drag.pxPer5Min;
+    const stepCount =
+      drag.mode === "resize_end" ? truncateTowardZero(rawSteps) : Math.round(rawSteps);
+    const deltaMs = stepCount * 5 * 60 * 1000;
+    let nextStartMs = drag.originalStartMs;
+    let nextEndMs = drag.originalEndMs;
+    if (drag.mode === "move") {
+      nextStartMs += deltaMs;
+      nextEndMs += deltaMs;
+    } else if (drag.mode === "resize_start") {
+      nextStartMs = Math.min(drag.originalStartMs + deltaMs, drag.originalEndMs - 5 * 60 * 1000);
+    } else {
+      nextEndMs = Math.max(drag.originalEndMs + deltaMs, drag.originalStartMs + 5 * 60 * 1000);
+    }
+    if (nextStartMs === drag.nextStartMs && nextEndMs === drag.nextEndMs) return;
+    drag.nextStartMs = nextStartMs;
+    drag.nextEndMs = nextEndMs;
+    syncDragPreview(drag);
+    syncDragOverlayContent(drag);
+  }, [syncDragOverlayContent, syncDragPreview, syncDragTimeOverlayPosition]);
+
+  const handleShiftDragUp = useCallback(() => {
+    const finalDrag = activeShiftDragRef.current;
+    activeShiftDragRef.current = null;
+    setIsShiftDragActive(false);
+    const preview = dragPreviewRef.current;
+    if (preview) preview.style.display = "none";
+    const overlay = dragTimeOverlayRef.current;
+    if (overlay) overlay.style.display = "none";
+    if (!finalDrag) return;
+    if (
+      finalDrag.nextStartMs === finalDrag.originalStartMs &&
+      finalDrag.nextEndMs === finalDrag.originalEndMs
+    ) {
+      return;
+    }
+    applyShiftTimingOptimistic(finalDrag.shift.id, finalDrag.nextStartMs, finalDrag.nextEndMs);
+    void (async () => {
+      const res = await updateWorkplaceShiftTiming(
+        workplaceId,
+        finalDrag.shift.id,
+        toIsoFromMs(finalDrag.nextStartMs),
+        toIsoFromMs(finalDrag.nextEndMs)
+      );
+      if (!res.ok) {
+        applyShiftTimingOptimistic(
+          finalDrag.shift.id,
+          finalDrag.originalStartMs,
+          finalDrag.originalEndMs
+        );
+        setShiftActionMsg(res.error);
+      }
+    })();
+  }, [applyShiftTimingOptimistic, toIsoFromMs, workplaceId]);
+
+  const startShiftDrag = useCallback((
     e: {
       preventDefault: () => void;
       stopPropagation: () => void;
@@ -947,106 +1238,62 @@ export default function AdminCalendar({ workplaceId }: Props) {
     },
     shift: WorkplaceShiftRow,
     mode: ShiftDragMode
-  ) {
+  ) => {
     if (!canManageShifts) return;
     e.preventDefault();
     e.stopPropagation();
     clearLongPressTimer();
     suppressClickUntilRef.current = Date.now() + 800;
     dragPointerRef.current = { x: e.clientX, y: e.clientY };
+    const contentEl = dragContentRef.current;
+    const rowEl = e.currentTarget.closest("tr");
+    if (!contentEl || !rowEl) return;
+    const contentRect = contentEl.getBoundingClientRect();
+    const rowRect = rowEl.getBoundingClientRect();
     const pxPer5Min = Math.max(1, hourColWidth / 12);
     const originalStartMs = new Date(shift.starts_at).getTime();
     const originalEndMs = new Date(shift.ends_at).getTime();
-    setActiveShiftDrag({
+    const drag: ActiveShiftDrag = {
       mode,
       shift,
       pointerStartX: e.clientX,
       pxPer5Min,
+      hourColWidth,
+      timelineStartMs: startOfDay(rollingDaysRef.current[0] ?? new Date()).getTime(),
+      previewTopPx: rowRect.top - contentRect.top,
+      previewHeightPx: rowRect.height,
       originalStartMs,
       originalEndMs,
       nextStartMs: originalStartMs,
       nextEndMs: originalEndMs,
-    });
-  }
+    };
+    activeShiftDragRef.current = drag;
+    syncDragTimeOverlayPosition();
+    syncDragPreview(drag);
+    syncDragOverlayContent(drag);
+    const overlay = dragTimeOverlayRef.current;
+    if (overlay) overlay.style.display = "block";
+    setIsShiftDragActive(true);
+  }, [
+    canManageShifts,
+    hourColWidth,
+    clearLongPressTimer,
+    syncDragOverlayContent,
+    syncDragPreview,
+    syncDragTimeOverlayPosition,
+  ]);
 
   useEffect(() => {
-    if (!activeShiftDrag) return;
-    syncDragTimeOverlayPosition();
-
-    const onMove = (e: PointerEvent) => {
-      dragPointerRef.current = { x: e.clientX, y: e.clientY };
-      syncDragTimeOverlayPosition();
-      const dx = e.clientX - activeShiftDrag.pointerStartX;
-      const stepCount = Math.round(dx / activeShiftDrag.pxPer5Min);
-      const deltaMs = stepCount * 5 * 60 * 1000;
-      let nextStartMs = activeShiftDrag.originalStartMs;
-      let nextEndMs = activeShiftDrag.originalEndMs;
-      if (activeShiftDrag.mode === "move") {
-        nextStartMs += deltaMs;
-        nextEndMs += deltaMs;
-      } else if (activeShiftDrag.mode === "resize_start") {
-        nextStartMs = Math.min(
-          activeShiftDrag.originalStartMs + deltaMs,
-          activeShiftDrag.originalEndMs - 5 * 60 * 1000
-        );
-      } else {
-        nextEndMs = Math.max(
-          activeShiftDrag.originalEndMs + deltaMs,
-          activeShiftDrag.originalStartMs + 5 * 60 * 1000
-        );
-      }
-      setActiveShiftDrag((prev) =>
-        prev
-          ? prev.nextStartMs === nextStartMs && prev.nextEndMs === nextEndMs
-            ? prev
-            : {
-                ...prev,
-                nextStartMs,
-                nextEndMs,
-              }
-          : prev
-      );
-    };
-
-    const onUp = () => {
-      const finalDrag = activeShiftDrag;
-      setActiveShiftDrag(null);
-      if (
-        finalDrag.nextStartMs === finalDrag.originalStartMs &&
-        finalDrag.nextEndMs === finalDrag.originalEndMs
-      ) {
-        return;
-      }
-      applyShiftTimingOptimistic(
-        finalDrag.shift.id,
-        finalDrag.nextStartMs,
-        finalDrag.nextEndMs
-      );
-      void (async () => {
-        const res = await updateWorkplaceShiftTiming(
-          workplaceId,
-          finalDrag.shift.id,
-          toIsoFromMs(finalDrag.nextStartMs),
-          toIsoFromMs(finalDrag.nextEndMs)
-        );
-        if (!res.ok) {
-          applyShiftTimingOptimistic(
-            finalDrag.shift.id,
-            finalDrag.originalStartMs,
-            finalDrag.originalEndMs
-          );
-          setShiftActionMsg(res.error);
-        }
-      })();
-    };
-
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp, { once: true });
+    if (!isShiftDragActive) return;
+    window.addEventListener("pointermove", handleShiftDragMove);
+    window.addEventListener("pointerup", handleShiftDragUp, { once: true });
+    window.addEventListener("pointercancel", handleShiftDragUp, { once: true });
     return () => {
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointermove", handleShiftDragMove);
+      window.removeEventListener("pointerup", handleShiftDragUp);
+      window.removeEventListener("pointercancel", handleShiftDragUp);
     };
-  }, [activeShiftDrag, workplaceId]);
+  }, [isShiftDragActive, handleShiftDragMove, handleShiftDragUp]);
 
   useEffect(() => {
     const onWindowWheelCapture = (e: WheelEvent) => {
@@ -1112,6 +1359,138 @@ export default function AdminCalendar({ workplaceId }: Props) {
 
   const dayPx = 24 * hourColWidth;
   const totalHourCols = rollingDays.length * 24;
+  const calendarRows = useMemo<CalendarRow[]>(() => {
+    const out: CalendarRow[] = [];
+    for (const group of groupedEmployees) {
+      const groupDeptId = departments.find((d) => d.name === group.name)?.id ?? null;
+      out.push({
+        kind: "group",
+        key: `dept-${group.name}`,
+        name: group.name,
+        deptId: groupDeptId,
+      });
+      for (const emp of group.employees) {
+        out.push({
+          kind: "employee",
+          key: emp.user_id,
+          emp,
+          groupDeptId,
+        });
+      }
+    }
+    return out;
+  }, [groupedEmployees, departments]);
+
+  const rowVirtualizer = useVirtualizer({
+    count: calendarRows.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: (index) => (calendarRows[index]?.kind === "group" ? 38 : 44),
+    overscan: 8,
+  });
+
+  const hourVirtualizer = useVirtualizer({
+    horizontal: true,
+    count: totalHourCols,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => hourColWidth,
+    overscan: 24,
+  });
+
+  const virtualRows = rowVirtualizer.getVirtualItems();
+  const virtualHourItems = hourVirtualizer.getVirtualItems();
+  const topPadPx = virtualRows[0]?.start ?? 0;
+  const bottomPadPx =
+    virtualRows.length > 0
+      ? rowVirtualizer.getTotalSize() - virtualRows[virtualRows.length - 1].end
+      : 0;
+  const firstHourIndex = virtualHourItems[0]?.index ?? 0;
+  const lastHourIndex = virtualHourItems[virtualHourItems.length - 1]?.index ?? -1;
+  const leftPadCols = Math.max(0, firstHourIndex);
+  const rightPadCols =
+    lastHourIndex >= 0 ? Math.max(0, totalHourCols - lastHourIndex - 1) : totalHourCols;
+  const visibleHourIndexes = useMemo(() => {
+    if (lastHourIndex < firstHourIndex) return [];
+    return Array.from(
+      { length: lastHourIndex - firstHourIndex + 1 },
+      (_, offset) => firstHourIndex + offset
+    );
+  }, [firstHourIndex, lastHourIndex]);
+
+  const hourMetaByIndex = useCallback(
+    (hourIndex: number): { day: Date; dayKey: string; hour: number } | null => {
+      const dayIndex = Math.floor(hourIndex / 24);
+      const day = rollingDays[dayIndex];
+      if (!day) return null;
+      return {
+        day,
+        dayKey: dayKeyLocal(day),
+        hour: hourIndex % 24,
+      };
+    },
+    [rollingDays]
+  );
+  const visibleStartDay =
+    rollingDays[Math.floor(Math.max(firstHourIndex, 0) / 24)] ?? rollingDays[0] ?? null;
+  const visibleEndDay =
+    rollingDays[Math.floor(Math.max(lastHourIndex, 0) / 24)] ??
+    rollingDays[rollingDays.length - 1] ??
+    null;
+  const rollingFetchStartIso = visibleStartDay
+    ? startOfDay(visibleStartDay).toISOString()
+    : null;
+  const rollingFetchEndIso = visibleEndDay
+    ? addDays(startOfDay(visibleEndDay), 1).toISOString()
+    : null;
+
+  useEffect(() => {
+    if (loading) return;
+    if (viewMode !== "rolling" || !rollingFetchStartIso || !rollingFetchEndIso) return;
+    let cancelled = false;
+    setLoadingDeptIds([]);
+    enqueueShiftLoad(async (isStale) => {
+      if (cancelled || isStale()) return;
+      await loadShiftsRangeDeptByDept(
+        rollingFetchStartIso,
+        rollingFetchEndIso,
+        (rows) => {
+          if (!cancelled && !isStale()) setRollingShifts(rows);
+        },
+        (deptId) => {
+          if (!cancelled && !isStale()) {
+            setLoadingDeptIds(deptId ? [deptId] : []);
+          }
+        },
+        () => cancelled || isStale()
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    loading,
+    viewMode,
+    rollingFetchStartIso,
+    rollingFetchEndIso,
+    loadShiftsRangeDeptByDept,
+    enqueueShiftLoad,
+  ]);
+
+  const handleGridCellClick = useCallback(
+    (
+      shift: WorkplaceShiftRow | null,
+      userId: string,
+      departmentId: string | null,
+      day: Date,
+      hour: number
+    ) => {
+      if (shift) {
+        handleCellClick(shift);
+        return;
+      }
+      openCreateShiftFromCell(userId, departmentId, day, hour);
+    },
+    [handleCellClick, openCreateShiftFromCell]
+  );
 
   const onHorizontalScroll = useCallback(() => {
     const el = scrollRef.current;
@@ -1363,7 +1742,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
           <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
             <div
               ref={scrollRef}
-              className="overflow-x-auto px-3"
+              className="max-h-[72vh] overflow-auto px-3"
               onPointerEnter={() => setIsGridPointerActive(true)}
               onPointerLeave={() => setIsGridPointerActive(false)}
               onTouchStartCapture={() => setIsGridPointerActive(true)}
@@ -1377,15 +1756,16 @@ export default function AdminCalendar({ workplaceId }: Props) {
               onTouchCancel={onCalendarTouchEnd}
               style={{ touchAction: "pan-x pan-y" }}
             >
-              <table
-                className="admin-shift-calendar w-full min-w-[720px] table-fixed border-collapse"
-                style={{
-                  width: 200 + totalHourCols * hourColWidth,
-                  minWidth: 200 + totalHourCols * hourColWidth,
-                }}
-              >
+              <div ref={dragContentRef} className="relative">
+                <table
+                  className="admin-shift-calendar w-full min-w-[720px] table-fixed border-collapse"
+                  style={{
+                    width: NAME_COL_WIDTH + totalHourCols * hourColWidth,
+                    minWidth: NAME_COL_WIDTH + totalHourCols * hourColWidth,
+                  }}
+                >
                 <colgroup>
-                  <col style={{ width: 200 }} />
+                  <col style={{ width: NAME_COL_WIDTH }} />
                   {Array.from({ length: totalHourCols }).map((_, i) => (
                     <col key={i} style={{ width: hourColWidth }} />
                   ))}
@@ -1407,20 +1787,34 @@ export default function AdminCalendar({ workplaceId }: Props) {
                     ))}
                   </tr>
                   <tr>
-                    {rollingDays.map((d) =>
-                      HOURS.map((h) => (
+                    {leftPadCols > 0 ? (
+                      <th
+                        colSpan={leftPadCols}
+                        className="border-b border-zinc-200 bg-zinc-100 px-0 py-2 dark:border-zinc-700 dark:bg-zinc-800/95"
+                      />
+                    ) : null}
+                    {visibleHourIndexes.map((hourIndex) => {
+                      const meta = hourMetaByIndex(hourIndex);
+                      if (!meta) return null;
+                      return (
                         <th
-                          key={`${dayKeyLocal(d)}-${h}`}
+                          key={`${meta.dayKey}-${meta.hour}`}
                           className="border-b border-zinc-200 bg-zinc-100 px-0 py-2 text-center text-[10px] font-medium whitespace-nowrap tabular-nums text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800/95 dark:text-zinc-400"
                         >
-                          {h}
+                          {meta.hour}
                         </th>
-                      ))
-                    )}
+                      );
+                    })}
+                    {rightPadCols > 0 ? (
+                      <th
+                        colSpan={rightPadCols}
+                        className="border-b border-zinc-200 bg-zinc-100 px-0 py-2 dark:border-zinc-700 dark:bg-zinc-800/95"
+                      />
+                    ) : null}
                   </tr>
                 </thead>
                 <tbody>
-                  {groupedEmployees.length === 0 ? (
+                  {calendarRows.length === 0 ? (
                     <tr>
                       <td
                         colSpan={1 + totalHourCols}
@@ -1430,32 +1824,44 @@ export default function AdminCalendar({ workplaceId }: Props) {
                       </td>
                     </tr>
                   ) : (
-                    groupedEmployees.map((group) => (
-                      <Fragment key={`dept-${group.name}`}>
-                        <tr>
-                          <td className="sticky left-0 z-20 w-[200px] min-w-[200px] max-w-[200px] border-b border-r border-zinc-200 bg-zinc-100/90 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800/90 dark:text-zinc-200">
-                            <div className="flex items-center gap-2">
-                              <span>{group.name}</span>
-                              {(() => {
-                                const deptId = departmentIdByName.get(group.name);
-                                if (!deptId || !loadingDeptIds.includes(deptId)) return null;
-                                return (
-                                  <span className="inline-block h-3 w-3 animate-spin rounded-full border border-zinc-400 border-t-zinc-900 dark:border-zinc-500 dark:border-t-zinc-100" />
-                                );
-                              })()}
-                            </div>
-                          </td>
-                          <td
-                            colSpan={totalHourCols}
-                            className="border-b border-l border-zinc-200 bg-zinc-100/60 px-0 py-2 dark:border-zinc-700 dark:bg-zinc-800/70"
-                          />
+                    <>
+                      {topPadPx > 0 ? (
+                        <tr aria-hidden="true">
+                          <td colSpan={1 + totalHourCols} style={{ height: topPadPx }} />
                         </tr>
-                        {group.employees.map((emp) => {
-                          const groupDeptId =
-                            departments.find((d) => d.name === group.name)?.id ?? null;
+                      ) : null}
+                      {virtualRows.map((virtualRow) => {
+                        const row = calendarRows[virtualRow.index];
+                        if (!row) return null;
+                        if (row.kind === "group") {
                           return (
+                            <tr
+                              key={row.key}
+                              ref={rowVirtualizer.measureElement}
+                              data-index={virtualRow.index}
+                            >
+                              <td className="sticky left-0 z-20 w-[200px] min-w-[200px] max-w-[200px] border-b border-r border-zinc-200 bg-zinc-100/90 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800/90 dark:text-zinc-200">
+                                <div className="flex items-center gap-2">
+                                  <span>{row.name}</span>
+                                  {row.deptId && loadingDeptIds.includes(row.deptId) ? (
+                                    <span className="inline-block h-3 w-3 animate-spin rounded-full border border-zinc-400 border-t-zinc-900 dark:border-zinc-500 dark:border-t-zinc-100" />
+                                  ) : null}
+                                </div>
+                              </td>
+                              <td
+                                colSpan={totalHourCols}
+                                className="border-b border-l border-zinc-200 bg-zinc-100/60 px-0 py-2 dark:border-zinc-700 dark:bg-zinc-800/70"
+                              />
+                            </tr>
+                          );
+                        }
+
+                        const emp = row.emp;
+                        return (
                           <tr
-                            key={emp.user_id}
+                            key={row.key}
+                            ref={rowVirtualizer.measureElement}
+                            data-index={virtualRow.index}
                             className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40"
                           >
                             <td className="sticky left-0 z-10 w-[200px] min-w-[200px] max-w-[200px] border-b border-r border-zinc-100 bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900">
@@ -1464,189 +1870,115 @@ export default function AdminCalendar({ workplaceId }: Props) {
                                 emp={emp}
                                 onSaved={() => void load()}
                                 viewerUserId={viewerUserId}
-                                nameMode={
-                                  calendarAdminNameView ? "full" : "privacy"
-                                }
+                                nameMode={calendarAdminNameView ? "full" : "privacy"}
                                 canEdit={calendarAdminNameView}
                               />
                             </td>
-                            {rollingDays.flatMap((d) =>
-                              HOURS.map((h) => {
-                                const slotKey = shiftSlotKey(emp.user_id, d, h);
-                                const baseShift = rollingSlotShiftMap.map.get(slotKey) ?? null;
-                                let shift = baseShift;
-                                let startsHere = Boolean(
-                                  shift && rollingSlotShiftMap.starts.has(slotKey)
-                                );
-                                let endsHere = Boolean(
-                                  shift && rollingSlotShiftMap.ends.has(slotKey)
-                                );
-                                let isGhostPreview = false;
 
-                                if (activeShiftDrag && activeShiftDrag.shift.user_id === emp.user_id) {
-                                  const slotStart = localDateAt(d, h).getTime();
-                                  const slotEnd = slotStart + 60 * 60 * 1000;
-                                  const dragStart = activeShiftDrag.nextStartMs;
-                                  const dragEnd = activeShiftDrag.nextEndMs;
-                                  const dragOverlaps = dragStart < slotEnd && dragEnd > slotStart;
-                                  const dragStarts = dragStart >= slotStart && dragStart < slotEnd;
-                                  const dragEnds = dragEnd - 1 >= slotStart && dragEnd - 1 < slotEnd;
+                            {leftPadCols > 0 ? (
+                              <td
+                                colSpan={leftPadCols}
+                                className="border-b border-l border-zinc-100 bg-zinc-50/50 px-0 py-2 dark:border-zinc-800 dark:bg-zinc-950/50"
+                              />
+                            ) : null}
 
-                                  if (dragOverlaps) {
-                                    shift = {
-                                      ...activeShiftDrag.shift,
-                                      starts_at: toIsoFromMs(dragStart),
-                                      ends_at: toIsoFromMs(dragEnd),
-                                    };
-                                    startsHere = dragStarts;
-                                    endsHere = dragEnds;
-                                    isGhostPreview = true;
-                                  } else if (baseShift?.id === activeShiftDrag.shift.id) {
-                                    shift = null;
-                                    startsHere = false;
-                                    endsHere = false;
-                                  }
-                                }
+                            {visibleHourIndexes.map((hourIndex) => {
+                              const meta = hourMetaByIndex(hourIndex);
+                              if (!meta) return null;
+                              const slotKey = shiftSlotKey(emp.user_id, meta.day, meta.hour);
+                              const shift = rollingSlotShiftMap.map.get(slotKey) ?? null;
+                              const startsHere = Boolean(
+                                shift && rollingSlotShiftMap.starts.has(slotKey)
+                              );
+                              const endsHere = Boolean(
+                                shift && rollingSlotShiftMap.ends.has(slotKey)
+                              );
+                              const has = Boolean(shift);
+                              const shiftColor = shift?.shift_type_id
+                                ? shiftColorById.get(shift.shift_type_id) ?? "#94a3b8"
+                                : "#94a3b8";
+                              const empPattern = emp.employee_type_id
+                                ? employeePatternById.get(emp.employee_type_id) ?? "none"
+                                : fallbackPatternByUserId(emp.user_id);
+                              const showPattern = Boolean(shift && endsHere);
+                              const cellStyle = has
+                                ? shiftCalendarCellStyle({
+                                    shiftTypeColor: shiftColor,
+                                    employeePattern: showPattern ? empPattern : "none",
+                                  })
+                                : undefined;
+                              const shiftLabel = shift?.shift_type_id
+                                ? shiftTypeLabelById.get(shift.shift_type_id) ?? "Vagt"
+                                : "Vagt";
+                              const member = shift ? memberByUserId.get(shift.user_id) ?? null : null;
+                              const employeeName = member?.display_name ?? "Ukendt";
+                              const departmentName = shift?.department_id
+                                ? departmentById.get(shift.department_id)?.name ?? "Uden afdeling"
+                                : "Uden afdeling";
+                              const employeeTypeLabel = member?.employee_type_id
+                                ? employeeTypeLabelById.get(member.employee_type_id) ??
+                                  "Uden medarbejdertype"
+                                : "Uden medarbejdertype";
+                              const hoverDetails = has
+                                ? [
+                                    `Medarbejder: ${employeeName}`,
+                                    `Afdeling: ${departmentName}`,
+                                    `Medarbejdertype: ${employeeTypeLabel}`,
+                                    `Vagttype: ${shiftLabel}`,
+                                    `Tid: ${formatShiftRange(shift!.starts_at, shift!.ends_at)}`,
+                                  ].join("\n")
+                                : undefined;
+                              const styleToken = `${shiftColor}|${showPattern ? empPattern : "none"}|${has ? "1" : "0"}`;
+                              return (
+                                <ShiftGridCell
+                                  key={`${emp.user_id}-${meta.dayKey}-${meta.hour}`}
+                                  cellKey={`${emp.user_id}-${meta.dayKey}-${meta.hour}`}
+                                  day={meta.day}
+                                  dayKey={meta.dayKey}
+                                  hour={meta.hour}
+                                  userId={emp.user_id}
+                                  groupDeptId={row.groupDeptId}
+                                  shift={shift}
+                                  startsHere={startsHere}
+                                  endsHere={endsHere}
+                                  has={has}
+                                  shiftLabel={shiftLabel}
+                                  renderedCellStyle={cellStyle}
+                                  styleToken={styleToken}
+                                  hoverDetails={hoverDetails}
+                                  onCellPointerDown={handleCellPointerDown}
+                                  onCellPointerUp={handleCellPointerUp}
+                                  onCellClick={handleGridCellClick}
+                                  onStartShiftDrag={startShiftDrag}
+                                />
+                              );
+                            })}
 
-                                const has = Boolean(shift);
-                                const shiftColor = shift?.shift_type_id
-                                  ? shiftColorById.get(shift.shift_type_id) ?? "#94a3b8"
-                                  : "#94a3b8";
-                                const empPattern = emp.employee_type_id
-                                  ? employeePatternById.get(emp.employee_type_id) ??
-                                    "none"
-                                  : fallbackPatternByUserId(emp.user_id);
-                                const showPattern = Boolean(shift && endsHere);
-                                const cellStyle = has
-                                  ? shiftCalendarCellStyle({
-                                      shiftTypeColor: shiftColor,
-                                      employeePattern: showPattern
-                                        ? empPattern
-                                        : "none",
-                                    })
-                                  : undefined;
-                                const shiftLabel =
-                                  shift?.shift_type_id
-                                    ? shiftTypeLabelById.get(shift.shift_type_id) ??
-                                      "Vagt"
-                                    : "Vagt";
-                                const member = shift
-                                  ? memberByUserId.get(shift.user_id) ?? null
-                                  : null;
-                                const employeeName = member?.display_name ?? "Ukendt";
-                                const departmentName =
-                                  shift?.department_id
-                                    ? departmentById.get(shift.department_id)?.name ??
-                                      "Uden afdeling"
-                                    : "Uden afdeling";
-                                const employeeTypeLabel =
-                                  member?.employee_type_id
-                                    ? employeeTypeLabelById.get(member.employee_type_id) ??
-                                      "Uden medarbejdertype"
-                                    : "Uden medarbejdertype";
-                                const hoverDetails = has && !activeShiftDrag
-                                  ? [
-                                      `Medarbejder: ${employeeName}`,
-                                      `Afdeling: ${departmentName}`,
-                                      `Medarbejdertype: ${employeeTypeLabel}`,
-                                      `Vagttype: ${shiftLabel}`,
-                                      `Tid: ${formatShiftRange(
-                                        shift!.starts_at,
-                                        shift!.ends_at
-                                      )}`,
-                                    ].join("\n")
-                                  : undefined;
-                                const renderedCellStyle =
-                                  has && cellStyle
-                                    ? isGhostPreview
-                                      ? {
-                                          ...cellStyle,
-                                          opacity: 0.86,
-                                          boxShadow:
-                                            "inset 0 0 0 1px rgba(34,211,238,0.95),0 0 10px rgba(34,211,238,0.65),0 0 24px rgba(59,130,246,0.4)",
-                                        }
-                                      : cellStyle
-                                    : cellStyle;
-                                return (
-                                  <td
-                                    key={`${emp.user_id}-${dayKeyLocal(d)}-${h}`}
-                                    className={
-                                      has
-                                        ? "relative border-b border-l border-zinc-300/60 px-0 py-2 dark:border-zinc-600/50"
-                                        : "border-b border-l border-zinc-100 bg-zinc-50/50 px-0 py-2 dark:border-zinc-800 dark:bg-zinc-950/50"
-                                    }
-                                    style={renderedCellStyle}
-                                    title={hoverDetails}
-                                    onPointerDown={(e) => handleCellPointerDown(e, shift)}
-                                    onPointerUp={handleCellPointerUp}
-                                    onPointerCancel={handleCellPointerUp}
-                                    onPointerLeave={handleCellPointerUp}
-                                    onClick={() => {
-                                      if (shift) {
-                                        handleCellClick(shift);
-                                      } else {
-                                        openCreateShiftFromCell(
-                                          emp.user_id,
-                                          groupDeptId,
-                                          d,
-                                          h
-                                        );
-                                      }
-                                    }}
-                                  >
-                                    {has && startsHere ? (
-                                      <span className="pointer-events-none block w-full truncate pl-2 pr-0.5 text-left text-[12px] font-bold text-black [text-shadow:0_0_2px_rgba(255,255,255,0.95),0_0_6px_rgba(255,255,255,0.9)]">
-                                        {shiftLabel}
-                                      </span>
-                                    ) : null}
-                                    {has && endsHere ? (
-                                      <button
-                                        type="button"
-                                        className="absolute inset-0 cursor-grab bg-transparent active:cursor-grabbing"
-                                        onPointerDown={(e) => {
-                                          if (!shift) return;
-                                          startShiftDrag(e, shift, "move");
-                                        }}
-                                        title="Træk i mønster-området for at flytte vagt"
-                                      />
-                                    ) : null}
-                                    {has && startsHere ? (
-                                      <button
-                                        type="button"
-                                        className="absolute inset-y-0 left-0 w-1.5 cursor-ew-resize bg-black/30 hover:bg-black/45"
-                                        onPointerDown={(e) => {
-                                          if (!shift) return;
-                                          startShiftDrag(e, shift, "resize_start");
-                                        }}
-                                        title="Træk for at forkorte/forlænge start"
-                                      />
-                                    ) : null}
-                                    {has && endsHere ? (
-                                      <button
-                                        type="button"
-                                        className="absolute inset-y-0 right-0 w-1.5 cursor-ew-resize bg-black/30 hover:bg-black/45"
-                                        onPointerDown={(e) => {
-                                          if (!shift) return;
-                                          startShiftDrag(e, shift, "resize_end");
-                                        }}
-                                        title="Træk for at forkorte/forlænge slut"
-                                      />
-                                    ) : null}
-                                    <span className="sr-only">
-                                      {has ? "Vagt" : "Ledig"} {h}:00
-                                    </span>
-                                  </td>
-                                );
-                              })
-                            )}
+                            {rightPadCols > 0 ? (
+                              <td
+                                colSpan={rightPadCols}
+                                className="border-b border-l border-zinc-100 bg-zinc-50/50 px-0 py-2 dark:border-zinc-800 dark:bg-zinc-950/50"
+                              />
+                            ) : null}
                           </tr>
                         );
-                        })}
-                      </Fragment>
-                    ))
+                      })}
+                      {bottomPadPx > 0 ? (
+                        <tr aria-hidden="true">
+                          <td colSpan={1 + totalHourCols} style={{ height: bottomPadPx }} />
+                        </tr>
+                      ) : null}
+                    </>
                   )}
                 </tbody>
-              </table>
+                </table>
+                <div className="pointer-events-none absolute inset-0 z-40">
+                  <div
+                    ref={dragPreviewRef}
+                    className="absolute hidden rounded-md border border-cyan-300 bg-cyan-400/35 shadow-[0_0_14px_rgba(34,211,238,0.55)]"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1658,29 +1990,17 @@ export default function AdminCalendar({ workplaceId }: Props) {
           : "Klik en dag for at åbne rullende visning med timegitter for den dag."}
       </p>
 
-      {activeShiftDrag ? (
+      <div
+        ref={dragTimeOverlayRef}
+        className="pointer-events-none fixed z-50 hidden rounded-lg border border-zinc-200 bg-white/95 px-3 py-2 text-xs font-medium text-zinc-800 shadow-lg dark:border-zinc-700 dark:bg-zinc-900/95 dark:text-zinc-100"
+        style={{ transform: "translate(-50%, -100%)" }}
+      >
         <div
-          ref={dragTimeOverlayRef}
-          className="pointer-events-none fixed z-50 rounded-lg border border-zinc-200 bg-white/95 px-3 py-2 text-xs font-medium text-zinc-800 shadow-lg dark:border-zinc-700 dark:bg-zinc-900/95 dark:text-zinc-100"
-          style={{
-            left: `clamp(8px, ${dragPointerRef.current.x}px, calc(100vw - 280px))`,
-            top: `clamp(8px, calc(${dragPointerRef.current.y}px - 54px), calc(100vh - 90px))`,
-            transform: "translate(-50%, -100%)",
-          }}
-        >
-          <div className="text-[11px] uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-            {activeShiftDrag.mode === "move"
-              ? "Flyt vagt"
-              : activeShiftDrag.mode === "resize_start"
-                ? "Juster start"
-                : "Juster slut"}
-          </div>
-          <div>
-            {formatClockDate(toIsoFromMs(activeShiftDrag.nextStartMs))} -{" "}
-            {formatClockDate(toIsoFromMs(activeShiftDrag.nextEndMs))}
-          </div>
-        </div>
-      ) : null}
+          ref={dragTimeOverlayModeRef}
+          className="text-[11px] uppercase tracking-wide text-zinc-500 dark:text-zinc-400"
+        />
+        <div ref={dragTimeOverlayRangeRef} />
+      </div>
 
       {pendingDeleteShift && canManageShifts ? (
         <div className="fixed inset-0 z-[60] flex items-end justify-center p-0 sm:items-center sm:p-4">
