@@ -515,26 +515,13 @@ export default function AdminCalendar({ workplaceId }: Props) {
     return groups;
   }, [visibleEmployees, departmentById, selectedDeptId, departments]);
 
-  const rollingShiftsPreview = useMemo(() => {
-    if (!activeShiftDrag) return rollingShifts;
-    return rollingShifts.map((s) =>
-      s.id === activeShiftDrag.shift.id
-        ? {
-            ...s,
-            starts_at: toIsoFromMs(activeShiftDrag.nextStartMs),
-            ends_at: toIsoFromMs(activeShiftDrag.nextEndMs),
-          }
-        : s
-    );
-  }, [rollingShifts, activeShiftDrag]);
-
   const rollingShiftsFiltered = useMemo(() => {
-    if (!filterShiftTypeId) return rollingShiftsPreview;
+    if (!filterShiftTypeId) return rollingShifts;
     if (filterShiftTypeId === "__none__") {
-      return rollingShiftsPreview.filter((s) => !s.shift_type_id);
+      return rollingShifts.filter((s) => !s.shift_type_id);
     }
-    return rollingShiftsPreview.filter((s) => s.shift_type_id === filterShiftTypeId);
-  }, [rollingShiftsPreview, filterShiftTypeId]);
+    return rollingShifts.filter((s) => s.shift_type_id === filterShiftTypeId);
+  }, [rollingShifts, filterShiftTypeId]);
 
   const rollingSlotShiftMap = useMemo(() => {
     const map = new Map<string, WorkplaceShiftRow>();
@@ -690,8 +677,15 @@ export default function AdminCalendar({ workplaceId }: Props) {
     }
   }
 
-  function handleCellPointerDown(shift: WorkplaceShiftRow | null) {
+  function handleCellPointerDown(
+    e: {
+      pointerType?: string;
+    },
+    shift: WorkplaceShiftRow | null
+  ) {
     if (!canManageShifts || !shift) return;
+    // Keep long-press delete for touch/pen; avoid desktop mouse delays.
+    if (e.pointerType === "mouse") return;
     clearLongPressTimer();
     longPressTimerRef.current = setTimeout(() => {
       suppressClickUntilRef.current = Date.now() + 800;
@@ -1479,7 +1473,41 @@ export default function AdminCalendar({ workplaceId }: Props) {
                             {rollingDays.flatMap((d) =>
                               HOURS.map((h) => {
                                 const slotKey = shiftSlotKey(emp.user_id, d, h);
-                                const shift = rollingSlotShiftMap.map.get(slotKey) ?? null;
+                                const baseShift = rollingSlotShiftMap.map.get(slotKey) ?? null;
+                                let shift = baseShift;
+                                let startsHere = Boolean(
+                                  shift && rollingSlotShiftMap.starts.has(slotKey)
+                                );
+                                let endsHere = Boolean(
+                                  shift && rollingSlotShiftMap.ends.has(slotKey)
+                                );
+                                let isGhostPreview = false;
+
+                                if (activeShiftDrag && activeShiftDrag.shift.user_id === emp.user_id) {
+                                  const slotStart = localDateAt(d, h).getTime();
+                                  const slotEnd = slotStart + 60 * 60 * 1000;
+                                  const dragStart = activeShiftDrag.nextStartMs;
+                                  const dragEnd = activeShiftDrag.nextEndMs;
+                                  const dragOverlaps = dragStart < slotEnd && dragEnd > slotStart;
+                                  const dragStarts = dragStart >= slotStart && dragStart < slotEnd;
+                                  const dragEnds = dragEnd - 1 >= slotStart && dragEnd - 1 < slotEnd;
+
+                                  if (dragOverlaps) {
+                                    shift = {
+                                      ...activeShiftDrag.shift,
+                                      starts_at: toIsoFromMs(dragStart),
+                                      ends_at: toIsoFromMs(dragEnd),
+                                    };
+                                    startsHere = dragStarts;
+                                    endsHere = dragEnds;
+                                    isGhostPreview = true;
+                                  } else if (baseShift?.id === activeShiftDrag.shift.id) {
+                                    shift = null;
+                                    startsHere = false;
+                                    endsHere = false;
+                                  }
+                                }
+
                                 const has = Boolean(shift);
                                 const shiftColor = shift?.shift_type_id
                                   ? shiftColorById.get(shift.shift_type_id) ?? "#94a3b8"
@@ -1488,9 +1516,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                                   ? employeePatternById.get(emp.employee_type_id) ??
                                     "none"
                                   : fallbackPatternByUserId(emp.user_id);
-                                const showPattern = Boolean(
-                                  shift && rollingSlotShiftMap.ends.has(slotKey)
-                                );
+                                const showPattern = Boolean(shift && endsHere);
                                 const cellStyle = has
                                   ? shiftCalendarCellStyle({
                                       shiftTypeColor: shiftColor,
@@ -1518,7 +1544,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                                     ? employeeTypeLabelById.get(member.employee_type_id) ??
                                       "Uden medarbejdertype"
                                     : "Uden medarbejdertype";
-                                const hoverDetails = has
+                                const hoverDetails = has && !activeShiftDrag
                                   ? [
                                       `Medarbejder: ${employeeName}`,
                                       `Afdeling: ${departmentName}`,
@@ -1530,15 +1556,6 @@ export default function AdminCalendar({ workplaceId }: Props) {
                                       )}`,
                                     ].join("\n")
                                   : undefined;
-                                const startsHere = Boolean(
-                                  shift && rollingSlotShiftMap.starts.has(slotKey)
-                                );
-                                const endsHere = Boolean(
-                                  shift && rollingSlotShiftMap.ends.has(slotKey)
-                                );
-                                const isGhostPreview = Boolean(
-                                  activeShiftDrag && shift?.id === activeShiftDrag.shift.id
-                                );
                                 const renderedCellStyle =
                                   has && cellStyle
                                     ? isGhostPreview
@@ -1560,7 +1577,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                                     }
                                     style={renderedCellStyle}
                                     title={hoverDetails}
-                                    onPointerDown={() => handleCellPointerDown(shift)}
+                                    onPointerDown={(e) => handleCellPointerDown(e, shift)}
                                     onPointerUp={handleCellPointerUp}
                                     onPointerCancel={handleCellPointerUp}
                                     onPointerLeave={handleCellPointerUp}
@@ -1644,7 +1661,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
       {activeShiftDrag ? (
         <div
           ref={dragTimeOverlayRef}
-          className="pointer-events-none fixed z-50 rounded-lg border border-zinc-200 bg-white/95 px-3 py-2 text-xs font-medium text-zinc-800 shadow-lg backdrop-blur dark:border-zinc-700 dark:bg-zinc-900/95 dark:text-zinc-100"
+          className="pointer-events-none fixed z-50 rounded-lg border border-zinc-200 bg-white/95 px-3 py-2 text-xs font-medium text-zinc-800 shadow-lg dark:border-zinc-700 dark:bg-zinc-900/95 dark:text-zinc-100"
           style={{
             left: `clamp(8px, ${dragPointerRef.current.x}px, calc(100vw - 280px))`,
             top: `clamp(8px, calc(${dragPointerRef.current.y}px - 54px), calc(100vh - 90px))`,
@@ -1669,7 +1686,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
         <div className="fixed inset-0 z-[60] flex items-end justify-center p-0 sm:items-center sm:p-4">
           <button
             type="button"
-            className="absolute inset-0 bg-black/45 backdrop-blur-[1px]"
+            className="absolute inset-0 bg-black/45"
             aria-label="Luk slet-advarsel"
             onClick={() => setPendingDeleteShift(null)}
           />
@@ -1713,7 +1730,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
         <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4">
           <button
             type="button"
-            className="absolute inset-0 bg-black/40 backdrop-blur-[1px]"
+            className="absolute inset-0 bg-black/40"
             aria-label="Luk dialog"
             onClick={() => setSelectedShift(null)}
           />
@@ -1873,7 +1890,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
         <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4">
           <button
             type="button"
-            className="absolute inset-0 bg-black/40 backdrop-blur-[1px]"
+            className="absolute inset-0 bg-black/40"
             aria-label="Luk dialog"
             onClick={() => setCreateShiftDraft(null)}
           />
