@@ -192,8 +192,6 @@ type ActiveShiftDrag = {
   mode: ShiftDragMode;
   shift: WorkplaceShiftRow;
   pointerStartX: number;
-  pointerX: number;
-  pointerY: number;
   pxPer5Min: number;
   originalStartMs: number;
   originalEndMs: number;
@@ -261,8 +259,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const [isGridPointerActive, setIsGridPointerActive] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const dragTimeOverlayRef = useRef<HTMLDivElement>(null);
   const rollingDaysRef = useRef(rollingDays);
   const pinchRef = useRef<ActivePinch | null>(null);
+  const dragPointerRef = useRef({ x: 0, y: 0 });
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const suppressClickUntilRef = useRef(0);
 
@@ -935,6 +935,14 @@ export default function AdminCalendar({ workplaceId }: Props) {
     );
   }
 
+  function syncDragTimeOverlayPosition() {
+    const overlay = dragTimeOverlayRef.current;
+    if (!overlay) return;
+    const { x, y } = dragPointerRef.current;
+    overlay.style.left = `clamp(8px, ${x}px, calc(100vw - 280px))`;
+    overlay.style.top = `clamp(8px, calc(${y}px - 54px), calc(100vh - 90px))`;
+  }
+
   function startShiftDrag(
     e: {
       preventDefault: () => void;
@@ -951,6 +959,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
     e.stopPropagation();
     clearLongPressTimer();
     suppressClickUntilRef.current = Date.now() + 800;
+    dragPointerRef.current = { x: e.clientX, y: e.clientY };
     const pxPer5Min = Math.max(1, hourColWidth / 12);
     const originalStartMs = new Date(shift.starts_at).getTime();
     const originalEndMs = new Date(shift.ends_at).getTime();
@@ -958,8 +967,6 @@ export default function AdminCalendar({ workplaceId }: Props) {
       mode,
       shift,
       pointerStartX: e.clientX,
-      pointerX: e.clientX,
-      pointerY: e.clientY,
       pxPer5Min,
       originalStartMs,
       originalEndMs,
@@ -970,8 +977,11 @@ export default function AdminCalendar({ workplaceId }: Props) {
 
   useEffect(() => {
     if (!activeShiftDrag) return;
+    syncDragTimeOverlayPosition();
 
     const onMove = (e: PointerEvent) => {
+      dragPointerRef.current = { x: e.clientX, y: e.clientY };
+      syncDragTimeOverlayPosition();
       const dx = e.clientX - activeShiftDrag.pointerStartX;
       const stepCount = Math.round(dx / activeShiftDrag.pxPer5Min);
       const deltaMs = stepCount * 5 * 60 * 1000;
@@ -993,13 +1003,13 @@ export default function AdminCalendar({ workplaceId }: Props) {
       }
       setActiveShiftDrag((prev) =>
         prev
-          ? {
-              ...prev,
-              nextStartMs,
-              nextEndMs,
-              pointerX: e.clientX,
-              pointerY: e.clientY,
-            }
+          ? prev.nextStartMs === nextStartMs && prev.nextEndMs === nextEndMs
+            ? prev
+            : {
+                ...prev,
+                nextStartMs,
+                nextEndMs,
+              }
           : prev
       );
     };
@@ -1633,10 +1643,11 @@ export default function AdminCalendar({ workplaceId }: Props) {
 
       {activeShiftDrag ? (
         <div
+          ref={dragTimeOverlayRef}
           className="pointer-events-none fixed z-50 rounded-lg border border-zinc-200 bg-white/95 px-3 py-2 text-xs font-medium text-zinc-800 shadow-lg backdrop-blur dark:border-zinc-700 dark:bg-zinc-900/95 dark:text-zinc-100"
           style={{
-            left: `clamp(8px, ${activeShiftDrag.pointerX}px, calc(100vw - 280px))`,
-            top: `clamp(8px, calc(${activeShiftDrag.pointerY}px - 54px), calc(100vh - 90px))`,
+            left: `clamp(8px, ${dragPointerRef.current.x}px, calc(100vw - 280px))`,
+            top: `clamp(8px, calc(${dragPointerRef.current.y}px - 54px), calc(100vh - 90px))`,
             transform: "translate(-50%, -100%)",
           }}
         >
