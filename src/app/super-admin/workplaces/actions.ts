@@ -178,6 +178,10 @@ function resolveMemberDisplayName(
   };
 }
 
+function normalizeTemplateMatchKey(value: string | null | undefined): string {
+  return (value ?? "").trim().toLocaleLowerCase("da");
+}
+
 async function assertDepartmentIdsBelongToWorkplace(
   admin: ReturnType<typeof getAdminClient>,
   workplaceId: string,
@@ -558,10 +562,38 @@ export async function getWorkplaceTypes(
       }
       return { ok: false, error: sRes.error.message };
     }
+    const rawShiftTypes = (sRes.data ?? []) as WorkplaceShiftTypeRow[];
+    const templateColorById = new Map<string, string>();
+    const templateColorByName = new Map<string, string>();
+    const tRes = await admin
+      .from("shift_type_templates")
+      .select("id, name, calendar_color");
+    if (!tRes.error) {
+      for (const row of tRes.data ?? []) {
+        const id = String(row.id ?? "");
+        const nameKey = normalizeTemplateMatchKey(row.name as string | null | undefined);
+        const color = (row.calendar_color as string | null) ?? "";
+        if (!color) continue;
+        if (id) templateColorById.set(id, color);
+        if (nameKey && !templateColorByName.has(nameKey)) {
+          templateColorByName.set(nameKey, color);
+        }
+      }
+    }
+
+    const shiftTypes = rawShiftTypes.map((s) => {
+      const byTemplateId = s.template_id ? templateColorById.get(s.template_id) : undefined;
+      const byName = templateColorByName.get(normalizeTemplateMatchKey(s.label));
+      return {
+        ...s,
+        calendar_color: byTemplateId ?? byName ?? s.calendar_color ?? "#94a3b8",
+      };
+    });
+
     return {
       ok: true,
       employeeTypes: (eRes.data ?? []) as WorkplaceEmployeeTypeRow[],
-      shiftTypes: (sRes.data ?? []) as WorkplaceShiftTypeRow[],
+      shiftTypes,
     };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Ukendt fejl";
@@ -1288,43 +1320,7 @@ export async function getWorkplaceDepartmentsOverview(
         return { ok: false, error: sTypesRes.error.message };
       }
     } else {
-      const rawShiftTypes = (sTypesRes.data ?? []) as WorkplaceShiftTypeRow[];
-      const templateIds = Array.from(
-        new Set(
-          rawShiftTypes
-            .map((s) => s.template_id)
-            .filter((id): id is string => typeof id === "string" && id.length > 0)
-        )
-      );
-
-      let templateColorById = new Map<string, string>();
-      if (templateIds.length > 0) {
-        const tRes = await admin
-          .from("shift_type_templates")
-          .select("id, calendar_color")
-          .in("id", templateIds);
-        if (!tRes.error) {
-          templateColorById = new Map(
-            (tRes.data ?? [])
-              .map(
-                (r) =>
-                  [r.id as string, (r.calendar_color as string | null) ?? ""] as [
-                    string,
-                    string,
-                  ]
-              )
-              .filter((x) => x[1].length > 0)
-          );
-        }
-      }
-
-      shiftTypes = rawShiftTypes.map((s) => ({
-        ...s,
-        calendar_color:
-          (s.template_id ? templateColorById.get(s.template_id) : null) ??
-          s.calendar_color ??
-          "#94a3b8",
-      }));
+      shiftTypes = (sTypesRes.data ?? []) as WorkplaceShiftTypeRow[];
     }
 
     if (pRes.error && !isMissingSchemaError(pRes.error.message)) {

@@ -14,6 +14,7 @@ import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   getWorkplaceDepartmentsOverview,
+  getWorkplaceTypes,
   type WorkplaceDepartmentRow,
   type WorkplaceEmployeeTypeRow,
   type WorkplaceMemberDepartmentsRow,
@@ -157,6 +158,15 @@ function fallbackPatternByUserId(userId: string): string {
   return list[n % list.length];
 }
 
+const DEFAULT_SHIFT_COLOR = "#94a3b8";
+
+function normalizeCalendarHex(color: string | null | undefined): string {
+  const c = color?.trim();
+  if (!c) return DEFAULT_SHIFT_COLOR;
+  if (/^#[0-9a-fA-F]{6}$/.test(c)) return c;
+  return DEFAULT_SHIFT_COLOR;
+}
+
 function firstDepartmentLabel(
   m: WorkplaceMemberDepartmentsRow,
   deptById: Map<string, WorkplaceDepartmentRow>
@@ -167,8 +177,6 @@ function firstDepartmentLabel(
     .sort((a, b) => a.localeCompare(b, "da"));
   return names[0] ?? "";
 }
-
-type EmployeeSortKey = "name_asc" | "name_desc" | "department" | "employee_type";
 
 function distinctEmployeesOnShiftForDay(
   shifts: WorkplaceShiftRow[],
@@ -399,7 +407,6 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const [filterShiftTypeId, setFilterShiftTypeId] = useState<string | null>(null);
   /** Filtrér medarbejderrækker efter medarbejdertype */
   const [filterEmployeeTypeId, setFilterEmployeeTypeId] = useState<string | null>(null);
-  const [employeeSort, setEmployeeSort] = useState<EmployeeSortKey>("name_asc");
   const [clock, setClock] = useState(formatTimeNow);
   const [hourColWidth, setHourColWidth] = useState(BASE_HOUR_COL);
   const [createShiftDraft, setCreateShiftDraft] = useState<CreateShiftDraft | null>(null);
@@ -465,16 +472,24 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
-    const res = await getWorkplaceDepartmentsOverview(workplaceId);
-    if (!res.ok) {
-      setError(res.error);
+    const [overviewRes, typesRes] = await Promise.all([
+      getWorkplaceDepartmentsOverview(workplaceId),
+      getWorkplaceTypes(workplaceId),
+    ]);
+    if (!overviewRes.ok) {
+      setError(overviewRes.error);
       setLoading(false);
       return;
     }
-    setDepartments(res.departments);
-    setMembers(res.members);
-    setShiftTypes(res.shiftTypes);
-    setEmployeeTypes(res.employeeTypes);
+    setDepartments(overviewRes.departments);
+    setMembers(overviewRes.members);
+    if (typesRes.ok) {
+      setShiftTypes(typesRes.shiftTypes);
+      setEmployeeTypes(typesRes.employeeTypes);
+    } else {
+      setShiftTypes(overviewRes.shiftTypes);
+      setEmployeeTypes(overviewRes.employeeTypes);
+    }
     setLoading(false);
   }, [workplaceId]);
 
@@ -644,41 +659,13 @@ export default function AdminCalendar({ workplaceId }: Props) {
         return label.includes(q);
       });
     }
-    const empTypeLabel = (id: string | null) =>
-      id ? (employeeTypes.find((e) => e.id === id)?.label ?? "") : "";
     const sorted = [...list];
-    sorted.sort((a, b) => {
-      switch (employeeSort) {
-        case "name_asc":
-          return a.display_name.localeCompare(b.display_name, "da");
-        case "name_desc":
-          return b.display_name.localeCompare(a.display_name, "da");
-        case "department": {
-          const cmp = firstDepartmentLabel(a, departmentById).localeCompare(
-            firstDepartmentLabel(b, departmentById),
-            "da"
-          );
-          return cmp !== 0 ? cmp : a.display_name.localeCompare(b.display_name, "da");
-        }
-        case "employee_type": {
-          const cmp = empTypeLabel(a.employee_type_id).localeCompare(
-            empTypeLabel(b.employee_type_id),
-            "da"
-          );
-          return cmp !== 0 ? cmp : a.display_name.localeCompare(b.display_name, "da");
-        }
-        default:
-          return 0;
-      }
-    });
+    sorted.sort((a, b) => a.display_name.localeCompare(b.display_name, "da"));
     return sorted;
   }, [
     departmentFiltered,
     employeeQuery,
     filterEmployeeTypeId,
-    employeeSort,
-    employeeTypes,
-    departmentById,
   ]);
 
   const groupedEmployees = useMemo(() => {
@@ -780,7 +767,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const shiftColorById = useMemo(() => {
     const map = new Map<string, string>();
     for (const t of shiftTypes) {
-      map.set(t.id, t.calendar_color ?? "#94a3b8");
+      map.set(t.id, normalizeCalendarHex(t.calendar_color));
     }
     return map;
   }, [shiftTypes]);
@@ -1652,20 +1639,6 @@ export default function AdminCalendar({ workplaceId }: Props) {
               autoComplete="off"
             />
           </div>
-        </label>
-
-        <label className="flex min-w-[180px] flex-col text-sm">
-          <select
-            aria-label="Sortér efter"
-            value={employeeSort}
-            onChange={(e) => setEmployeeSort(e.target.value as EmployeeSortKey)}
-            className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
-          >
-            <option value="name_asc">Navn A–Å</option>
-            <option value="name_desc">Navn Å–A</option>
-            <option value="department">Afdeling</option>
-            <option value="employee_type">Medarbejdertype</option>
-          </select>
         </label>
 
         {shiftTypes.length > 0 ? (
