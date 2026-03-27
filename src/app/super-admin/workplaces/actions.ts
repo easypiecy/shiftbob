@@ -1287,7 +1287,43 @@ export async function getWorkplaceDepartmentsOverview(
         return { ok: false, error: sTypesRes.error.message };
       }
     } else {
-      shiftTypes = (sTypesRes.data ?? []) as WorkplaceShiftTypeRow[];
+      const rawShiftTypes = (sTypesRes.data ?? []) as WorkplaceShiftTypeRow[];
+      const templateIds = Array.from(
+        new Set(
+          rawShiftTypes
+            .map((s) => s.template_id)
+            .filter((id): id is string => typeof id === "string" && id.length > 0)
+        )
+      );
+
+      let templateColorById = new Map<string, string>();
+      if (templateIds.length > 0) {
+        const tRes = await admin
+          .from("shift_type_templates")
+          .select("id, calendar_color")
+          .in("id", templateIds);
+        if (!tRes.error) {
+          templateColorById = new Map(
+            (tRes.data ?? [])
+              .map(
+                (r) =>
+                  [r.id as string, (r.calendar_color as string | null) ?? ""] as [
+                    string,
+                    string,
+                  ]
+              )
+              .filter((x) => x[1].length > 0)
+          );
+        }
+      }
+
+      shiftTypes = rawShiftTypes.map((s) => ({
+        ...s,
+        calendar_color:
+          (s.template_id ? templateColorById.get(s.template_id) : null) ??
+          s.calendar_color ??
+          "#94a3b8",
+      }));
     }
 
     if (pRes.error && !isMissingSchemaError(pRes.error.message)) {
