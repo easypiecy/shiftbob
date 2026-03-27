@@ -1668,7 +1668,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
               onChange={(e) => setFilterEmployeeTypeId(e.target.value || null)}
               className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
             >
-              <option value="">Alle</option>
+              <option value="">Alle medarbejdertyper</option>
               <option value="__none__">Uden medarbejdertype</option>
               {employeeTypes.map((t) => (
                 <option key={t.id} value={t.id}>
