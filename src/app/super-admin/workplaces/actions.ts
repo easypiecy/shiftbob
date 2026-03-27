@@ -182,6 +182,65 @@ function normalizeTemplateMatchKey(value: string | null | undefined): string {
   return (value ?? "").trim().toLocaleLowerCase("da");
 }
 
+function parseSemicolonCsvLine(line: string): string[] {
+  const cells: string[] = [];
+  let cur = "";
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i += 1) {
+    const ch = line[i];
+    if (ch === "\"") {
+      const next = line[i + 1];
+      if (inQuotes && next === "\"") {
+        cur += "\"";
+        i += 1;
+        continue;
+      }
+      inQuotes = !inQuotes;
+      continue;
+    }
+    if (ch === ";" && !inQuotes) {
+      cells.push(cur.trim());
+      cur = "";
+      continue;
+    }
+    cur += ch;
+  }
+  cells.push(cur.trim());
+  return cells;
+}
+
+async function listAuthUsersByEmailLower(
+  admin: ReturnType<typeof getAdminClient>
+): Promise<Map<string, string>> {
+  const out = new Map<string, string>();
+  let page = 1;
+  const perPage = 1000;
+  for (;;) {
+    const { data, error } = await admin.auth.admin.listUsers({ page, perPage });
+    if (error) {
+      break;
+    }
+    const users = data.users ?? [];
+    for (const user of users) {
+      const email = (user.email ?? "").trim().toLowerCase();
+      if (!email) continue;
+      out.set(email, user.id);
+    }
+    if (users.length < perPage) break;
+    page += 1;
+    if (page > 100) break;
+  }
+  return out;
+}
+
+export type WorkplaceMemberImportRowResult = {
+  line: number;
+  email: string;
+  status: "created_invited" | "added_existing" | "already_member" | "error";
+  message: string;
+  activationLink: string | null;
+};
+
 async function assertDepartmentIdsBelongToWorkplace(
   admin: ReturnType<typeof getAdminClient>,
   workplaceId: string,
@@ -1593,6 +1652,298 @@ export async function revokeWorkplaceApiKey(
     }
     revalidateWorkplaceDetailPages(workplaceId);
     return { ok: true };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Ukendt fejl";
+    return { ok: false, error: msg };
+  }
+}
+
+export async function importWorkplaceMembersFromCsv(
+  workplaceId: string,
+  csvText: string
+): Promise<
+  | {
+      ok: true;
+      results: WorkplaceMemberImportRowResult[];
+      summary: { createdInvited: number; addedExisting: number; alreadyMember: number; errors: number };
+    }
+  | { ok: false; error: string }
+> {
+  try {
+    await assertWorkplaceAdminOrSuperAdmin(workplaceId);
+    const raw = csvText.trim();
+    if (!raw) {
+      return { ok: false, error: "Indsæt CSV-indhold først." };
+    }
+
+    const lines = raw
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+    if (lines.length < 2) {
+      return { ok: false, error: "CSV skal indeholde header + mindst én data-række." };
+    }
+
+    const header = parseSemicolonCsvLine(lines[0]).map((x) => x.toLowerCase());
+    const expectedHeader = [
+      "first_name",
+      "last_name",
+      "email",
+      "mobile_phone",
+      "street_name",
+      "street_number",
+      "postal_code",
+      "city",
+      "country",
+      "employee_type",
+      "note",
+    ];
+    const badHeader =
+      header.length !== expectedHeader.length ||
+      expectedHeader.some((h, i) => header[i] !== h);
+    if (badHeader) {
+      return {
+        ok: false,
+        error: `Forkert format. Brug header: ${expectedHeader.join(";")}`,
+      };
+    }
+
+    const admin = getAdminClient();
+    const [employeeTypeRes, membershipRes, authByEmail] = await Promise.all([
+      admin
+        .from("workplace_employee_types")
+        .select("id, label")
+        .eq("workplace_id", workplaceId),
+      admin
+        .from("workplace_members")
+        .select("user_id")
+        .eq("workplace_id", workplaceId),
+      listAuthUsersByEmailLower(admin),
+    ]);
+
+    if (employeeTypeRes.error) {
+      return { ok: false, error: employeeTypeRes.error.message };
+    }
+    if (membershipRes.error) {
+      return { ok: false, error: membershipRes.error.message };
+    }
+
+    const employeeTypeByLabel = new Map<string, string>();
+    for (const row of employeeTypeRes.data ?? []) {
+      const key = normalizeTemplateMatchKey(row.label as string);
+      employeeTypeByLabel.set(key, row.id as string);
+    }
+    const memberUserIds = new Set((membershipRes.data ?? []).map((x) => x.user_id as string));
+
+    const seenEmails = new Set<string>();
+    const results: WorkplaceMemberImportRowResult[] = [];
+    let createdInvited = 0;
+    let addedExisting = 0;
+    let alreadyMember = 0;
+    let errors = 0;
+
+    for (let idx = 1; idx < lines.length; idx += 1) {
+      const lineNo = idx + 1;
+      const cells = parseSemicolonCsvLine(lines[idx]);
+      const email = (cells[2] ?? "").trim().toLowerCase();
+      if (cells.length !== expectedHeader.length) {
+        results.push({
+          line: lineNo,
+          email,
+          status: "error",
+          message: "Forkert antal felter på linjen.",
+          activationLink: null,
+        });
+        errors += 1;
+        continue;
+      }
+
+      const firstName = cells[0]?.trim() ?? "";
+      const lastName = cells[1]?.trim() ?? "";
+      const mobilePhone = cells[3]?.trim() ?? "";
+      const streetName = cells[4]?.trim() ?? "";
+      const streetNumber = cells[5]?.trim() ?? "";
+      const postalCode = cells[6]?.trim() ?? "";
+      const city = cells[7]?.trim() ?? "";
+      const country = cells[8]?.trim() ?? "";
+      const employeeTypeLabel = cells[9]?.trim() ?? "";
+      const note = cells[10]?.trim() || null;
+
+      if (!firstName || !lastName || !email || !mobilePhone || !streetName || !streetNumber || !postalCode || !city || !country || !employeeTypeLabel) {
+        results.push({
+          line: lineNo,
+          email,
+          status: "error",
+          message: "Obligatoriske felter mangler.",
+          activationLink: null,
+        });
+        errors += 1;
+        continue;
+      }
+      if (seenEmails.has(email)) {
+        results.push({
+          line: lineNo,
+          email,
+          status: "error",
+          message: "E-mail optræder flere gange i samme import.",
+          activationLink: null,
+        });
+        errors += 1;
+        continue;
+      }
+      seenEmails.add(email);
+
+      const employeeTypeId = employeeTypeByLabel.get(
+        normalizeTemplateMatchKey(employeeTypeLabel)
+      );
+      if (!employeeTypeId) {
+        results.push({
+          line: lineNo,
+          email,
+          status: "error",
+          message: `Ukendt medarbejdertype: ${employeeTypeLabel}`,
+          activationLink: null,
+        });
+        errors += 1;
+        continue;
+      }
+
+      let userId = authByEmail.get(email) ?? null;
+      let isNewUser = false;
+      if (!userId) {
+        const tempPassword = randomBytes(24).toString("base64url");
+        const created = await admin.auth.admin.createUser({
+          email,
+          password: tempPassword,
+          email_confirm: false,
+          user_metadata: {
+            first_name: firstName,
+            last_name: lastName,
+            full_name: `${firstName} ${lastName}`.trim(),
+          },
+        });
+        if (created.error || !created.data.user) {
+          results.push({
+            line: lineNo,
+            email,
+            status: "error",
+            message: created.error?.message ?? "Kunne ikke oprette bruger.",
+            activationLink: null,
+          });
+          errors += 1;
+          continue;
+        }
+        userId = created.data.user.id;
+        authByEmail.set(email, userId);
+        isNewUser = true;
+      }
+
+      if (memberUserIds.has(userId)) {
+        results.push({
+          line: lineNo,
+          email,
+          status: "already_member",
+          message: "Brugeren er allerede medlem af arbejdspladsen.",
+          activationLink: null,
+        });
+        alreadyMember += 1;
+        continue;
+      }
+
+      const { error: memberErr } = await admin.from("workplace_members").upsert(
+        {
+          workplace_id: workplaceId,
+          user_id: userId,
+          role: "EMPLOYEE",
+          employee_type_id: employeeTypeId,
+        },
+        { onConflict: "user_id,workplace_id" }
+      );
+      if (memberErr) {
+        results.push({
+          line: lineNo,
+          email,
+          status: "error",
+          message: memberErr.message,
+          activationLink: null,
+        });
+        errors += 1;
+        continue;
+      }
+      memberUserIds.add(userId);
+
+      const { error: profileErr } = await admin.from("user_profiles").upsert(
+        {
+          user_id: userId,
+          first_name: firstName,
+          last_name: lastName,
+          mobile_phone: mobilePhone,
+          street_name: streetName,
+          street_number: streetNumber,
+          postal_code: postalCode,
+          city,
+          country,
+          note,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id" }
+      );
+      if (profileErr) {
+        results.push({
+          line: lineNo,
+          email,
+          status: "error",
+          message: profileErr.message,
+          activationLink: null,
+        });
+        errors += 1;
+        continue;
+      }
+
+      if (isNewUser) {
+        const invite = await admin.auth.admin.generateLink({
+          type: "magiclink",
+          email,
+        });
+        const activationLink = invite.data?.properties?.action_link ?? null;
+        if (invite.error || !activationLink) {
+          results.push({
+            line: lineNo,
+            email,
+            status: "error",
+            message:
+              invite.error?.message ?? "Bruger oprettet, men invitation-link kunne ikke genereres.",
+            activationLink: null,
+          });
+          errors += 1;
+          continue;
+        }
+        results.push({
+          line: lineNo,
+          email,
+          status: "created_invited",
+          message: "Ny medarbejder oprettet og aktiveringslink genereret.",
+          activationLink,
+        });
+        createdInvited += 1;
+      } else {
+        results.push({
+          line: lineNo,
+          email,
+          status: "added_existing",
+          message: "Eksisterende bruger tilknyttet arbejdspladsen.",
+          activationLink: null,
+        });
+        addedExisting += 1;
+      }
+    }
+
+    revalidateWorkplaceDetailPages(workplaceId);
+    return {
+      ok: true,
+      results,
+      summary: { createdInvited, addedExisting, alreadyMember, errors },
+    };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Ukendt fejl";
     return { ok: false, error: msg };

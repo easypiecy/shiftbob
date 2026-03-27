@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, FileText, Loader2, Plus, Search, X } from "lucide-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   getWorkplaceDepartmentsOverview,
@@ -23,13 +23,21 @@ import {
 import {
   createWorkplaceShift,
   deleteWorkplaceShift,
-  getCalendarViewerNameMode,
   reassignWorkplaceShift,
   swapWorkplaceShifts,
   updateWorkplaceShiftTiming,
   getWorkplaceShiftsInRange,
   type WorkplaceShiftRow,
 } from "@/src/app/dashboard/workplace-shifts-actions";
+import {
+  createWorkplaceMemberWithProfile,
+  getWorkplaceMemberCvSignedUrl,
+  getWorkplaceMemberPreferences,
+  getWorkplaceMemberProfileDetails,
+  saveWorkplaceMemberPreferences,
+  updateWorkplaceMemberWithProfile,
+  uploadWorkplaceMemberCv,
+} from "@/src/app/dashboard/workplace-member-calendar-actions";
 import EmployeeCalendarNameCell from "@/app/dashboard/employee-calendar-name-cell";
 import { shiftCalendarCellStyle } from "@/src/lib/calendar-shift-style";
 
@@ -222,6 +230,44 @@ type CreateShiftDraft = {
   shiftTypeId: string | null;
 };
 
+type MemberProfileDraft = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobilePhone: string;
+  streetName: string;
+  streetNumber: string;
+  postalCode: string;
+  city: string;
+  country: string;
+  employeeTypeId: string;
+  note: string;
+};
+
+type MemberPreferenceDraft = {
+  id: string;
+  priority: number;
+  preferenceText: string;
+};
+
+type MemberEditorMode = "create" | "edit";
+
+function blankMemberProfileDraft(defaultEmployeeTypeId: string): MemberProfileDraft {
+  return {
+    firstName: "",
+    lastName: "",
+    email: "",
+    mobilePhone: "",
+    streetName: "",
+    streetNumber: "",
+    postalCode: "",
+    city: "",
+    country: "",
+    employeeTypeId: defaultEmployeeTypeId,
+    note: "",
+  };
+}
+
 type CalendarRow =
   | {
       kind: "group";
@@ -412,6 +458,17 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const [createShiftDraft, setCreateShiftDraft] = useState<CreateShiftDraft | null>(null);
   const [createShiftBusy, setCreateShiftBusy] = useState(false);
   const [createShiftMsg, setCreateShiftMsg] = useState<string | null>(null);
+  const [memberEditorMode, setMemberEditorMode] = useState<MemberEditorMode | null>(null);
+  const [memberEditorUserId, setMemberEditorUserId] = useState<string | null>(null);
+  const [memberEditorDraft, setMemberEditorDraft] = useState<MemberProfileDraft | null>(null);
+  const [memberEditorBusy, setMemberEditorBusy] = useState(false);
+  const [memberEditorMessage, setMemberEditorMessage] = useState<string | null>(null);
+  const [memberCvBusy, setMemberCvBusy] = useState(false);
+  const [memberHasCv, setMemberHasCv] = useState(false);
+  const [memberCvFile, setMemberCvFile] = useState<File | null>(null);
+  const [memberLoadingDetails, setMemberLoadingDetails] = useState(false);
+  const [memberPreferences, setMemberPreferences] = useState<MemberPreferenceDraft[]>([]);
+  const [memberPreferencesBusy, setMemberPreferencesBusy] = useState(false);
   const [selectedShift, setSelectedShift] = useState<WorkplaceShiftRow | null>(null);
   const [pendingDeleteShift, setPendingDeleteShift] = useState<WorkplaceShiftRow | null>(null);
   const [shiftActionBusy, setShiftActionBusy] = useState(false);
@@ -646,11 +703,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const visibleEmployees = useMemo(() => {
     let list = departmentFiltered;
     if (filterEmployeeTypeId) {
-      if (filterEmployeeTypeId === "__none__") {
-        list = list.filter((m) => !m.employee_type_id);
-      } else {
-        list = list.filter((m) => m.employee_type_id === filterEmployeeTypeId);
-      }
+      list = list.filter((m) => m.employee_type_id === filterEmployeeTypeId);
     }
     const q = employeeQuery.trim().toLowerCase();
     if (q) {
@@ -699,9 +752,6 @@ export default function AdminCalendar({ workplaceId }: Props) {
 
   const rollingShiftsFiltered = useMemo(() => {
     if (!filterShiftTypeId) return rollingShifts;
-    if (filterShiftTypeId === "__none__") {
-      return rollingShifts.filter((s) => !s.shift_type_id);
-    }
     return rollingShifts.filter((s) => s.shift_type_id === filterShiftTypeId);
   }, [rollingShifts, filterShiftTypeId]);
 
@@ -742,9 +792,6 @@ export default function AdminCalendar({ workplaceId }: Props) {
 
   const monthShiftsFiltered = useMemo(() => {
     if (!filterShiftTypeId) return monthShifts;
-    if (filterShiftTypeId === "__none__") {
-      return monthShifts.filter((s) => !s.shift_type_id);
-    }
     return monthShifts.filter((s) => s.shift_type_id === filterShiftTypeId);
   }, [monthShifts, filterShiftTypeId]);
 
@@ -795,6 +842,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
     }
     return map;
   }, [employeeTypes]);
+  const defaultEmployeeTypeId = employeeTypes[0]?.id ?? "";
 
   const memberByUserId = useMemo(() => {
     const map = new Map<string, WorkplaceMemberDepartmentsRow>();
@@ -805,6 +853,258 @@ export default function AdminCalendar({ workplaceId }: Props) {
   }, [members]);
 
   const canManageShifts = calendarAdminNameView;
+
+  const closeMemberEditor = useCallback(() => {
+    setMemberEditorMode(null);
+    setMemberEditorUserId(null);
+    setMemberEditorDraft(null);
+    setMemberEditorMessage(null);
+    setMemberCvBusy(false);
+    setMemberCvFile(null);
+    setMemberHasCv(false);
+    setMemberLoadingDetails(false);
+    setMemberPreferences([]);
+    setMemberPreferencesBusy(false);
+  }, []);
+
+  const openCreateMemberEditor = useCallback(() => {
+    if (!canManageShifts) return;
+    setMemberEditorMode("create");
+    setMemberEditorUserId(null);
+    setMemberEditorDraft(blankMemberProfileDraft(defaultEmployeeTypeId));
+    setMemberEditorMessage(
+      defaultEmployeeTypeId ? null : "Opret mindst én medarbejdertype først."
+    );
+    setMemberCvBusy(false);
+    setMemberCvFile(null);
+    setMemberHasCv(false);
+    setMemberLoadingDetails(false);
+    setMemberPreferences([]);
+    setMemberPreferencesBusy(false);
+  }, [canManageShifts, defaultEmployeeTypeId]);
+
+  const openEditMemberEditor = useCallback(
+    async (userId: string) => {
+      if (!canManageShifts) return;
+      setMemberEditorMode("edit");
+      setMemberEditorUserId(userId);
+      setMemberEditorDraft(blankMemberProfileDraft(defaultEmployeeTypeId));
+      setMemberEditorMessage(null);
+      setMemberCvBusy(false);
+      setMemberCvFile(null);
+      setMemberHasCv(false);
+      setMemberLoadingDetails(true);
+      setMemberPreferences([]);
+      const [profileRes, prefRes] = await Promise.all([
+        getWorkplaceMemberProfileDetails(workplaceId, userId),
+        getWorkplaceMemberPreferences(workplaceId, userId),
+      ]);
+      if (!profileRes.ok) {
+        setMemberEditorMessage(profileRes.error);
+        setMemberLoadingDetails(false);
+        return;
+      }
+      setMemberEditorDraft({
+        firstName: profileRes.data.firstName,
+        lastName: profileRes.data.lastName,
+        email: profileRes.data.email,
+        mobilePhone: profileRes.data.mobilePhone,
+        streetName: profileRes.data.streetName,
+        streetNumber: profileRes.data.streetNumber,
+        postalCode: profileRes.data.postalCode,
+        city: profileRes.data.city,
+        country: profileRes.data.country,
+        employeeTypeId: profileRes.data.employeeTypeId ?? defaultEmployeeTypeId,
+        note: profileRes.data.note ?? "",
+      });
+      setMemberHasCv(profileRes.data.hasCv);
+      if (prefRes.ok) {
+        setMemberPreferences(
+          prefRes.rows.map((row) => ({
+            id: row.id,
+            priority: row.priority,
+            preferenceText: row.preferenceText,
+          }))
+        );
+      } else {
+        setMemberEditorMessage((prev) => prev ?? prefRes.error);
+      }
+      setMemberLoadingDetails(false);
+    },
+    [canManageShifts, defaultEmployeeTypeId, workplaceId]
+  );
+
+  const onMemberDraftField = useCallback(
+    (key: keyof MemberProfileDraft, value: string) => {
+      setMemberEditorDraft((prev) => {
+        if (!prev) return prev;
+        return { ...prev, [key]: value };
+      });
+    },
+    []
+  );
+
+  const addPreferenceRow = useCallback(() => {
+    setMemberPreferences((prev) => [
+      ...prev,
+      {
+        id: `new-${Date.now()}-${prev.length + 1}`,
+        priority: prev.length + 1,
+        preferenceText: "",
+      },
+    ]);
+  }, []);
+
+  const removePreferenceRow = useCallback((id: string) => {
+    setMemberPreferences((prev) =>
+      prev
+        .filter((row) => row.id !== id)
+        .map((row, idx) => ({ ...row, priority: idx + 1 }))
+    );
+  }, []);
+
+  const updatePreferenceRow = useCallback(
+    (id: string, patch: Partial<Pick<MemberPreferenceDraft, "priority" | "preferenceText">>) => {
+      setMemberPreferences((prev) =>
+        prev
+          .map((row) => (row.id === id ? { ...row, ...patch } : row))
+          .sort((a, b) => a.priority - b.priority)
+      );
+    },
+    []
+  );
+
+  const savePreferencesForUser = useCallback(
+    async (userId: string) => {
+      setMemberPreferencesBusy(true);
+      try {
+        const res = await saveWorkplaceMemberPreferences(
+          workplaceId,
+          userId,
+          memberPreferences.map((row, idx) => ({
+            priority: Number.isFinite(row.priority) ? Math.max(1, Math.floor(row.priority)) : idx + 1,
+            preferenceText: row.preferenceText,
+          }))
+        );
+        if (!res.ok) {
+          setMemberEditorMessage((prev) => prev ?? res.error);
+          return false;
+        }
+        return true;
+      } finally {
+        setMemberPreferencesBusy(false);
+      }
+    },
+    [memberPreferences, workplaceId]
+  );
+
+  const saveMemberEditor = useCallback(async () => {
+    if (!memberEditorDraft) return;
+    setMemberEditorBusy(true);
+    setMemberEditorMessage(null);
+    try {
+      if (memberEditorMode === "create") {
+        const res = await createWorkplaceMemberWithProfile(workplaceId, {
+          firstName: memberEditorDraft.firstName,
+          lastName: memberEditorDraft.lastName,
+          email: memberEditorDraft.email,
+          mobilePhone: memberEditorDraft.mobilePhone,
+          streetName: memberEditorDraft.streetName,
+          streetNumber: memberEditorDraft.streetNumber,
+          postalCode: memberEditorDraft.postalCode,
+          city: memberEditorDraft.city,
+          country: memberEditorDraft.country,
+          employeeTypeId: memberEditorDraft.employeeTypeId,
+          note: memberEditorDraft.note.trim() ? memberEditorDraft.note : null,
+        });
+        if (!res.ok) {
+          setMemberEditorMessage(res.error);
+          return;
+        }
+        const prefSaved = await savePreferencesForUser(res.userId);
+        if (!prefSaved) {
+          await load();
+          return;
+        }
+        if (memberCvFile) {
+          const fd = new FormData();
+          fd.append("file", memberCvFile);
+          const uploadRes = await uploadWorkplaceMemberCv(workplaceId, res.userId, fd);
+          if (!uploadRes.ok) {
+            setMemberEditorMessage(`Medarbejder oprettet, men CV upload fejlede: ${uploadRes.error}`);
+            await load();
+            return;
+          }
+        }
+        await load();
+        closeMemberEditor();
+        return;
+      }
+
+      if (!memberEditorUserId) return;
+      const res = await updateWorkplaceMemberWithProfile(workplaceId, memberEditorUserId, {
+        firstName: memberEditorDraft.firstName,
+        lastName: memberEditorDraft.lastName,
+        email: memberEditorDraft.email,
+        mobilePhone: memberEditorDraft.mobilePhone,
+        streetName: memberEditorDraft.streetName,
+        streetNumber: memberEditorDraft.streetNumber,
+        postalCode: memberEditorDraft.postalCode,
+        city: memberEditorDraft.city,
+        country: memberEditorDraft.country,
+        employeeTypeId: memberEditorDraft.employeeTypeId,
+        note: memberEditorDraft.note.trim() ? memberEditorDraft.note : null,
+      });
+      if (!res.ok) {
+        setMemberEditorMessage(res.error);
+        return;
+      }
+      const prefSaved = await savePreferencesForUser(memberEditorUserId);
+      if (!prefSaved) {
+        await load();
+        return;
+      }
+      if (memberCvFile) {
+        const fd = new FormData();
+        fd.append("file", memberCvFile);
+        const uploadRes = await uploadWorkplaceMemberCv(workplaceId, memberEditorUserId, fd);
+        if (!uploadRes.ok) {
+          setMemberEditorMessage(`Data gemt, men CV upload fejlede: ${uploadRes.error}`);
+          await load();
+          return;
+        }
+      }
+      await load();
+      closeMemberEditor();
+    } finally {
+      setMemberEditorBusy(false);
+    }
+  }, [
+    closeMemberEditor,
+    load,
+    memberCvFile,
+    memberEditorDraft,
+    memberEditorMode,
+    memberEditorUserId,
+    savePreferencesForUser,
+    workplaceId,
+  ]);
+
+  const viewMemberCv = useCallback(async () => {
+    if (!memberEditorUserId) return;
+    setMemberCvBusy(true);
+    setMemberEditorMessage(null);
+    try {
+      const res = await getWorkplaceMemberCvSignedUrl(workplaceId, memberEditorUserId);
+      if (!res.ok) {
+        setMemberEditorMessage(res.error);
+        return;
+      }
+      window.open(res.url, "_blank", "noopener,noreferrer");
+    } finally {
+      setMemberCvBusy(false);
+    }
+  }, [memberEditorUserId, workplaceId]);
 
   const replacementCandidates = useMemo(() => {
     if (!selectedShift) return [];
@@ -1650,7 +1950,6 @@ export default function AdminCalendar({ workplaceId }: Props) {
               className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
             >
               <option value="">Alle vagttyper</option>
-              <option value="__none__">Uden vagttype</option>
               {shiftTypes.map((t) => (
                 <option key={t.id} value={t.id}>
                   {t.label}
@@ -1669,7 +1968,6 @@ export default function AdminCalendar({ workplaceId }: Props) {
               className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
             >
               <option value="">Alle medarbejdertyper</option>
-              <option value="__none__">Uden medarbejdertype</option>
               {employeeTypes.map((t) => (
                 <option key={t.id} value={t.id}>
                   {t.label}
@@ -1839,12 +2137,11 @@ export default function AdminCalendar({ workplaceId }: Props) {
                           >
                             <td className="sticky left-0 z-10 w-[200px] min-w-[200px] max-w-[200px] border-b border-r border-zinc-100 bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900">
                               <EmployeeCalendarNameCell
-                                workplaceId={workplaceId}
                                 emp={emp}
-                                onSaved={() => void load()}
                                 viewerUserId={viewerUserId}
                                 nameMode={calendarAdminNameView ? "full" : "privacy"}
                                 canEdit={calendarAdminNameView}
+                                onOpenEdit={() => void openEditMemberEditor(emp.user_id)}
                               />
                             </td>
 
@@ -1943,6 +2240,23 @@ export default function AdminCalendar({ workplaceId }: Props) {
                       ) : null}
                     </>
                   )}
+                  <tr>
+                    <td className="sticky left-0 z-20 w-[200px] min-w-[200px] max-w-[200px] border-b border-r border-zinc-200 bg-zinc-50 px-3 py-3 dark:border-zinc-700 dark:bg-zinc-900">
+                      <button
+                        type="button"
+                        onClick={() => openCreateMemberEditor()}
+                        disabled={!canManageShifts}
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-zinc-300 px-3 py-2 text-xs font-semibold text-zinc-700 transition hover:border-zinc-400 hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-200 dark:hover:border-zinc-500 dark:hover:bg-zinc-800"
+                      >
+                        <Plus className="h-4 w-4" />
+                        Tilføj medarbejder
+                      </button>
+                    </td>
+                    <td
+                      colSpan={totalHourCols}
+                      className="border-b border-l border-zinc-100 bg-zinc-50/40 px-0 py-3 dark:border-zinc-800 dark:bg-zinc-950/40"
+                    />
+                  </tr>
                 </tbody>
                 </table>
                 <div className="pointer-events-none absolute inset-0 z-40">
@@ -1974,6 +2288,299 @@ export default function AdminCalendar({ workplaceId }: Props) {
         />
         <div ref={dragTimeOverlayRangeRef} />
       </div>
+
+      {memberEditorMode && canManageShifts ? (
+        <div className="fixed inset-0 z-[70] flex items-end justify-center p-0 sm:items-center sm:p-4">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/45"
+            aria-label="Luk medarbejder-dialog"
+            onClick={closeMemberEditor}
+          />
+          <div
+            className="relative z-10 flex max-h-[92vh] w-full max-w-3xl flex-col gap-4 overflow-y-auto rounded-t-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-700 dark:bg-zinc-900 sm:rounded-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="member-editor-title"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <h2 id="member-editor-title" className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+                {memberEditorMode === "create" ? "Tilføj medarbejder" : "Rediger medarbejder"}
+              </h2>
+              <button
+                type="button"
+                onClick={closeMemberEditor}
+                className="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                aria-label="Luk"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {memberLoadingDetails || !memberEditorDraft ? (
+              <div className="flex items-center gap-2 py-6 text-sm text-zinc-600 dark:text-zinc-300">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Henter medarbejderdata...
+              </div>
+            ) : (
+              <>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Fornavn *</span>
+                    <input
+                      required
+                      value={memberEditorDraft.firstName}
+                      onChange={(e) => onMemberDraftField("firstName", e.target.value)}
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                      autoComplete="given-name"
+                    />
+                  </label>
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Efternavn *</span>
+                    <input
+                      required
+                      value={memberEditorDraft.lastName}
+                      onChange={(e) => onMemberDraftField("lastName", e.target.value)}
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                      autoComplete="family-name"
+                    />
+                  </label>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Email *</span>
+                    <input
+                      required
+                      type="email"
+                      value={memberEditorDraft.email}
+                      onChange={(e) => onMemberDraftField("email", e.target.value)}
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                      autoComplete="email"
+                    />
+                  </label>
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Mobilnummer *</span>
+                    <input
+                      required
+                      value={memberEditorDraft.mobilePhone}
+                      onChange={(e) => onMemberDraftField("mobilePhone", e.target.value)}
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                      autoComplete="tel"
+                    />
+                  </label>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Vejnavn *</span>
+                    <input
+                      required
+                      value={memberEditorDraft.streetName}
+                      onChange={(e) => onMemberDraftField("streetName", e.target.value)}
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    />
+                  </label>
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Vej nr. *</span>
+                    <input
+                      required
+                      value={memberEditorDraft.streetNumber}
+                      onChange={(e) => onMemberDraftField("streetNumber", e.target.value)}
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    />
+                  </label>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Postnummer *</span>
+                    <input
+                      required
+                      value={memberEditorDraft.postalCode}
+                      onChange={(e) => onMemberDraftField("postalCode", e.target.value)}
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    />
+                  </label>
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">By *</span>
+                    <input
+                      required
+                      value={memberEditorDraft.city}
+                      onChange={(e) => onMemberDraftField("city", e.target.value)}
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    />
+                  </label>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Land *</span>
+                    <input
+                      required
+                      value={memberEditorDraft.country}
+                      onChange={(e) => onMemberDraftField("country", e.target.value)}
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    />
+                  </label>
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      Medarbejdertype *
+                    </span>
+                    <select
+                      required
+                      value={memberEditorDraft.employeeTypeId}
+                      onChange={(e) => onMemberDraftField("employeeTypeId", e.target.value)}
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    >
+                      <option value="" disabled>
+                        Vælg medarbejdertype
+                      </option>
+                      {employeeTypes.map((type) => (
+                        <option key={type.id} value={type.id}>
+                          {type.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+
+                <label className="block text-sm">
+                  <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Note</span>
+                  <textarea
+                    value={memberEditorDraft.note}
+                    onChange={(e) => onMemberDraftField("note", e.target.value)}
+                    rows={3}
+                    className="w-full resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    placeholder="Valgfri intern note"
+                  />
+                </label>
+
+                <div className="rounded-xl border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-700 dark:bg-zinc-950/50">
+                  <div className="mb-3 flex items-center justify-between gap-2">
+                    <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">Præferencer</p>
+                    <button
+                      type="button"
+                      onClick={addPreferenceRow}
+                      className="inline-flex items-center gap-1 rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs font-medium text-zinc-800 hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      Tilføj
+                    </button>
+                  </div>
+                  <p className="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
+                    Prioriteret rækkefølge. Eksempel: Ferie i uge 42, Ikke arbejde lørdage.
+                  </p>
+                  <div className="space-y-2">
+                    {memberPreferences.length === 0 ? (
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400">Ingen præferencer endnu.</p>
+                    ) : (
+                      memberPreferences.map((pref) => (
+                        <div key={pref.id} className="grid grid-cols-[72px_1fr_auto] items-center gap-2">
+                          <input
+                            type="number"
+                            min={1}
+                            value={pref.priority}
+                            onChange={(e) =>
+                              updatePreferenceRow(pref.id, {
+                                priority: Number(e.target.value) || 1,
+                              })
+                            }
+                            className="w-full rounded-lg border border-zinc-300 bg-white px-2 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+                            aria-label="Prioritet"
+                          />
+                          <input
+                            type="text"
+                            value={pref.preferenceText}
+                            onChange={(e) =>
+                              updatePreferenceRow(pref.id, {
+                                preferenceText: e.target.value,
+                              })
+                            }
+                            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+                            placeholder="Skriv præference..."
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removePreferenceRow(pref.id)}
+                            className="rounded-lg px-2.5 py-2 text-xs font-medium text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/50"
+                          >
+                            Fjern
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+
+                <div className="rounded-xl border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-700 dark:bg-zinc-950/50">
+                  <p className="mb-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">Upload CV (PDF)</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-800 hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800">
+                      <FileText className="h-4 w-4" aria-hidden />
+                      Vælg PDF
+                      <input
+                        type="file"
+                        className="sr-only"
+                        accept=".pdf,application/pdf"
+                        disabled={memberEditorBusy || memberCvBusy}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0] ?? null;
+                          e.target.value = "";
+                          setMemberCvFile(file);
+                        }}
+                      />
+                    </label>
+                    {memberCvFile ? (
+                      <span className="text-xs text-zinc-600 dark:text-zinc-300">{memberCvFile.name}</span>
+                    ) : null}
+                    {memberEditorMode === "edit" && memberHasCv ? (
+                      <button
+                        type="button"
+                        disabled={memberCvBusy || memberEditorBusy}
+                        onClick={() => void viewMemberCv()}
+                        className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-800 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                      >
+                        Se nuværende CV
+                      </button>
+                    ) : null}
+                    {memberCvBusy ? <Loader2 className="h-4 w-4 animate-spin text-zinc-500" /> : null}
+                  </div>
+                </div>
+
+                {memberEditorMessage ? (
+                  <p className="text-sm text-red-600 dark:text-red-400">{memberEditorMessage}</p>
+                ) : null}
+
+                <div className="flex justify-end gap-2 border-t border-zinc-200 pt-4 dark:border-zinc-700">
+                  <button
+                    type="button"
+                    disabled={memberEditorBusy}
+                    onClick={closeMemberEditor}
+                    className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium dark:border-zinc-600"
+                  >
+                    Annuller
+                  </button>
+                  <button
+                    type="button"
+                    disabled={memberEditorBusy || memberLoadingDetails || memberPreferencesBusy}
+                    onClick={() => void saveMemberEditor()}
+                    className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                  >
+                    {memberEditorBusy ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : memberEditorMode === "create" ? (
+                      "Opret medarbejder"
+                    ) : (
+                      "Gem ændringer"
+                    )}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      ) : null}
 
       {pendingDeleteShift && canManageShifts ? (
         <div className="fixed inset-0 z-[60] flex items-end justify-center p-0 sm:items-center sm:p-4">

@@ -20,7 +20,9 @@ import {
   listWorkplaceApiKeys,
   revokeWorkplaceApiKey,
   saveWorkplaceDepartmentMemberships,
+  importWorkplaceMembersFromCsv,
   updateWorkplace,
+  type WorkplaceMemberImportRowResult,
   type TypeTemplateRow,
   type WorkplaceApiKeyMeta,
   type WorkplaceDepartmentRow,
@@ -104,6 +106,15 @@ export default function WorkplaceDetailClient({
   const [deptList, setDeptList] = useState(departments);
   const [newDeptName, setNewDeptName] = useState("");
   const [deptBusy, setDeptBusy] = useState(false);
+  const [importCsv, setImportCsv] = useState("");
+  const [importBusy, setImportBusy] = useState(false);
+  const [importResults, setImportResults] = useState<WorkplaceMemberImportRowResult[]>([]);
+  const [importSummary, setImportSummary] = useState<{
+    createdInvited: number;
+    addedExisting: number;
+    alreadyMember: number;
+    errors: number;
+  } | null>(null);
   const [membershipMap, setMembershipMap] = useState<Record<string, string[]>>(
     () =>
       Object.fromEntries(
@@ -375,6 +386,28 @@ export default function WorkplaceDetailClient({
       router.refresh();
     } finally {
       setDeptBusy(false);
+    }
+  }
+
+  async function handleImportMembers() {
+    const raw = importCsv.trim();
+    if (!raw) return;
+    setImportBusy(true);
+    setMsg(null);
+    setImportSummary(null);
+    setImportResults([]);
+    try {
+      const res = await importWorkplaceMembersFromCsv(d.id, raw);
+      if (!res.ok) {
+        setMsg(res.error);
+        return;
+      }
+      setImportResults(res.results);
+      setImportSummary(res.summary);
+      setMsg("Import gennemført.");
+      router.refresh();
+    } finally {
+      setImportBusy(false);
     }
   }
 
@@ -778,6 +811,88 @@ export default function WorkplaceDetailClient({
             </button>
           </div>
         ) : null}
+
+        <div className="space-y-3 rounded-xl border border-dashed border-zinc-300 bg-zinc-50/70 p-4 dark:border-zinc-700 dark:bg-zinc-950/40">
+          <div>
+            <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              Importér medarbejdere
+            </p>
+            <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
+              Brug formatet nedenfor. Nye medarbejdere oprettes og får aktiveringslink; eksisterende brugere tilknyttes arbejdspladsen.
+            </p>
+          </div>
+          <div className="rounded-lg border border-zinc-200 bg-white p-3 text-xs dark:border-zinc-700 dark:bg-zinc-900">
+            <p className="mb-2 font-medium text-zinc-700 dark:text-zinc-300">Prædefineret format (semicolon-separeret)</p>
+            <code className="block overflow-x-auto whitespace-nowrap font-mono text-[11px] text-zinc-700 dark:text-zinc-300">
+              first_name;last_name;email;mobile_phone;street_name;street_number;postal_code;city;country;employee_type;note
+            </code>
+            <code className="mt-1 block overflow-x-auto whitespace-nowrap font-mono text-[11px] text-zinc-600 dark:text-zinc-400">
+              Anna;Jensen;anna@firma.dk;+4522334455;Nørregade;12;8000;Aarhus;DK;Kok;Kan kun arbejde eftermiddag
+            </code>
+          </div>
+          <textarea
+            value={importCsv}
+            onChange={(e) => setImportCsv(e.target.value)}
+            rows={8}
+            placeholder="Indsæt rækker i formatet ovenfor..."
+            className="w-full resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2 text-xs font-mono dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+          />
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              disabled={importBusy || !importCsv.trim()}
+              onClick={() => void handleImportMembers()}
+              className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
+            >
+              {importBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              Start import
+            </button>
+            {importSummary ? (
+              <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                Nye+inviteret: {importSummary.createdInvited} · Tilknyttet eksisterende: {importSummary.addedExisting} · Allerede medlem: {importSummary.alreadyMember} · Fejl: {importSummary.errors}
+              </p>
+            ) : null}
+          </div>
+          {importResults.length > 0 ? (
+            <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700">
+              <table className="min-w-full text-left text-xs">
+                <thead className="border-b border-zinc-200 bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/60">
+                  <tr>
+                    <th className="px-2 py-2 font-medium">Linje</th>
+                    <th className="px-2 py-2 font-medium">E-mail</th>
+                    <th className="px-2 py-2 font-medium">Status</th>
+                    <th className="px-2 py-2 font-medium">Besked</th>
+                    <th className="px-2 py-2 font-medium">Aktiveringslink</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                  {importResults.map((row) => (
+                    <tr key={`${row.line}-${row.email}`}>
+                      <td className="px-2 py-1.5">{row.line}</td>
+                      <td className="px-2 py-1.5">{row.email || "—"}</td>
+                      <td className="px-2 py-1.5">{row.status}</td>
+                      <td className="px-2 py-1.5">{row.message}</td>
+                      <td className="px-2 py-1.5">
+                        {row.activationLink ? (
+                          <a
+                            href={row.activationLink}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-blue-600 underline hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                          >
+                            Åbn link
+                          </a>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : null}
+        </div>
       </section>
 
       <section className="space-y-8 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
