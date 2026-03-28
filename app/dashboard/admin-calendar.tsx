@@ -286,8 +286,8 @@ type CalendarRow =
 const BASE_HOUR_COL = 34;
 /** Mindste timekolonne — forhindrer «zoom helt ud» hvor gitteret bliver ubrugeligt. */
 const MIN_HOUR_COL = 26;
-/** Største timekolonne — forhindrer ekstrem zoom ind. */
-const MAX_HOUR_COL = 78;
+/** Største timekolonne — lavere værdi så gitteret forbliver synligt ved maks. zoom ind. */
+const MAX_HOUR_COL = 48;
 /** Maks. relativ ændring pr. ctrl+wheel-step (store deltaY fra trackpads). */
 const WHEEL_ZOOM_FACTOR_MIN = 0.88;
 const WHEEL_ZOOM_FACTOR_MAX = 1.12;
