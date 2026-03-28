@@ -2,6 +2,7 @@
 
 import { useCallback, useRef } from "react";
 import type { WorkplaceMemberDepartmentsRow } from "@/src/app/super-admin/workplaces/actions";
+import { useTranslations } from "@/src/contexts/translations-context";
 
 const LONG_PRESS_MS = 520;
 const MARQUEE_MS = 2400;
@@ -60,6 +61,7 @@ export default function EmployeeCalendarNameCell({
   canEdit,
   onOpenEdit,
 }: Props) {
+  const { t } = useTranslations();
   const scrollRef = useRef<HTMLDivElement>(null);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const suppressClickUntil = useRef(0);
@@ -113,8 +115,14 @@ export default function EmployeeCalendarNameCell({
           onClick={onClickOpen}
           aria-label={
             canEdit
-              ? `Medarbejder ${emp.display_name}, rediger`
-              : `Medarbejder ${label}`
+              ? t("calendar.name_cell.aria_edit", "Medarbejder {name}, rediger").replace(
+                  "{name}",
+                  emp.display_name
+                )
+              : t("calendar.name_cell.aria_view", "Medarbejder {name}").replace(
+                  "{name}",
+                  label
+                )
           }
         >
           <div

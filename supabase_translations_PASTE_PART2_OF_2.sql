@@ -1,3 +1,9 @@
+
+
+-- =====================================================================
+-- >>> DEL 2: supabase_seed_ui_translations_app.sql
+-- =====================================================================
+
 -- Udvider ui_translations med app-strenge (admin, dashboard, upload, fremtiden m.m.).
 -- Kør i Supabase SQL Editor efter supabase_i18n_setup.sql.
 -- Idempotent: opdaterer tekst ved gentagen kørsel.

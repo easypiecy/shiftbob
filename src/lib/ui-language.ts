@@ -1,3 +1,6 @@
+/** Cookie-navn — delt mellem server actions, RSC og klient (OAuth m.m.). */
+export const UI_LANGUAGE_COOKIE = "ui_language";
+
 /**
  * Sprog understøttet af `public.languages` / UI-oversættelser (samme koder som i databasen).
  */

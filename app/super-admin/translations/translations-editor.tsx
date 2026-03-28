@@ -37,6 +37,13 @@ export default function TranslationsEditor({ languages, sourceRows }: Props) {
     return first ?? "";
   });
 
+  /** Sikrer målsprog når props først er klar (undgår tom tabel ved edge case). */
+  useEffect(() => {
+    if (targetLang) return;
+    const first = targetOptions[0]?.language_code;
+    if (first) setTargetLang(first);
+  }, [targetLang, targetOptions]);
+
   const [inputs, setInputs] = useState<Record<string, string>>({});
   const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
   const [savingKey, setSavingKey] = useState<string | null>(null);
@@ -308,9 +315,39 @@ export default function TranslationsEditor({ languages, sourceRows }: Props) {
         </div>
       )}
 
-      {!targetLang && (
+      {sourceRows.length === 0 && (
+        <div
+          role="status"
+          className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-100"
+        >
+          <p className="font-medium">Ingen en-US kilderækker</p>
+          <p className="mt-1 text-amber-900/90 dark:text-amber-200/90">
+            Super Admin henter kun nøgler med{" "}
+            <code className="rounded bg-amber-100/80 px-1 dark:bg-amber-900/50">
+              language_code = &apos;en-US&apos;
+            </code>
+            . Kør oversættelses-SQL mod <strong>samme</strong> Supabase-projekt som
+            produktion, og tjek i SQL Editor:{" "}
+            <code className="rounded bg-amber-100/80 px-1 dark:bg-amber-900/50">
+              select count(*) from ui_translations where language_code =
+              &apos;en-US&apos;;
+            </code>
+          </p>
+        </div>
+      )}
+
+      {!targetLang && targetOptions.length === 0 && languages.length === 0 && (
         <p className="text-sm text-zinc-500">
-          Ingen målsprog endnu — tilføj sprog i databasen.
+          Ingen rækker i <span className="font-mono">languages</span> — kør
+          i18n-setup (sprog + <span className="font-mono">eu_countries</span>).
+        </p>
+      )}
+
+      {!targetLang && targetOptions.length === 0 && languages.length > 0 && (
+        <p className="text-sm text-zinc-500">
+          Kun <span className="font-mono">en-US</span> (eller intet målsprog) i{" "}
+          <span className="font-mono">languages</span> — tilføj mindst ét andet
+          sprog (fx <span className="font-mono">da</span>) via seed / SQL.
         </p>
       )}
 

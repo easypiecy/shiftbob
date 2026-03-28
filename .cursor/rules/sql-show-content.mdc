@@ -1,0 +1,15 @@
+---
+description: When discussing Supabase/migration SQL, always show runnable SQL in the chat, not only file paths.
+alwaysApply: true
+---
+
+# Vis SQL i chatten
+
+Når brugeren spørger om SQL der skal køres (Supabase, seeds, migrations, teardown, patches), skal assistenten **altid** levere den **komplette, kørbare SQL** i svaret som én eller flere `sql`-kodeblokke.
+
+- **Undlad** at nøjes med at henvise til filsti i repo (fx "se `supabase_x.sql`") uden også at vise selve SQL’en brugeren skal køre.
+- Scripts **under ~200 linjer**: én samlet `sql`-blok med hele indholdet.
+- Scripts **længere end det**: del i tydeligt mærkede blokke (fx "Del 1 / Del 2") i korrekt kørselsrækkefølge, **uden** at udelade mellemstykker — brugeren skal kunne kopiere og køre uden at åbne repo.
+- Efter redigering af `.sql`-filer i repo: vis i svaret den **relevante fulde** opdaterede statement/blok (eller hele filen i dele), så brugeren ikke skal lede.
+
+Formål: spare tid; brugeren skal ikke selv jagte scripts.

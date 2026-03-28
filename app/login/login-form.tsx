@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { syncLoginUiLanguageFromPicker } from "@/src/lib/ui-language-client";
 import { routeAfterLogin } from "@/src/lib/workplaces";
 import { useTranslations } from "@/src/contexts/translations-context";
 import { createClient } from "@/src/utils/supabase/client";
@@ -67,6 +68,7 @@ export function LoginForm({
         return;
       }
       if (data?.url) {
+        syncLoginUiLanguageFromPicker();
         window.location.assign(data.url);
       } else {
         setOauthLoading(null);
@@ -98,6 +100,7 @@ export function LoginForm({
       return;
     }
 
+    syncLoginUiLanguageFromPicker();
     const result = await routeAfterLogin(supabase, router);
     setSigningIn(false);
 

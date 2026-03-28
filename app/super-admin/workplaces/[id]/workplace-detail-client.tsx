@@ -404,7 +404,7 @@ export default function WorkplaceDetailClient({
       }
       setImportResults(res.results);
       setImportSummary(res.summary);
-      setMsg("Import gennemført.");
+      setMsg(tr("settings.members_import.done_msg", "Import gennemført."));
       router.refresh();
     } finally {
       setImportBusy(false);
@@ -815,26 +815,40 @@ export default function WorkplaceDetailClient({
         <div className="space-y-3 rounded-xl border border-dashed border-zinc-300 bg-zinc-50/70 p-4 dark:border-zinc-700 dark:bg-zinc-950/40">
           <div>
             <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-              Importér medarbejdere
+              {tr("settings.members_import.title", "Importér medarbejdere")}
             </p>
             <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400">
-              Brug formatet nedenfor. Nye medarbejdere oprettes og får aktiveringslink; eksisterende brugere tilknyttes arbejdspladsen.
+              {tr(
+                "settings.members_import.intro",
+                "Brug formatet nedenfor. Nye medarbejdere oprettes og får aktiveringslink; eksisterende brugere tilknyttes arbejdspladsen."
+              )}
             </p>
           </div>
           <div className="rounded-lg border border-zinc-200 bg-white p-3 text-xs dark:border-zinc-700 dark:bg-zinc-900">
-            <p className="mb-2 font-medium text-zinc-700 dark:text-zinc-300">Prædefineret format (semicolon-separeret)</p>
+            <p className="mb-2 font-medium text-zinc-700 dark:text-zinc-300">
+              {tr("settings.members_import.format_title", "Prædefineret format (semicolon-separeret)")}
+            </p>
             <code className="block overflow-x-auto whitespace-nowrap font-mono text-[11px] text-zinc-700 dark:text-zinc-300">
-              first_name;last_name;email;mobile_phone;street_name;street_number;postal_code;city;country;employee_type;note
+              {tr(
+                "settings.members_import.header_example",
+                "first_name;last_name;email;mobile_phone;street_name;street_number;postal_code;city;country;employee_type;note"
+              )}
             </code>
             <code className="mt-1 block overflow-x-auto whitespace-nowrap font-mono text-[11px] text-zinc-600 dark:text-zinc-400">
-              Anna;Jensen;anna@firma.dk;+4522334455;Nørregade;12;8000;Aarhus;DK;Kok;Kan kun arbejde eftermiddag
+              {tr(
+                "settings.members_import.row_example",
+                "Anna;Jensen;anna@firma.dk;+4522334455;Nørregade;12;8000;Aarhus;DK;Kok;Kan kun arbejde eftermiddag"
+              )}
             </code>
           </div>
           <textarea
             value={importCsv}
             onChange={(e) => setImportCsv(e.target.value)}
             rows={8}
-            placeholder="Indsæt rækker i formatet ovenfor..."
+            placeholder={tr(
+              "settings.members_import.placeholder",
+              "Indsæt rækker i formatet ovenfor…"
+            )}
             className="w-full resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2 text-xs font-mono dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
           />
           <div className="flex flex-wrap items-center gap-2">
@@ -845,11 +859,17 @@ export default function WorkplaceDetailClient({
               className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
             >
               {importBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              Start import
+              {tr("settings.members_import.cta", "Start import")}
             </button>
             {importSummary ? (
               <p className="text-xs text-zinc-600 dark:text-zinc-400">
-                Nye+inviteret: {importSummary.createdInvited} · Tilknyttet eksisterende: {importSummary.addedExisting} · Allerede medlem: {importSummary.alreadyMember} · Fejl: {importSummary.errors}
+                {tr("settings.members_import.summary_new", "Nye+inviteret")}:{" "}
+                {importSummary.createdInvited} ·{" "}
+                {tr("settings.members_import.summary_linked", "Tilknyttet eksisterende")}:{" "}
+                {importSummary.addedExisting} ·{" "}
+                {tr("settings.members_import.summary_member", "Allerede medlem")}:{" "}
+                {importSummary.alreadyMember} ·{" "}
+                {tr("settings.members_import.summary_errors", "Fejl")}: {importSummary.errors}
               </p>
             ) : null}
           </div>
@@ -858,11 +878,21 @@ export default function WorkplaceDetailClient({
               <table className="min-w-full text-left text-xs">
                 <thead className="border-b border-zinc-200 bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/60">
                   <tr>
-                    <th className="px-2 py-2 font-medium">Linje</th>
-                    <th className="px-2 py-2 font-medium">E-mail</th>
-                    <th className="px-2 py-2 font-medium">Status</th>
-                    <th className="px-2 py-2 font-medium">Besked</th>
-                    <th className="px-2 py-2 font-medium">Aktiveringslink</th>
+                    <th className="px-2 py-2 font-medium">
+                      {tr("settings.members_import.col_line", "Linje")}
+                    </th>
+                    <th className="px-2 py-2 font-medium">
+                      {tr("settings.members_import.col_email", "E-mail")}
+                    </th>
+                    <th className="px-2 py-2 font-medium">
+                      {tr("settings.members_import.col_status", "Status")}
+                    </th>
+                    <th className="px-2 py-2 font-medium">
+                      {tr("settings.members_import.col_message", "Besked")}
+                    </th>
+                    <th className="px-2 py-2 font-medium">
+                      {tr("settings.members_import.col_link", "Aktiveringslink")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
@@ -870,7 +900,12 @@ export default function WorkplaceDetailClient({
                     <tr key={`${row.line}-${row.email}`}>
                       <td className="px-2 py-1.5">{row.line}</td>
                       <td className="px-2 py-1.5">{row.email || "—"}</td>
-                      <td className="px-2 py-1.5">{row.status}</td>
+                      <td className="px-2 py-1.5">
+                        {tr(
+                          `settings.members_import.status.${row.status}`,
+                          row.status
+                        )}
+                      </td>
                       <td className="px-2 py-1.5">{row.message}</td>
                       <td className="px-2 py-1.5">
                         {row.activationLink ? (
@@ -880,7 +915,7 @@ export default function WorkplaceDetailClient({
                             rel="noreferrer"
                             className="text-blue-600 underline hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                           >
-                            Åbn link
+                            {tr("settings.members_import.link_open", "Åbn link")}
                           </a>
                         ) : (
                           "—"

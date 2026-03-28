@@ -3,6 +3,9 @@ import { assertSuperAdminAccess } from "@/src/lib/super-admin";
 import { createServerSupabase } from "@/src/utils/supabase/server";
 import { SuperAdminShell } from "./super-admin-shell";
 
+/** DB-drevet super-admin; ingen statisk cache af sider under /super-admin. */
+export const dynamic = "force-dynamic";
+
 export default async function SuperAdminLayout({
   children,
 }: {

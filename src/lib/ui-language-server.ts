@@ -3,10 +3,11 @@ import { cookies, headers } from "next/headers";
 import {
   isSupportedUiLanguage,
   resolveLanguageFromAcceptLanguage,
+  UI_LANGUAGE_COOKIE,
 } from "@/src/lib/ui-language";
 import { getTranslationsCached } from "@/src/lib/translations-server";
 
-export const UI_LANGUAGE_COOKIE = "ui_language";
+export { UI_LANGUAGE_COOKIE };
 
 /**
  * Manuel cookie → ellers Accept-Language → ellers en-US.

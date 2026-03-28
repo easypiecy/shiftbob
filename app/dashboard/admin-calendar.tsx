@@ -39,6 +39,7 @@ import {
   uploadWorkplaceMemberCv,
 } from "@/src/app/dashboard/workplace-member-calendar-actions";
 import EmployeeCalendarNameCell from "@/app/dashboard/employee-calendar-name-cell";
+import { useTranslations } from "@/src/contexts/translations-context";
 import { shiftCalendarCellStyle } from "@/src/lib/calendar-shift-style";
 
 type CalendarViewMode = "rolling" | "month30";
@@ -283,8 +284,17 @@ type CalendarRow =
     };
 
 const BASE_HOUR_COL = 34;
-const MIN_HOUR_COL = 22;
-const MAX_HOUR_COL = 150;
+/** Mindste timekolonne — forhindrer «zoom helt ud» hvor gitteret bliver ubrugeligt. */
+const MIN_HOUR_COL = 26;
+/** Største timekolonne — forhindrer ekstrem zoom ind. */
+const MAX_HOUR_COL = 78;
+/** Maks. relativ ændring pr. ctrl+wheel-step (store deltaY fra trackpads). */
+const WHEEL_ZOOM_FACTOR_MIN = 0.88;
+const WHEEL_ZOOM_FACTOR_MAX = 1.12;
+
+function clampHourColWidth(px: number): number {
+  return Math.max(MIN_HOUR_COL, Math.min(MAX_HOUR_COL, px));
+}
 const NAME_COL_WIDTH = 200;
 
 type ActivePinch = {
@@ -434,6 +444,7 @@ const ShiftGridCell = memo(function ShiftGridCell({
 );
 
 export default function AdminCalendar({ workplaceId }: Props) {
+  const { t } = useTranslations();
   const isDevBuild = process.env.NODE_ENV !== "production";
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -873,7 +884,12 @@ export default function AdminCalendar({ workplaceId }: Props) {
     setMemberEditorUserId(null);
     setMemberEditorDraft(blankMemberProfileDraft(defaultEmployeeTypeId));
     setMemberEditorMessage(
-      defaultEmployeeTypeId ? null : "Opret mindst én medarbejdertype først."
+      defaultEmployeeTypeId
+        ? null
+        : t(
+            "calendar.member_editor.need_employee_type",
+            "Opret mindst én medarbejdertype først."
+          )
     );
     setMemberCvBusy(false);
     setMemberCvFile(null);
@@ -881,7 +897,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
     setMemberLoadingDetails(false);
     setMemberPreferences([]);
     setMemberPreferencesBusy(false);
-  }, [canManageShifts, defaultEmployeeTypeId]);
+  }, [canManageShifts, defaultEmployeeTypeId, t]);
 
   const openEditMemberEditor = useCallback(
     async (userId: string) => {
@@ -1031,7 +1047,12 @@ export default function AdminCalendar({ workplaceId }: Props) {
           fd.append("file", memberCvFile);
           const uploadRes = await uploadWorkplaceMemberCv(workplaceId, res.userId, fd);
           if (!uploadRes.ok) {
-            setMemberEditorMessage(`Medarbejder oprettet, men CV upload fejlede: ${uploadRes.error}`);
+            setMemberEditorMessage(
+              t(
+                "calendar.member_editor.create_cv_failed",
+                "Medarbejder oprettet, men CV upload fejlede: {detail}"
+              ).replace("{detail}", uploadRes.error)
+            );
             await load();
             return;
           }
@@ -1069,7 +1090,12 @@ export default function AdminCalendar({ workplaceId }: Props) {
         fd.append("file", memberCvFile);
         const uploadRes = await uploadWorkplaceMemberCv(workplaceId, memberEditorUserId, fd);
         if (!uploadRes.ok) {
-          setMemberEditorMessage(`Data gemt, men CV upload fejlede: ${uploadRes.error}`);
+            setMemberEditorMessage(
+              t(
+                "calendar.member_editor.update_cv_failed",
+                "Data gemt, men CV upload fejlede: {detail}"
+              ).replace("{detail}", uploadRes.error)
+            );
           await load();
           return;
         }
@@ -1087,6 +1113,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
     memberEditorMode,
     memberEditorUserId,
     savePreferencesForUser,
+    t,
     workplaceId,
   ]);
 
@@ -1271,10 +1298,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
     e.preventDefault();
     const pinch = pinchRef.current;
     const scale = dist / pinch.startDistance;
-    const nextWidth = Math.max(
-      MIN_HOUR_COL,
-      Math.min(MAX_HOUR_COL, pinch.startHourColWidth * scale)
-    );
+    const nextWidth = clampHourColWidth(pinch.startHourColWidth * scale);
     const normalizedScale = nextWidth / pinch.startHourColWidth;
     const targetContentX = pinch.anchorContentX * normalizedScale;
     const nextScrollLeft = Math.max(0, targetContentX - pinch.centerXInViewport);
@@ -1300,8 +1324,12 @@ export default function AdminCalendar({ workplaceId }: Props) {
     e.preventDefault();
     e.stopPropagation();
 
-    const zoomFactor = Math.exp(-e.deltaY * 0.01);
-    const nextWidth = Math.max(MIN_HOUR_COL, Math.min(MAX_HOUR_COL, hourColWidth * zoomFactor));
+    const rawFactor = Math.exp(-e.deltaY * 0.01);
+    const zoomFactor = Math.min(
+      WHEEL_ZOOM_FACTOR_MAX,
+      Math.max(WHEEL_ZOOM_FACTOR_MIN, rawFactor)
+    );
+    const nextWidth = clampHourColWidth(hourColWidth * zoomFactor);
 
     const rect = el.getBoundingClientRect();
     const centerXInViewport = e.clientX - rect.left;
@@ -1930,7 +1958,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
           <div className="relative">
             <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
             <input
-              aria-label="Søg medarbejdere"
+              aria-label={t(
+                "calendar.employee.search_aria",
+                "Søg medarbejdere"
+              )}
               type="search"
               value={employeeQuery}
               onChange={(e) => setEmployeeQuery(e.target.value)}
@@ -1967,7 +1998,12 @@ export default function AdminCalendar({ workplaceId }: Props) {
               onChange={(e) => setFilterEmployeeTypeId(e.target.value || null)}
               className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
             >
-              <option value="">Alle medarbejdertyper</option>
+              <option value="">
+                {t(
+                  "calendar.employee.filter_all_types",
+                  "Alle medarbejdertyper"
+                )}
+              </option>
               {employeeTypes.map((t) => (
                 <option key={t.id} value={t.id}>
                   {t.label}
@@ -2091,7 +2127,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
                         colSpan={1 + totalHourCols}
                         className="border-b border-zinc-100 px-3 py-8 text-center text-sm text-zinc-500 dark:border-zinc-800"
                       >
-                        Ingen medarbejdere matcher filteret for den valgte afdeling.
+                        {t(
+                          "calendar.employee.empty_filter",
+                          "Ingen medarbejdere matcher filteret for den valgte afdeling."
+                        )}
                       </td>
                     </tr>
                   ) : (
@@ -2249,7 +2288,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                         className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-zinc-300 px-3 py-2 text-xs font-semibold text-zinc-700 transition hover:border-zinc-400 hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-200 dark:hover:border-zinc-500 dark:hover:bg-zinc-800"
                       >
                         <Plus className="h-4 w-4" />
-                        Tilføj medarbejder
+                        {t("calendar.employee.add_button", "Tilføj medarbejder")}
                       </button>
                     </td>
                     <td
@@ -2294,7 +2333,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
           <button
             type="button"
             className="absolute inset-0 bg-black/45"
-            aria-label="Luk medarbejder-dialog"
+            aria-label={t(
+              "calendar.member_editor.close_dialog_aria",
+              "Luk medarbejder-dialog"
+            )}
             onClick={closeMemberEditor}
           />
           <div
@@ -2305,13 +2347,15 @@ export default function AdminCalendar({ workplaceId }: Props) {
           >
             <div className="flex items-start justify-between gap-3">
               <h2 id="member-editor-title" className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-                {memberEditorMode === "create" ? "Tilføj medarbejder" : "Rediger medarbejder"}
+                {memberEditorMode === "create"
+                  ? t("calendar.member_editor.title_create", "Tilføj medarbejder")
+                  : t("calendar.member_editor.title_edit", "Rediger medarbejder")}
               </h2>
               <button
                 type="button"
                 onClick={closeMemberEditor}
                 className="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-                aria-label="Luk"
+                aria-label={t("calendar.member_editor.close_aria", "Luk")}
               >
                 <X className="h-5 w-5" />
               </button>
@@ -2320,13 +2364,15 @@ export default function AdminCalendar({ workplaceId }: Props) {
             {memberLoadingDetails || !memberEditorDraft ? (
               <div className="flex items-center gap-2 py-6 text-sm text-zinc-600 dark:text-zinc-300">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Henter medarbejderdata...
+                {t("calendar.member_editor.loading", "Henter medarbejderdata…")}
               </div>
             ) : (
               <>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <label className="block text-sm">
-                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Fornavn *</span>
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      {t("calendar.member_editor.first_name", "Fornavn *")}
+                    </span>
                     <input
                       required
                       value={memberEditorDraft.firstName}
@@ -2336,7 +2382,9 @@ export default function AdminCalendar({ workplaceId }: Props) {
                     />
                   </label>
                   <label className="block text-sm">
-                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Efternavn *</span>
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      {t("calendar.member_editor.last_name", "Efternavn *")}
+                    </span>
                     <input
                       required
                       value={memberEditorDraft.lastName}
@@ -2349,7 +2397,9 @@ export default function AdminCalendar({ workplaceId }: Props) {
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <label className="block text-sm">
-                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Email *</span>
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      {t("calendar.member_editor.email", "Email *")}
+                    </span>
                     <input
                       required
                       type="email"
@@ -2360,7 +2410,9 @@ export default function AdminCalendar({ workplaceId }: Props) {
                     />
                   </label>
                   <label className="block text-sm">
-                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Mobilnummer *</span>
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      {t("calendar.member_editor.mobile", "Mobilnummer *")}
+                    </span>
                     <input
                       required
                       value={memberEditorDraft.mobilePhone}
@@ -2373,7 +2425,9 @@ export default function AdminCalendar({ workplaceId }: Props) {
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <label className="block text-sm">
-                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Vejnavn *</span>
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      {t("calendar.member_editor.street", "Vejnavn *")}
+                    </span>
                     <input
                       required
                       value={memberEditorDraft.streetName}
@@ -2382,7 +2436,9 @@ export default function AdminCalendar({ workplaceId }: Props) {
                     />
                   </label>
                   <label className="block text-sm">
-                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Vej nr. *</span>
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      {t("calendar.member_editor.street_no", "Vej nr. *")}
+                    </span>
                     <input
                       required
                       value={memberEditorDraft.streetNumber}
@@ -2394,7 +2450,9 @@ export default function AdminCalendar({ workplaceId }: Props) {
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <label className="block text-sm">
-                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Postnummer *</span>
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      {t("calendar.member_editor.postal", "Postnummer *")}
+                    </span>
                     <input
                       required
                       value={memberEditorDraft.postalCode}
@@ -2403,7 +2461,9 @@ export default function AdminCalendar({ workplaceId }: Props) {
                     />
                   </label>
                   <label className="block text-sm">
-                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">By *</span>
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      {t("calendar.member_editor.city", "By *")}
+                    </span>
                     <input
                       required
                       value={memberEditorDraft.city}
@@ -2415,7 +2475,9 @@ export default function AdminCalendar({ workplaceId }: Props) {
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <label className="block text-sm">
-                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Land *</span>
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      {t("calendar.member_editor.country", "Land *")}
+                    </span>
                     <input
                       required
                       value={memberEditorDraft.country}
@@ -2425,7 +2487,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                   </label>
                   <label className="block text-sm">
                     <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
-                      Medarbejdertype *
+                      {t("calendar.member_editor.employee_type", "Medarbejdertype *")}
                     </span>
                     <select
                       required
@@ -2434,7 +2496,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
                       className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                     >
                       <option value="" disabled>
-                        Vælg medarbejdertype
+                        {t(
+                          "calendar.member_editor.employee_type_placeholder",
+                          "Vælg medarbejdertype"
+                        )}
                       </option>
                       {employeeTypes.map((type) => (
                         <option key={type.id} value={type.id}>
@@ -2446,34 +2511,49 @@ export default function AdminCalendar({ workplaceId }: Props) {
                 </div>
 
                 <label className="block text-sm">
-                  <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">Note</span>
+                  <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                    {t("calendar.member_editor.note", "Note")}
+                  </span>
                   <textarea
                     value={memberEditorDraft.note}
                     onChange={(e) => onMemberDraftField("note", e.target.value)}
                     rows={3}
                     className="w-full resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
-                    placeholder="Valgfri intern note"
+                    placeholder={t(
+                      "calendar.member_editor.note_placeholder",
+                      "Valgfri intern note"
+                    )}
                   />
                 </label>
 
                 <div className="rounded-xl border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-700 dark:bg-zinc-950/50">
                   <div className="mb-3 flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">Præferencer</p>
+                    <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                      {t("calendar.member_editor.preferences_title", "Præferencer")}
+                    </p>
                     <button
                       type="button"
                       onClick={addPreferenceRow}
                       className="inline-flex items-center gap-1 rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs font-medium text-zinc-800 hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
                     >
                       <Plus className="h-3.5 w-3.5" />
-                      Tilføj
+                      {t("calendar.member_editor.preferences_add", "Tilføj")}
                     </button>
                   </div>
                   <p className="mb-3 text-xs text-zinc-500 dark:text-zinc-400">
-                    Prioriteret rækkefølge. Eksempel: Ferie i uge 42, Ikke arbejde lørdage.
+                    {t(
+                      "calendar.member_editor.preferences_hint",
+                      "Prioriteret rækkefølge. Eksempel: Ferie i uge 42, Ikke arbejde lørdage."
+                    )}
                   </p>
                   <div className="space-y-2">
                     {memberPreferences.length === 0 ? (
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400">Ingen præferencer endnu.</p>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                        {t(
+                          "calendar.member_editor.preferences_empty",
+                          "Ingen præferencer endnu."
+                        )}
+                      </p>
                     ) : (
                       memberPreferences.map((pref) => (
                         <div key={pref.id} className="grid grid-cols-[72px_1fr_auto] items-center gap-2">
@@ -2487,7 +2567,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
                               })
                             }
                             className="w-full rounded-lg border border-zinc-300 bg-white px-2 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
-                            aria-label="Prioritet"
+                            aria-label={t(
+                              "calendar.member_editor.priority_aria",
+                              "Prioritet"
+                            )}
                           />
                           <input
                             type="text"
@@ -2498,14 +2581,17 @@ export default function AdminCalendar({ workplaceId }: Props) {
                               })
                             }
                             className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
-                            placeholder="Skriv præference..."
+                            placeholder={t(
+                              "calendar.member_editor.preference_placeholder",
+                              "Skriv præference…"
+                            )}
                           />
                           <button
                             type="button"
                             onClick={() => removePreferenceRow(pref.id)}
                             className="rounded-lg px-2.5 py-2 text-xs font-medium text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/50"
                           >
-                            Fjern
+                            {t("calendar.member_editor.remove", "Fjern")}
                           </button>
                         </div>
                       ))
@@ -2514,11 +2600,13 @@ export default function AdminCalendar({ workplaceId }: Props) {
                 </div>
 
                 <div className="rounded-xl border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-700 dark:bg-zinc-950/50">
-                  <p className="mb-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">Upload CV (PDF)</p>
+                  <p className="mb-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                    {t("calendar.member_editor.cv_title", "Upload CV (PDF)")}
+                  </p>
                   <div className="flex flex-wrap items-center gap-2">
                     <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-800 hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800">
                       <FileText className="h-4 w-4" aria-hidden />
-                      Vælg PDF
+                      {t("calendar.member_editor.cv_choose", "Vælg PDF")}
                       <input
                         type="file"
                         className="sr-only"
@@ -2541,7 +2629,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
                         onClick={() => void viewMemberCv()}
                         className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-800 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
                       >
-                        Se nuværende CV
+                        {t(
+                          "calendar.member_editor.cv_view_existing",
+                          "Se nuværende CV"
+                        )}
                       </button>
                     ) : null}
                     {memberCvBusy ? <Loader2 className="h-4 w-4 animate-spin text-zinc-500" /> : null}
@@ -2559,7 +2650,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                     onClick={closeMemberEditor}
                     className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium dark:border-zinc-600"
                   >
-                    Annuller
+                    {t("calendar.member_editor.cancel", "Annuller")}
                   </button>
                   <button
                     type="button"
@@ -2570,9 +2661,9 @@ export default function AdminCalendar({ workplaceId }: Props) {
                     {memberEditorBusy ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : memberEditorMode === "create" ? (
-                      "Opret medarbejder"
+                      t("calendar.member_editor.submit_create", "Opret medarbejder")
                     ) : (
-                      "Gem ændringer"
+                      t("calendar.member_editor.submit_save", "Gem ændringer")
                     )}
                   </button>
                 </div>

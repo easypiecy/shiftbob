@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { isSupportedUiLanguage } from "@/src/lib/ui-language";
-import { UI_LANGUAGE_COOKIE } from "@/src/lib/ui-language-server";
+import {
+  isSupportedUiLanguage,
+  UI_LANGUAGE_COOKIE,
+} from "@/src/lib/ui-language";
 
 export async function setUiLanguageAction(
   languageCode: string
@@ -16,6 +18,7 @@ export async function setUiLanguageAction(
     path: "/",
     sameSite: "lax",
     maxAge: 60 * 60 * 24 * 365,
+    secure: process.env.NODE_ENV === "production",
   });
   revalidatePath("/", "layout");
   return { ok: true };

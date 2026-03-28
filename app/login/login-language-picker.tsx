@@ -4,6 +4,7 @@ import { Languages } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { setUiLanguageAction } from "@/src/app/ui-language-actions";
+import { persistUiLanguageCookieClient } from "@/src/lib/ui-language-client";
 import {
   SUPPORTED_UI_LANGUAGE_CODES,
   UI_LANGUAGE_LABELS,
@@ -28,6 +29,7 @@ export function UiLanguageSelect({
   function onChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const next = e.target.value;
     if (next === currentLanguage) return;
+    persistUiLanguageCookieClient(next);
     startTransition(async () => {
       await setUiLanguageAction(next);
       router.refresh();
