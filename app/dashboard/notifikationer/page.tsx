@@ -37,6 +37,15 @@ export default async function NotifikationerPage() {
   let broadcastsError: string | null = null;
 
   if (user?.id && wpId) {
+    const markRead = await supabase
+      .from("super_admin_notification_deliveries")
+      .update({ status: "sent" })
+      .eq("user_id", user.id)
+      .eq("workplace_id", wpId)
+      .eq("status", "queued");
+    if (markRead.error && !isMissingTable(markRead.error)) {
+      broadcastsError = markRead.error.message;
+    }
     const q = await supabase
       .from("super_admin_notification_deliveries")
       .select("id, title_translated, body_translated, status, created_at")
