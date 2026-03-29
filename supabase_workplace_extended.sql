@@ -196,16 +196,19 @@ grant select on public.workplace_api_keys to authenticated;
 -- Seed: standardtyper (kan redigeres i Super Admin)
 -- ---------------------------------------------------------------------------
 insert into public.employee_type_templates (name, slug, sort_order, calendar_pattern) values
-  ('Fastansat', 'permanent', 10, 'none'),
-  ('Deltid', 'part_time', 20, 'stripes'),
-  ('Vikar', 'substitute', 30, 'dots'),
-  ('Elev / lærling', 'trainee', 40, 'grid')
+  ('Fuldtid', 'full_time', 10, 'none'),
+  ('Deltid', 'part_time', 20, 'none'),
+  ('Elev', 'trainee', 30, 'stripes'),
+  ('Vikar', 'temp', 40, 'dots'),
+  ('Ung (under 18)', 'youth_u18', 50, 'grid')
 on conflict (slug) do nothing;
 
 insert into public.shift_type_templates (name, slug, sort_order, calendar_color) values
-  ('Morgen', 'morning', 5, '#fbbf24'),
-  ('Dag', 'day', 10, '#3b82f6'),
-  ('Aften', 'evening', 20, '#f97316'),
-  ('Nat', 'night', 30, '#6366f1'),
-  ('Weekend', 'weekend', 40, '#14b8a6')
+  ('Normal', 'normal', 10, '#475569'),
+  ('Ledig', 'open', 20, '#22c55e'),
+  ('Akut', 'urgent', 30, '#f97316'),
+  ('Bytte', 'swap', 40, '#f59e0b'),
+  ('Sygdom', 'sick', 50, '#8b5cf6'),
+  ('Ferie', 'vacation', 60, '#9ca3af'),
+  ('Barn 1. sygedag', 'child_sick_day', 70, '#c4b5fd')
 on conflict (slug) do nothing;

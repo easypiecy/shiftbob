@@ -50,13 +50,16 @@ where wet.template_id = ett.id
   and wet.calendar_pattern is null;
 
 -- Kendte skabeloner: farver og mønstre
-update public.shift_type_templates set calendar_color = '#3b82f6' where slug = 'day';
-update public.shift_type_templates set calendar_color = '#f97316' where slug = 'evening';
-update public.shift_type_templates set calendar_color = '#6366f1' where slug = 'night';
-update public.shift_type_templates set calendar_color = '#14b8a6' where slug = 'weekend';
-update public.shift_type_templates set calendar_color = '#fbbf24' where slug = 'morning';
+update public.shift_type_templates set calendar_color = '#475569' where slug = 'normal';
+update public.shift_type_templates set calendar_color = '#22c55e' where slug = 'open';
+update public.shift_type_templates set calendar_color = '#f97316' where slug = 'urgent';
+update public.shift_type_templates set calendar_color = '#f59e0b' where slug = 'swap';
+update public.shift_type_templates set calendar_color = '#8b5cf6' where slug = 'sick';
+update public.shift_type_templates set calendar_color = '#9ca3af' where slug = 'vacation';
+update public.shift_type_templates set calendar_color = '#c4b5fd' where slug = 'child_sick_day';
 
-update public.employee_type_templates set calendar_pattern = 'none' where slug = 'permanent';
-update public.employee_type_templates set calendar_pattern = 'stripes' where slug = 'part_time';
-update public.employee_type_templates set calendar_pattern = 'dots' where slug = 'substitute';
-update public.employee_type_templates set calendar_pattern = 'grid' where slug = 'trainee';
+update public.employee_type_templates set calendar_pattern = 'none' where slug = 'full_time';
+update public.employee_type_templates set calendar_pattern = 'none' where slug = 'part_time';
+update public.employee_type_templates set calendar_pattern = 'stripes' where slug = 'trainee';
+update public.employee_type_templates set calendar_pattern = 'dots' where slug = 'temp';
+update public.employee_type_templates set calendar_pattern = 'grid' where slug = 'youth_u18';

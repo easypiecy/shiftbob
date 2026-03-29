@@ -201,10 +201,11 @@ async function ensureEmployeeTypes(workplaceId) {
   if ((existing ?? []).length > 0) return existing;
 
   const defaults = [
-    { label: "Kok", sort_order: 10 },
-    { label: "Tjener", sort_order: 20 },
-    { label: "Bartender", sort_order: 30 },
-    { label: "Opvask/Rengøring", sort_order: 40 },
+    { label: "Fuldtid", sort_order: 10 },
+    { label: "Deltid", sort_order: 20 },
+    { label: "Elev", sort_order: 30 },
+    { label: "Vikar", sort_order: 40 },
+    { label: "Ung (under 18)", sort_order: 50 },
   ].map((x) => ({ workplace_id: workplaceId, ...x }));
 
   const { error: insErr } = await supabase
@@ -231,9 +232,13 @@ async function ensureShiftTypes(workplaceId) {
   if ((existing ?? []).length > 0) return existing;
 
   const defaults = [
-    { label: "Dag", sort_order: 10 },
-    { label: "Aften", sort_order: 20 },
-    { label: "Weekend", sort_order: 30 },
+    { label: "Normal", sort_order: 10 },
+    { label: "Ledig", sort_order: 20 },
+    { label: "Akut", sort_order: 30 },
+    { label: "Bytte", sort_order: 40 },
+    { label: "Sygdom", sort_order: 50 },
+    { label: "Ferie", sort_order: 60 },
+    { label: "Barn 1. sygedag", sort_order: 70 },
   ].map((x) => ({ workplace_id: workplaceId, ...x }));
   const { error: insErr } = await supabase
     .from("workplace_shift_types")
@@ -250,21 +255,31 @@ async function ensureShiftTypes(workplaceId) {
 }
 
 async function ensureTypeVisuals(workplaceId, employeeTypes, shiftTypes) {
-  const shiftPalette = [
-    "#3b82f6",
-    "#f97316",
-    "#14b8a6",
-    "#8b5cf6",
-    "#ef4444",
-    "#22c55e",
-    "#eab308",
-    "#06b6d4",
-  ];
-  const patterns = ["stripes", "dots", "grid", "diagonal"];
+  const shiftColorByLabel = new Map([
+    ["normal", "#475569"],
+    ["ledig", "#22c55e"],
+    ["akut", "#f97316"],
+    ["bytte", "#f59e0b"],
+    ["sygdom", "#8b5cf6"],
+    ["ferie", "#9ca3af"],
+    ["barn 1. sygedag", "#c4b5fd"],
+  ]);
+  const patternByLabel = new Map([
+    ["fuldtid", "none"],
+    ["deltid", "none"],
+    ["elev", "stripes"],
+    ["vikar", "dots"],
+    ["ung (under 18)", "grid"],
+  ]);
+  const fallbackPatterns = ["stripes", "dots", "grid", "diagonal"];
 
   const shiftUpdates = shiftTypes.map((row, idx) => ({
     id: row.id,
-    calendar_color: shiftPalette[idx % shiftPalette.length],
+    calendar_color:
+      shiftColorByLabel.get(String(row.label ?? "").toLowerCase()) ??
+      ["#475569", "#22c55e", "#f97316", "#f59e0b", "#8b5cf6", "#9ca3af", "#c4b5fd"][
+        idx % 7
+      ],
   }));
   for (const r of shiftUpdates) {
     const { error } = await supabase
@@ -282,7 +297,9 @@ async function ensureTypeVisuals(workplaceId, employeeTypes, shiftTypes) {
 
   const empUpdates = employeeTypes.map((row, idx) => ({
     id: row.id,
-    calendar_pattern: patterns[idx % patterns.length],
+    calendar_pattern:
+      patternByLabel.get(String(row.label ?? "").toLowerCase()) ??
+      fallbackPatterns[idx % fallbackPatterns.length],
   }));
   for (const r of empUpdates) {
     const { error } = await supabase
