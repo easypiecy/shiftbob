@@ -1389,7 +1389,32 @@ export async function getWorkplaceDepartmentsOverview(
         return { ok: false, error: sTypesRes.error.message };
       }
     } else {
-      shiftTypes = (sTypesRes.data ?? []) as WorkplaceShiftTypeRow[];
+      const rawShiftTypes = (sTypesRes.data ?? []) as WorkplaceShiftTypeRow[];
+      const templateColorById = new Map<string, string>();
+      const templateColorByName = new Map<string, string>();
+      const tRes = await admin
+        .from("shift_type_templates")
+        .select("id, name, calendar_color");
+      if (!tRes.error) {
+        for (const row of tRes.data ?? []) {
+          const id = String(row.id ?? "");
+          const nameKey = normalizeTemplateMatchKey(row.name as string | null | undefined);
+          const color = (row.calendar_color as string | null) ?? "";
+          if (!color) continue;
+          if (id) templateColorById.set(id, color);
+          if (nameKey && !templateColorByName.has(nameKey)) {
+            templateColorByName.set(nameKey, color);
+          }
+        }
+      }
+      shiftTypes = rawShiftTypes.map((s) => {
+        const byTemplateId = s.template_id ? templateColorById.get(s.template_id) : undefined;
+        const byName = templateColorByName.get(normalizeTemplateMatchKey(s.label));
+        return {
+          ...s,
+          calendar_color: byTemplateId ?? byName ?? s.calendar_color ?? "#94a3b8",
+        };
+      });
     }
 
     if (pRes.error && !isMissingSchemaError(pRes.error.message)) {
