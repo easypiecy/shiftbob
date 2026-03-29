@@ -1512,7 +1512,11 @@ export async function getWorkplaceDepartmentsOverview(
         }
       } else {
         public_holidays = (hRes.data ?? []).map((row) => ({
-          holiday_rule: row.holiday_rule as "fixed" | "easter_offset",
+          holiday_rule: row.holiday_rule as
+            | "fixed"
+            | "easter_offset"
+            | "nth_weekday"
+            | "fixed_offset",
           month: row.month == null ? null : Number(row.month),
           day: row.day == null ? null : Number(row.day),
           easter_offset_days:

@@ -15,7 +15,7 @@ import { useTranslations } from "@/src/contexts/translations-context";
 
 type Draft = {
   display_name: string;
-  holiday_rule: "fixed" | "easter_offset";
+  holiday_rule: "fixed" | "easter_offset" | "nth_weekday" | "fixed_offset";
   month: string;
   day: string;
   easter_offset_days: string;
@@ -53,7 +53,7 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
   const [newRow, setNewRow] = useState({
     stable_code: "",
     display_name: "",
-    holiday_rule: "fixed" as "fixed" | "easter_offset",
+    holiday_rule: "fixed" as "fixed" | "easter_offset" | "nth_weekday" | "fixed_offset",
     month: "",
     day: "",
     easter_offset_days: "",
@@ -113,7 +113,7 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
       payload.month = m;
       payload.day = day;
       payload.easter_offset_days = null;
-    } else {
+    } else if (d.holiday_rule === "easter_offset") {
       const off = parseInt(d.easter_offset_days, 10);
       if (Number.isNaN(off)) {
         setMsg("Angiv offset i dage fra påskesøndag.");
@@ -122,6 +122,45 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
       }
       payload.month = null;
       payload.day = null;
+      payload.easter_offset_days = off;
+    } else if (d.holiday_rule === "nth_weekday") {
+      const m = parseInt(d.month, 10);
+      const weekday = parseInt(d.day, 10);
+      const nth = parseInt(d.easter_offset_days, 10);
+      if (Number.isNaN(m) || m < 1 || m > 12) {
+        setMsg("Angiv gyldig måned (1-12).");
+        setBusyId(null);
+        return;
+      }
+      if (Number.isNaN(weekday) || weekday < 0 || weekday > 6) {
+        setMsg("Angiv ugedag 0-6 (0=søndag).");
+        setBusyId(null);
+        return;
+      }
+      if (Number.isNaN(nth) || nth === 0 || nth < -1 || nth > 5) {
+        setMsg("Angiv forekomst som -1 eller 1-5.");
+        setBusyId(null);
+        return;
+      }
+      payload.month = m;
+      payload.day = weekday;
+      payload.easter_offset_days = nth;
+    } else {
+      const m = parseInt(d.month, 10);
+      const day = parseInt(d.day, 10);
+      const off = parseInt(d.easter_offset_days, 10);
+      if (Number.isNaN(m) || m < 1 || m > 12 || Number.isNaN(day) || day < 1 || day > 31) {
+        setMsg("Angiv gyldig måned (1-12) og dag (1-31).");
+        setBusyId(null);
+        return;
+      }
+      if (Number.isNaN(off)) {
+        setMsg("Angiv offset i dage fra den faste dato.");
+        setBusyId(null);
+        return;
+      }
+      payload.month = m;
+      payload.day = day;
       payload.easter_offset_days = off;
     }
     const res = await updateCountryHoliday(id, payload);
@@ -153,23 +192,26 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
     setBusyId("__new__");
     setMsg(null);
     const sort = parseInt(newRow.sort_order, 10);
+    const monthParsed = parseInt(newRow.month, 10);
+    const dayParsed = parseInt(newRow.day, 10);
+    const offsetParsed = parseInt(newRow.easter_offset_days, 10);
     const res = await createCountryHoliday({
       country_code: countryCode,
       stable_code: newRow.stable_code.trim() || undefined,
       display_name: newRow.display_name,
       holiday_rule: newRow.holiday_rule,
       month:
-        newRow.holiday_rule === "fixed"
-          ? parseInt(newRow.month, 10)
-          : undefined,
-      day:
-        newRow.holiday_rule === "fixed"
-          ? parseInt(newRow.day, 10)
-          : undefined,
-      easter_offset_days:
         newRow.holiday_rule === "easter_offset"
-          ? parseInt(newRow.easter_offset_days, 10)
-          : undefined,
+          ? undefined
+          : monthParsed,
+      day:
+        newRow.holiday_rule === "easter_offset"
+          ? undefined
+          : dayParsed,
+      easter_offset_days:
+        newRow.holiday_rule === "fixed"
+          ? undefined
+          : offsetParsed,
       sort_order: Number.isNaN(sort) ? 100 : sort,
     });
     setBusyId(null);
@@ -284,19 +326,49 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
           <table className="min-w-[720px] w-full border-collapse text-sm">
             <thead>
               <tr className="border-b border-zinc-200 bg-zinc-50 text-left dark:border-zinc-700 dark:bg-zinc-900/80">
-                <th className="px-3 py-2 font-semibold text-zinc-800 dark:text-zinc-200">
+                <th
+                  title={t(
+                    "super_admin.holidays.col_stable.tooltip",
+                    "Stabil intern kode for helligdagen pr. land."
+                  )}
+                  className="px-3 py-2 font-semibold text-zinc-800 dark:text-zinc-200"
+                >
                   {t("super_admin.holidays.col_stable", "Kode")}
                 </th>
-                <th className="px-3 py-2 font-semibold text-zinc-800 dark:text-zinc-200">
+                <th
+                  title={t(
+                    "super_admin.holidays.col_name.tooltip",
+                    "Navnet der vises i kalenderen. Bevares i originalsproget."
+                  )}
+                  className="px-3 py-2 font-semibold text-zinc-800 dark:text-zinc-200"
+                >
                   {t("super_admin.holidays.col_name", "Navn")}
                 </th>
-                <th className="px-3 py-2 font-semibold text-zinc-800 dark:text-zinc-200">
+                <th
+                  title={t(
+                    "super_admin.holidays.col_rule.tooltip",
+                    "Regeltype: fast dato (måned+dag) eller offset fra påskesøndag."
+                  )}
+                  className="px-3 py-2 font-semibold text-zinc-800 dark:text-zinc-200"
+                >
                   {t("super_admin.holidays.col_rule", "Regel")}
                 </th>
-                <th className="px-3 py-2 font-semibold text-zinc-800 dark:text-zinc-200">
+                <th
+                  title={t(
+                    "super_admin.holidays.col_date.tooltip",
+                    "Fast dato: måned/dag. Påske-offset: antal dage fra påskesøndag (fx -2, 1, 39, 50)."
+                  )}
+                  className="px-3 py-2 font-semibold text-zinc-800 dark:text-zinc-200"
+                >
                   {t("super_admin.holidays.col_date", "Dato / offset")}
                 </th>
-                <th className="px-3 py-2 font-semibold text-zinc-800 dark:text-zinc-200">
+                <th
+                  title={t(
+                    "super_admin.holidays.col_sort.tooltip",
+                    "Kun visningsrækkefølge i listen. Lavere tal vises først."
+                  )}
+                  className="px-3 py-2 font-semibold text-zinc-800 dark:text-zinc-200"
+                >
                   {t("super_admin.holidays.col_sort", "Sort")}
                 </th>
                 <th className="px-3 py-2 font-semibold text-zinc-800 dark:text-zinc-200">
@@ -333,7 +405,9 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
                           setDraft(r.id, {
                             holiday_rule: e.target.value as
                               | "fixed"
-                              | "easter_offset",
+                              | "easter_offset"
+                              | "nth_weekday"
+                              | "fixed_offset",
                           })
                         }
                         className="rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-600 dark:bg-zinc-950"
@@ -345,6 +419,18 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
                           {t(
                             "super_admin.holidays.rule_easter",
                             "Påske-offset"
+                          )}
+                        </option>
+                        <option value="nth_weekday">
+                          {t(
+                            "super_admin.holidays.rule_nth_weekday",
+                            "N-te ugedag i måned"
+                          )}
+                        </option>
+                        <option value="fixed_offset">
+                          {t(
+                            "super_admin.holidays.rule_fixed_offset",
+                            "Fast dato + offset"
                           )}
                         </option>
                       </select>
@@ -375,7 +461,7 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
                             className="w-14 rounded border border-zinc-300 bg-white px-1 py-1 dark:border-zinc-600 dark:bg-zinc-950"
                           />
                         </div>
-                      ) : (
+                      ) : d.holiday_rule === "easter_offset" ? (
                         <input
                           type="number"
                           value={d.easter_offset_days}
@@ -390,6 +476,89 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
                           )}
                           className="w-20 rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-600 dark:bg-zinc-950"
                         />
+                      ) : d.holiday_rule === "nth_weekday" ? (
+                        <div className="flex gap-1">
+                          <input
+                            type="number"
+                            min={1}
+                            max={12}
+                            placeholder="M"
+                            value={d.month}
+                            onChange={(e) =>
+                              setDraft(r.id, { month: e.target.value })
+                            }
+                            title={t("super_admin.holidays.month_hint", "Måned 1-12")}
+                            className="w-14 rounded border border-zinc-300 bg-white px-1 py-1 dark:border-zinc-600 dark:bg-zinc-950"
+                          />
+                          <input
+                            type="number"
+                            min={0}
+                            max={6}
+                            placeholder="U"
+                            value={d.day}
+                            onChange={(e) =>
+                              setDraft(r.id, { day: e.target.value })
+                            }
+                            title={t(
+                              "super_admin.holidays.weekday_hint",
+                              "Ugedag 0-6 (0=søndag)"
+                            )}
+                            className="w-14 rounded border border-zinc-300 bg-white px-1 py-1 dark:border-zinc-600 dark:bg-zinc-950"
+                          />
+                          <input
+                            type="number"
+                            min={-1}
+                            max={5}
+                            placeholder="N"
+                            value={d.easter_offset_days}
+                            onChange={(e) =>
+                              setDraft(r.id, { easter_offset_days: e.target.value })
+                            }
+                            title={t(
+                              "super_admin.holidays.nth_hint",
+                              "Forekomst: -1=last, ellers 1-5"
+                            )}
+                            className="w-16 rounded border border-zinc-300 bg-white px-1 py-1 dark:border-zinc-600 dark:bg-zinc-950"
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex gap-1">
+                          <input
+                            type="number"
+                            min={1}
+                            max={12}
+                            placeholder="M"
+                            value={d.month}
+                            onChange={(e) =>
+                              setDraft(r.id, { month: e.target.value })
+                            }
+                            className="w-14 rounded border border-zinc-300 bg-white px-1 py-1 dark:border-zinc-600 dark:bg-zinc-950"
+                          />
+                          <input
+                            type="number"
+                            min={1}
+                            max={31}
+                            placeholder="D"
+                            value={d.day}
+                            onChange={(e) =>
+                              setDraft(r.id, { day: e.target.value })
+                            }
+                            className="w-14 rounded border border-zinc-300 bg-white px-1 py-1 dark:border-zinc-600 dark:bg-zinc-950"
+                          />
+                          <input
+                            type="number"
+                            placeholder="±"
+                            value={d.easter_offset_days}
+                            onChange={(e) =>
+                              setDraft(r.id, { easter_offset_days: e.target.value })
+                            }
+                            title={t(
+                              "super_admin.holidays.offset_from_fixed_hint",
+                              "Offset i dage fra den faste dato"
+                            )}
+                            className="w-16 rounded border border-zinc-300 bg-white px-1 py-1 dark:border-zinc-600 dark:bg-zinc-950"
+                          />
+                        </div>
                       )}
                     </td>
                     <td className="px-3 py-2">
@@ -469,7 +638,11 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
               onChange={(e) =>
                 setNewRow((s) => ({
                   ...s,
-                  holiday_rule: e.target.value as "fixed" | "easter_offset",
+                  holiday_rule: e.target.value as
+                    | "fixed"
+                    | "easter_offset"
+                    | "nth_weekday"
+                    | "fixed_offset",
                 }))
               }
               className="rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-600 dark:bg-zinc-950"
@@ -479,6 +652,18 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
               </option>
               <option value="easter_offset">
                 {t("super_admin.holidays.rule_easter", "Påske-offset")}
+              </option>
+              <option value="nth_weekday">
+                {t(
+                  "super_admin.holidays.rule_nth_weekday",
+                  "N-te ugedag i måned"
+                )}
+              </option>
+              <option value="fixed_offset">
+                {t(
+                  "super_admin.holidays.rule_fixed_offset",
+                  "Fast dato + offset"
+                )}
               </option>
             </select>
           </label>
@@ -511,7 +696,7 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
                 />
               </label>
             </>
-          ) : (
+          ) : newRow.holiday_rule === "easter_offset" ? (
             <label className="flex flex-col gap-1 text-xs">
               <span>Offset</span>
               <input
@@ -526,6 +711,94 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
                 className="w-20 rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-600 dark:bg-zinc-950"
               />
             </label>
+          ) : newRow.holiday_rule === "nth_weekday" ? (
+            <>
+              <label className="flex flex-col gap-1 text-xs">
+                <span>M</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={12}
+                  value={newRow.month}
+                  onChange={(e) =>
+                    setNewRow((s) => ({ ...s, month: e.target.value }))
+                  }
+                  className="w-14 rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-600 dark:bg-zinc-950"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-xs">
+                <span>U (0-6)</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={6}
+                  value={newRow.day}
+                  onChange={(e) =>
+                    setNewRow((s) => ({ ...s, day: e.target.value }))
+                  }
+                  className="w-16 rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-600 dark:bg-zinc-950"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-xs">
+                <span>N (-1/1-5)</span>
+                <input
+                  type="number"
+                  min={-1}
+                  max={5}
+                  value={newRow.easter_offset_days}
+                  onChange={(e) =>
+                    setNewRow((s) => ({
+                      ...s,
+                      easter_offset_days: e.target.value,
+                    }))
+                  }
+                  className="w-20 rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-600 dark:bg-zinc-950"
+                />
+              </label>
+            </>
+          ) : (
+            <>
+              <label className="flex flex-col gap-1 text-xs">
+                <span>M</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={12}
+                  value={newRow.month}
+                  onChange={(e) =>
+                    setNewRow((s) => ({ ...s, month: e.target.value }))
+                  }
+                  className="w-14 rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-600 dark:bg-zinc-950"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-xs">
+                <span>D</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={31}
+                  value={newRow.day}
+                  onChange={(e) =>
+                    setNewRow((s) => ({ ...s, day: e.target.value }))
+                  }
+                  className="w-14 rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-600 dark:bg-zinc-950"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-xs">
+                <span>±</span>
+                <input
+                  type="number"
+                  value={newRow.easter_offset_days}
+                  onChange={(e) =>
+                    setNewRow((s) => ({
+                      ...s,
+                      easter_offset_days: e.target.value,
+                    }))
+                  }
+                  className="w-20 rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-600 dark:bg-zinc-950"
+                />
+              </label>
+            </>
           )}
           <label className="flex flex-col gap-1 text-xs">
             <span>{t("super_admin.holidays.col_sort", "Sort")}</span>

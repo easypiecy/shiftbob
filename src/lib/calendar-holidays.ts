@@ -1,6 +1,6 @@
 /** Definitioner som fra `country_public_holidays` (uden id/stable_code). */
 export type CalendarPublicHolidayDef = {
-  holiday_rule: "fixed" | "easter_offset";
+  holiday_rule: "fixed" | "easter_offset" | "nth_weekday" | "fixed_offset";
   month: number | null;
   day: number | null;
   easter_offset_days: number | null;
@@ -18,6 +18,31 @@ function addDaysLocal(d: Date, n: number): Date {
   const x = new Date(d);
   x.setDate(x.getDate() + n);
   return x;
+}
+
+function nthWeekdayOfMonth(
+  year: number,
+  month: number,
+  weekday: number,
+  nth: number
+): Date | null {
+  if (month < 1 || month > 12) return null;
+  if (weekday < 0 || weekday > 6) return null;
+  if (nth === 0 || nth < -1 || nth > 5) return null;
+
+  if (nth === -1) {
+    const end = new Date(year, month, 0, 0, 0, 0, 0);
+    const diff = (end.getDay() - weekday + 7) % 7;
+    end.setDate(end.getDate() - diff);
+    return end;
+  }
+
+  const start = new Date(year, month - 1, 1, 0, 0, 0, 0);
+  const diff = (weekday - start.getDay() + 7) % 7;
+  const day = 1 + diff + (nth - 1) * 7;
+  const result = new Date(year, month - 1, day, 0, 0, 0, 0);
+  if (result.getMonth() !== month - 1) return null;
+  return result;
 }
 
 /** Lørdag eller søndag i lokal kalender. */
@@ -66,6 +91,23 @@ export function buildHolidayNamesByDayKey(
         def.easter_offset_days != null
       ) {
         inst = addDaysLocal(easter, def.easter_offset_days);
+      } else if (
+        def.holiday_rule === "nth_weekday" &&
+        def.month != null &&
+        def.day != null &&
+        def.easter_offset_days != null
+      ) {
+        // `day` => weekday (0=søndag .. 6=lørdag), `easter_offset_days` => nth (1..5 or -1=last)
+        inst = nthWeekdayOfMonth(year, def.month, def.day, def.easter_offset_days);
+      } else if (
+        def.holiday_rule === "fixed_offset" &&
+        def.month != null &&
+        def.day != null &&
+        def.easter_offset_days != null
+      ) {
+        // Fast dato + offset i dage (bruges fx til observed-regler)
+        const fixed = new Date(year, def.month - 1, def.day, 0, 0, 0, 0);
+        inst = addDaysLocal(fixed, def.easter_offset_days);
       }
       if (!inst) continue;
       const key = dayKeyLocal(inst);
