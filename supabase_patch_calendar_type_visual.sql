@@ -54,6 +54,7 @@ update public.shift_type_templates set calendar_color = '#3b82f6' where slug = '
 update public.shift_type_templates set calendar_color = '#f97316' where slug = 'evening';
 update public.shift_type_templates set calendar_color = '#6366f1' where slug = 'night';
 update public.shift_type_templates set calendar_color = '#14b8a6' where slug = 'weekend';
+update public.shift_type_templates set calendar_color = '#fbbf24' where slug = 'morning';
 
 update public.employee_type_templates set calendar_pattern = 'none' where slug = 'permanent';
 update public.employee_type_templates set calendar_pattern = 'stripes' where slug = 'part_time';

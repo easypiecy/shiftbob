@@ -41,9 +41,29 @@ function patternLayer(pattern: EmployeeTypePattern): string | null {
   }
 }
 
+const AMBIENT_HOLIDAY_LAYER =
+  "linear-gradient(rgba(254, 249, 195, 0.42), rgba(254, 249, 195, 0.42))";
+const AMBIENT_WEEKEND_LAYER =
+  "linear-gradient(rgba(228, 228, 231, 0.45), rgba(228, 228, 231, 0.45))";
+
+function prependAmbientLayer(
+  style: CSSProperties,
+  ambient: "holiday" | "weekend" | null | undefined
+): void {
+  if (ambient !== "holiday" && ambient !== "weekend") return;
+  const layer = ambient === "holiday" ? AMBIENT_HOLIDAY_LAYER : AMBIENT_WEEKEND_LAYER;
+  const existing = style.backgroundImage;
+  style.backgroundImage =
+    typeof existing === "string" && existing.trim() !== ""
+      ? `${layer}, ${existing}`
+      : layer;
+}
+
 export function shiftCalendarCellStyle(args: {
   shiftTypeColor: string | null | undefined;
   employeePattern: string | null | undefined;
+  /** Dagsbaggrund: helligdag slår weekend. */
+  ambient?: "holiday" | "weekend" | null;
 }): CSSProperties {
   const color = normalizeHex(args.shiftTypeColor ?? undefined);
   const raw = args.employeePattern ?? "none";
@@ -54,18 +74,19 @@ export function shiftCalendarCellStyle(args: {
     backgroundColor: color,
   };
 
-  if (!layer) return style;
+  if (!layer) {
+    prependAmbientLayer(style, args.ambient);
+    return style;
+  }
 
   style.backgroundImage = layer;
   if (pattern === "dots") {
     style.backgroundSize = "10px 10px, 10px 10px";
     style.backgroundPosition = "0 0, 5px 5px";
-    return style;
-  }
-  if (pattern === "grid") {
+  } else if (pattern === "grid") {
     style.backgroundSize = "12px 12px, 12px 12px, 6px 6px, 6px 6px";
-    return style;
   }
 
+  prependAmbientLayer(style, args.ambient);
   return style;
 }

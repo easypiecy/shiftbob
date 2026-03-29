@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {
   Building2,
+  CalendarRange,
   ChevronRight,
   Languages,
   LayoutDashboard,
@@ -20,6 +21,13 @@ const cards = [
     title: "Standard vagt- og medarbejdertyper",
     description: "Globalt katalog der kopieres til nye arbejdspladser.",
     icon: Tags,
+  },
+  {
+    href: "/super-admin/helligdage",
+    title: "Helligdage (EU-27)",
+    description:
+      "Offentlige helligdage pr. land — redigerbare navne og dato-regler.",
+    icon: CalendarRange,
   },
   {
     href: "/super-admin/translations",

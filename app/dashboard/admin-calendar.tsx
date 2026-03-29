@@ -18,6 +18,7 @@ import {
   type WorkplaceDepartmentRow,
   type WorkplaceEmployeeTypeRow,
   type WorkplaceMemberDepartmentsRow,
+  type WorkplacePublicHolidayDef,
   type WorkplaceShiftTypeRow,
 } from "@/src/app/super-admin/workplaces/actions";
 import {
@@ -40,6 +41,13 @@ import {
 } from "@/src/app/dashboard/workplace-member-calendar-actions";
 import EmployeeCalendarNameCell from "@/app/dashboard/employee-calendar-name-cell";
 import { useTranslations, useUiLanguage } from "@/src/contexts/translations-context";
+import {
+  buildHolidayNamesByDayKey,
+  dayGridAmbient,
+  holidayLineForDay,
+  isWeekendLocal,
+  type DayGridAmbient,
+} from "@/src/lib/calendar-holidays";
 import { shiftCalendarCellStyle } from "@/src/lib/calendar-shift-style";
 
 type CalendarViewMode = "rolling" | "month30";
@@ -88,6 +96,30 @@ function formatDayHeader(d: Date, locale: string): string {
     day: "numeric",
     month: "short",
   }).format(d);
+}
+
+function rollingDayHeaderThClass(ambient: DayGridAmbient): string {
+  const base =
+    "border-b px-3 py-2 text-center text-xs font-semibold whitespace-nowrap ";
+  if (ambient === "holiday") {
+    return `${base} border-zinc-200 bg-amber-50/95 text-zinc-800 dark:border-zinc-700 dark:bg-amber-950/40 dark:text-zinc-100`;
+  }
+  if (ambient === "weekend") {
+    return `${base} border-zinc-200 bg-zinc-200/30 text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800/90 dark:text-zinc-200`;
+  }
+  return `${base} border-zinc-200 bg-zinc-100 text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800/95 dark:text-zinc-200`;
+}
+
+function rollingHourHeaderThClass(ambient: DayGridAmbient): string {
+  const base =
+    "border-b px-0 py-2 text-center text-[10px] font-medium whitespace-nowrap tabular-nums ";
+  if (ambient === "holiday") {
+    return `${base} border-zinc-200 bg-amber-50/95 text-zinc-600 dark:border-zinc-700 dark:bg-amber-950/40 dark:text-zinc-300`;
+  }
+  if (ambient === "weekend") {
+    return `${base} border-zinc-200 bg-zinc-200/30 text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800/90 dark:text-zinc-400`;
+  }
+  return `${base} border-zinc-200 bg-zinc-100 text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800/95 dark:text-zinc-400`;
 }
 
 function formatTimeNow(locale: string): string {
@@ -308,6 +340,7 @@ type ShiftGridCellProps = {
   cellKey: string;
   day: Date;
   dayKey: string;
+  dayAmbient: DayGridAmbient;
   hour: number;
   userId: string;
   groupDeptId: string | null;
@@ -350,6 +383,7 @@ const ShiftGridCell = memo(function ShiftGridCell({
   cellKey,
   day,
   dayKey,
+  dayAmbient,
   hour,
   userId,
   groupDeptId,
@@ -365,13 +399,19 @@ const ShiftGridCell = memo(function ShiftGridCell({
   onCellClick,
   onStartShiftDrag,
 }: ShiftGridCellProps) {
+  const emptySurface =
+    dayAmbient === "holiday"
+      ? "bg-amber-50/80 dark:bg-amber-950/30"
+      : dayAmbient === "weekend"
+        ? "bg-zinc-200/25 dark:bg-zinc-800/50"
+        : "bg-zinc-50/50 dark:bg-zinc-950/50";
   return (
     <td
       key={cellKey}
       className={
         has
           ? "relative border-b border-l border-zinc-300/60 px-0 py-2 dark:border-zinc-600/50"
-          : "border-b border-l border-zinc-100 bg-zinc-50/50 px-0 py-2 dark:border-zinc-800 dark:bg-zinc-950/50"
+          : `border-b border-l border-zinc-100 px-0 py-2 dark:border-zinc-800 ${emptySurface}`
       }
       style={renderedCellStyle}
       title={hoverDetails}
@@ -439,6 +479,7 @@ const ShiftGridCell = memo(function ShiftGridCell({
   prev.shift?.ends_at === next.shift?.ends_at &&
   prev.shiftLabel === next.shiftLabel &&
   prev.styleToken === next.styleToken &&
+  prev.dayAmbient === next.dayAmbient &&
   prev.hoverDetails === next.hoverDetails &&
   prev.day.getTime() === next.day.getTime()
 );
@@ -453,6 +494,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const [members, setMembers] = useState<WorkplaceMemberDepartmentsRow[]>([]);
   const [shiftTypes, setShiftTypes] = useState<WorkplaceShiftTypeRow[]>([]);
   const [employeeTypes, setEmployeeTypes] = useState<WorkplaceEmployeeTypeRow[]>([]);
+  const [publicHolidays, setPublicHolidays] = useState<WorkplacePublicHolidayDef[]>([]);
 
   const [viewMode, setViewMode] = useState<CalendarViewMode>("rolling");
   const [anchorDate, setAnchorDate] = useState(() => startOfDay(new Date()));
@@ -552,6 +594,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
     }
     setDepartments(overviewRes.departments);
     setMembers(overviewRes.members);
+    setPublicHolidays(overviewRes.public_holidays ?? []);
     if (typesRes.ok) {
       setShiftTypes(typesRes.shiftTypes);
       setEmployeeTypes(typesRes.employeeTypes);
@@ -1754,6 +1797,15 @@ export default function AdminCalendar({ workplaceId }: Props) {
     },
     [rollingDays]
   );
+
+  const rollingHolidayNamesByDay = useMemo(() => {
+    const years = new Set<number>();
+    for (const d of rollingDays) {
+      years.add(d.getFullYear());
+    }
+    return buildHolidayNamesByDayKey(publicHolidays, years);
+  }, [rollingDays, publicHolidays]);
+
   const visibleStartDay =
     rollingDays[Math.floor(Math.max(firstHourIndex, 0) / 24)] ?? rollingDays[0] ?? null;
   const visibleEndDay =
@@ -2120,15 +2172,31 @@ export default function AdminCalendar({ workplaceId }: Props) {
                       rowSpan={2}
                       className="sticky left-0 z-30 w-[200px] min-w-[200px] max-w-[200px] border-0 bg-transparent p-0 dark:bg-transparent"
                     />
-                    {rollingDays.map((d) => (
-                      <th
-                        key={dayKeyLocal(d)}
-                        colSpan={24}
-                        className="border-b border-zinc-200 bg-zinc-100 px-3 py-2 text-center text-xs font-semibold whitespace-nowrap text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800/95 dark:text-zinc-200"
-                      >
-                        {formatDayHeader(d, uiLanguage)}
-                      </th>
-                    ))}
+                    {rollingDays.map((d) => {
+                      const dk = dayKeyLocal(d);
+                      const dayAmbient = dayGridAmbient(
+                        dk,
+                        rollingHolidayNamesByDay,
+                        isWeekendLocal(d)
+                      );
+                      const holidayLine = holidayLineForDay(dk, rollingHolidayNamesByDay);
+                      return (
+                        <th
+                          key={dk}
+                          colSpan={24}
+                          className={rollingDayHeaderThClass(dayAmbient)}
+                        >
+                          <div className="flex flex-col items-center gap-0.5 leading-tight">
+                            <span>{formatDayHeader(d, uiLanguage)}</span>
+                            {holidayLine ? (
+                              <span className="text-[10px] font-normal normal-case text-amber-900/85 dark:text-amber-100/85">
+                                {holidayLine}
+                              </span>
+                            ) : null}
+                          </div>
+                        </th>
+                      );
+                    })}
                   </tr>
                   <tr>
                     {leftPadCols > 0 ? (
@@ -2140,10 +2208,15 @@ export default function AdminCalendar({ workplaceId }: Props) {
                     {visibleHourIndexes.map((hourIndex) => {
                       const meta = hourMetaByIndex(hourIndex);
                       if (!meta) return null;
+                      const hourAmbient = dayGridAmbient(
+                        meta.dayKey,
+                        rollingHolidayNamesByDay,
+                        isWeekendLocal(meta.day)
+                      );
                       return (
                         <th
                           key={`${meta.dayKey}-${meta.hour}`}
-                          className="border-b border-zinc-200 bg-zinc-100 px-0 py-2 text-center text-[10px] font-medium whitespace-nowrap tabular-nums text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800/95 dark:text-zinc-400"
+                          className={rollingHourHeaderThClass(hourAmbient)}
                         >
                           {meta.hour}
                         </th>
@@ -2247,10 +2320,17 @@ export default function AdminCalendar({ workplaceId }: Props) {
                                 ? employeePatternById.get(emp.employee_type_id) ?? "none"
                                 : fallbackPatternByUserId(emp.user_id);
                               const showPattern = Boolean(shift && endsHere);
+                              const dayAmbient = dayGridAmbient(
+                                meta.dayKey,
+                                rollingHolidayNamesByDay,
+                                isWeekendLocal(meta.day)
+                              );
                               const cellStyle = has
                                 ? shiftCalendarCellStyle({
                                     shiftTypeColor: shiftColor,
                                     employeePattern: showPattern ? empPattern : "none",
+                                    ambient:
+                                      dayAmbient === "none" ? null : dayAmbient,
                                   })
                                 : undefined;
                               const shiftLabel = shift?.shift_type_id
@@ -2274,13 +2354,14 @@ export default function AdminCalendar({ workplaceId }: Props) {
                                     `${t("calendar.shift_hover.time", "Tid")}: ${formatShiftRange(shift!.starts_at, shift!.ends_at, uiLanguage)}`,
                                   ].join("\n")
                                 : undefined;
-                              const styleToken = `${shiftColor}|${showPattern ? empPattern : "none"}|${has ? "1" : "0"}`;
+                              const styleToken = `${shiftColor}|${showPattern ? empPattern : "none"}|${has ? "1" : "0"}|${dayAmbient}`;
                               return (
                                 <ShiftGridCell
                                   key={`${emp.user_id}-${meta.dayKey}-${meta.hour}`}
                                   cellKey={`${emp.user_id}-${meta.dayKey}-${meta.hour}`}
                                   day={meta.day}
                                   dayKey={meta.dayKey}
+                                  dayAmbient={dayAmbient}
                                   hour={meta.hour}
                                   userId={emp.user_id}
                                   groupDeptId={row.groupDeptId}

@@ -18,8 +18,11 @@ import {
   type EmployeeCountBand,
   type NotificationChannel,
 } from "@/src/types/workplace";
+import type { CalendarPublicHolidayDef } from "@/src/lib/calendar-holidays";
 import { getAdminClient } from "@/src/utils/supabase/admin";
 import { createServerSupabase } from "@/src/utils/supabase/server";
+
+export type WorkplacePublicHolidayDef = CalendarPublicHolidayDef;
 
 async function requireSuperAdmin() {
   const supabase = await createServerSupabase();
@@ -1277,6 +1280,8 @@ export async function getWorkplaceDepartmentsOverview(
       members: WorkplaceMemberDepartmentsRow[];
       shiftTypes: WorkplaceShiftTypeRow[];
       employeeTypes: WorkplaceEmployeeTypeRow[];
+      country_code: string | null;
+      public_holidays: WorkplacePublicHolidayDef[];
     }
   | { ok: false; error: string }
 > {
@@ -1289,7 +1294,7 @@ export async function getWorkplaceDepartmentsOverview(
       await assertWorkplaceMember(workplaceId);
     }
     const admin = getAdminClient();
-    const [dRes, mRes, dmRes, pRes, eTypesRes, sTypesRes] = await Promise.all([
+    const [dRes, mRes, dmRes, pRes, eTypesRes, sTypesRes, wpRes] = await Promise.all([
       admin
         .from("workplace_departments")
         .select("id, workplace_id, name, created_at")
@@ -1318,6 +1323,7 @@ export async function getWorkplaceDepartmentsOverview(
         .select("id, template_id, label, sort_order, calendar_color")
         .eq("workplace_id", workplaceId)
         .order("sort_order"),
+      admin.from("workplaces").select("country_code").eq("id", workplaceId).maybeSingle(),
     ]);
 
     if (dRes.error) {
@@ -1328,6 +1334,8 @@ export async function getWorkplaceDepartmentsOverview(
           members: [],
           shiftTypes: [],
           employeeTypes: [],
+          country_code: null,
+          public_holidays: [],
         };
       }
       return { ok: false, error: dRes.error.message };
@@ -1360,6 +1368,8 @@ export async function getWorkplaceDepartmentsOverview(
           members: [],
           shiftTypes: [],
           employeeTypes: [],
+          country_code: null,
+          public_holidays: [],
         };
       }
       return { ok: false, error: dmRes.error.message };
@@ -1384,6 +1394,10 @@ export async function getWorkplaceDepartmentsOverview(
 
     if (pRes.error && !isMissingSchemaError(pRes.error.message)) {
       return { ok: false, error: pRes.error.message };
+    }
+
+    if (wpRes.error && !isMissingSchemaError(wpRes.error.message)) {
+      return { ok: false, error: wpRes.error.message };
     }
 
     const overrideByUser = new Map<string, string | null>();
@@ -1451,12 +1465,46 @@ export async function getWorkplaceDepartmentsOverview(
       }
     }
 
+    let country_code: string | null = null;
+    if (!wpRes.error && wpRes.data) {
+      const raw = (wpRes.data as { country_code?: string | null }).country_code;
+      const cc = typeof raw === "string" ? raw.trim().toUpperCase() : "";
+      country_code = cc.length === 2 ? cc : null;
+    }
+
+    let public_holidays: WorkplacePublicHolidayDef[] = [];
+    if (country_code) {
+      const hRes = await admin
+        .from("country_public_holidays")
+        .select(
+          "holiday_rule, month, day, easter_offset_days, display_name, sort_order"
+        )
+        .eq("country_code", country_code)
+        .order("sort_order", { ascending: true });
+      if (hRes.error) {
+        if (!isMissingSchemaError(hRes.error.message)) {
+          return { ok: false, error: hRes.error.message };
+        }
+      } else {
+        public_holidays = (hRes.data ?? []).map((row) => ({
+          holiday_rule: row.holiday_rule as "fixed" | "easter_offset",
+          month: row.month == null ? null : Number(row.month),
+          day: row.day == null ? null : Number(row.day),
+          easter_offset_days:
+            row.easter_offset_days == null ? null : Number(row.easter_offset_days),
+          display_name: String(row.display_name ?? ""),
+        }));
+      }
+    }
+
     return {
       ok: true,
       departments: (dRes.data ?? []) as WorkplaceDepartmentRow[],
       members,
       shiftTypes,
       employeeTypes,
+      country_code,
+      public_holidays,
     };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Ukendt fejl";

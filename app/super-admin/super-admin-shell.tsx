@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   ArrowLeftRight,
   Building2,
+  CalendarRange,
   ChevronLeft,
   ChevronRight,
   Languages,
@@ -38,6 +39,13 @@ const links = [
     navKey: "super_admin.nav.templates",
     labelDa: "Standard vagt- og medarbejdertyper",
     icon: Tags,
+    match: "path",
+  },
+  {
+    href: "/super-admin/helligdage",
+    navKey: "super_admin.nav.holidays",
+    labelDa: "Helligdage",
+    icon: CalendarRange,
     match: "path",
   },
   {

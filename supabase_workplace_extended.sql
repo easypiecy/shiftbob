@@ -203,6 +203,7 @@ insert into public.employee_type_templates (name, slug, sort_order, calendar_pat
 on conflict (slug) do nothing;
 
 insert into public.shift_type_templates (name, slug, sort_order, calendar_color) values
+  ('Morgen', 'morning', 5, '#fbbf24'),
   ('Dag', 'day', 10, '#3b82f6'),
   ('Aften', 'evening', 20, '#f97316'),
   ('Nat', 'night', 30, '#6366f1'),
