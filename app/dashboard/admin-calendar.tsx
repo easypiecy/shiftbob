@@ -39,7 +39,7 @@ import {
   uploadWorkplaceMemberCv,
 } from "@/src/app/dashboard/workplace-member-calendar-actions";
 import EmployeeCalendarNameCell from "@/app/dashboard/employee-calendar-name-cell";
-import { useTranslations } from "@/src/contexts/translations-context";
+import { useTranslations, useUiLanguage } from "@/src/contexts/translations-context";
 import { shiftCalendarCellStyle } from "@/src/lib/calendar-shift-style";
 
 type CalendarViewMode = "rolling" | "month30";
@@ -82,27 +82,27 @@ function expandForward(start: Date, count: number): Date[] {
   return out;
 }
 
-function formatDayHeader(d: Date): string {
-  return new Intl.DateTimeFormat("da-DK", {
+function formatDayHeader(d: Date, locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
     weekday: "short",
     day: "numeric",
     month: "short",
   }).format(d);
 }
 
-function formatTimeNow(): string {
-  return new Intl.DateTimeFormat("da-DK", {
+function formatTimeNow(locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
   }).format(new Date());
 }
 
-function formatShiftRange(startsAtIso: string, endsAtIso: string): string {
+function formatShiftRange(startsAtIso: string, endsAtIso: string, locale: string): string {
   const s = new Date(startsAtIso);
   const e = new Date(endsAtIso);
   const fmt = (d: Date) =>
-    new Intl.DateTimeFormat("da-DK", {
+    new Intl.DateTimeFormat(locale, {
       day: "2-digit",
       month: "2-digit",
       hour: "2-digit",
@@ -111,8 +111,8 @@ function formatShiftRange(startsAtIso: string, endsAtIso: string): string {
   return `${fmt(s)} - ${fmt(e)}`;
 }
 
-function formatClockDate(iso: string): string {
-  return new Intl.DateTimeFormat("da-DK", {
+function formatClockDate(iso: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
     day: "2-digit",
     month: "2-digit",
     hour: "2-digit",
@@ -445,6 +445,7 @@ const ShiftGridCell = memo(function ShiftGridCell({
 
 export default function AdminCalendar({ workplaceId }: Props) {
   const { t } = useTranslations();
+  const uiLanguage = useUiLanguage();
   const isDevBuild = process.env.NODE_ENV !== "production";
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -464,7 +465,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const [filterShiftTypeId, setFilterShiftTypeId] = useState<string | null>(null);
   /** Filtrér medarbejderrækker efter medarbejdertype */
   const [filterEmployeeTypeId, setFilterEmployeeTypeId] = useState<string | null>(null);
-  const [clock, setClock] = useState(formatTimeNow);
+  const [clock, setClock] = useState(() => formatTimeNow(uiLanguage));
   const [hourColWidth, setHourColWidth] = useState(BASE_HOUR_COL);
   const [createShiftDraft, setCreateShiftDraft] = useState<CreateShiftDraft | null>(null);
   const [createShiftBusy, setCreateShiftBusy] = useState(false);
@@ -566,9 +567,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
   }, [load]);
 
   useEffect(() => {
-    const id = window.setInterval(() => setClock(formatTimeNow()), 1000);
+    setClock(formatTimeNow(uiLanguage));
+    const id = window.setInterval(() => setClock(formatTimeNow(uiLanguage)), 1000);
     return () => window.clearInterval(id);
-  }, []);
+  }, [uiLanguage]);
 
   useEffect(() => {
     if (departments.length === 0) {
@@ -1467,19 +1469,27 @@ export default function AdminCalendar({ workplaceId }: Props) {
     preview.style.height = `${drag.previewHeightPx}px`;
   }, []);
 
-  const syncDragOverlayContent = useCallback((drag: ActiveShiftDrag) => {
-    const modeEl = dragTimeOverlayModeRef.current;
-    const rangeEl = dragTimeOverlayRangeRef.current;
-    if (modeEl) {
-      modeEl.textContent =
-        drag.mode === "move" ? "Flyt vagt" : drag.mode === "resize_start" ? "Juster start" : "Juster slut";
-    }
-    if (rangeEl) {
-      rangeEl.textContent = `${formatClockDate(toIsoFromMs(drag.nextStartMs))} - ${formatClockDate(
-        toIsoFromMs(drag.nextEndMs)
-      )}`;
-    }
-  }, [toIsoFromMs]);
+  const syncDragOverlayContent = useCallback(
+    (drag: ActiveShiftDrag) => {
+      const modeEl = dragTimeOverlayModeRef.current;
+      const rangeEl = dragTimeOverlayRangeRef.current;
+      if (modeEl) {
+        modeEl.textContent =
+          drag.mode === "move"
+            ? t("calendar.drag.mode_move", "Flyt vagt")
+            : drag.mode === "resize_start"
+              ? t("calendar.drag.mode_resize_start", "Juster start")
+              : t("calendar.drag.mode_resize_end", "Juster slut");
+      }
+      if (rangeEl) {
+        rangeEl.textContent = `${formatClockDate(toIsoFromMs(drag.nextStartMs), uiLanguage)} - ${formatClockDate(
+          toIsoFromMs(drag.nextEndMs),
+          uiLanguage
+        )}`;
+      }
+    },
+    [toIsoFromMs, t, uiLanguage]
+  );
 
   const handleShiftDragMove = useCallback((e: PointerEvent) => {
     const drag = activeShiftDragRef.current;
@@ -1637,10 +1647,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
   }, []);
 
   function goToday() {
-    const t = startOfDay(new Date());
-    setAnchorDate(t);
+    const todayStart = startOfDay(new Date());
+    setAnchorDate(todayStart);
     if (viewMode === "rolling") {
-      setRollingDays(expandForward(t, 7));
+      setRollingDays(expandForward(todayStart, 7));
       requestAnimationFrame(() => {
         scrollRef.current?.scrollTo({ left: 0, behavior: "smooth" });
       });
@@ -1844,7 +1854,11 @@ export default function AdminCalendar({ workplaceId }: Props) {
   if (loading) {
     return (
       <div className="flex min-h-[320px] w-full items-center justify-center px-4">
-        <section className="bob-loader-shell" aria-label="Kalender loader" role="status">
+        <section
+          className="bob-loader-shell"
+          aria-label={t("calendar.loader_aria", "Kalender indlæses")}
+          role="status"
+        >
           <div className="bob-loader-row" aria-hidden="true">
             <span className="bob-orb bob-orb-1">B</span>
             <span className="bob-orb bob-orb-2">O</span>
@@ -1875,10 +1889,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
       >
         <div className="pl-12">
           <h1 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-            Kalender
+            {t("calendar.page.title", "Kalender")}
           </h1>
           <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-            Tid nu:{" "}
+            {t("calendar.time_now_label", "Tid nu:")}{" "}
             <span className="tabular-nums text-zinc-700 dark:text-zinc-300">{clock}</span>
           </p>
         </div>
@@ -1893,7 +1907,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                   : "rounded-md px-3 py-1.5 text-xs font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
               }
             >
-              Rullende
+              {t("calendar.view.rolling", "Rullende")}
             </button>
             <button
               type="button"
@@ -1904,7 +1918,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                   : "rounded-md px-3 py-1.5 text-xs font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
               }
             >
-              30 dage
+              {t("calendar.view.month30", "30 dage")}
             </button>
           </div>
           <div className="flex items-center gap-1">
@@ -1912,7 +1926,11 @@ export default function AdminCalendar({ workplaceId }: Props) {
               type="button"
               onClick={() => shiftPeriod(-1)}
               className="rounded-lg p-2 text-zinc-600 hover:bg-zinc-200 dark:text-zinc-400 dark:hover:bg-zinc-800"
-              aria-label={viewMode === "rolling" ? "Forrige uge" : "Forrige 30 dage"}
+              aria-label={
+                viewMode === "rolling"
+                  ? t("calendar.nav.prev_week_aria", "Forrige uge")
+                  : t("calendar.nav.prev_month30_aria", "Forrige 30 dage")
+              }
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
@@ -1921,13 +1939,17 @@ export default function AdminCalendar({ workplaceId }: Props) {
               onClick={goToday}
               className="rounded-lg px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-200 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
-              Gå til i dag
+              {t("calendar.nav.go_today", "Gå til i dag")}
             </button>
             <button
               type="button"
               onClick={() => shiftPeriod(1)}
               className="rounded-lg p-2 text-zinc-600 hover:bg-zinc-200 dark:text-zinc-400 dark:hover:bg-zinc-800"
-              aria-label={viewMode === "rolling" ? "Næste uge" : "Næste 30 dage"}
+              aria-label={
+                viewMode === "rolling"
+                  ? t("calendar.nav.next_week_aria", "Næste uge")
+                  : t("calendar.nav.next_month30_aria", "Næste 30 dage")
+              }
             >
               <ChevronRight className="h-5 w-5" />
             </button>
@@ -1939,12 +1961,14 @@ export default function AdminCalendar({ workplaceId }: Props) {
         {showDeptDropdown ? (
           <label className="flex min-w-[200px] flex-col text-sm">
             <select
-              aria-label="Afdeling"
+              aria-label={t("calendar.filter.department_aria", "Afdeling")}
               value={selectedDeptId ?? ""}
               onChange={(e) => setSelectedDeptId(e.target.value || null)}
               className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
             >
-              <option value="">Alle afdelinger</option>
+              <option value="">
+                {t("calendar.filter.all_departments", "Alle afdelinger")}
+              </option>
               {departments.map((d) => (
                 <option key={d.id} value={d.id}>
                   {d.name}
@@ -1965,7 +1989,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
               type="search"
               value={employeeQuery}
               onChange={(e) => setEmployeeQuery(e.target.value)}
-              placeholder="Filtrér synlige rækker…"
+              placeholder={t(
+                "calendar.filter.rows_placeholder",
+                "Filtrér synlige rækker…"
+              )}
               className="w-full rounded-lg border border-zinc-300 bg-white py-2 pl-9 pr-3 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
               autoComplete="off"
             />
@@ -1975,15 +2002,17 @@ export default function AdminCalendar({ workplaceId }: Props) {
         {shiftTypes.length > 0 ? (
           <label className="flex min-w-[200px] flex-col text-sm">
             <select
-              aria-label="Filtrer vagttype"
+              aria-label={t("calendar.filter.shift_type_aria", "Filtrer vagttype")}
               value={filterShiftTypeId ?? ""}
               onChange={(e) => setFilterShiftTypeId(e.target.value || null)}
               className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
             >
-              <option value="">Alle vagttyper</option>
-              {shiftTypes.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.label}
+              <option value="">
+                {t("calendar.filter.all_shift_types", "Alle vagttyper")}
+              </option>
+              {shiftTypes.map((shiftType) => (
+                <option key={shiftType.id} value={shiftType.id}>
+                  {shiftType.label}
                 </option>
               ))}
             </select>
@@ -1993,7 +2022,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
         {employeeTypes.length > 0 ? (
           <label className="flex min-w-[200px] flex-col text-sm">
             <select
-              aria-label="Filtrer medarbejdertype"
+              aria-label={t(
+                "calendar.filter.employee_type_aria",
+                "Filtrer medarbejdertype"
+              )}
               value={filterEmployeeTypeId ?? ""}
               onChange={(e) => setFilterEmployeeTypeId(e.target.value || null)}
               className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
@@ -2004,9 +2036,9 @@ export default function AdminCalendar({ workplaceId }: Props) {
                   "Alle medarbejdertyper"
                 )}
               </option>
-              {employeeTypes.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.label}
+              {employeeTypes.map((employeeType) => (
+                <option key={employeeType.id} value={employeeType.id}>
+                  {employeeType.label}
                 </option>
               ))}
             </select>
@@ -2018,7 +2050,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
         <div className={calendarOuterClass}>
           <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-4">
             <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-400">
-              Antal forskellige medarbejdere med vagt pr. dag. Klik en dag for rullende visning.
+              {t(
+                "calendar.month30.intro",
+                "Antal forskellige medarbejdere med vagt pr. dag. Klik en dag for rullende visning."
+              )}
             </p>
             <div className="grid grid-cols-7 gap-2">
               {days30.map((d) => {
@@ -2032,12 +2067,14 @@ export default function AdminCalendar({ workplaceId }: Props) {
                     className="flex min-h-[88px] flex-col items-center justify-center rounded-xl border border-zinc-200 bg-zinc-50/80 px-1 py-2 text-center transition hover:border-zinc-400 hover:bg-white dark:border-zinc-700 dark:bg-zinc-950/50 dark:hover:border-zinc-500 dark:hover:bg-zinc-900"
                   >
                     <span className="text-[10px] font-medium leading-tight text-zinc-500 dark:text-zinc-400">
-                      {formatDayHeader(d)}
+                      {formatDayHeader(d, uiLanguage)}
                     </span>
                     <span className="mt-1 text-2xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-50">
                       {n}
                     </span>
-                    <span className="text-[10px] text-zinc-500 dark:text-zinc-400">på vagt</span>
+                    <span className="text-[10px] text-zinc-500 dark:text-zinc-400">
+                      {t("calendar.month30.on_shift_label", "på vagt")}
+                    </span>
                   </button>
                 );
               })}
@@ -2089,7 +2126,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                         colSpan={24}
                         className="border-b border-zinc-200 bg-zinc-100 px-3 py-2 text-center text-xs font-semibold whitespace-nowrap text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800/95 dark:text-zinc-200"
                       >
-                        {formatDayHeader(d)}
+                        {formatDayHeader(d, uiLanguage)}
                       </th>
                     ))}
                   </tr>
@@ -2230,11 +2267,11 @@ export default function AdminCalendar({ workplaceId }: Props) {
                                 : "Uden medarbejdertype";
                               const hoverDetails = has
                                 ? [
-                                    `Medarbejder: ${employeeName}`,
-                                    `Afdeling: ${departmentName}`,
-                                    `Medarbejdertype: ${employeeTypeLabel}`,
-                                    `Vagttype: ${shiftLabel}`,
-                                    `Tid: ${formatShiftRange(shift!.starts_at, shift!.ends_at)}`,
+                                    `${t("calendar.shift_hover.employee", "Medarbejder")}: ${employeeName}`,
+                                    `${t("calendar.shift_hover.department", "Afdeling")}: ${departmentName}`,
+                                    `${t("calendar.shift_hover.employee_type", "Medarbejdertype")}: ${employeeTypeLabel}`,
+                                    `${t("calendar.shift_hover.shift_type", "Vagttype")}: ${shiftLabel}`,
+                                    `${t("calendar.shift_hover.time", "Tid")}: ${formatShiftRange(shift!.starts_at, shift!.ends_at, uiLanguage)}`,
                                   ].join("\n")
                                 : undefined;
                               const styleToken = `${shiftColor}|${showPattern ? empPattern : "none"}|${has ? "1" : "0"}`;
@@ -2694,7 +2731,11 @@ export default function AdminCalendar({ workplaceId }: Props) {
               Du er ved at slette vagten permanent. Denne handling kan ikke fortrydes.
             </p>
             <p className="rounded-lg bg-zinc-100 px-3 py-2 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
-              {formatShiftRange(pendingDeleteShift.starts_at, pendingDeleteShift.ends_at)}
+              {formatShiftRange(
+                pendingDeleteShift.starts_at,
+                pendingDeleteShift.ends_at,
+                uiLanguage
+              )}
             </p>
             <div className="flex justify-end gap-2">
               <button
@@ -2778,7 +2819,11 @@ export default function AdminCalendar({ workplaceId }: Props) {
               </p>
               <p>
                 <strong>Tid:</strong>{" "}
-                {formatShiftRange(selectedShift.starts_at, selectedShift.ends_at)}
+                {formatShiftRange(
+                  selectedShift.starts_at,
+                  selectedShift.ends_at,
+                  uiLanguage
+                )}
               </p>
             </div>
 
@@ -2837,7 +2882,8 @@ export default function AdminCalendar({ workplaceId }: Props) {
                     const m = memberByUserId.get(s.user_id);
                     return (
                       <option key={s.id} value={s.id}>
-                        {(m?.display_name ?? "Ukendt")} - {formatShiftRange(s.starts_at, s.ends_at)}
+                        {(m?.display_name ?? "Ukendt")} -{" "}
+                        {formatShiftRange(s.starts_at, s.ends_at, uiLanguage)}
                       </option>
                     );
                   })}
@@ -2964,9 +3010,9 @@ export default function AdminCalendar({ workplaceId }: Props) {
                 className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
               >
                 <option value="">Uden vagttype</option>
-                {shiftTypes.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.label}
+                {shiftTypes.map((shiftType) => (
+                  <option key={shiftType.id} value={shiftType.id}>
+                    {shiftType.label}
                   </option>
                 ))}
               </select>

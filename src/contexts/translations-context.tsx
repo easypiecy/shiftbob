@@ -10,18 +10,29 @@ import {
 
 const TranslationsContext = createContext<Record<string, string>>({});
 
+const UiLanguageContext = createContext<string>("en-US");
+
 export function AppTranslationsProvider({
   children,
   initialMap,
+  uiLanguage = "en-US",
 }: {
   children: ReactNode;
   initialMap: Record<string, string>;
+  /** BCP 47 sprogkode — matcher cookie / html lang; bruges til Intl i klientkomponenter. */
+  uiLanguage?: string;
 }) {
   return (
-    <TranslationsContext.Provider value={initialMap}>
-      {children}
-    </TranslationsContext.Provider>
+    <UiLanguageContext.Provider value={uiLanguage}>
+      <TranslationsContext.Provider value={initialMap}>
+        {children}
+      </TranslationsContext.Provider>
+    </UiLanguageContext.Provider>
   );
+}
+
+export function useUiLanguage(): string {
+  return useContext(UiLanguageContext);
 }
 
 export function useTranslations() {

@@ -73,7 +73,9 @@ export default async function RootLayout({
   return (
     <html lang={htmlLang} className={htmlClass} data-theme={theme}>
       <body className="flex min-h-full flex-col font-sans">
-        <AppRootProviders translations={translations}>{children}</AppRootProviders>
+        <AppRootProviders translations={translations} uiLanguage={htmlLang}>
+          {children}
+        </AppRootProviders>
       </body>
     </html>
   );

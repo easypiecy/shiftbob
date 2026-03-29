@@ -7,12 +7,14 @@ import { SupabaseSessionRefresh } from "@/src/components/supabase-session-refres
 export function AppRootProviders({
   children,
   translations,
+  uiLanguage,
 }: {
   children: ReactNode;
   translations: Record<string, string>;
+  uiLanguage: string;
 }) {
   return (
-    <AppTranslationsProvider initialMap={translations}>
+    <AppTranslationsProvider initialMap={translations} uiLanguage={uiLanguage}>
       <SupabaseSessionRefresh />
       {children}
     </AppTranslationsProvider>
