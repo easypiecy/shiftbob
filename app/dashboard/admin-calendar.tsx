@@ -2189,7 +2189,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
                           <div className="flex flex-col items-center gap-0.5 leading-tight">
                             <span>{formatDayHeader(d, uiLanguage)}</span>
                             {holidayLine ? (
-                              <span className="text-[10px] font-normal normal-case text-amber-900/85 dark:text-amber-100/85">
+                              <span
+                                translate="no"
+                                className="notranslate text-[10px] font-normal normal-case text-amber-900/85 dark:text-amber-100/85"
+                              >
                                 {holidayLine}
                               </span>
                             ) : null}

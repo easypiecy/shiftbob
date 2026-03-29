@@ -8,6 +8,7 @@ import {
   type CountryHolidayRow,
   type EuCountryRow,
   listCountryHolidays,
+  refreshCountryHolidayDefaults,
   updateCountryHoliday,
 } from "@/src/app/super-admin/holidays-actions";
 import { useTranslations } from "@/src/contexts/translations-context";
@@ -235,6 +236,43 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
           ))}
         </select>
       </label>
+      <div>
+        <button
+          type="button"
+          disabled={!countryCode || busyId === "__refresh__"}
+          onClick={async () => {
+            if (!countryCode) return;
+            setBusyId("__refresh__");
+            setMsg(null);
+            const res = await refreshCountryHolidayDefaults(countryCode);
+            setBusyId(null);
+            if (!res.ok) {
+              setMsg(res.error);
+              return;
+            }
+            setMsg(
+              t(
+                "super_admin.holidays.refresh_done",
+                `Standardhelligdage opdateret (${res.upserted}) for valgt land.`
+              )
+            );
+            await load(countryCode);
+          }}
+          className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-800 hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100 dark:hover:bg-zinc-800"
+        >
+          {busyId === "__refresh__" ? (
+            <span className="inline-flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              {t("super_admin.holidays.refreshing", "Opdaterer…")}
+            </span>
+          ) : (
+            t(
+              "super_admin.holidays.refresh_defaults",
+              "Opdater helligdage for valgt land (på originalsproget)"
+            )
+          )}
+        </button>
+      </div>
 
       {loading ? (
         <div className="flex items-center gap-2 text-sm text-zinc-500">
@@ -280,11 +318,12 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
                     </td>
                     <td className="px-3 py-2">
                       <input
+                        translate="no"
                         value={d.display_name}
                         onChange={(e) =>
                           setDraft(r.id, { display_name: e.target.value })
                         }
-                        className="w-full min-w-[140px] rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-600 dark:bg-zinc-950"
+                        className="notranslate w-full min-w-[140px] rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-600 dark:bg-zinc-950"
                       />
                     </td>
                     <td className="px-3 py-2">
@@ -415,11 +454,12 @@ export default function HolidaysAdminClient({ initialCountries }: Props) {
           <label className="flex flex-col gap-1 text-xs">
             <span>{t("super_admin.holidays.new_name", "Navn")}</span>
             <input
+              translate="no"
               value={newRow.display_name}
               onChange={(e) =>
                 setNewRow((s) => ({ ...s, display_name: e.target.value }))
               }
-              className="min-w-[160px] rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-600 dark:bg-zinc-950"
+              className="notranslate min-w-[160px] rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-600 dark:bg-zinc-950"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs">
