@@ -11,7 +11,9 @@ import {
   ChevronRight,
   Languages,
   LayoutDashboard,
+  LifeBuoy,
   LogOut,
+  Megaphone,
   Tags,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -33,6 +35,20 @@ const links = [
     labelDa: "Brugere & arbejdspladser",
     icon: Building2,
     match: "users-default",
+  },
+  {
+    href: "/super-admin/notifications-broadcast",
+    navKey: "super_admin.nav.notification_broadcast",
+    labelDa: "Notifikationsudsendelse",
+    icon: Megaphone,
+    match: "path",
+  },
+  {
+    href: "/super-admin/support",
+    navKey: "super_admin.nav.support",
+    labelDa: "Support tickets",
+    icon: LifeBuoy,
+    match: "path",
   },
   {
     href: "/super-admin/workplace-templates",
@@ -89,6 +105,7 @@ export function SuperAdminShell({ children }: { children: React.ReactNode }) {
   const [signingOut, setSigningOut] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSidebarOpen(typeof window !== "undefined" && window.innerWidth >= 768);
   }, []);
 

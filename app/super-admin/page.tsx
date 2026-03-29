@@ -3,8 +3,10 @@ import {
   Building2,
   CalendarRange,
   ChevronRight,
+  LifeBuoy,
   Languages,
   LayoutDashboard,
+  Megaphone,
   Tags,
 } from "lucide-react";
 
@@ -15,6 +17,20 @@ const cards = [
     description:
       "Arbejdspladsliste, brugere, tilknytning og redigering af hver arbejdsplads (inkl. ny arbejdsplads og afdelinger).",
     icon: Building2,
+  },
+  {
+    href: "/super-admin/notifications-broadcast",
+    title: "Notifikationsudsendelse",
+    description:
+      "Udsend overskrift + kort brødtekst til alle eller målgrupper. Auto-oversættelse pr. arbejdspladsland.",
+    icon: Megaphone,
+  },
+  {
+    href: "/super-admin/support",
+    title: "Support tickets",
+    description:
+      "Indgående supportmails, POP3/IMAP konfiguration, templates og oversættelser.",
+    icon: LifeBuoy,
   },
   {
     href: "/super-admin/workplace-templates",

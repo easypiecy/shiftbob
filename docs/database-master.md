@@ -18,6 +18,7 @@ Single source of truth for `public` schema objects defined in this repo’s SQL 
 | Script | Formål |
 |--------|--------|
 | `supabase_patch_workplace_notification_cleanup.sql` | Opdatér `notification_channel` (`none` → `push`), constraint kun `push`/`sms`, fjern `push_send_none` hvis den findes |
+| `supabase_super_admin_notifications_setup.sql` | Super Admin notifikationsudsendelse: batches + deliveries-log (målretning, oversatte tekster pr. modtager) |
 | `supabase_patch_is_workplace_admin_user_roles.sql` | Synk `public.is_workplace_admin()` med `user_roles` (samme som opdateret `supabase_i18n_setup.sql`) |
 | `supabase_departments_setup.sql` | Afdelinger (`workplace_departments`) og medlemskaber (`workplace_department_members`); trigger + RLS |
 | `supabase_patch_workplace_members_select_own.sql` | Ret `workplace_members` SELECT-RLS så brugeren altid kan læse egne rækker (klient `fetchUserWorkplaces` m.m.) |
@@ -581,3 +582,5 @@ languages.language_code ◄── languages.primary_language_code (self-FK)
 | `languages` | Language registry + fallback |
 | `eu_countries` | EU countries + primary language |
 | `ui_translations` | Localized UI strings |
+| `super_admin_notification_batches` | Udsendelses-batches fra Super Admin (original tekst + scope) |
+| `super_admin_notification_deliveries` | Modtagerrækker pr. batch (sprog, oversat titel/brødtekst, status) |

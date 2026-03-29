@@ -118,12 +118,39 @@ export function AdminWorkspaceShell({
 }: Props) {
   const { t } = useTranslations();
   const pathname = usePathname();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(
+    typeof window !== "undefined" ? window.innerWidth >= 768 : true
+  );
   const [signingOut, setSigningOut] = useState(false);
+  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
 
   useEffect(() => {
-    setSidebarOpen(typeof window !== "undefined" && window.innerWidth >= 768);
-  }, []);
+    let cancelled = false;
+    const wpId = getActiveWorkplaceIdFromCookie();
+    if (!wpId) {
+      setTimeout(() => {
+        if (!cancelled) setUnreadNotificationsCount(0);
+      }, 0);
+      return;
+    }
+    const supabase = createClient();
+    void (async () => {
+      const { count, error } = await supabase
+        .from("workplace_join_requests")
+        .select("id", { count: "exact", head: true })
+        .eq("workplace_id", wpId)
+        .eq("status", "pending");
+      if (cancelled) return;
+      if (error) {
+        setUnreadNotificationsCount(0);
+        return;
+      }
+      setUnreadNotificationsCount(count ?? 0);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
 
   if (!showAdminNav) {
     return <>{children}</>;
@@ -227,7 +254,16 @@ export function AdminWorkspaceShell({
                     }
                   >
                     <Icon className="h-4 w-4 shrink-0 text-zinc-500" aria-hidden />
-                    {t(navKey, labelDa)}
+                    <span className="relative inline-flex items-center">
+                      {t(navKey, labelDa)}
+                      {href === "/dashboard/notifikationer" &&
+                      unreadNotificationsCount > 0 ? (
+                        <span className="ml-2 inline-flex h-2.5 w-2.5">
+                          <span className="absolute inline-flex h-2.5 w-2.5 animate-ping rounded-full bg-red-500 opacity-75" />
+                          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-600" />
+                        </span>
+                      ) : null}
+                    </span>
                   </Link>
                 );
               })}
