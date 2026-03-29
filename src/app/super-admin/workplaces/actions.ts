@@ -191,6 +191,56 @@ function normalizeTemplateMatchKey(value: string | null | undefined): string {
   return (value ?? "").trim().toLocaleLowerCase("da");
 }
 
+const LEGACY_SHIFT_LABEL_TO_STANDARD = new Map<string, string>([
+  ["dag", "Normal"],
+  ["day", "Normal"],
+  ["aften", "Normal"],
+  ["evening", "Normal"],
+  ["nat", "Normal"],
+  ["night", "Normal"],
+  ["syg", "Sygdom"],
+  ["sygemelding", "Sygdom"],
+  ["sick", "Sygdom"],
+  ["akut vagt", "Akut"],
+  ["vikar vagt", "Ledig"],
+  ["fridag", "Ferie"],
+  ["fri", "Ferie"],
+]);
+
+const LEGACY_EMPLOYEE_LABEL_TO_STANDARD = new Map<string, string>([
+  ["permanent", "Fuldtid"],
+  ["fastansat", "Fuldtid"],
+  ["parttime", "Deltid"],
+  ["deltidsansat", "Deltid"],
+  ["trainee", "Elev"],
+  ["praktikant", "Elev"],
+  ["temporary", "Vikar"],
+  ["ung", "Ung (under 18)"],
+  ["youth", "Ung (under 18)"],
+]);
+
+function fallbackHolidayDefsForCountry(
+  countryCode: string
+): WorkplacePublicHolidayDef[] {
+  if (countryCode !== "DK") return [];
+  return [
+    { holiday_rule: "fixed", month: 1, day: 1, easter_offset_days: null, display_name: "Nytårsdag" },
+    { holiday_rule: "easter_offset", month: null, day: null, easter_offset_days: -3, display_name: "Skærtorsdag" },
+    { holiday_rule: "easter_offset", month: null, day: null, easter_offset_days: -2, display_name: "Langfredag" },
+    { holiday_rule: "easter_offset", month: null, day: null, easter_offset_days: 0, display_name: "Påskedag" },
+    { holiday_rule: "easter_offset", month: null, day: null, easter_offset_days: 1, display_name: "2. påskedag" },
+    { holiday_rule: "easter_offset", month: null, day: null, easter_offset_days: 26, display_name: "Store bededag" },
+    { holiday_rule: "easter_offset", month: null, day: null, easter_offset_days: 39, display_name: "Kristi himmelfartsdag" },
+    { holiday_rule: "easter_offset", month: null, day: null, easter_offset_days: 49, display_name: "Pinsedag" },
+    { holiday_rule: "easter_offset", month: null, day: null, easter_offset_days: 50, display_name: "2. pinsedag" },
+    { holiday_rule: "fixed", month: 6, day: 5, easter_offset_days: null, display_name: "Grundlovsdag" },
+    { holiday_rule: "fixed", month: 12, day: 24, easter_offset_days: null, display_name: "Juleaften" },
+    { holiday_rule: "fixed", month: 12, day: 25, easter_offset_days: null, display_name: "1. juledag" },
+    { holiday_rule: "fixed", month: 12, day: 26, easter_offset_days: null, display_name: "2. juledag" },
+    { holiday_rule: "fixed", month: 12, day: 31, easter_offset_days: null, display_name: "Nytårsaften" },
+  ];
+}
+
 function parseSemicolonCsvLine(line: string): string[] {
   const cells: string[] = [];
   let cur = "";
@@ -653,37 +703,76 @@ export async function getWorkplaceTypes(
       }
       return { ok: false, error: sRes.error.message };
     }
+    const rawEmployeeTypes = (eRes.data ?? []) as WorkplaceEmployeeTypeRow[];
     const rawShiftTypes = (sRes.data ?? []) as WorkplaceShiftTypeRow[];
-    const templateColorById = new Map<string, string>();
-    const templateColorByName = new Map<string, string>();
-    const tRes = await admin
-      .from("shift_type_templates")
-      .select("id, name, calendar_color");
-    if (!tRes.error) {
-      for (const row of tRes.data ?? []) {
+    const [employeeTemplateRes, shiftTemplateRes] = await Promise.all([
+      admin.from("employee_type_templates").select("id, name, calendar_pattern"),
+      admin.from("shift_type_templates").select("id, name, calendar_color"),
+    ]);
+    const employeeTemplateById = new Map<string, { name: string; pattern: string | null }>();
+    const employeeTemplateByName = new Map<string, { name: string; pattern: string | null }>();
+    if (!employeeTemplateRes.error) {
+      for (const row of employeeTemplateRes.data ?? []) {
         const id = String(row.id ?? "");
-        const nameKey = normalizeTemplateMatchKey(row.name as string | null | undefined);
-        const color = (row.calendar_color as string | null) ?? "";
-        if (!color) continue;
-        if (id) templateColorById.set(id, color);
-        if (nameKey && !templateColorByName.has(nameKey)) {
-          templateColorByName.set(nameKey, color);
+        const name = String(row.name ?? "").trim();
+        if (!name) continue;
+        const normalized = normalizeTemplateMatchKey(name);
+        const template = {
+          name,
+          pattern: (row.calendar_pattern as string | null) ?? "none",
+        };
+        if (id) employeeTemplateById.set(id, template);
+        if (normalized && !employeeTemplateByName.has(normalized)) {
+          employeeTemplateByName.set(normalized, template);
         }
       }
     }
-
-    const shiftTypes = rawShiftTypes.map((s) => {
-      const byTemplateId = s.template_id ? templateColorById.get(s.template_id) : undefined;
-      const byName = templateColorByName.get(normalizeTemplateMatchKey(s.label));
+    const shiftTemplateById = new Map<string, { name: string; color: string | null }>();
+    const shiftTemplateByName = new Map<string, { name: string; color: string | null }>();
+    if (!shiftTemplateRes.error) {
+      for (const row of shiftTemplateRes.data ?? []) {
+        const id = String(row.id ?? "");
+        const name = String(row.name ?? "").trim();
+        if (!name) continue;
+        const normalized = normalizeTemplateMatchKey(name);
+        const template = {
+          name,
+          color: (row.calendar_color as string | null) ?? "#94a3b8",
+        };
+        if (id) shiftTemplateById.set(id, template);
+        if (normalized && !shiftTemplateByName.has(normalized)) {
+          shiftTemplateByName.set(normalized, template);
+        }
+      }
+    }
+    const employeeTypes = rawEmployeeTypes.map((row) => {
+      const key = normalizeTemplateMatchKey(row.label);
+      const legacy = LEGACY_EMPLOYEE_LABEL_TO_STANDARD.get(key);
+      const byTemplateId = row.template_id ? employeeTemplateById.get(row.template_id) : undefined;
+      const byTemplateName = employeeTemplateByName.get(legacy ? normalizeTemplateMatchKey(legacy) : key);
       return {
-        ...s,
-        calendar_color: byTemplateId ?? byName ?? s.calendar_color ?? "#94a3b8",
+        ...row,
+        label: byTemplateId?.name ?? byTemplateName?.name ?? legacy ?? row.label,
+        calendar_pattern:
+          byTemplateId?.pattern ?? byTemplateName?.pattern ?? row.calendar_pattern ?? "none",
+      };
+    });
+    const shiftTypes = rawShiftTypes.map((row) => {
+      const key = normalizeTemplateMatchKey(row.label);
+      const legacy = LEGACY_SHIFT_LABEL_TO_STANDARD.get(key);
+      const byTemplateId = row.template_id ? shiftTemplateById.get(row.template_id) : undefined;
+      const byTemplateName = shiftTemplateByName.get(legacy ? normalizeTemplateMatchKey(legacy) : key);
+      return {
+        ...row,
+        label: byTemplateId?.name ?? byTemplateName?.name ?? legacy ?? row.label,
+        calendar_color:
+          byTemplateId?.color ?? byTemplateName?.color ?? row.calendar_color ?? "#94a3b8",
       };
     });
 
     return {
       ok: true,
-      employeeTypes: (eRes.data ?? []) as WorkplaceEmployeeTypeRow[],
+      employeeTypes,
       shiftTypes,
     };
   } catch (e) {
@@ -1418,33 +1507,73 @@ export async function getWorkplaceDepartmentsOverview(
         return { ok: false, error: sTypesRes.error.message };
       }
     } else {
-      const rawShiftTypes = (sTypesRes.data ?? []) as WorkplaceShiftTypeRow[];
-      const templateColorById = new Map<string, string>();
-      const templateColorByName = new Map<string, string>();
-      const tRes = await admin
-        .from("shift_type_templates")
-        .select("id, name, calendar_color");
-      if (!tRes.error) {
-        for (const row of tRes.data ?? []) {
-          const id = String(row.id ?? "");
-          const nameKey = normalizeTemplateMatchKey(row.name as string | null | undefined);
-          const color = (row.calendar_color as string | null) ?? "";
-          if (!color) continue;
-          if (id) templateColorById.set(id, color);
-          if (nameKey && !templateColorByName.has(nameKey)) {
-            templateColorByName.set(nameKey, color);
-          }
+      shiftTypes = (sTypesRes.data ?? []) as WorkplaceShiftTypeRow[];
+    }
+
+    const [employeeTemplateRes, shiftTemplateRes] = await Promise.all([
+      admin.from("employee_type_templates").select("id, name, calendar_pattern"),
+      admin.from("shift_type_templates").select("id, name, calendar_color"),
+    ]);
+    const employeeTemplateById = new Map<string, { name: string; pattern: string | null }>();
+    const employeeTemplateByName = new Map<string, { name: string; pattern: string | null }>();
+    if (!employeeTemplateRes.error) {
+      for (const row of employeeTemplateRes.data ?? []) {
+        const id = String(row.id ?? "");
+        const name = String(row.name ?? "").trim();
+        if (!name) continue;
+        const normalized = normalizeTemplateMatchKey(name);
+        const template = {
+          name,
+          pattern: (row.calendar_pattern as string | null) ?? "none",
+        };
+        if (id) employeeTemplateById.set(id, template);
+        if (normalized && !employeeTemplateByName.has(normalized)) {
+          employeeTemplateByName.set(normalized, template);
         }
       }
-      shiftTypes = rawShiftTypes.map((s) => {
-        const byTemplateId = s.template_id ? templateColorById.get(s.template_id) : undefined;
-        const byName = templateColorByName.get(normalizeTemplateMatchKey(s.label));
-        return {
-          ...s,
-          calendar_color: byTemplateId ?? byName ?? s.calendar_color ?? "#94a3b8",
-        };
-      });
     }
+    const shiftTemplateById = new Map<string, { name: string; color: string | null }>();
+    const shiftTemplateByName = new Map<string, { name: string; color: string | null }>();
+    if (!shiftTemplateRes.error) {
+      for (const row of shiftTemplateRes.data ?? []) {
+        const id = String(row.id ?? "");
+        const name = String(row.name ?? "").trim();
+        if (!name) continue;
+        const normalized = normalizeTemplateMatchKey(name);
+        const template = {
+          name,
+          color: (row.calendar_color as string | null) ?? "#94a3b8",
+        };
+        if (id) shiftTemplateById.set(id, template);
+        if (normalized && !shiftTemplateByName.has(normalized)) {
+          shiftTemplateByName.set(normalized, template);
+        }
+      }
+    }
+    employeeTypes = employeeTypes.map((row) => {
+      const key = normalizeTemplateMatchKey(row.label);
+      const legacy = LEGACY_EMPLOYEE_LABEL_TO_STANDARD.get(key);
+      const byTemplateId = row.template_id ? employeeTemplateById.get(row.template_id) : undefined;
+      const byTemplateName = employeeTemplateByName.get(legacy ? normalizeTemplateMatchKey(legacy) : key);
+      return {
+        ...row,
+        label: byTemplateId?.name ?? byTemplateName?.name ?? legacy ?? row.label,
+        calendar_pattern:
+          byTemplateId?.pattern ?? byTemplateName?.pattern ?? row.calendar_pattern ?? "none",
+      };
+    });
+    shiftTypes = shiftTypes.map((row) => {
+      const key = normalizeTemplateMatchKey(row.label);
+      const legacy = LEGACY_SHIFT_LABEL_TO_STANDARD.get(key);
+      const byTemplateId = row.template_id ? shiftTemplateById.get(row.template_id) : undefined;
+      const byTemplateName = shiftTemplateByName.get(legacy ? normalizeTemplateMatchKey(legacy) : key);
+      return {
+        ...row,
+        label: byTemplateId?.name ?? byTemplateName?.name ?? legacy ?? row.label,
+        calendar_color:
+          byTemplateId?.color ?? byTemplateName?.color ?? row.calendar_color ?? "#94a3b8",
+      };
+    });
 
     if (pRes.error && !isMissingSchemaError(pRes.error.message)) {
       return { ok: false, error: pRes.error.message };
@@ -1553,6 +1682,9 @@ export async function getWorkplaceDepartmentsOverview(
           display_name: String(row.display_name ?? ""),
         }));
       }
+    }
+    if (public_holidays.length === 0 && country_code) {
+      public_holidays = fallbackHolidayDefsForCountry(country_code);
     }
 
     return {

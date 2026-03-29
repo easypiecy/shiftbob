@@ -192,13 +192,12 @@ async function ensureDepartments(workplaceId) {
 }
 
 async function ensureEmployeeTypes(workplaceId) {
-  const { data: existing, error: e1 } = await supabase
+  const { error: e1 } = await supabase
     .from("workplace_employee_types")
-    .select("id, label, sort_order, calendar_pattern")
+    .select("id")
     .eq("workplace_id", workplaceId)
-    .order("sort_order");
+    .limit(1);
   if (e1) throw new Error(`Failed reading employee types: ${e1.message}`);
-  if ((existing ?? []).length > 0) return existing;
 
   const defaults = [
     { label: "Fuldtid", sort_order: 10 },
@@ -206,11 +205,21 @@ async function ensureEmployeeTypes(workplaceId) {
     { label: "Elev", sort_order: 30 },
     { label: "Vikar", sort_order: 40 },
     { label: "Ung (under 18)", sort_order: 50 },
-  ].map((x) => ({ workplace_id: workplaceId, ...x }));
-
-  const { error: insErr } = await supabase
+  ];
+  const { error: clearMembersErr } = await supabase
+    .from("workplace_members")
+    .update({ employee_type_id: null })
+    .eq("workplace_id", workplaceId);
+  if (clearMembersErr && !/employee_type_id|column/i.test(clearMembersErr.message)) {
+    throw new Error(`Failed clearing employee types on members: ${clearMembersErr.message}`);
+  }
+  const { error: delErr } = await supabase
     .from("workplace_employee_types")
-    .insert(defaults);
+    .delete()
+    .eq("workplace_id", workplaceId);
+  if (delErr) throw new Error(`Failed deleting employee types: ${delErr.message}`);
+  const rows = defaults.map((d) => ({ workplace_id: workplaceId, ...d }));
+  const { error: insErr } = await supabase.from("workplace_employee_types").insert(rows);
   if (insErr) throw new Error(`Failed creating employee types: ${insErr.message}`);
 
   const { data: finalRows, error: e2 } = await supabase
@@ -223,13 +232,12 @@ async function ensureEmployeeTypes(workplaceId) {
 }
 
 async function ensureShiftTypes(workplaceId) {
-  const { data: existing, error: e1 } = await supabase
+  const { error: e1 } = await supabase
     .from("workplace_shift_types")
-    .select("id, label, sort_order, calendar_color")
+    .select("id")
     .eq("workplace_id", workplaceId)
-    .order("sort_order");
+    .limit(1);
   if (e1) throw new Error(`Failed reading shift types: ${e1.message}`);
-  if ((existing ?? []).length > 0) return existing;
 
   const defaults = [
     { label: "Normal", sort_order: 10 },
@@ -239,10 +247,21 @@ async function ensureShiftTypes(workplaceId) {
     { label: "Sygdom", sort_order: 50 },
     { label: "Ferie", sort_order: 60 },
     { label: "Barn 1. sygedag", sort_order: 70 },
-  ].map((x) => ({ workplace_id: workplaceId, ...x }));
-  const { error: insErr } = await supabase
+  ];
+  const { error: clearShiftTypeErr } = await supabase
+    .from("workplace_shifts")
+    .update({ shift_type_id: null })
+    .eq("workplace_id", workplaceId);
+  if (clearShiftTypeErr && !/workplace_shifts|schema cache|does not exist|42p01/i.test(clearShiftTypeErr.message)) {
+    throw new Error(`Failed clearing shift types on shifts: ${clearShiftTypeErr.message}`);
+  }
+  const { error: delErr } = await supabase
     .from("workplace_shift_types")
-    .insert(defaults);
+    .delete()
+    .eq("workplace_id", workplaceId);
+  if (delErr) throw new Error(`Failed deleting shift types: ${delErr.message}`);
+  const rows = defaults.map((d) => ({ workplace_id: workplaceId, ...d }));
+  const { error: insErr } = await supabase.from("workplace_shift_types").insert(rows);
   if (insErr) throw new Error(`Failed creating shift types: ${insErr.message}`);
 
   const { data: finalRows, error: e2 } = await supabase
@@ -395,10 +414,8 @@ async function ensureStaffUsers() {
 }
 
 function pickEmployeeTypeId(employeeTypes, employeeIndex) {
-  // Vægtet fordeling: flere tjenere/kokke end specialroller.
-  const weighted = [0, 0, 1, 1, 1, 2, 3];
-  const slot = weighted[(employeeIndex - 1) % weighted.length];
-  const type = employeeTypes[slot % employeeTypes.length] ?? employeeTypes[0];
+  const slot = (employeeIndex - 1) % Math.max(employeeTypes.length, 1);
+  const type = employeeTypes[slot] ?? employeeTypes[0];
   return type?.id ?? null;
 }
 
@@ -418,7 +435,11 @@ async function upsertWorkplaceMembers(workplaceId, staff, employeeTypes) {
   if (!/employee_type_id|column/i.test(error.message)) {
     throw new Error(`Failed upserting workplace members: ${error.message}`);
   }
-  const fallback = rows.map(({ employee_type_id: _drop, ...rest }) => rest);
+  const fallback = rows.map((r) => ({
+    workplace_id: r.workplace_id,
+    user_id: r.user_id,
+    role: r.role,
+  }));
   const { error: e2 } = await supabase.from("workplace_members").upsert(fallback, {
     onConflict: "user_id,workplace_id",
   });

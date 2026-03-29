@@ -41,24 +41,6 @@ function patternLayer(pattern: EmployeeTypePattern): string | null {
   }
 }
 
-const AMBIENT_HOLIDAY_LAYER =
-  "linear-gradient(rgba(254, 249, 195, 0.42), rgba(254, 249, 195, 0.42))";
-const AMBIENT_WEEKEND_LAYER =
-  "linear-gradient(rgba(228, 228, 231, 0.45), rgba(228, 228, 231, 0.45))";
-
-function prependAmbientLayer(
-  style: CSSProperties,
-  ambient: "holiday" | "weekend" | null | undefined
-): void {
-  if (ambient !== "holiday" && ambient !== "weekend") return;
-  const layer = ambient === "holiday" ? AMBIENT_HOLIDAY_LAYER : AMBIENT_WEEKEND_LAYER;
-  const existing = style.backgroundImage;
-  style.backgroundImage =
-    typeof existing === "string" && existing.trim() !== ""
-      ? `${layer}, ${existing}`
-      : layer;
-}
-
 export function shiftCalendarCellStyle(args: {
   shiftTypeColor: string | null | undefined;
   employeePattern: string | null | undefined;
@@ -75,7 +57,6 @@ export function shiftCalendarCellStyle(args: {
   };
 
   if (!layer) {
-    prependAmbientLayer(style, args.ambient);
     return style;
   }
 
@@ -87,6 +68,5 @@ export function shiftCalendarCellStyle(args: {
     style.backgroundSize = "12px 12px, 12px 12px, 6px 6px, 6px 6px";
   }
 
-  prependAmbientLayer(style, args.ambient);
   return style;
 }

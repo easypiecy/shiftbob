@@ -50,6 +50,7 @@ type Props = {
   emp: WorkplaceMemberDepartmentsRow;
   viewerUserId: string | null;
   nameMode: "full" | "privacy";
+  employeeTypeLabel?: string;
   canEdit: boolean;
   onOpenEdit?: () => void;
 };
@@ -58,6 +59,7 @@ export default function EmployeeCalendarNameCell({
   emp,
   viewerUserId,
   nameMode,
+  employeeTypeLabel,
   canEdit,
   onOpenEdit,
 }: Props) {
@@ -96,6 +98,9 @@ export default function EmployeeCalendarNameCell({
   }, [canEdit, onOpenEdit]);
 
   const label = calendarNameLabel(emp, viewerUserId, nameMode);
+  const hoverTitle = employeeTypeLabel?.trim()
+    ? `${label}\n${t("calendar.shift_hover.employee_type", "Medarbejdertype")}: ${employeeTypeLabel}`
+    : label;
 
   return (
     <>
@@ -113,6 +118,7 @@ export default function EmployeeCalendarNameCell({
           onPointerCancel={canEdit ? onPointerUp : undefined}
           onPointerLeave={canEdit ? onPointerUp : undefined}
           onClick={onClickOpen}
+          title={hoverTitle}
           aria-label={
             canEdit
               ? t("calendar.name_cell.aria_edit", "Medarbejder {name}, rediger").replace(

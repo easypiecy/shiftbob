@@ -425,7 +425,7 @@ const ShiftGridCell = memo(function ShiftGridCell({
       data-day-key={dayKey}
       data-hour={hour}
     >
-      {has && startsHere ? (
+      {has && startsHere && shiftLabel.trim().length > 0 ? (
         <span className="pointer-events-none block w-full truncate pl-2 pr-0.5 text-left text-[12px] font-bold text-black [text-shadow:0_0_2px_rgba(255,255,255,0.95),0_0_6px_rgba(255,255,255,0.9)]">
           {shiftLabel}
         </span>
@@ -499,7 +499,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const [viewMode, setViewMode] = useState<CalendarViewMode>("rolling");
   const [anchorDate, setAnchorDate] = useState(() => startOfDay(new Date()));
   const [rollingDays, setRollingDays] = useState<Date[]>(() =>
-    expandForward(startOfDay(new Date()), 7)
+    expandForward(startOfDay(new Date()), 30)
   );
   const [selectedDeptId, setSelectedDeptId] = useState<string | null>(null);
   const [employeeQuery, setEmployeeQuery] = useState("");
@@ -2292,6 +2292,12 @@ export default function AdminCalendar({ workplaceId }: Props) {
                                 emp={emp}
                                 viewerUserId={viewerUserId}
                                 nameMode={calendarAdminNameView ? "full" : "privacy"}
+                                employeeTypeLabel={
+                                  emp.employee_type_id
+                                    ? employeeTypeLabelById.get(emp.employee_type_id) ??
+                                      "Uden medarbejdertype"
+                                    : "Uden medarbejdertype"
+                                }
                                 canEdit={calendarAdminNameView}
                                 onOpenEdit={() => void openEditMemberEditor(emp.user_id)}
                               />
@@ -2339,6 +2345,10 @@ export default function AdminCalendar({ workplaceId }: Props) {
                               const shiftLabel = shift?.shift_type_id
                                 ? shiftTypeLabelById.get(shift.shift_type_id) ?? "Vagt"
                                 : "Vagt";
+                              const renderedShiftLabel =
+                                shiftLabel.trim().toLocaleLowerCase("da") === "normal"
+                                  ? ""
+                                  : shiftLabel;
                               const member = shift ? memberByUserId.get(shift.user_id) ?? null : null;
                               const employeeName = member?.display_name ?? "Ukendt";
                               const departmentName = shift?.department_id
@@ -2372,7 +2382,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                                   startsHere={startsHere}
                                   endsHere={endsHere}
                                   has={has}
-                                  shiftLabel={shiftLabel}
+                                  shiftLabel={renderedShiftLabel}
                                   renderedCellStyle={cellStyle}
                                   styleToken={styleToken}
                                   hoverDetails={hoverDetails}
