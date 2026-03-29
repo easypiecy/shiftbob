@@ -3,6 +3,7 @@ import {
   getWorkplaceDepartmentsOverview,
   getWorkplaceTypes,
   listEmployeeTypeTemplates,
+  listEuCountriesForWorkplace,
   listShiftTypeTemplates,
   listWorkplaceApiKeys,
 } from "@/src/app/super-admin/workplaces/actions";
@@ -14,13 +15,14 @@ export default async function WorkplaceDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [wp, types, keys, et, st, dept] = await Promise.all([
+  const [wp, types, keys, et, st, dept, countries] = await Promise.all([
     getWorkplaceById(id),
     getWorkplaceTypes(id),
     listWorkplaceApiKeys(id),
     listEmployeeTypeTemplates(id),
     listShiftTypeTemplates(id),
     getWorkplaceDepartmentsOverview(id),
+    listEuCountriesForWorkplace(id),
   ]);
 
   if (!wp.ok) {
@@ -67,6 +69,7 @@ export default async function WorkplaceDetailPage({
       membersWithDepartments={dept.members}
       standardEmployeeTemplates={et.ok ? et.data : []}
       standardShiftTemplates={st.ok ? st.data : []}
+      countryOptions={countries.ok ? countries.data : []}
       catalogError={catalogError}
     />
   );

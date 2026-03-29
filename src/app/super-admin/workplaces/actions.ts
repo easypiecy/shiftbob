@@ -124,6 +124,11 @@ export type WorkplaceDepartmentRow = {
   created_at: string;
 };
 
+export type EuCountryOptionRow = {
+  country_code: string;
+  name: string;
+};
+
 /** Medlem med e-mail og liste af afdelings-id’er på samme arbejdsplads */
 export type WorkplaceMemberDepartmentsRow = {
   /** Række-id i workplace_members (bruges som kort medarbejder-id i kalender for EMPLOYEE-visning) */
@@ -305,6 +310,29 @@ export async function getWorkplaces(): Promise<
       return { ok: false, error: error.message };
     }
     return { ok: true, data: (data ?? []) as WorkplaceRow[] };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Ukendt fejl";
+    return { ok: false, error: msg };
+  }
+}
+
+export async function listEuCountriesForWorkplace(
+  workplaceId: string
+): Promise<{ ok: true; data: EuCountryOptionRow[] } | { ok: false; error: string }> {
+  try {
+    await assertWorkplaceAdminOrSuperAdmin(workplaceId);
+    const admin = getAdminClient();
+    const { data, error } = await admin
+      .from("eu_countries")
+      .select("country_code, name")
+      .order("name", { ascending: true });
+    if (error) {
+      if (isMissingSchemaError(error.message)) {
+        return { ok: true, data: [] };
+      }
+      return { ok: false, error: error.message };
+    }
+    return { ok: true, data: (data ?? []) as EuCountryOptionRow[] };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Ukendt fejl";
     return { ok: false, error: msg };

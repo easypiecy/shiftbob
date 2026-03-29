@@ -27,6 +27,7 @@ import {
   type WorkplaceApiKeyMeta,
   type WorkplaceDepartmentRow,
   type WorkplaceDetail,
+  type EuCountryOptionRow,
   type WorkplaceEmployeeTypeRow,
   type WorkplaceMemberDepartmentsRow,
   type WorkplaceShiftTypeRow,
@@ -57,6 +58,7 @@ type Props = {
   membersWithDepartments: WorkplaceMemberDepartmentsRow[];
   standardEmployeeTemplates: TypeTemplateRow[];
   standardShiftTemplates: TypeTemplateRow[];
+  countryOptions?: EuCountryOptionRow[];
   catalogError?: string | null;
   /** Super Admin: tilbage til brugere; arbejdsplads-admin: typisk Kalender */
   navUi?: {
@@ -80,6 +82,7 @@ export default function WorkplaceDetailClient({
   membersWithDepartments,
   standardEmployeeTemplates,
   standardShiftTemplates,
+  countryOptions = [],
   catalogError,
   navUi,
   children,
@@ -121,6 +124,14 @@ export default function WorkplaceDetailClient({
         membersWithDepartments.map((m) => [m.user_id, [...m.department_ids]])
       )
   );
+  const countryOptionsWithCurrent = useMemo(() => {
+    const existing = [...countryOptions];
+    const current = (d.country_code ?? "").trim().toUpperCase();
+    if (current && !existing.some((c) => c.country_code === current)) {
+      return [{ country_code: current, name: current }, ...existing];
+    }
+    return existing;
+  }, [countryOptions, d.country_code]);
 
   useEffect(() => {
     setDeptList(departments);
@@ -564,8 +575,7 @@ export default function WorkplaceDetailClient({
           </label>
           <label className="block">
             <span className="mb-1 block text-sm font-medium">Land (ISO-2)</span>
-            <input
-              maxLength={2}
+            <select
               value={d.country_code ?? ""}
               onChange={(e) =>
                 setD((x) => ({
@@ -573,8 +583,15 @@ export default function WorkplaceDetailClient({
                   country_code: e.target.value.toUpperCase() || null,
                 }))
               }
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm uppercase dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
-            />
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+            >
+              <option value="">Vælg land…</option>
+              {countryOptionsWithCurrent.map((country) => (
+                <option key={country.country_code} value={country.country_code}>
+                  {country.name} ({country.country_code})
+                </option>
+              ))}
+            </select>
           </label>
           <label className="block sm:col-span-2">
             <span className="mb-1 block text-sm font-medium">Yderligere</span>
