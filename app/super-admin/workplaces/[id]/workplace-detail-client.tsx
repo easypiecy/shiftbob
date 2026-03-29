@@ -9,7 +9,15 @@ import {
 } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { KeyRound, Loader2, Trash2 } from "lucide-react";
+import {
+  Building2,
+  CalendarClock,
+  CreditCard,
+  KeyRound,
+  Layers3,
+  Loader2,
+  Trash2,
+} from "lucide-react";
 import {
   copyWorkplaceTemplatesFromStandards,
   createWorkplaceDepartment,
@@ -34,6 +42,10 @@ import {
 } from "@/src/app/super-admin/workplaces/actions";
 import { useTranslations } from "@/src/contexts/translations-context";
 import { EMPLOYEE_COUNT_BANDS } from "@/src/types/workplace";
+import {
+  localizeStandardEmployeeTypeLabel,
+  localizeStandardShiftTypeLabel,
+} from "@/src/lib/type-label-i18n";
 
 /** Tom liste = ingen filter = alle typer på aksen. Fuld liste = samme som ingen filter → normalisér til []. */
 function normalizePushIncludeFilter(ids: string[], allIds: string[]): string[] {
@@ -101,6 +113,10 @@ export default function WorkplaceDetailClient({
   const [newKeyLabel, setNewKeyLabel] = useState("API");
   const [keyBusy, setKeyBusy] = useState(false);
   const [bootstrapNotice, setBootstrapNotice] = useState<string | null>(null);
+  const dashboardTabsEnabled = navUi?.showStandardCatalogEditLink === false;
+  const [activeSettingsTab, setActiveSettingsTab] = useState<
+    "company" | "planning" | "types" | "api" | "billing"
+  >("company");
   const [empList, setEmpList] = useState(employeeTypes);
   const [shiftList, setShiftList] = useState(shiftTypes);
   const [newEmpLabel, setNewEmpLabel] = useState("");
@@ -481,6 +497,48 @@ export default function WorkplaceDetailClient({
         </div>
       )}
 
+      {dashboardTabsEnabled ? (
+        <div className="overflow-x-auto pb-1">
+          <div className="inline-flex min-w-full gap-2 rounded-xl border border-zinc-200 bg-white p-2 dark:border-zinc-800 dark:bg-zinc-900">
+            {[
+              { id: "company", label: "Firma", icon: Building2 },
+              { id: "planning", label: "Planlægning", icon: CalendarClock },
+              { id: "types", label: "Typer", icon: Layers3 },
+              { id: "api", label: "API", icon: KeyRound },
+              { id: "billing", label: "Billing", icon: CreditCard },
+            ].map((tab) => {
+              const active = activeSettingsTab === tab.id;
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() =>
+                    setActiveSettingsTab(
+                      tab.id as
+                        | "company"
+                        | "planning"
+                        | "types"
+                        | "api"
+                        | "billing"
+                    )
+                  }
+                  className={
+                    active
+                      ? "inline-flex items-center gap-1.5 rounded-lg bg-zinc-900 px-3 py-2 text-xs font-semibold text-white dark:bg-zinc-100 dark:text-zinc-900"
+                      : "inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                  }
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+
+      {!dashboardTabsEnabled || activeSettingsTab === "company" ? (
       <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
           Firma &amp; adresse
@@ -627,7 +685,9 @@ export default function WorkplaceDetailClient({
           </label>
         </div>
       </section>
+      ) : null}
 
+      {!dashboardTabsEnabled || activeSettingsTab === "company" ? (
       <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
           Indstillinger
@@ -653,7 +713,9 @@ export default function WorkplaceDetailClient({
           </span>
         </label>
       </section>
+      ) : null}
 
+      {!dashboardTabsEnabled || activeSettingsTab === "planning" ? (
       <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
           {tr("settings.calendar_future.title")}
@@ -690,7 +752,9 @@ export default function WorkplaceDetailClient({
           />
         </label>
       </section>
+      ) : null}
 
+      {!dashboardTabsEnabled || activeSettingsTab === "planning" ? (
       <section className="space-y-5 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
@@ -946,7 +1010,9 @@ export default function WorkplaceDetailClient({
           ) : null}
         </div>
       </section>
+      ) : null}
 
+      {!dashboardTabsEnabled || activeSettingsTab === "types" ? (
       <section className="space-y-8 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -1010,7 +1076,9 @@ export default function WorkplaceDetailClient({
                     <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
                       {standardShiftTemplates.map((r) => (
                         <tr key={r.id}>
-                          <td className="px-3 py-2">{r.name}</td>
+                          <td className="px-3 py-2">
+                            {localizeStandardShiftTypeLabel(r.name, tr, r.slug)}
+                          </td>
                           <td className="px-3 py-2 font-mono text-xs text-zinc-600">
                             {r.slug}
                           </td>
@@ -1042,7 +1110,9 @@ export default function WorkplaceDetailClient({
                         key={t.id}
                         className="flex flex-wrap items-center gap-2 rounded-lg border border-zinc-100 px-3 py-2 text-sm dark:border-zinc-800"
                       >
-                        <span className="font-medium">{t.label}</span>
+                        <span className="font-medium">
+                          {localizeStandardShiftTypeLabel(t.label, tr)}
+                        </span>
                         {t.template_id ? (
                           <span className="inline-flex rounded-md bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-900 dark:bg-sky-950/50 dark:text-sky-100">
                             Fra standard
@@ -1054,7 +1124,7 @@ export default function WorkplaceDetailClient({
                         )}
                         {stdName ? (
                           <span className="text-xs text-zinc-500">
-                            ({stdName})
+                            ({localizeStandardShiftTypeLabel(stdName, tr)})
                           </span>
                         ) : null}
                       </li>
@@ -1115,7 +1185,9 @@ export default function WorkplaceDetailClient({
                     <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
                       {standardEmployeeTemplates.map((r) => (
                         <tr key={r.id}>
-                          <td className="px-3 py-2">{r.name}</td>
+                          <td className="px-3 py-2">
+                            {localizeStandardEmployeeTypeLabel(r.name, tr, r.slug)}
+                          </td>
                           <td className="px-3 py-2 font-mono text-xs text-zinc-600">
                             {r.slug}
                           </td>
@@ -1147,7 +1219,9 @@ export default function WorkplaceDetailClient({
                         key={t.id}
                         className="flex flex-wrap items-center gap-2 rounded-lg border border-zinc-100 px-3 py-2 text-sm dark:border-zinc-800"
                       >
-                        <span className="font-medium">{t.label}</span>
+                        <span className="font-medium">
+                          {localizeStandardEmployeeTypeLabel(t.label, tr)}
+                        </span>
                         {t.template_id ? (
                           <span className="inline-flex rounded-md bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-900 dark:bg-sky-950/50 dark:text-sky-100">
                             Fra standard
@@ -1159,7 +1233,7 @@ export default function WorkplaceDetailClient({
                         )}
                         {stdName ? (
                           <span className="text-xs text-zinc-500">
-                            ({stdName})
+                            ({localizeStandardEmployeeTypeLabel(stdName, tr)})
                           </span>
                         ) : null}
                       </li>
@@ -1195,7 +1269,9 @@ export default function WorkplaceDetailClient({
           </div>
         </div>
       </section>
+      ) : null}
 
+      {!dashboardTabsEnabled ? (
       <section className="space-y-5 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
@@ -1317,7 +1393,7 @@ export default function WorkplaceDetailClient({
                             onChange={() => toggleShift(t.id)}
                             className="rounded border-zinc-300"
                           />
-                          {t.label}
+                          {localizeStandardShiftTypeLabel(t.label, tr)}
                         </label>
                       </li>
                     ))}
@@ -1417,7 +1493,7 @@ export default function WorkplaceDetailClient({
                             onChange={() => toggleEmp(t.id)}
                             className="rounded border-zinc-300"
                           />
-                          {t.label}
+                          {localizeStandardEmployeeTypeLabel(t.label, tr)}
                         </label>
                       </li>
                     ))}
@@ -1428,7 +1504,9 @@ export default function WorkplaceDetailClient({
           )}
         </div>
       </section>
+      ) : null}
 
+      {!dashboardTabsEnabled || activeSettingsTab === "api" ? (
       <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
           API-nøgler
@@ -1493,6 +1571,18 @@ export default function WorkplaceDetailClient({
           ))}
         </ul>
       </section>
+      ) : null}
+
+      {!dashboardTabsEnabled || activeSettingsTab === "billing" ? (
+      <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          Billing
+        </h2>
+        <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50/80 px-4 py-6 text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-950/50 dark:text-zinc-300">
+          Her placerer vi fremtidige fakturaer til download.
+        </div>
+      </section>
+      ) : null}
 
       <div className="flex gap-3">
         <button

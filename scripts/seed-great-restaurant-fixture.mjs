@@ -646,6 +646,11 @@ async function resetAndInsertShifts(workplaceId, staff, monthData) {
 async function main() {
   const workplaceId = await getTargetWorkplaceId();
   console.log("Workplace found:", workplaceId);
+  const { error: countryErr } = await supabase
+    .from("workplaces")
+    .update({ country_code: "DK" })
+    .eq("id", workplaceId);
+  if (countryErr) throw new Error(`Failed setting workplace country to DK: ${countryErr.message}`);
 
   const departmentsByName = await ensureDepartments(workplaceId);
   console.log("Departments ensured:", departmentsByName);

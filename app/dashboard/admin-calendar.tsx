@@ -49,6 +49,10 @@ import {
   type DayGridAmbient,
 } from "@/src/lib/calendar-holidays";
 import { shiftCalendarCellStyle } from "@/src/lib/calendar-shift-style";
+import {
+  localizeStandardEmployeeTypeLabel,
+  localizeStandardShiftTypeLabel,
+} from "@/src/lib/type-label-i18n";
 
 type CalendarViewMode = "rolling" | "month30";
 
@@ -318,8 +322,10 @@ type CalendarRow =
 const BASE_HOUR_COL = 34;
 /** Mindste timekolonne — forhindrer «zoom helt ud» hvor gitteret bliver ubrugeligt. */
 const MIN_HOUR_COL = 26;
-/** Største timekolonne — lavere værdi så gitteret forbliver synligt ved maks. zoom ind. */
-const MAX_HOUR_COL = 48;
+/** Største timekolonne — hold zoom-ind under layout-kollaps. */
+const MAX_HOUR_COL = 40;
+/** Rullende vindue i dage. 14 gør "kommende uge" + helligdage synlige uden ekstra klik. */
+const ROLLING_DAY_COUNT = 14;
 /** Maks. relativ ændring pr. ctrl+wheel-step (store deltaY fra trackpads). */
 const WHEEL_ZOOM_FACTOR_MIN = 0.88;
 const WHEEL_ZOOM_FACTOR_MAX = 1.12;
@@ -499,7 +505,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const [viewMode, setViewMode] = useState<CalendarViewMode>("rolling");
   const [anchorDate, setAnchorDate] = useState(() => startOfDay(new Date()));
   const [rollingDays, setRollingDays] = useState<Date[]>(() =>
-    expandForward(startOfDay(new Date()), 30)
+    expandForward(startOfDay(new Date()), ROLLING_DAY_COUNT)
   );
   const [selectedDeptId, setSelectedDeptId] = useState<string | null>(null);
   const [employeeQuery, setEmployeeQuery] = useState("");
@@ -885,19 +891,25 @@ export default function AdminCalendar({ workplaceId }: Props) {
 
   const shiftTypeLabelById = useMemo(() => {
     const map = new Map<string, string>();
-    for (const t of shiftTypes) {
-      map.set(t.id, t.label);
+    for (const shiftType of shiftTypes) {
+      map.set(
+        shiftType.id,
+        localizeStandardShiftTypeLabel(shiftType.label, t)
+      );
     }
     return map;
-  }, [shiftTypes]);
+  }, [shiftTypes, t]);
 
   const employeeTypeLabelById = useMemo(() => {
     const map = new Map<string, string>();
-    for (const t of employeeTypes) {
-      map.set(t.id, t.label);
+    for (const employeeType of employeeTypes) {
+      map.set(
+        employeeType.id,
+        localizeStandardEmployeeTypeLabel(employeeType.label, t)
+      );
     }
     return map;
-  }, [employeeTypes]);
+  }, [employeeTypes, t]);
   const defaultEmployeeTypeId = employeeTypes[0]?.id ?? "";
 
   const memberByUserId = useMemo(() => {
@@ -1693,7 +1705,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
     const todayStart = startOfDay(new Date());
     setAnchorDate(todayStart);
     if (viewMode === "rolling") {
-      setRollingDays(expandForward(todayStart, 7));
+      setRollingDays(expandForward(todayStart, ROLLING_DAY_COUNT));
       requestAnimationFrame(() => {
         scrollRef.current?.scrollTo({ left: 0, behavior: "smooth" });
       });
@@ -1703,8 +1715,8 @@ export default function AdminCalendar({ workplaceId }: Props) {
   function shiftPeriod(dir: -1 | 1) {
     if (viewMode === "rolling") {
       setAnchorDate((a) => {
-        const a2 = addDays(startOfDay(a), dir * 7);
-        setRollingDays(expandForward(a2, 7));
+        const a2 = addDays(startOfDay(a), dir * ROLLING_DAY_COUNT);
+        setRollingDays(expandForward(a2, ROLLING_DAY_COUNT));
         requestAnimationFrame(() => {
           scrollRef.current?.scrollTo({ left: 0, behavior: "smooth" });
         });
@@ -1718,7 +1730,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
   function openRollingForDay(d: Date) {
     const day = startOfDay(d);
     setAnchorDate(day);
-    setRollingDays(expandForward(day, 7));
+    setRollingDays(expandForward(day, ROLLING_DAY_COUNT));
     setViewMode("rolling");
     requestAnimationFrame(() => {
       scrollRef.current?.scrollTo({ left: 0, behavior: "smooth" });
@@ -2064,7 +2076,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
               </option>
               {shiftTypes.map((shiftType) => (
                 <option key={shiftType.id} value={shiftType.id}>
-                  {shiftType.label}
+                  {localizeStandardShiftTypeLabel(shiftType.label, t)}
                 </option>
               ))}
             </select>
@@ -2090,7 +2102,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
               </option>
               {employeeTypes.map((employeeType) => (
                 <option key={employeeType.id} value={employeeType.id}>
-                  {employeeType.label}
+                  {localizeStandardEmployeeTypeLabel(employeeType.label, t)}
                 </option>
               ))}
             </select>
@@ -2634,7 +2646,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                       </option>
                       {employeeTypes.map((type) => (
                         <option key={type.id} value={type.id}>
-                          {type.label}
+                          {localizeStandardEmployeeTypeLabel(type.label, t)}
                         </option>
                       ))}
                     </select>
@@ -3106,7 +3118,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                 <option value="">Uden vagttype</option>
                 {shiftTypes.map((shiftType) => (
                   <option key={shiftType.id} value={shiftType.id}>
-                    {shiftType.label}
+                    {localizeStandardShiftTypeLabel(shiftType.label, t)}
                   </option>
                 ))}
               </select>

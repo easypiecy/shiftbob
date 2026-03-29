@@ -753,3 +753,39 @@ insert into public.ui_translations (translation_key, language_code, text_value, 
 on conflict (translation_key, language_code) do update set
   text_value = excluded.text_value,
   context_description = excluded.context_description;
+
+-- ---------------------------------------------------------------------------
+-- Standard type labels (shift + employee) with context per language.
+-- NOTE: We seed all language codes. Danish keeps Danish text; others default to
+-- English baseline until a native translation is provided in Translations UI.
+-- ---------------------------------------------------------------------------
+with standard_type_keys as (
+  select * from (values
+    ('type.shift.normal', 'Normal', 'Normal', 'Canonical label for the standard shift type that means regular/default shift.'),
+    ('type.shift.open', 'Ledig', 'Open', 'Canonical label for open/unassigned shift type.'),
+    ('type.shift.urgent', 'Akut', 'Urgent', 'Canonical label for urgent shift type.'),
+    ('type.shift.swap', 'Bytte', 'Swap', 'Canonical label for shift-swap type.'),
+    ('type.shift.sick', 'Sygdom', 'Sick leave', 'Canonical label for sick-leave shift type.'),
+    ('type.shift.vacation', 'Ferie', 'Vacation', 'Canonical label for vacation shift type.'),
+    ('type.shift.child_sick_day', 'Barn 1. sygedag', 'Child first sick day', 'Canonical label for child first sick-day shift type.'),
+    ('type.employee.full_time', 'Fuldtid', 'Full-time', 'Canonical label for full-time employee type.'),
+    ('type.employee.part_time', 'Deltid', 'Part-time', 'Canonical label for part-time employee type.'),
+    ('type.employee.trainee', 'Elev', 'Trainee', 'Canonical label for trainee employee type.'),
+    ('type.employee.temp', 'Vikar', 'Temp', 'Canonical label for temporary/substitute employee type.'),
+    ('type.employee.youth_u18', 'Ung (under 18)', 'Youth (under 18)', 'Canonical label for under-18 employee type.')
+  ) as v(translation_key, da_text, en_text, context_description)
+)
+insert into public.ui_translations (translation_key, language_code, text_value, context_description)
+select
+  k.translation_key,
+  l.language_code,
+  case
+    when l.language_code = 'da' then k.da_text
+    else k.en_text
+  end as text_value,
+  k.context_description
+from standard_type_keys k
+cross join public.languages l
+on conflict (translation_key, language_code) do update set
+  text_value = excluded.text_value,
+  context_description = excluded.context_description;
