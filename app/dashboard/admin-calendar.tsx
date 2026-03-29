@@ -584,7 +584,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
     setLoading(true);
     setError(null);
     const [overviewRes, typesRes] = await Promise.all([
-      getWorkplaceDepartmentsOverview(workplaceId),
+      getWorkplaceDepartmentsOverview(workplaceId, { access: "calendar_member" }),
       getWorkplaceTypes(workplaceId),
     ]);
     if (!overviewRes.ok) {

@@ -31,6 +31,7 @@ async function requireSuperAdmin() {
 
 function revalidateWorkplaceDetailPages(workplaceId: string) {
   revalidatePath(`/super-admin/workplaces/${workplaceId}`);
+  revalidatePath("/dashboard");
   revalidatePath("/dashboard/indstillinger");
   revalidatePath("/dashboard/fremtiden");
 }
