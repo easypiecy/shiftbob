@@ -257,18 +257,22 @@ export async function sendNotificationBroadcast(input: {
         workplace_id: String(row.workplace_id ?? ""),
         role: String(row.role ?? "").toUpperCase(),
       }))
-      .filter((row) => row.user_id && row.workplace_id && isRoleValue(row.role))
+      .filter(
+        (
+          row
+        ): row is {
+          user_id: string;
+          workplace_id: string;
+          role: RoleValue;
+        } => row.user_id.length > 0 && row.workplace_id.length > 0 && isRoleValue(row.role)
+      )
       .filter((row) => (input.targetAll ? true : wpFilter.length ? wpFilter.includes(row.workplace_id) : true))
       .filter((row) => (roleFilter.length ? roleFilter.includes(row.role) : true))
       .filter((row) => (userFilter.length ? userFilter.includes(row.user_id) : true));
 
     const uniqueRecipients = new Map<string, { user_id: string; workplace_id: string; role: RoleValue }>();
     for (const row of recipients) {
-      uniqueRecipients.set(`${row.user_id}:${row.workplace_id}`, row as {
-        user_id: string;
-        workplace_id: string;
-        role: RoleValue;
-      });
+      uniqueRecipients.set(`${row.user_id}:${row.workplace_id}`, row);
     }
     const recipientRows = [...uniqueRecipients.values()];
     if (recipientRows.length === 0) {
