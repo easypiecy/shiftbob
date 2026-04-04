@@ -135,32 +135,24 @@ export function AdminWorkspaceShell({
     }
     const supabase = createClient();
     void (async () => {
-      const [{ count: joinCount, error: joinErr }, authRes] = await Promise.all([
+      const [{ count: joinCount, error: joinErr }, { count: deliveryCount }] = await Promise.all([
         supabase
           .from("workplace_join_requests")
           .select("id", { count: "exact", head: true })
           .eq("workplace_id", wpId)
           .eq("status", "pending"),
-        supabase.auth.getUser(),
-      ]);
-      if (cancelled) return;
-      const currentUserId = authRes.data.user?.id ?? null;
-      let deliveryCount = 0;
-      if (currentUserId) {
-        const { count } = await supabase
+        supabase
           .from("super_admin_notification_deliveries")
           .select("id", { count: "exact", head: true })
           .eq("workplace_id", wpId)
-          .eq("user_id", currentUserId)
-          .eq("status", "queued");
-        if (cancelled) return;
-        deliveryCount = count ?? 0;
-      }
+          .eq("status", "queued"),
+      ]);
+      if (cancelled) return;
       if (joinErr) {
-        setUnreadNotificationsCount(deliveryCount);
+        setUnreadNotificationsCount(deliveryCount ?? 0);
         return;
       }
-      setUnreadNotificationsCount((joinCount ?? 0) + deliveryCount);
+      setUnreadNotificationsCount((joinCount ?? 0) + (deliveryCount ?? 0));
     })();
     return () => {
       cancelled = true;
