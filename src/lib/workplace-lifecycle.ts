@@ -1,5 +1,3 @@
-"use server";
-
 import { getAdminClient } from "@/src/utils/supabase/admin";
 
 export const LIFECYCLE_STAGES = [
