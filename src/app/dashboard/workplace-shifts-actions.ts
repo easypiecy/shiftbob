@@ -4,6 +4,7 @@ import {
   assertWorkplaceMember,
   isWorkplaceCalendarAdminView,
 } from "@/src/lib/workplace-admin-server";
+import { incrementWorkplaceManualShiftsCreatedCount } from "@/src/lib/workplace-lifecycle";
 import { getAdminClient } from "@/src/utils/supabase/admin";
 
 export async function getCalendarViewerNameMode(workplaceId: string): Promise<
@@ -297,6 +298,11 @@ export async function createWorkplaceShift(
       .select("id, workplace_id, department_id, user_id, shift_type_id, starts_at, ends_at")
       .single();
     if (error) return { ok: false, error: error.message };
+
+    await incrementWorkplaceManualShiftsCreatedCount(workplaceId, 1, {
+      source: "calendar_manual_create",
+      shiftTypeId: input.shiftTypeId,
+    });
 
     return { ok: true, shift: data as WorkplaceShiftRow };
   } catch (e) {

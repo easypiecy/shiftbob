@@ -1,31 +1,45 @@
 -- Opdater standard "Vagttyper" og "Medarbejdertyper" til ny visuel kodning.
 -- Kør på eksisterende databaser.
 
+alter table public.shift_type_templates
+  add column if not exists import_code text;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'shift_type_templates_import_code_unique'
+  ) then
+    alter table public.shift_type_templates
+      add constraint shift_type_templates_import_code_unique unique (import_code);
+  end if;
+end $$;
+
 -- 1) Forsøg at "genbruge" ældre skabeloner ved at omdøbe slugs (bevarer template_id relationer).
 update public.shift_type_templates
-set slug = 'normal', name = 'Normal', sort_order = 10, calendar_color = '#475569'
+set slug = 'day', name = 'Day', import_code = 'ST002', sort_order = 20, calendar_color = '#fef3c7'
 where slug = 'day'
-  and not exists (select 1 from public.shift_type_templates where slug = 'normal');
+  and not exists (select 1 from public.shift_type_templates where slug = 'day' and import_code = 'ST002');
 
 update public.shift_type_templates
-set slug = 'open', name = 'Ledig', sort_order = 20, calendar_color = '#22c55e'
+set slug = 'afternoon', name = 'Afternoon', import_code = 'ST004', sort_order = 40, calendar_color = '#fbcfe8'
 where slug = 'evening'
-  and not exists (select 1 from public.shift_type_templates where slug = 'open');
+  and not exists (select 1 from public.shift_type_templates where slug = 'afternoon');
 
 update public.shift_type_templates
-set slug = 'urgent', name = 'Akut', sort_order = 30, calendar_color = '#f97316'
+set slug = 'night', name = 'Night', import_code = 'ST005', sort_order = 50, calendar_color = '#bfdbfe'
 where slug = 'night'
-  and not exists (select 1 from public.shift_type_templates where slug = 'urgent');
+  and not exists (select 1 from public.shift_type_templates where slug = 'night' and import_code = 'ST005');
 
 update public.shift_type_templates
-set slug = 'swap', name = 'Bytte', sort_order = 40, calendar_color = '#f59e0b'
+set slug = 'split_2', name = 'Split 2', import_code = 'ST009', sort_order = 90, calendar_color = '#c7d2fe'
 where slug = 'weekend'
-  and not exists (select 1 from public.shift_type_templates where slug = 'swap');
+  and not exists (select 1 from public.shift_type_templates where slug = 'split_2');
 
 update public.shift_type_templates
-set slug = 'sick', name = 'Sygdom', sort_order = 50, calendar_color = '#8b5cf6'
+set slug = 'morning', name = 'Morning', import_code = 'ST001', sort_order = 10, calendar_color = '#fde68a'
 where slug = 'morning'
-  and not exists (select 1 from public.shift_type_templates where slug = 'sick');
+  and not exists (select 1 from public.shift_type_templates where slug = 'morning' and import_code = 'ST001');
 
 update public.employee_type_templates
 set slug = 'full_time', name = 'Fuldtid', sort_order = 10, calendar_pattern = 'none'
@@ -38,17 +52,30 @@ where slug = 'substitute'
   and not exists (select 1 from public.employee_type_templates where slug = 'temp');
 
 -- 2) Sikr at hele det nye standardsæt findes (idempotent).
-insert into public.shift_type_templates (name, slug, sort_order, calendar_color) values
-  ('Normal', 'normal', 10, '#475569'),
-  ('Ledig', 'open', 20, '#22c55e'),
-  ('Akut', 'urgent', 30, '#f97316'),
-  ('Bytte', 'swap', 40, '#f59e0b'),
-  ('Sygdom', 'sick', 50, '#8b5cf6'),
-  ('Ferie', 'vacation', 60, '#9ca3af'),
-  ('Barn 1. sygedag', 'child_sick_day', 70, '#c4b5fd')
+insert into public.shift_type_templates (name, slug, import_code, sort_order, calendar_color) values
+  ('Morning', 'morning', 'ST001', 10, '#fde68a'),
+  ('Day', 'day', 'ST002', 20, '#fef3c7'),
+  ('Midday', 'midday', 'ST003', 30, '#fde68a'),
+  ('Afternoon', 'afternoon', 'ST004', 40, '#fbcfe8'),
+  ('Night', 'night', 'ST005', 50, '#bfdbfe'),
+  ('Long', 'long', 'ST006', 60, '#fef3c7'),
+  ('Short', 'short', 'ST007', 70, '#d9f99d'),
+  ('Split 1', 'split_1', 'ST008', 80, '#c7d2fe'),
+  ('Split 2', 'split_2', 'ST009', 90, '#c7d2fe'),
+  ('On-Call', 'on_call', 'ST010', 100, '#e5e7eb'),
+  ('Day Off', 'off', 'ST011', 110, '#f3f4f6'),
+  ('Vacation', 'vacation', 'ST012', 120, '#bfdbfe'),
+  ('Sick', 'sick', 'ST013', 130, '#fecaca'),
+  ('Child Sick', 'child_sick', 'ST014', 140, '#fecdd3'),
+  ('Training', 'training', 'ST015', 150, '#d1fae5'),
+  ('Comp. Off', 'comp_off', 'ST016', 160, '#e5e7eb'),
+  ('Shift Swap', 'swap', 'ST017', 170, '#f5d0fe'),
+  ('Open Shift', 'open', 'ST018', 180, '#d9f99d'),
+  ('Urgent', 'urgent', 'ST019', 190, '#fecdd3')
 on conflict (slug) do update
 set
   name = excluded.name,
+  import_code = excluded.import_code,
   sort_order = excluded.sort_order,
   calendar_color = excluded.calendar_color;
 
@@ -67,7 +94,7 @@ set
 -- 3) Demotér ældre legacy-skabeloner i sortering (så de ikke står øverst i UI).
 update public.shift_type_templates
 set sort_order = greatest(sort_order, 900)
-where slug in ('day', 'evening', 'night', 'weekend', 'morning');
+where slug in ('evening', 'weekend', 'normal', 'child_sick_day');
 
 update public.employee_type_templates
 set sort_order = greatest(sort_order, 900)
@@ -92,32 +119,32 @@ where wet.template_id = ett.id;
 
 -- 5) Best-effort for workplaces uden template_id (match på label).
 update public.workplace_shift_types
-set label = 'Normal', calendar_color = '#475569'
-where template_id is null and lower(label) in ('dag', 'normal');
+set label = 'Day', calendar_color = '#fef3c7'
+where template_id is null and lower(label) in ('dag', 'day', 'normal');
 
 update public.workplace_shift_types
-set label = 'Ledig', calendar_color = '#22c55e'
-where template_id is null and lower(label) in ('ledig', 'open');
+set label = 'Open Shift', calendar_color = '#d9f99d'
+where template_id is null and lower(label) in ('ledig', 'open shift', 'open');
 
 update public.workplace_shift_types
-set label = 'Akut', calendar_color = '#f97316'
+set label = 'Urgent', calendar_color = '#fecdd3'
 where template_id is null and lower(label) in ('akut', 'urgent');
 
 update public.workplace_shift_types
-set label = 'Bytte', calendar_color = '#f59e0b'
-where template_id is null and lower(label) in ('bytte', 'swap');
+set label = 'Shift Swap', calendar_color = '#f5d0fe'
+where template_id is null and lower(label) in ('bytte', 'shift swap', 'swap');
 
 update public.workplace_shift_types
-set label = 'Sygdom', calendar_color = '#8b5cf6'
+set label = 'Sick', calendar_color = '#fecaca'
 where template_id is null and lower(label) in ('sygdom', 'sick');
 
 update public.workplace_shift_types
-set label = 'Ferie', calendar_color = '#9ca3af'
+set label = 'Vacation', calendar_color = '#bfdbfe'
 where template_id is null and lower(label) in ('ferie', 'vacation');
 
 update public.workplace_shift_types
-set label = 'Barn 1. sygedag', calendar_color = '#c4b5fd'
-where template_id is null and lower(label) in ('barn 1. sygedag', 'child sick day', 'child_sick_day');
+set label = 'Child Sick', calendar_color = '#fecdd3'
+where template_id is null and lower(label) in ('barn 1. sygedag', 'child sick day', 'child_sick_day', 'child sick');
 
 update public.workplace_employee_types
 set label = 'Fuldtid', calendar_pattern = 'none'

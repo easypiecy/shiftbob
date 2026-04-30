@@ -32,6 +32,40 @@ alter table public.workplaces add column if not exists push_include_employee_typ
 do $$
 begin
   if not exists (
+    select 1 from pg_type
+    where typnamespace = 'public'::regnamespace
+      and typname = 'lifecycle_stage'
+  ) then
+    create type public.lifecycle_stage as enum (
+      'PROSPECT',
+      'REGISTERED',
+      'ACTIVE_PLANNER',
+      'HYBRID_OPERATOR',
+      'FULL_PLATFORM'
+    );
+  end if;
+end $$;
+
+alter table public.workplaces
+  add column if not exists lifecycle_stage public.lifecycle_stage not null default 'PROSPECT';
+alter table public.workplaces
+  add column if not exists language varchar(2) not null default 'en';
+alter table public.workplaces
+  add column if not exists imported_files_count int not null default 0;
+alter table public.workplaces
+  add column if not exists active_employee_invites int not null default 0;
+alter table public.workplaces
+  add column if not exists manual_shifts_created_count int not null default 0;
+alter table public.workplaces
+  add column if not exists subscription_status text not null default 'inactive';
+alter table public.workplaces
+  add column if not exists lifecycle_updated_at timestamptz;
+alter table public.workplaces
+  add column if not exists employee_swap_permission_level smallint not null default 2;
+
+do $$
+begin
+  if not exists (
     select 1 from pg_constraint
     where conname = 'workplaces_employee_count_band_check'
   ) then
@@ -56,6 +90,62 @@ end $$;
 comment on column public.workplaces.company_name is 'Officielt firmanavn (kan matche name)';
 comment on column public.workplaces.push_include_shift_type_ids is 'Tom = ingen filter på vagttyper; ellers kun disse workplace_shift_types.id';
 comment on column public.workplaces.push_include_employee_type_ids is 'Tom = ingen filter på medarbejdertyper; ellers kun disse workplace_employee_types.id';
+comment on column public.workplaces.lifecycle_stage is 'Marketing lifecycle-stage for arbejdspladsen.';
+comment on column public.workplaces.language is 'ISO 639-1 foretrukket sprog til automation (fx da, en).';
+comment on column public.workplaces.imported_files_count is 'Antal importerede planfiler.';
+comment on column public.workplaces.active_employee_invites is 'Aktive medarbejderinvitationer.';
+comment on column public.workplaces.manual_shifts_created_count is 'Antal manuelt oprettede vagter.';
+comment on column public.workplaces.employee_swap_permission_level is '1=autopilot, 2=manuel godkendelse, 3=skrivebeskyttet';
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'workplaces_language_iso639_1_check'
+  ) then
+    alter table public.workplaces
+      add constraint workplaces_language_iso639_1_check
+      check (language ~ '^[a-z]{2}$');
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'workplaces_subscription_status_check'
+  ) then
+    alter table public.workplaces
+      add constraint workplaces_subscription_status_check
+      check (subscription_status in ('inactive', 'trialing', 'active', 'past_due', 'canceled'));
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'workplaces_employee_swap_permission_level_check'
+  ) then
+    alter table public.workplaces
+      add constraint workplaces_employee_swap_permission_level_check
+      check (employee_swap_permission_level in (1, 2, 3));
+  end if;
+end $$;
+
+create table if not exists public.workplace_lifecycle_events (
+  id uuid primary key default gen_random_uuid(),
+  workplace_id uuid not null references public.workplaces (id) on delete cascade,
+  previous_stage public.lifecycle_stage,
+  next_stage public.lifecycle_stage not null,
+  language varchar(2) not null default 'en',
+  event_source text not null default 'system',
+  context_json jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists workplace_lifecycle_events_wp_created_idx
+  on public.workplace_lifecycle_events (workplace_id, created_at desc);
 
 -- ---------------------------------------------------------------------------
 -- Standardtyper (Super Admin)
@@ -76,10 +166,12 @@ create table if not exists public.shift_type_templates (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   slug text not null,
+  import_code text,
   sort_order int not null default 0,
   calendar_color text not null default '#22c55e',
   created_at timestamptz not null default now(),
-  constraint shift_type_templates_slug_unique unique (slug)
+  constraint shift_type_templates_slug_unique unique (slug),
+  constraint shift_type_templates_import_code_unique unique (import_code)
 );
 
 create index if not exists employee_type_templates_sort_idx
@@ -143,6 +235,7 @@ alter table public.shift_type_templates enable row level security;
 alter table public.workplace_employee_types enable row level security;
 alter table public.workplace_shift_types enable row level security;
 alter table public.workplace_api_keys enable row level security;
+alter table public.workplace_lifecycle_events enable row level security;
 
 drop policy if exists "employee_type_templates_select_auth" on public.employee_type_templates;
 create policy "employee_type_templates_select_auth"
@@ -186,11 +279,24 @@ create policy "workplace_api_keys_select_admin_wp"
     )
   );
 
+drop policy if exists "workplace_lifecycle_events_select_admin_wp" on public.workplace_lifecycle_events;
+create policy "workplace_lifecycle_events_select_admin_wp"
+  on public.workplace_lifecycle_events for select to authenticated
+  using (
+    exists (
+      select 1 from public.workplace_members wm
+      where wm.workplace_id = workplace_lifecycle_events.workplace_id
+        and wm.user_id = auth.uid()
+        and wm.role in ('ADMIN', 'SUPER_ADMIN')
+    )
+  );
+
 grant select on public.employee_type_templates to authenticated;
 grant select on public.shift_type_templates to authenticated;
 grant select on public.workplace_employee_types to authenticated;
 grant select on public.workplace_shift_types to authenticated;
 grant select on public.workplace_api_keys to authenticated;
+grant select, insert on public.workplace_lifecycle_events to authenticated;
 
 -- ---------------------------------------------------------------------------
 -- Seed: standardtyper (kan redigeres i Super Admin)
@@ -203,12 +309,24 @@ insert into public.employee_type_templates (name, slug, sort_order, calendar_pat
   ('Ung (under 18)', 'youth_u18', 50, 'grid')
 on conflict (slug) do nothing;
 
-insert into public.shift_type_templates (name, slug, sort_order, calendar_color) values
-  ('Normal', 'normal', 10, '#475569'),
-  ('Ledig', 'open', 20, '#22c55e'),
-  ('Akut', 'urgent', 30, '#f97316'),
-  ('Bytte', 'swap', 40, '#f59e0b'),
-  ('Sygdom', 'sick', 50, '#8b5cf6'),
-  ('Ferie', 'vacation', 60, '#9ca3af'),
-  ('Barn 1. sygedag', 'child_sick_day', 70, '#c4b5fd')
+insert into public.shift_type_templates (name, slug, import_code, sort_order, calendar_color) values
+  ('Morning', 'morning', 'ST001', 10, '#fde68a'),
+  ('Day', 'day', 'ST002', 20, '#fef3c7'),
+  ('Midday', 'midday', 'ST003', 30, '#fde68a'),
+  ('Afternoon', 'afternoon', 'ST004', 40, '#fbcfe8'),
+  ('Night', 'night', 'ST005', 50, '#bfdbfe'),
+  ('Long', 'long', 'ST006', 60, '#fef3c7'),
+  ('Short', 'short', 'ST007', 70, '#d9f99d'),
+  ('Split 1', 'split_1', 'ST008', 80, '#c7d2fe'),
+  ('Split 2', 'split_2', 'ST009', 90, '#c7d2fe'),
+  ('On-Call', 'on_call', 'ST010', 100, '#e5e7eb'),
+  ('Day Off', 'off', 'ST011', 110, '#f3f4f6'),
+  ('Vacation', 'vacation', 'ST012', 120, '#bfdbfe'),
+  ('Sick', 'sick', 'ST013', 130, '#fecaca'),
+  ('Child Sick', 'child_sick', 'ST014', 140, '#fecdd3'),
+  ('Training', 'training', 'ST015', 150, '#d1fae5'),
+  ('Comp. Off', 'comp_off', 'ST016', 160, '#e5e7eb'),
+  ('Shift Swap', 'swap', 'ST017', 170, '#f5d0fe'),
+  ('Open Shift', 'open', 'ST018', 180, '#d9f99d'),
+  ('Urgent', 'urgent', 'ST019', 190, '#fecdd3')
 on conflict (slug) do nothing;

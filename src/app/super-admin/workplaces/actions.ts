@@ -19,6 +19,11 @@ import {
   type NotificationChannel,
 } from "@/src/types/workplace";
 import type { CalendarPublicHolidayDef } from "@/src/lib/calendar-holidays";
+import {
+  incrementWorkplaceActiveEmployeeInvites,
+  incrementWorkplaceImportedFilesCount,
+  updateLifecycleStage,
+} from "@/src/lib/workplace-lifecycle";
 import { getAdminClient } from "@/src/utils/supabase/admin";
 import { createServerSupabase } from "@/src/utils/supabase/server";
 
@@ -72,6 +77,15 @@ export type WorkplaceDetail = {
   phone: string | null;
   employee_count_band: EmployeeCountBand;
   stripe_customer_id: string | null;
+  lifecycle_stage: string;
+  language: string;
+  imported_files_count: number;
+  active_employee_invites: number;
+  manual_shifts_created_count: number;
+  subscription_status: string;
+  lifecycle_updated_at: string | null;
+  /** 1=autopilot, 2=manual kontrol, 3=skrivebeskyttet */
+  employee_swap_permission_level: number;
   push_include_shift_type_ids: string[];
   push_include_employee_type_ids: string[];
   created_at: string;
@@ -87,6 +101,8 @@ export type TypeTemplateRow = {
   id: string;
   name: string;
   slug: string;
+  /** Stabil import-kode for vagttyper (fx ST001). Null for typer uden standardkode. */
+  import_code?: string | null;
   sort_order: number;
   /** Vagttyper — hex (#rrggbb) */
   calendar_color: string | null;
@@ -106,6 +122,8 @@ export type WorkplaceShiftTypeRow = {
   id: string;
   template_id: string | null;
   label: string;
+  /** Afledt fra skabelon-kode når muligt (fx ST001). */
+  import_code?: string | null;
   sort_order: number;
   calendar_color: string | null;
 };
@@ -206,6 +224,113 @@ const LEGACY_SHIFT_LABEL_TO_STANDARD = new Map<string, string>([
   ["fridag", "Ferie"],
   ["fri", "Ferie"],
 ]);
+
+const SHIFT_IMPORT_CODE_TO_STANDARD_LABEL = new Map<string, string>([
+  ["ST001", "Morning"],
+  ["ST002", "Day"],
+  ["ST003", "Midday"],
+  ["ST004", "Afternoon"],
+  ["ST005", "Night"],
+  ["ST006", "Long"],
+  ["ST007", "Short"],
+  ["ST008", "Split 1"],
+  ["ST009", "Split 2"],
+  ["ST010", "On-Call"],
+  ["ST011", "Day Off"],
+  ["ST012", "Vacation"],
+  ["ST013", "Sick"],
+  ["ST014", "Child Sick"],
+  ["ST015", "Training"],
+  ["ST016", "Comp. Off"],
+  ["ST017", "Shift Swap"],
+  ["ST018", "Open Shift"],
+  ["ST019", "Urgent"],
+]);
+
+const SHIFT_IDENTIFIER_TO_IMPORT_CODE = new Map<string, string>([
+  ["st001", "ST001"],
+  ["morning", "ST001"],
+  ["morgen", "ST001"],
+  ["st002", "ST002"],
+  ["day", "ST002"],
+  ["dag", "ST002"],
+  ["normal", "ST002"],
+  ["st003", "ST003"],
+  ["midday", "ST003"],
+  ["middag", "ST003"],
+  ["st004", "ST004"],
+  ["afternoon", "ST004"],
+  ["aften", "ST004"],
+  ["st005", "ST005"],
+  ["night", "ST005"],
+  ["nat", "ST005"],
+  ["st006", "ST006"],
+  ["long", "ST006"],
+  ["lang", "ST006"],
+  ["st007", "ST007"],
+  ["short", "ST007"],
+  ["kort", "ST007"],
+  ["st008", "ST008"],
+  ["split1", "ST008"],
+  ["split 1", "ST008"],
+  ["split_1", "ST008"],
+  ["st009", "ST009"],
+  ["split2", "ST009"],
+  ["split 2", "ST009"],
+  ["split_2", "ST009"],
+  ["st010", "ST010"],
+  ["on-call", "ST010"],
+  ["on call", "ST010"],
+  ["on_call", "ST010"],
+  ["st011", "ST011"],
+  ["off", "ST011"],
+  ["day off", "ST011"],
+  ["fridag", "ST011"],
+  ["fri", "ST011"],
+  ["st012", "ST012"],
+  ["vacation", "ST012"],
+  ["ferie", "ST012"],
+  ["st013", "ST013"],
+  ["sick", "ST013"],
+  ["syg", "ST013"],
+  ["sygdom", "ST013"],
+  ["st014", "ST014"],
+  ["child-sick", "ST014"],
+  ["child sick", "ST014"],
+  ["child_sick", "ST014"],
+  ["child_sick_day", "ST014"],
+  ["barn 1. sygedag", "ST014"],
+  ["st015", "ST015"],
+  ["training", "ST015"],
+  ["træning", "ST015"],
+  ["st016", "ST016"],
+  ["comp-off", "ST016"],
+  ["comp off", "ST016"],
+  ["comp_off", "ST016"],
+  ["afspadsering", "ST016"],
+  ["st017", "ST017"],
+  ["swap", "ST017"],
+  ["bytte", "ST017"],
+  ["shift swap", "ST017"],
+  ["st018", "ST018"],
+  ["open", "ST018"],
+  ["open shift", "ST018"],
+  ["ledig", "ST018"],
+  ["st019", "ST019"],
+  ["urgent", "ST019"],
+  ["akut", "ST019"],
+]);
+
+function inferShiftImportCode(value: string | null | undefined): string | null {
+  const key = normalizeTemplateMatchKey(value).replace(/_/g, " ");
+  if (!key) return null;
+  const compact = key.replace(/\s+/g, "");
+  return (
+    SHIFT_IDENTIFIER_TO_IMPORT_CODE.get(key) ??
+    SHIFT_IDENTIFIER_TO_IMPORT_CODE.get(compact) ??
+    null
+  );
+}
 
 const LEGACY_EMPLOYEE_LABEL_TO_STANDARD = new Map<string, string>([
   ["permanent", "Fuldtid"],
@@ -521,6 +646,7 @@ export async function createWorkplace(
     }
 
     const admin = getAdminClient();
+    const language = input.country_code?.trim().toUpperCase() === "DK" ? "da" : "en";
     const { data, error } = await admin
       .from("workplaces")
       .insert({
@@ -537,6 +663,7 @@ export async function createWorkplace(
         phone: input.phone?.trim() || null,
         employee_count_band: input.employee_count_band,
         notification_channel: input.notification_channel,
+        language,
       })
       .select("id, name, company_name, city, created_at")
       .single();
@@ -547,6 +674,10 @@ export async function createWorkplace(
 
     const row = data as WorkplaceRow;
     const copyWarning = await copyTemplatesToWorkplace(row.id);
+    await updateLifecycleStage(row.id, {
+      source: "workplace_created",
+      context: { language, employee_count_band: input.employee_count_band },
+    });
 
     revalidatePath("/super-admin/users");
     revalidatePath("/super-admin/workplaces");
@@ -582,6 +713,10 @@ export async function createWorkplaceLegacy(
 
 function mapDetail(row: Record<string, unknown>): WorkplaceDetail {
   const fw = row.future_planning_weeks;
+  const importedFilesCountRaw = row.imported_files_count;
+  const activeInvitesRaw = row.active_employee_invites;
+  const manualShiftsRaw = row.manual_shifts_created_count;
+  const swapPermissionRaw = row.employee_swap_permission_level;
   return {
     id: row.id as string,
     name: row.name as string,
@@ -597,6 +732,27 @@ function mapDetail(row: Record<string, unknown>): WorkplaceDetail {
     phone: (row.phone as string) ?? null,
     employee_count_band: row.employee_count_band as EmployeeCountBand,
     stripe_customer_id: (row.stripe_customer_id as string) ?? null,
+    lifecycle_stage: String(row.lifecycle_stage ?? "PROSPECT"),
+    language: String(row.language ?? "en"),
+    imported_files_count:
+      typeof importedFilesCountRaw === "number" && Number.isFinite(importedFilesCountRaw)
+        ? importedFilesCountRaw
+        : 0,
+    active_employee_invites:
+      typeof activeInvitesRaw === "number" && Number.isFinite(activeInvitesRaw)
+        ? activeInvitesRaw
+        : 0,
+    manual_shifts_created_count:
+      typeof manualShiftsRaw === "number" && Number.isFinite(manualShiftsRaw)
+        ? manualShiftsRaw
+        : 0,
+    subscription_status: String(row.subscription_status ?? "inactive"),
+    lifecycle_updated_at:
+      row.lifecycle_updated_at == null ? null : String(row.lifecycle_updated_at),
+    employee_swap_permission_level:
+      typeof swapPermissionRaw === "number" && Number.isFinite(swapPermissionRaw)
+        ? Math.min(3, Math.max(1, Math.trunc(swapPermissionRaw)))
+        : 2,
     push_include_shift_type_ids: (row.push_include_shift_type_ids as string[]) ?? [],
     push_include_employee_type_ids:
       (row.push_include_employee_type_ids as string[]) ?? [],
@@ -612,6 +768,9 @@ function mapDetail(row: Record<string, unknown>): WorkplaceDetail {
 }
 
 const WORKPLACE_DETAIL_SELECT_BASE =
+  "id, name, company_name, vat_number, street_name, street_number, address_extra, postal_code, city, country_code, contact_email, phone, employee_count_band, stripe_customer_id, lifecycle_stage, language, imported_files_count, active_employee_invites, manual_shifts_created_count, subscription_status, lifecycle_updated_at, employee_swap_permission_level, push_include_shift_type_ids, push_include_employee_type_ids, created_at";
+
+const WORKPLACE_DETAIL_SELECT_LEGACY =
   "id, name, company_name, vat_number, street_name, street_number, address_extra, postal_code, city, country_code, contact_email, phone, employee_count_band, stripe_customer_id, push_include_shift_type_ids, push_include_employee_type_ids, created_at";
 
 const WORKPLACE_DETAIL_SELECT_EXTENDED = `${WORKPLACE_DETAIL_SELECT_BASE}, future_planning_weeks, calendar_released_until, season_template_json`;
@@ -634,7 +793,7 @@ export async function getWorkplaceById(
       if (/column|does not exist|schema cache/i.test(error.message)) {
         const { data: d2, error: e2 } = await admin
           .from("workplaces")
-          .select(WORKPLACE_DETAIL_SELECT_BASE)
+          .select(WORKPLACE_DETAIL_SELECT_LEGACY)
           .eq("id", id)
           .maybeSingle();
         if (e2 || !d2) {
@@ -707,7 +866,7 @@ export async function getWorkplaceTypes(
     const rawShiftTypes = (sRes.data ?? []) as WorkplaceShiftTypeRow[];
     const [employeeTemplateRes, shiftTemplateRes] = await Promise.all([
       admin.from("employee_type_templates").select("id, name, calendar_pattern"),
-      admin.from("shift_type_templates").select("id, name, calendar_color"),
+      admin.from("shift_type_templates").select("id, name, slug, import_code, calendar_color"),
     ]);
     const employeeTemplateById = new Map<string, { name: string; pattern: string | null }>();
     const employeeTemplateByName = new Map<string, { name: string; pattern: string | null }>();
@@ -727,21 +886,34 @@ export async function getWorkplaceTypes(
         }
       }
     }
-    const shiftTemplateById = new Map<string, { name: string; color: string | null }>();
-    const shiftTemplateByName = new Map<string, { name: string; color: string | null }>();
+    const shiftTemplateById = new Map<string, { name: string; color: string | null; import_code: string | null }>();
+    const shiftTemplateByName = new Map<string, { name: string; color: string | null; import_code: string | null }>();
+    const shiftTemplateByImportCode = new Map<
+      string,
+      { name: string; color: string | null; import_code: string | null }
+    >();
     if (!shiftTemplateRes.error) {
       for (const row of shiftTemplateRes.data ?? []) {
         const id = String(row.id ?? "");
         const name = String(row.name ?? "").trim();
         if (!name) continue;
         const normalized = normalizeTemplateMatchKey(name);
+        const slug = String(row.slug ?? "").trim();
+        const import_code =
+          (row.import_code as string | null) ??
+          inferShiftImportCode(slug) ??
+          inferShiftImportCode(name);
         const template = {
           name,
           color: (row.calendar_color as string | null) ?? "#94a3b8",
+          import_code,
         };
         if (id) shiftTemplateById.set(id, template);
         if (normalized && !shiftTemplateByName.has(normalized)) {
           shiftTemplateByName.set(normalized, template);
+        }
+        if (import_code && !shiftTemplateByImportCode.has(import_code)) {
+          shiftTemplateByImportCode.set(import_code, template);
         }
       }
     }
@@ -761,12 +933,33 @@ export async function getWorkplaceTypes(
       const key = normalizeTemplateMatchKey(row.label);
       const legacy = LEGACY_SHIFT_LABEL_TO_STANDARD.get(key);
       const byTemplateId = row.template_id ? shiftTemplateById.get(row.template_id) : undefined;
-      const byTemplateName = shiftTemplateByName.get(legacy ? normalizeTemplateMatchKey(legacy) : key);
+      const importCode =
+        byTemplateId?.import_code ??
+        inferShiftImportCode(legacy ?? row.label);
+      const byTemplateCode =
+        importCode ? shiftTemplateByImportCode.get(importCode) : undefined;
+      const byTemplateName = shiftTemplateByName.get(
+        legacy ? normalizeTemplateMatchKey(legacy) : key
+      );
+      const canonicalByCode = importCode
+        ? SHIFT_IMPORT_CODE_TO_STANDARD_LABEL.get(importCode)
+        : undefined;
       return {
         ...row,
-        label: byTemplateId?.name ?? byTemplateName?.name ?? legacy ?? row.label,
+        import_code: importCode ?? null,
+        label:
+          byTemplateId?.name ??
+          byTemplateCode?.name ??
+          byTemplateName?.name ??
+          canonicalByCode ??
+          legacy ??
+          row.label,
         calendar_color:
-          byTemplateId?.color ?? byTemplateName?.color ?? row.calendar_color ?? "#94a3b8",
+          byTemplateId?.color ??
+          byTemplateCode?.color ??
+          byTemplateName?.color ??
+          row.calendar_color ??
+          "#94a3b8",
       };
     });
 
@@ -910,6 +1103,9 @@ export type UpdateWorkplaceInput = Partial<{
   phone: string | null;
   employee_count_band: EmployeeCountBand;
   stripe_customer_id: string | null;
+  language: string;
+  subscription_status: string;
+  employee_swap_permission_level: number;
   push_include_shift_type_ids: string[];
   push_include_employee_type_ids: string[];
   future_planning_weeks: number;
@@ -934,16 +1130,40 @@ export async function updateWorkplace(
         return { ok: false, error: "Antal uger skal være mellem 1 og 104." };
       }
     }
+    if (patch.employee_swap_permission_level !== undefined) {
+      const v = Number(patch.employee_swap_permission_level);
+      if (!Number.isFinite(v) || ![1, 2, 3].includes(Math.trunc(v))) {
+        return { ok: false, error: "Bytte-rettighed skal være 1, 2 eller 3." };
+      }
+    }
     const admin = getAdminClient();
     const row: Record<string, unknown> = { ...patch };
     if (patch.country_code !== undefined && patch.country_code !== null) {
       row.country_code = String(patch.country_code).trim().toUpperCase() || null;
+    }
+    if (patch.language !== undefined) {
+      const lang = String(patch.language ?? "")
+        .trim()
+        .toLowerCase();
+      if (!/^[a-z]{2}$/.test(lang)) {
+        return { ok: false, error: "Sprog skal være ISO 639-1 (fx da eller en)." };
+      }
+      row.language = lang;
+    }
+    if (patch.employee_swap_permission_level !== undefined) {
+      row.employee_swap_permission_level = Math.trunc(
+        Number(patch.employee_swap_permission_level)
+      );
     }
 
     const { error } = await admin.from("workplaces").update(row).eq("id", id);
     if (error) {
       return { ok: false, error: error.message };
     }
+    await updateLifecycleStage(id, {
+      source: "workplace_updated",
+      context: { updated_fields: Object.keys(row) },
+    });
     revalidatePath("/super-admin/users");
     revalidateWorkplaceDetailPages(id);
     return { ok: true };
@@ -1004,7 +1224,7 @@ export async function listShiftTypeTemplates(
     const admin = getAdminClient();
     const { data, error } = await admin
       .from("shift_type_templates")
-      .select("id, name, slug, sort_order, calendar_color")
+      .select("id, name, slug, import_code, sort_order, calendar_color")
       .order("sort_order");
     if (error) {
       return { ok: false, error: error.message };
@@ -1016,6 +1236,7 @@ export async function listShiftTypeTemplates(
         id: r.id as string,
         name: r.name as string,
         slug: r.slug as string,
+        import_code: (r.import_code as string | null) ?? null,
         sort_order: r.sort_order as number,
         calendar_color: (r.calendar_color as string | null) ?? "#94a3b8",
         calendar_pattern: null,
@@ -1197,6 +1418,7 @@ export async function deleteEmployeeTypeTemplate(
 export async function createShiftTypeTemplate(input: {
   name: string;
   slug?: string;
+  import_code?: string;
   sort_order?: number;
   calendar_color?: string;
 }): Promise<{ ok: true; data: TypeTemplateRow } | { ok: false; error: string }> {
@@ -1219,14 +1441,16 @@ export async function createShiftTypeTemplate(input: {
         ? input.sort_order
         : await nextShiftTemplateSortOrder(admin);
     const calendar_color = (input.calendar_color?.trim() || "#94a3b8").slice(0, 16);
+    const inferredCode = inferShiftImportCode(input.import_code ?? slug ?? name);
+    const import_code = inferredCode ? inferredCode.toUpperCase() : null;
     const { data, error } = await admin
       .from("shift_type_templates")
-      .insert({ name, slug, sort_order, calendar_color })
-      .select("id, name, slug, sort_order, calendar_color")
+      .insert({ name, slug, import_code, sort_order, calendar_color })
+      .select("id, name, slug, import_code, sort_order, calendar_color")
       .single();
     if (error) {
       if (error.code === "23505") {
-        return { ok: false, error: "Slug findes allerede — vælg et andet." };
+        return { ok: false, error: "Slug eller import-kode findes allerede — vælg en anden." };
       }
       return { ok: false, error: error.message };
     }
@@ -1238,6 +1462,7 @@ export async function createShiftTypeTemplate(input: {
         id: row.id as string,
         name: row.name as string,
         slug: row.slug as string,
+        import_code: (row.import_code as string | null) ?? null,
         sort_order: row.sort_order as number,
         calendar_color: (row.calendar_color as string) ?? "#94a3b8",
         calendar_pattern: null,
@@ -1512,7 +1737,7 @@ export async function getWorkplaceDepartmentsOverview(
 
     const [employeeTemplateRes, shiftTemplateRes] = await Promise.all([
       admin.from("employee_type_templates").select("id, name, calendar_pattern"),
-      admin.from("shift_type_templates").select("id, name, calendar_color"),
+      admin.from("shift_type_templates").select("id, name, slug, import_code, calendar_color"),
     ]);
     const employeeTemplateById = new Map<string, { name: string; pattern: string | null }>();
     const employeeTemplateByName = new Map<string, { name: string; pattern: string | null }>();
@@ -1532,21 +1757,34 @@ export async function getWorkplaceDepartmentsOverview(
         }
       }
     }
-    const shiftTemplateById = new Map<string, { name: string; color: string | null }>();
-    const shiftTemplateByName = new Map<string, { name: string; color: string | null }>();
+    const shiftTemplateById = new Map<string, { name: string; color: string | null; import_code: string | null }>();
+    const shiftTemplateByName = new Map<string, { name: string; color: string | null; import_code: string | null }>();
+    const shiftTemplateByImportCode = new Map<
+      string,
+      { name: string; color: string | null; import_code: string | null }
+    >();
     if (!shiftTemplateRes.error) {
       for (const row of shiftTemplateRes.data ?? []) {
         const id = String(row.id ?? "");
         const name = String(row.name ?? "").trim();
         if (!name) continue;
         const normalized = normalizeTemplateMatchKey(name);
+        const slug = String(row.slug ?? "").trim();
+        const import_code =
+          (row.import_code as string | null) ??
+          inferShiftImportCode(slug) ??
+          inferShiftImportCode(name);
         const template = {
           name,
           color: (row.calendar_color as string | null) ?? "#94a3b8",
+          import_code,
         };
         if (id) shiftTemplateById.set(id, template);
         if (normalized && !shiftTemplateByName.has(normalized)) {
           shiftTemplateByName.set(normalized, template);
+        }
+        if (import_code && !shiftTemplateByImportCode.has(import_code)) {
+          shiftTemplateByImportCode.set(import_code, template);
         }
       }
     }
@@ -1566,12 +1804,33 @@ export async function getWorkplaceDepartmentsOverview(
       const key = normalizeTemplateMatchKey(row.label);
       const legacy = LEGACY_SHIFT_LABEL_TO_STANDARD.get(key);
       const byTemplateId = row.template_id ? shiftTemplateById.get(row.template_id) : undefined;
-      const byTemplateName = shiftTemplateByName.get(legacy ? normalizeTemplateMatchKey(legacy) : key);
+      const importCode =
+        byTemplateId?.import_code ??
+        inferShiftImportCode(legacy ?? row.label);
+      const byTemplateCode =
+        importCode ? shiftTemplateByImportCode.get(importCode) : undefined;
+      const byTemplateName = shiftTemplateByName.get(
+        legacy ? normalizeTemplateMatchKey(legacy) : key
+      );
+      const canonicalByCode = importCode
+        ? SHIFT_IMPORT_CODE_TO_STANDARD_LABEL.get(importCode)
+        : undefined;
       return {
         ...row,
-        label: byTemplateId?.name ?? byTemplateName?.name ?? legacy ?? row.label,
+        import_code: importCode ?? null,
+        label:
+          byTemplateId?.name ??
+          byTemplateCode?.name ??
+          byTemplateName?.name ??
+          canonicalByCode ??
+          legacy ??
+          row.label,
         calendar_color:
-          byTemplateId?.color ?? byTemplateName?.color ?? row.calendar_color ?? "#94a3b8",
+          byTemplateId?.color ??
+          byTemplateCode?.color ??
+          byTemplateName?.color ??
+          row.calendar_color ??
+          "#94a3b8",
       };
     });
 
@@ -1979,6 +2238,7 @@ export async function importWorkplaceMembersFromCsv(
     let addedExisting = 0;
     let alreadyMember = 0;
     let errors = 0;
+    let successfulInviteCount = 0;
 
     for (let idx = 1; idx < lines.length; idx += 1) {
       const lineNo = idx + 1;
@@ -2164,6 +2424,7 @@ export async function importWorkplaceMembersFromCsv(
           activationLink,
         });
         createdInvited += 1;
+        successfulInviteCount += 1;
       } else {
         results.push({
           line: lineNo,
@@ -2176,12 +2437,48 @@ export async function importWorkplaceMembersFromCsv(
       }
     }
 
+    if (successfulInviteCount > 0) {
+      await incrementWorkplaceActiveEmployeeInvites(workplaceId, successfulInviteCount, {
+        source: "members_csv_import",
+      });
+    } else {
+      await updateLifecycleStage(workplaceId, {
+        source: "members_csv_import",
+        context: { successfulInviteCount: 0 },
+      });
+    }
+
     revalidateWorkplaceDetailPages(workplaceId);
     return {
       ok: true,
       results,
       summary: { createdInvited, addedExisting, alreadyMember, errors },
     };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Ukendt fejl";
+    return { ok: false, error: msg };
+  }
+}
+
+export async function registerWorkplaceImportUpload(
+  workplaceId: string,
+  input: { fileName: string; source?: string }
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await assertWorkplaceAdminOrSuperAdmin(workplaceId);
+    const fileName = input.fileName.trim();
+    if (!fileName) {
+      return { ok: false, error: "Filnavn mangler." };
+    }
+
+    const source = input.source?.trim() || "shift_schedule_upload";
+    const res = await incrementWorkplaceImportedFilesCount(workplaceId, 1, {
+      fileName,
+      source,
+    });
+    if (!res.ok) return res;
+    revalidateWorkplaceDetailPages(workplaceId);
+    return { ok: true };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Ukendt fejl";
     return { ok: false, error: msg };

@@ -46,6 +46,7 @@ import {
   localizeStandardEmployeeTypeLabel,
   localizeStandardShiftTypeLabel,
 } from "@/src/lib/type-label-i18n";
+import { EmployeePermissions } from "@/src/components/settings/employee-permissions";
 
 /** Tom liste = ingen filter = alle typer på aksen. Fuld liste = samme som ingen filter → normalisér til []. */
 function normalizePushIncludeFilter(ids: string[], allIds: string[]): string[] {
@@ -249,6 +250,7 @@ export default function WorkplaceDetailClient({
           empAllIds
         ),
         future_planning_weeks: d.future_planning_weeks,
+        employee_swap_permission_level: d.employee_swap_permission_level,
       });
       if (!res.ok) {
         setMsg(res.error);
@@ -751,6 +753,27 @@ export default function WorkplaceDetailClient({
             className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
           />
         </label>
+      </section>
+      ) : null}
+
+      {!dashboardTabsEnabled || activeSettingsTab === "planning" ? (
+      <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          {tr("settings.employee_permissions.title", "Medarbejdernes vagtkontrol")}
+        </h2>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          {tr(
+            "settings.employee_permissions.intro",
+            "Vælg hvor meget medarbejderne må styre vagtbytte i appen. Indstillingen bruges til godkendelsesflow i kalenderen."
+          )}
+        </p>
+        <EmployeePermissions
+          t={tr}
+          value={d.employee_swap_permission_level as 1 | 2 | 3}
+          onChange={(level) =>
+            setD((x) => ({ ...x, employee_swap_permission_level: level }))
+          }
+        />
       </section>
       ) : null}
 
