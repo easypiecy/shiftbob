@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Apple, Play } from "lucide-react";
 import { ProductChoices } from "./product-choices";
 import { ScrollFadeInImage } from "./scroll-fade-in-image";
+import { WEBSITE_ASSETS } from "@/src/config/website-assets";
 
 const europeanLanguages = [
   { code: "bg", label: "🇧🇬 Български" },
@@ -41,7 +42,7 @@ export default function LandingPage() {
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-5 sm:px-6 sm:py-6">
           <Link href="/" className="flex items-center gap-4">
             <Image
-              src="/landing-logo"
+              src={WEBSITE_ASSETS.landingLogo}
               alt="ShiftBob logo"
               width={300}
               height={300}
@@ -89,7 +90,7 @@ export default function LandingPage() {
         <section className="relative isolate overflow-hidden">
           <div
             className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: "url('/landing-hero')" }}
+            style={{ backgroundImage: `url('${WEBSITE_ASSETS.landingHero}')` }}
           />
           <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0)_20%,rgba(255,255,255,0)_80%,rgba(255,255,255,0.95)_100%)]" />
 
@@ -145,7 +146,7 @@ export default function LandingPage() {
         <section className="mx-auto grid w-full max-w-7xl items-center gap-10 px-4 pb-18 sm:px-6 sm:pb-24 md:grid-cols-5 md:gap-14">
           <div className="flex justify-center md:col-span-2 md:justify-start">
             <ScrollFadeInImage
-              src="/landing-eu-compliance"
+              src={WEBSITE_ASSETS.landingEuCompliance}
               alt="Team compliance and schedule overview"
             />
           </div>

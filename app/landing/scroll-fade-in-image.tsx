@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { WEBSITE_ASSETS } from "@/src/config/website-assets";
 
 type ScrollFadeInImageProps = {
   src?: string;
@@ -9,7 +10,7 @@ type ScrollFadeInImageProps = {
 };
 
 export function ScrollFadeInImage({
-  src = "/landing-employee-photo",
+  src = WEBSITE_ASSETS.landingEmployeePhoto,
   alt = "Employee checking shifts on mobile app",
 }: ScrollFadeInImageProps) {
   const ref = useRef<HTMLDivElement | null>(null);

@@ -16,6 +16,15 @@ const nextConfig: NextConfig = {
      */
     turbopackFileSystemCacheForDev: false,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "pwooqmqdershicxpnfuo.supabase.co",
+        pathname: "/storage/v1/object/public/website_assets/**",
+      },
+    ],
+  },
   /** Browsere henter stadig `/favicon.ico` — samme som metadata icons (`/ikon.jpg`). */
   async rewrites() {
     return [
