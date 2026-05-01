@@ -1,0 +1,41 @@
+{
+  "node": {
+    "40502abdf16fd565e8d26a545ec533dd8c7168c489": {
+      "workers": {
+        "app/super-admin/translations/page": {
+          "moduleId": 79815,
+          "async": false,
+          "exportedName": "loadTargetTexts",
+          "filename": "src/app/super-admin/translations/actions.ts"
+        }
+      },
+      "exportedName": "loadTargetTexts",
+      "filename": "src/app/super-admin/translations/actions.ts"
+    },
+    "409ef96a51755e46113cb076eb8c9ccd4af4e17736": {
+      "workers": {
+        "app/super-admin/translations/page": {
+          "moduleId": 79815,
+          "async": false,
+          "exportedName": "saveTranslation",
+          "filename": "src/app/super-admin/translations/actions.ts"
+        }
+      },
+      "exportedName": "saveTranslation",
+      "filename": "src/app/super-admin/translations/actions.ts"
+    },
+    "702c23d649970a5b6bacc547ba3bf615b787a66463": {
+      "workers": {
+        "app/super-admin/translations/page": {
+          "moduleId": 79815,
+          "async": false,
+          "exportedName": "translateWithAI",
+          "filename": "src/app/super-admin/translations/actions.ts"
+        }
+      },
+      "exportedName": "translateWithAI",
+      "filename": "src/app/super-admin/translations/actions.ts"
+    }
+  },
+  "edge": {}
+}

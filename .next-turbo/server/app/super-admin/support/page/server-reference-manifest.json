@@ -1,0 +1,89 @@
+{
+  "node": {
+    "00c77313b8dc408b3d802c5e0880b662b08ce24d63": {
+      "workers": {
+        "app/super-admin/support/page": {
+          "moduleId": 39656,
+          "async": false,
+          "exportedName": "getSupportDashboardData",
+          "filename": "src/app/super-admin/support-actions.ts"
+        }
+      },
+      "exportedName": "getSupportDashboardData",
+      "filename": "src/app/super-admin/support-actions.ts"
+    },
+    "401e83dc479784461a5ac8281ed7a8ea4ef298c7d4": {
+      "workers": {
+        "app/super-admin/support/page": {
+          "moduleId": 39656,
+          "async": false,
+          "exportedName": "ingestSupportEmail",
+          "filename": "src/app/super-admin/support-actions.ts"
+        }
+      },
+      "exportedName": "ingestSupportEmail",
+      "filename": "src/app/super-admin/support-actions.ts"
+    },
+    "404b4e65d67a1f42af2823a6f7c80e30066bcb8ee8": {
+      "workers": {
+        "app/super-admin/support/page": {
+          "moduleId": 39656,
+          "async": false,
+          "exportedName": "upsertSupportReplyTemplate",
+          "filename": "src/app/super-admin/support-actions.ts"
+        }
+      },
+      "exportedName": "upsertSupportReplyTemplate",
+      "filename": "src/app/super-admin/support-actions.ts"
+    },
+    "405b715b71005b59f9a9298dc4eb9d7de74bccfd1d": {
+      "workers": {
+        "app/super-admin/support/page": {
+          "moduleId": 39656,
+          "async": false,
+          "exportedName": "deleteSupportReplyTemplate",
+          "filename": "src/app/super-admin/support-actions.ts"
+        }
+      },
+      "exportedName": "deleteSupportReplyTemplate",
+      "filename": "src/app/super-admin/support-actions.ts"
+    },
+    "40cf420b50433ab9237aa3449a3bbb957bd8ee6777": {
+      "workers": {
+        "app/super-admin/support/page": {
+          "moduleId": 39656,
+          "async": false,
+          "exportedName": "saveSupportMailboxConfig",
+          "filename": "src/app/super-admin/support-actions.ts"
+        }
+      },
+      "exportedName": "saveSupportMailboxConfig",
+      "filename": "src/app/super-admin/support-actions.ts"
+    },
+    "40dd947321ae190f3f8e4fea990ac73a57357b3d6f": {
+      "workers": {
+        "app/super-admin/support/page": {
+          "moduleId": 39656,
+          "async": false,
+          "exportedName": "addSupportTicketReply",
+          "filename": "src/app/super-admin/support-actions.ts"
+        }
+      },
+      "exportedName": "addSupportTicketReply",
+      "filename": "src/app/super-admin/support-actions.ts"
+    },
+    "6025a15f2b5f238f0ebd78c9c5b83912768f655d2a": {
+      "workers": {
+        "app/super-admin/support/page": {
+          "moduleId": 39656,
+          "async": false,
+          "exportedName": "updateSupportTicketStatus",
+          "filename": "src/app/super-admin/support-actions.ts"
+        }
+      },
+      "exportedName": "updateSupportTicketStatus",
+      "filename": "src/app/super-admin/support-actions.ts"
+    }
+  },
+  "edge": {}
+}

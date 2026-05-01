@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../.next-internal/server/app/super-admin/workplaces/new/page/actions.js%20%28server%20actions%20loader%29"],"sourcesContent":["export {createWorkplace as '408a34b1611d28cc6057bd7bff570202f8f3e16ed9'} from 'ACTIONS_MODULE0'\n"],"names":[],"mappings":"uCAAA,IAAA,EAAA,EAAA,CAAA,CAAA"}

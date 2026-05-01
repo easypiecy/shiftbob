@@ -1,0 +1,17 @@
+{
+  "node": {
+    "40a09a5e5d8787339612747f2ab8e3b190e820e8f4": {
+      "workers": {
+        "app/page": {
+          "moduleId": 86252,
+          "async": false,
+          "exportedName": "setUiLanguageAction",
+          "filename": "src/app/ui-language-actions.ts"
+        }
+      },
+      "exportedName": "setUiLanguageAction",
+      "filename": "src/app/ui-language-actions.ts"
+    }
+  },
+  "edge": {}
+}

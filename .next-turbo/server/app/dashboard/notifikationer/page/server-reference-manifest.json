@@ -1,0 +1,41 @@
+{
+  "node": {
+    "4058889b737468b4cacfddefeed3dc4942d8ea3467": {
+      "workers": {
+        "app/dashboard/notifikationer/page": {
+          "moduleId": 50606,
+          "async": false,
+          "exportedName": "setUserLayoutTheme",
+          "filename": "src/app/user-ui-actions.ts"
+        }
+      },
+      "exportedName": "setUserLayoutTheme",
+      "filename": "src/app/user-ui-actions.ts"
+    },
+    "4084b9e377b99087bb68cf5405d9d5a93b6c8c7ea9": {
+      "workers": {
+        "app/dashboard/notifikationer/page": {
+          "moduleId": 50606,
+          "async": false,
+          "exportedName": "approveJoinRequestAction",
+          "filename": "app/join-requests-actions.ts"
+        }
+      },
+      "exportedName": "approveJoinRequestAction",
+      "filename": "app/join-requests-actions.ts"
+    },
+    "406d1b15e4105921bb32650d89c10ef300acc03807": {
+      "workers": {
+        "app/dashboard/notifikationer/page": {
+          "moduleId": 50606,
+          "async": false,
+          "exportedName": "rejectJoinRequestAction",
+          "filename": "app/join-requests-actions.ts"
+        }
+      },
+      "exportedName": "rejectJoinRequestAction",
+      "filename": "app/join-requests-actions.ts"
+    }
+  },
+  "edge": {}
+}

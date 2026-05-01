@@ -1,0 +1,17 @@
+{
+  "node": {
+    "408a34b1611d28cc6057bd7bff570202f8f3e16ed9": {
+      "workers": {
+        "app/super-admin/workplaces/new/page": {
+          "moduleId": 39237,
+          "async": false,
+          "exportedName": "createWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "exportedName": "createWorkplace",
+      "filename": "src/app/super-admin/workplaces/actions.ts"
+    }
+  },
+  "edge": {}
+}

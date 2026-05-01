@@ -1,0 +1,29 @@
+{
+  "node": {
+    "4058889b737468b4cacfddefeed3dc4942d8ea3467": {
+      "workers": {
+        "app/dashboard/complete-profile/page": {
+          "moduleId": 30842,
+          "async": false,
+          "exportedName": "setUserLayoutTheme",
+          "filename": "src/app/user-ui-actions.ts"
+        }
+      },
+      "exportedName": "setUserLayoutTheme",
+      "filename": "src/app/user-ui-actions.ts"
+    },
+    "40a04cfce7a39ee02067eb4944cee0c0b0f16c2610": {
+      "workers": {
+        "app/dashboard/complete-profile/page": {
+          "moduleId": 30842,
+          "async": false,
+          "exportedName": "completeProfileOnboardingAction",
+          "filename": "app/profile-actions.ts"
+        }
+      },
+      "exportedName": "completeProfileOnboardingAction",
+      "filename": "app/profile-actions.ts"
+    }
+  },
+  "edge": {}
+}

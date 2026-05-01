@@ -1,0 +1,1902 @@
+{
+  "node": {
+    "40a09a5e5d8787339612747f2ab8e3b190e820e8f4": {
+      "workers": {
+        "app/login/page": {
+          "moduleId": 93023,
+          "async": false,
+          "exportedName": "setUiLanguageAction",
+          "filename": "src/app/ui-language-actions.ts"
+        },
+        "app/page": {
+          "moduleId": 86252,
+          "async": false,
+          "exportedName": "setUiLanguageAction",
+          "filename": "src/app/ui-language-actions.ts"
+        }
+      },
+      "filename": "src/app/ui-language-actions.ts",
+      "exportedName": "setUiLanguageAction"
+    },
+    "4058889b737468b4cacfddefeed3dc4942d8ea3467": {
+      "workers": {
+        "app/dashboard/complete-profile/page": {
+          "moduleId": 30842,
+          "async": false,
+          "exportedName": "setUserLayoutTheme",
+          "filename": "src/app/user-ui-actions.ts"
+        },
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "setUserLayoutTheme",
+          "filename": "src/app/user-ui-actions.ts"
+        },
+        "app/dashboard/data-eksport/page": {
+          "moduleId": 49573,
+          "async": false,
+          "exportedName": "setUserLayoutTheme",
+          "filename": "src/app/user-ui-actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "setUserLayoutTheme",
+          "filename": "src/app/user-ui-actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "setUserLayoutTheme",
+          "filename": "src/app/user-ui-actions.ts"
+        },
+        "app/dashboard/join-requests/page": {
+          "moduleId": 27551,
+          "async": false,
+          "exportedName": "setUserLayoutTheme",
+          "filename": "src/app/user-ui-actions.ts"
+        },
+        "app/dashboard/notifikationer/page": {
+          "moduleId": 50606,
+          "async": false,
+          "exportedName": "setUserLayoutTheme",
+          "filename": "src/app/user-ui-actions.ts"
+        },
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "setUserLayoutTheme",
+          "filename": "src/app/user-ui-actions.ts"
+        },
+        "app/dashboard/regler/page": {
+          "moduleId": 60987,
+          "async": false,
+          "exportedName": "setUserLayoutTheme",
+          "filename": "src/app/user-ui-actions.ts"
+        },
+        "app/select-role/page": {
+          "moduleId": 49839,
+          "async": false,
+          "exportedName": "setUserLayoutTheme",
+          "filename": "src/app/user-ui-actions.ts"
+        },
+        "app/select-workplace/page": {
+          "moduleId": 19672,
+          "async": false,
+          "exportedName": "setUserLayoutTheme",
+          "filename": "src/app/user-ui-actions.ts"
+        }
+      },
+      "filename": "src/app/user-ui-actions.ts",
+      "exportedName": "setUserLayoutTheme"
+    },
+    "60836235083fe70fb3365080aacf6cad02edb4d020": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "getWorkplaceDepartmentsOverview",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "getWorkplaceDepartmentsOverview",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "getWorkplaceDepartmentsOverview",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "getWorkplaceDepartmentsOverview",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "getWorkplaceDepartmentsOverview",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "getWorkplaceDepartmentsOverview",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "getWorkplaceDepartmentsOverview",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "getWorkplaceDepartmentsOverview"
+    },
+    "406af08b22c0f6a757fac4f294e7472bf389741db6": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "getWorkplaceTypes",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "getWorkplaceTypes",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "getWorkplaceTypes",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "getWorkplaceTypes",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "getWorkplaceTypes",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "getWorkplaceTypes",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "getWorkplaceTypes",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "getWorkplaceTypes"
+    },
+    "6018a127ae0b9a86b8a24d0205facebbadf22d4c21": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "createWorkplaceShift",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        },
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "createWorkplaceShift",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "createWorkplaceShift"
+    },
+    "604054d13043e9a5c9dc21bfad8697340346c038e8": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "deleteWorkplaceShift",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        },
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "deleteWorkplaceShift",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "deleteWorkplaceShift"
+    },
+    "706d935afaf45b8ae6d64e2e1f6f68ecb3d4ccb181": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "reassignWorkplaceShift",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        },
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "reassignWorkplaceShift",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "reassignWorkplaceShift"
+    },
+    "70b4c2bf335d6ed07165ab5f07b718a908ce1aadcc": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "swapWorkplaceShifts",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        },
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "swapWorkplaceShifts",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "swapWorkplaceShifts"
+    },
+    "78c64a0050c9af165bcf66c423febc96718d9f2b73": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "updateWorkplaceShiftTiming",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        },
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "updateWorkplaceShiftTiming",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "updateWorkplaceShiftTiming"
+    },
+    "7c4e39ee1fde19a337eae6ea5232a82ca1d1a06df4": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "getWorkplaceShiftsInRange",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        },
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "getWorkplaceShiftsInRange",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "getWorkplaceShiftsInRange"
+    },
+    "60fdc8ab0e0ee6b8f68cfb928a5d15940a9aefcc6b": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "createWorkplaceMemberWithProfile",
+          "filename": "src/app/dashboard/workplace-member-calendar-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
+      "exportedName": "createWorkplaceMemberWithProfile"
+    },
+    "609d7ac2a23bbf5c79782a871e5cdef2bab05f9921": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "getWorkplaceMemberCvSignedUrl",
+          "filename": "src/app/dashboard/workplace-member-calendar-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
+      "exportedName": "getWorkplaceMemberCvSignedUrl"
+    },
+    "6036520e323470205bce6667c48ea68719dacc2fb7": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "getWorkplaceMemberPreferences",
+          "filename": "src/app/dashboard/workplace-member-calendar-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
+      "exportedName": "getWorkplaceMemberPreferences"
+    },
+    "60c0654b2ab68c63621e240c80082f4f53e389e8a9": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "getWorkplaceMemberProfileDetails",
+          "filename": "src/app/dashboard/workplace-member-calendar-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
+      "exportedName": "getWorkplaceMemberProfileDetails"
+    },
+    "7022805323689137eb4730db66b674d64919fe926e": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "saveWorkplaceMemberPreferences",
+          "filename": "src/app/dashboard/workplace-member-calendar-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
+      "exportedName": "saveWorkplaceMemberPreferences"
+    },
+    "70e9643b3c0e35e3354230a2c4616907af73826839": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "updateWorkplaceMemberWithProfile",
+          "filename": "src/app/dashboard/workplace-member-calendar-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
+      "exportedName": "updateWorkplaceMemberWithProfile"
+    },
+    "705d52c4e81988f4471476cee6c669f9b0824a2003": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": 66988,
+          "async": false,
+          "exportedName": "uploadWorkplaceMemberCv",
+          "filename": "src/app/dashboard/workplace-member-calendar-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
+      "exportedName": "uploadWorkplaceMemberCv"
+    },
+    "40a04cfce7a39ee02067eb4944cee0c0b0f16c2610": {
+      "workers": {
+        "app/dashboard/complete-profile/page": {
+          "moduleId": 30842,
+          "async": false,
+          "exportedName": "completeProfileOnboardingAction",
+          "filename": "app/profile-actions.ts"
+        }
+      },
+      "filename": "app/profile-actions.ts",
+      "exportedName": "completeProfileOnboardingAction"
+    },
+    "005ebd230ce66be9d70850dbadf5616d660cdd2504": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "getWorkplaces",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "getWorkplaces",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "getWorkplaces",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "getWorkplaces",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "getWorkplaces",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "getWorkplaces",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "getWorkplaces"
+    },
+    "4011dfbe7f386cbda999396cbc0a2c201ccb8ed53f": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "getWorkplaceById",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "getWorkplaceById",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "getWorkplaceById",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "getWorkplaceById",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "getWorkplaceById",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "getWorkplaceById",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "getWorkplaceById"
+    },
+    "401f49bedbdb901c20b72a729746fb2fd076d90ef4": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "deleteShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "deleteShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "deleteShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "deleteShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "deleteShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "deleteShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "deleteShiftTypeTemplate"
+    },
+    "4062bd843ef2fc722cd899e10e41170ad2f3675978": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "deleteEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "deleteEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "deleteEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "deleteEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "deleteEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "deleteEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "deleteEmployeeTypeTemplate"
+    },
+    "4077d19c8fdae4eb33c94631367aee7390371b5a26": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "createEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "createEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "createEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "createEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "createEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "createEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "createEmployeeTypeTemplate"
+    },
+    "408446ef6e43b2e1d780aada7c9bae0be576eba5fb": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "exportWorkplaceCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "exportWorkplaceCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "exportWorkplaceCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "exportWorkplaceCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "exportWorkplaceCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "exportWorkplaceCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "exportWorkplaceCsv"
+    },
+    "4086f0d5a6489f598739979f39c8c37ec4827913b5": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "createWorkplaceLegacy",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "createWorkplaceLegacy",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "createWorkplaceLegacy",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "createWorkplaceLegacy",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "createWorkplaceLegacy",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "createWorkplaceLegacy",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "createWorkplaceLegacy"
+    },
+    "408a34b1611d28cc6057bd7bff570202f8f3e16ed9": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "createWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "createWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "createWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "createWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "createWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "createWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/new/page": {
+          "moduleId": 39237,
+          "async": false,
+          "exportedName": "createWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "createWorkplace"
+    },
+    "408bda1125f53253e8e3bc4cf4ed55a9f96a43821e": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "listShiftTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "listShiftTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "listShiftTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "listShiftTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "listShiftTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "listShiftTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "listShiftTypeTemplates"
+    },
+    "4091a58cd72b8661655d699f31e53f7a4bfc195665": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "listEuCountriesForWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "listEuCountriesForWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "listEuCountriesForWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "listEuCountriesForWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "listEuCountriesForWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "listEuCountriesForWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "listEuCountriesForWorkplace"
+    },
+    "409bfe9c9efe61253ad15c76752d8e946223c84ddf": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "listWorkplaceApiKeys",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "listWorkplaceApiKeys",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "listWorkplaceApiKeys",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "listWorkplaceApiKeys",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "listWorkplaceApiKeys",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "listWorkplaceApiKeys",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "listWorkplaceApiKeys"
+    },
+    "40e5536e647866e26ce90ad4a87e21e313dea3d68b": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "copyWorkplaceTemplatesFromStandards",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "copyWorkplaceTemplatesFromStandards",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "copyWorkplaceTemplatesFromStandards",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "copyWorkplaceTemplatesFromStandards",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "copyWorkplaceTemplatesFromStandards",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "copyWorkplaceTemplatesFromStandards",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "copyWorkplaceTemplatesFromStandards"
+    },
+    "40f870ea1684f3c57853d376a5d8e54169f62aaf62": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "listEmployeeTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "listEmployeeTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "listEmployeeTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "listEmployeeTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "listEmployeeTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "listEmployeeTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "listEmployeeTypeTemplates"
+    },
+    "40ff9c46f030d59fe7bcd9c08f22b976a7f8f03bcc": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "createShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "createShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "createShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "createShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "createShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "createShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "createShiftTypeTemplate"
+    },
+    "600ca49d2543e3cb59f54f485ab31f17bcb18f6517": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "createWorkplaceShiftType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "createWorkplaceShiftType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "createWorkplaceShiftType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "createWorkplaceShiftType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "createWorkplaceShiftType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "createWorkplaceShiftType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "createWorkplaceShiftType"
+    },
+    "601ecd15162f85086dbb30674ed91511103505f1d5": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "importWorkplaceMembersFromCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "importWorkplaceMembersFromCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "importWorkplaceMembersFromCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "importWorkplaceMembersFromCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "importWorkplaceMembersFromCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "importWorkplaceMembersFromCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "importWorkplaceMembersFromCsv"
+    },
+    "602806cef9946806e9f04a509dcbecbb05cde12615": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "createWorkplaceEmployeeType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "createWorkplaceEmployeeType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "createWorkplaceEmployeeType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "createWorkplaceEmployeeType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "createWorkplaceEmployeeType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "createWorkplaceEmployeeType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "createWorkplaceEmployeeType"
+    },
+    "603b76520411f33a1baed4e8b71a2a37f344085bc7": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "registerWorkplaceImportUpload",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "registerWorkplaceImportUpload",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "registerWorkplaceImportUpload",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "registerWorkplaceImportUpload",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "registerWorkplaceImportUpload",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "registerWorkplaceImportUpload",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "registerWorkplaceImportUpload"
+    },
+    "6040063c3143d7e66de40197949ca432ddf1bd12af": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "revokeWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "revokeWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "revokeWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "revokeWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "revokeWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "revokeWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "revokeWorkplaceApiKey"
+    },
+    "6046214bf90b1eb60ad4a59d7ad9d04f30b46e97ff": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "generateWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "generateWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "generateWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "generateWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "generateWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "generateWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "generateWorkplaceApiKey"
+    },
+    "6053b7183b325c78640f131e05db667123ee13e2e6": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "updateEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "updateEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "updateEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "updateEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "updateEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "updateEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "updateEmployeeTypeTemplate"
+    },
+    "607a2a9a161536ba77449987c2b415fb552b54ef1f": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "createWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "createWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "createWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "createWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "createWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "createWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "createWorkplaceDepartment"
+    },
+    "60857d084e22b278931205a7e7a2c05107fcf0ebb7": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "saveWorkplaceDepartmentMemberships",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "saveWorkplaceDepartmentMemberships",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "saveWorkplaceDepartmentMemberships",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "saveWorkplaceDepartmentMemberships",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "saveWorkplaceDepartmentMemberships",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "saveWorkplaceDepartmentMemberships",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "saveWorkplaceDepartmentMemberships"
+    },
+    "6091e87e583886e95343e36f6930cb6d76b691b42a": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "updateShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "updateShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "updateShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "updateShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "updateShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "updateShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "updateShiftTypeTemplate"
+    },
+    "60ad46338c32276edce086ce5dad83ebce2b3830fd": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "deleteWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "deleteWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "deleteWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "deleteWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "deleteWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "deleteWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "deleteWorkplaceDepartment"
+    },
+    "60f5225307fddb01837a9a4654dbc7691e8eea5e40": {
+      "workers": {
+        "app/dashboard/compliance/page": {
+          "moduleId": 58239,
+          "async": false,
+          "exportedName": "updateWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "updateWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/indstillinger/page": {
+          "moduleId": 11467,
+          "async": false,
+          "exportedName": "updateWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "updateWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplace-templates/page": {
+          "moduleId": 11082,
+          "async": false,
+          "exportedName": "updateWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/super-admin/workplaces/[id]/page": {
+          "moduleId": 78695,
+          "async": false,
+          "exportedName": "updateWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "updateWorkplace"
+    },
+    "4033422e233db8ce37786d4f74bd1b5fafead58af0": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "getFuturePlanningSnapshot",
+          "filename": "src/app/dashboard/future-workplace-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/future-workplace-actions.ts",
+      "exportedName": "getFuturePlanningSnapshot"
+    },
+    "404072b7e3602d282f517ea063739c120ea68f82d2": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "loadUnreleasedShiftsForWindow",
+          "filename": "src/app/dashboard/future-workplace-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/future-workplace-actions.ts",
+      "exportedName": "loadUnreleasedShiftsForWindow"
+    },
+    "605212fb98b013e2ab71980ea461a43e2775d67374": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "generateAiPlanPreview",
+          "filename": "src/app/dashboard/future-workplace-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/future-workplace-actions.ts",
+      "exportedName": "generateAiPlanPreview"
+    },
+    "607268dfdf1251e25ed4e5ad82184b46bf8d7ba396": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "releaseCalendarWeeks",
+          "filename": "src/app/dashboard/future-workplace-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/future-workplace-actions.ts",
+      "exportedName": "releaseCalendarWeeks"
+    },
+    "60e40cec7e73fe015c70d099469ffa54a37da8f6c6": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "saveSeasonTemplate",
+          "filename": "src/app/dashboard/future-workplace-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/future-workplace-actions.ts",
+      "exportedName": "saveSeasonTemplate"
+    },
+    "40ca3308a52f39fcc7b4bfc90e36fa2d0ac7ee246c": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": 87137,
+          "async": false,
+          "exportedName": "getCalendarViewerNameMode",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "getCalendarViewerNameMode"
+    },
+    "4084b9e377b99087bb68cf5405d9d5a93b6c8c7ea9": {
+      "workers": {
+        "app/dashboard/join-requests/page": {
+          "moduleId": 27551,
+          "async": false,
+          "exportedName": "approveJoinRequestAction",
+          "filename": "app/join-requests-actions.ts"
+        },
+        "app/dashboard/notifikationer/page": {
+          "moduleId": 50606,
+          "async": false,
+          "exportedName": "approveJoinRequestAction",
+          "filename": "app/join-requests-actions.ts"
+        }
+      },
+      "filename": "app/join-requests-actions.ts",
+      "exportedName": "approveJoinRequestAction"
+    },
+    "406d1b15e4105921bb32650d89c10ef300acc03807": {
+      "workers": {
+        "app/dashboard/join-requests/page": {
+          "moduleId": 27551,
+          "async": false,
+          "exportedName": "rejectJoinRequestAction",
+          "filename": "app/join-requests-actions.ts"
+        },
+        "app/dashboard/notifikationer/page": {
+          "moduleId": 50606,
+          "async": false,
+          "exportedName": "rejectJoinRequestAction",
+          "filename": "app/join-requests-actions.ts"
+        }
+      },
+      "filename": "app/join-requests-actions.ts",
+      "exportedName": "rejectJoinRequestAction"
+    },
+    "00d5a67c188cae8d01603a3d85399794158734a4e8": {
+      "workers": {
+        "app/super-admin/helligdage/page": {
+          "moduleId": 81986,
+          "async": false,
+          "exportedName": "listEuCountriesForHolidays",
+          "filename": "src/app/super-admin/holidays-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/holidays-actions.ts",
+      "exportedName": "listEuCountriesForHolidays"
+    },
+    "404a15b09b2b71b7f32c96a7670112fdd1993103e8": {
+      "workers": {
+        "app/super-admin/helligdage/page": {
+          "moduleId": 81986,
+          "async": false,
+          "exportedName": "deleteCountryHoliday",
+          "filename": "src/app/super-admin/holidays-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/holidays-actions.ts",
+      "exportedName": "deleteCountryHoliday"
+    },
+    "407bb97833d8b5e634fe13d7c23927e4c8c2c6b7bb": {
+      "workers": {
+        "app/super-admin/helligdage/page": {
+          "moduleId": 81986,
+          "async": false,
+          "exportedName": "listCountryHolidays",
+          "filename": "src/app/super-admin/holidays-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/holidays-actions.ts",
+      "exportedName": "listCountryHolidays"
+    },
+    "408ac06ed89b176dd373ea4ee6b70a91f0d552c246": {
+      "workers": {
+        "app/super-admin/helligdage/page": {
+          "moduleId": 81986,
+          "async": false,
+          "exportedName": "refreshCountryHolidayDefaults",
+          "filename": "src/app/super-admin/holidays-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/holidays-actions.ts",
+      "exportedName": "refreshCountryHolidayDefaults"
+    },
+    "40b962b591825194272812ba03aed0077f62617f97": {
+      "workers": {
+        "app/super-admin/helligdage/page": {
+          "moduleId": 81986,
+          "async": false,
+          "exportedName": "createCountryHoliday",
+          "filename": "src/app/super-admin/holidays-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/holidays-actions.ts",
+      "exportedName": "createCountryHoliday"
+    },
+    "6081f328024478a65a868d09c6f9584275022b3467": {
+      "workers": {
+        "app/super-admin/helligdage/page": {
+          "moduleId": 81986,
+          "async": false,
+          "exportedName": "updateCountryHoliday",
+          "filename": "src/app/super-admin/holidays-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/holidays-actions.ts",
+      "exportedName": "updateCountryHoliday"
+    },
+    "005577a3b85e79f06a339f5c353929abf3a6c2fb39": {
+      "workers": {
+        "app/super-admin/notifications-broadcast/page": {
+          "moduleId": 41442,
+          "async": false,
+          "exportedName": "getNotificationBroadcastData",
+          "filename": "src/app/super-admin/notifications-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/notifications-actions.ts",
+      "exportedName": "getNotificationBroadcastData"
+    },
+    "408102d2e38d64878c939818ee7138e11fb93e6fd6": {
+      "workers": {
+        "app/super-admin/notifications-broadcast/page": {
+          "moduleId": 41442,
+          "async": false,
+          "exportedName": "sendNotificationBroadcast",
+          "filename": "src/app/super-admin/notifications-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/notifications-actions.ts",
+      "exportedName": "sendNotificationBroadcast"
+    },
+    "00c77313b8dc408b3d802c5e0880b662b08ce24d63": {
+      "workers": {
+        "app/super-admin/support/page": {
+          "moduleId": 39656,
+          "async": false,
+          "exportedName": "getSupportDashboardData",
+          "filename": "src/app/super-admin/support-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/support-actions.ts",
+      "exportedName": "getSupportDashboardData"
+    },
+    "401e83dc479784461a5ac8281ed7a8ea4ef298c7d4": {
+      "workers": {
+        "app/super-admin/support/page": {
+          "moduleId": 39656,
+          "async": false,
+          "exportedName": "ingestSupportEmail",
+          "filename": "src/app/super-admin/support-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/support-actions.ts",
+      "exportedName": "ingestSupportEmail"
+    },
+    "404b4e65d67a1f42af2823a6f7c80e30066bcb8ee8": {
+      "workers": {
+        "app/super-admin/support/page": {
+          "moduleId": 39656,
+          "async": false,
+          "exportedName": "upsertSupportReplyTemplate",
+          "filename": "src/app/super-admin/support-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/support-actions.ts",
+      "exportedName": "upsertSupportReplyTemplate"
+    },
+    "405b715b71005b59f9a9298dc4eb9d7de74bccfd1d": {
+      "workers": {
+        "app/super-admin/support/page": {
+          "moduleId": 39656,
+          "async": false,
+          "exportedName": "deleteSupportReplyTemplate",
+          "filename": "src/app/super-admin/support-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/support-actions.ts",
+      "exportedName": "deleteSupportReplyTemplate"
+    },
+    "40cf420b50433ab9237aa3449a3bbb957bd8ee6777": {
+      "workers": {
+        "app/super-admin/support/page": {
+          "moduleId": 39656,
+          "async": false,
+          "exportedName": "saveSupportMailboxConfig",
+          "filename": "src/app/super-admin/support-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/support-actions.ts",
+      "exportedName": "saveSupportMailboxConfig"
+    },
+    "40dd947321ae190f3f8e4fea990ac73a57357b3d6f": {
+      "workers": {
+        "app/super-admin/support/page": {
+          "moduleId": 39656,
+          "async": false,
+          "exportedName": "addSupportTicketReply",
+          "filename": "src/app/super-admin/support-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/support-actions.ts",
+      "exportedName": "addSupportTicketReply"
+    },
+    "6025a15f2b5f238f0ebd78c9c5b83912768f655d2a": {
+      "workers": {
+        "app/super-admin/support/page": {
+          "moduleId": 39656,
+          "async": false,
+          "exportedName": "updateSupportTicketStatus",
+          "filename": "src/app/super-admin/support-actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/support-actions.ts",
+      "exportedName": "updateSupportTicketStatus"
+    },
+    "40502abdf16fd565e8d26a545ec533dd8c7168c489": {
+      "workers": {
+        "app/super-admin/translations/page": {
+          "moduleId": 79815,
+          "async": false,
+          "exportedName": "loadTargetTexts",
+          "filename": "src/app/super-admin/translations/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/translations/actions.ts",
+      "exportedName": "loadTargetTexts"
+    },
+    "409ef96a51755e46113cb076eb8c9ccd4af4e17736": {
+      "workers": {
+        "app/super-admin/translations/page": {
+          "moduleId": 79815,
+          "async": false,
+          "exportedName": "saveTranslation",
+          "filename": "src/app/super-admin/translations/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/translations/actions.ts",
+      "exportedName": "saveTranslation"
+    },
+    "702c23d649970a5b6bacc547ba3bf615b787a66463": {
+      "workers": {
+        "app/super-admin/translations/page": {
+          "moduleId": 79815,
+          "async": false,
+          "exportedName": "translateWithAI",
+          "filename": "src/app/super-admin/translations/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/translations/actions.ts",
+      "exportedName": "translateWithAI"
+    },
+    "000863e2473eb1c822d8b53a680f5031ed2dd40452": {
+      "workers": {
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "getUsers",
+          "filename": "src/app/super-admin/users/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/users/actions.ts",
+      "exportedName": "getUsers"
+    },
+    "4091c256dec35624fef6df062e5b95729796d8d84c": {
+      "workers": {
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "impersonateUser",
+          "filename": "src/app/super-admin/users/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/users/actions.ts",
+      "exportedName": "impersonateUser"
+    },
+    "40b28425db427c521edaa61c791a46e4a21134e1cb": {
+      "workers": {
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "removeUserCv",
+          "filename": "src/app/super-admin/users/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/users/actions.ts",
+      "exportedName": "removeUserCv"
+    },
+    "40bcb3b7e5916c59fe74208b21d06c2f513435d314": {
+      "workers": {
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "getUserCvSignedUrl",
+          "filename": "src/app/super-admin/users/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/users/actions.ts",
+      "exportedName": "getUserCvSignedUrl"
+    },
+    "6003f544e683c29bae5054ad8edcce17734e02c1d1": {
+      "workers": {
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "updateUserProfile",
+          "filename": "src/app/super-admin/users/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/users/actions.ts",
+      "exportedName": "updateUserProfile"
+    },
+    "6009edca8d4cd9b932a0d84fb09fe3bfd444511cbd": {
+      "workers": {
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "uploadUserCv",
+          "filename": "src/app/super-admin/users/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/users/actions.ts",
+      "exportedName": "uploadUserCv"
+    },
+    "703e3c223612573a14b2a3620704d10c46f3b46d82": {
+      "workers": {
+        "app/super-admin/users/page": {
+          "moduleId": 46052,
+          "async": false,
+          "exportedName": "assignWorkplaceRole",
+          "filename": "src/app/super-admin/users/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/users/actions.ts",
+      "exportedName": "assignWorkplaceRole"
+    }
+  },
+  "edge": {},
+  "encryptionKey": "oYh2izE8LQUkvQ1KDkSfmOGwOp8Qk0NHiHFoGaFcrNo="
+}

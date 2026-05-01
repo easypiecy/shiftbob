@@ -16,6 +16,7 @@ import {
   Scale,
   Settings,
   ShieldCheck,
+  type LucideIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { signOutAndRedirectToLogin } from "@/src/lib/auth-client";
@@ -40,14 +41,22 @@ type Props = {
  * Hovedmenu — kun importerede Lucide-ikoner (ingen `UserPlus` / join-requests her).
  * Konstantnavnet skifter ved ændringer så Turbopack ikke genbruger gammel bundlet kode.
  */
-const ADMIN_NAV_LINKS = [
+type AdminNavLink = {
+  href: string;
+  navKey: string;
+  labelDa: string;
+  icon: LucideIcon;
+  requiredFeature?: SubscriptionFeature;
+};
+
+const ADMIN_NAV_LINKS: AdminNavLink[] = [
   { href: "/dashboard", navKey: "admin.nav.calendar", labelDa: "Kalender", icon: LayoutDashboard },
   {
     href: "/dashboard/fremtiden",
     navKey: "admin.nav.future",
     labelDa: "Fremtiden",
     icon: CalendarClock,
-    requiredFeature: "canUseWebBuilder" as SubscriptionFeature,
+    requiredFeature: "canUseWebBuilder",
   },
   { href: "/dashboard/notifikationer", navKey: "admin.nav.notifications", labelDa: "Notifikationer", icon: Bell },
   { href: "/dashboard/regler", navKey: "admin.nav.rules", labelDa: "Regler", icon: Scale },
@@ -58,9 +67,9 @@ const ADMIN_NAV_LINKS = [
     navKey: "admin.nav.settings",
     labelDa: "Indstillinger",
     icon: Settings,
-    requiredFeature: "canAccessOnlineSettings" as SubscriptionFeature,
+    requiredFeature: "canAccessOnlineSettings",
   },
-] as const;
+];
 
 /** Klient-fallback hvis layout ikke når at få navn (cookie/session timing). */
 function SidebarWorkplaceTitle({

@@ -1,0 +1,3 @@
+module.exports=[81986,a=>{"use strict";var b=a.i(67886);a.s([],54390),a.i(54390),a.s(["00d5a67c188cae8d01603a3d85399794158734a4e8",()=>b.listEuCountriesForHolidays,"404a15b09b2b71b7f32c96a7670112fdd1993103e8",()=>b.deleteCountryHoliday,"407bb97833d8b5e634fe13d7c23927e4c8c2c6b7bb",()=>b.listCountryHolidays,"408ac06ed89b176dd373ea4ee6b70a91f0d552c246",()=>b.refreshCountryHolidayDefaults,"40b962b591825194272812ba03aed0077f62617f97",()=>b.createCountryHoliday,"6081f328024478a65a868d09c6f9584275022b3467",()=>b.updateCountryHoliday],81986)}];
+
+//# sourceMappingURL=_next-internal_server_app_super-admin_helligdage_page_actions_0yhxkve.js.map

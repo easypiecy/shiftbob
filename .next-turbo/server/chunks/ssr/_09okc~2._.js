@@ -1,0 +1,3 @@
+module.exports=[45234,a=>{"use strict";var b=a.i(37936),c=a.i(18558),d=a.i(5246),e=a.i(74407);async function f(a){return(0,e.isSupportedUiLanguage)(a)?((await (0,d.cookies)()).set(e.UI_LANGUAGE_COOKIE,a,{path:"/",sameSite:"lax",maxAge:31536e3,secure:!0}),(0,c.revalidatePath)("/","layout"),{ok:!0}):{ok:!1,error:"Unsupported language"}}(0,a.i(13095).ensureServerEntryExports)([f]),(0,b.registerServerReference)(f,"40a09a5e5d8787339612747f2ab8e3b190e820e8f4",null),a.s(["setUiLanguageAction",0,f])},86252,a=>{"use strict";var b=a.i(45234);a.s([],33761),a.i(33761),a.s(["40a09a5e5d8787339612747f2ab8e3b190e820e8f4",()=>b.setUiLanguageAction],86252)}];
+
+//# sourceMappingURL=_09okc~2._.js.map
