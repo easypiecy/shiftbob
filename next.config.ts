@@ -1,11 +1,14 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV === "development";
+
 const nextConfig: NextConfig = {
   /**
-   * Brug separat buildmappe for at undgå korrupt/låst `.next` cache
+   * Brug separat buildmappe lokalt i dev for at undgå korrupt/låst `.next` cache
    * som tidligere gav Turbopack panics og stale output.
+   * I production (bl.a. Vercel) skal output være standard `.next`.
    */
-  distDir: ".next-turbo",
+  distDir: isDev ? ".next-turbo" : ".next",
   experimental: {
     /**
      * Deaktiver persistent FS-cache i dev for at sikre frisk rebuild
