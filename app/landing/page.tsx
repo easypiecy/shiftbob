@@ -79,7 +79,7 @@ export default function LandingPage() {
               href="/login"
               className="rounded-full bg-[#4A90E2] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#3A7FD1]"
             >
-              Prøv gratis
+              Try for free
             </Link>
           </div>
         </div>
@@ -171,6 +171,12 @@ export default function LandingPage() {
 
         <ProductChoices />
       </main>
+      <footer className="border-t border-zinc-200 bg-zinc-50">
+        <div className="mx-auto w-full max-w-7xl px-4 py-6 text-center text-sm text-zinc-700 sm:px-6">
+          P.S. Creations - Vlněna 5 - 602 00 Brno-střed - Czech Republic -
+          support@shiftbob.io
+        </div>
+      </footer>
     </div>
   );
 }
