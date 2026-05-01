@@ -123,9 +123,7 @@ export default function LandingPage() {
               </span>
             </div>
             <h2 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
-              You keep the spreadsheet.
-              <br />
-              Your team get the app.
+              From your spreadsheet to the team app—like magic.
             </h2>
             <p className="mt-4 text-base leading-relaxed text-zinc-800 sm:text-lg">
               Give your team the modern, lightning-fast mobile experience they
@@ -153,7 +151,7 @@ export default function LandingPage() {
 
           <div className="text-center md:col-span-3 md:text-left">
             <h2 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
-              Bulletproof EU Compliance. Zero Effort.
+              Never accidentally break the 11-hour rule again.
             </h2>
             <p className="mt-4 text-base leading-relaxed text-zinc-800 sm:text-lg">
               Start by uploading your Excel schedule, and ShiftBob instantly scans

@@ -215,7 +215,7 @@ function PlanCard({ plan }: { plan: Plan }) {
         ))}
       </ul>
 
-      <div className="mt-6 flex min-h-[96px] flex-col gap-2">
+      <div className="mt-6 flex min-h-[96px] flex-col justify-end gap-2">
         {plan.ctas.map((cta) => (
           <CtaButton key={cta.label} {...cta} />
         ))}
