@@ -1,10 +1,13 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { PremiumFeatureGuard } from "@/src/components/premium-feature-guard";
 import {
   getWorkplaceById,
   getWorkplaceTypes,
 } from "@/src/app/super-admin/workplaces/actions";
 import { getFuturePlanningSnapshot } from "@/src/app/dashboard/future-workplace-actions";
+import { subscriptionHasFeature } from "@/src/config/subscriptions";
+import { resolveWorkplaceSubscriptionTier } from "@/src/lib/workplace-subscription-server";
 import { ACTIVE_WORKPLACE_COOKIE } from "@/src/lib/workplaces";
 import FremtidenClient from "./fremtiden-client";
 
@@ -13,6 +16,26 @@ export default async function FremtidenPage() {
   const raw = jar.get(ACTIVE_WORKPLACE_COOKIE)?.value?.trim();
   if (!raw) {
     redirect("/select-workplace");
+  }
+
+  const subscriptionTier = await resolveWorkplaceSubscriptionTier(raw);
+  const canUseWebBuilder = subscriptionHasFeature(
+    subscriptionTier,
+    "canUseWebBuilder"
+  );
+  const canUseAutoScheduler = subscriptionHasFeature(
+    subscriptionTier,
+    "canUseAutoScheduler"
+  );
+  if (!canUseWebBuilder || !canUseAutoScheduler) {
+    return (
+      <PremiumFeatureGuard
+        requiredFeature="canUseWebBuilder"
+        featureName="Online builder and auto-scheduling"
+        initialTier={subscriptionTier}
+        initialWorkplaceId={raw}
+      />
+    );
   }
 
   const [wp, types, snap] = await Promise.all([

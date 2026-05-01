@@ -13,6 +13,11 @@ import {
   type SeasonTemplatePayload,
 } from "@/src/types/season-template";
 import {
+  isSubscriptionTier,
+  normalizeSubscriptionTier,
+  type SubscriptionTier,
+} from "@/src/config/subscriptions";
+import {
   isEmployeeCountBand,
   isNotificationChannel,
   type EmployeeCountBand,
@@ -83,6 +88,7 @@ export type WorkplaceDetail = {
   active_employee_invites: number;
   manual_shifts_created_count: number;
   subscription_status: string;
+  subscription_tier: SubscriptionTier;
   lifecycle_updated_at: string | null;
   /** 1=autopilot, 2=manual kontrol, 3=skrivebeskyttet */
   employee_swap_permission_level: number;
@@ -747,6 +753,9 @@ function mapDetail(row: Record<string, unknown>): WorkplaceDetail {
         ? manualShiftsRaw
         : 0,
     subscription_status: String(row.subscription_status ?? "inactive"),
+    subscription_tier: normalizeSubscriptionTier(
+      typeof row.subscription_tier === "string" ? row.subscription_tier : null
+    ),
     lifecycle_updated_at:
       row.lifecycle_updated_at == null ? null : String(row.lifecycle_updated_at),
     employee_swap_permission_level:
@@ -768,7 +777,7 @@ function mapDetail(row: Record<string, unknown>): WorkplaceDetail {
 }
 
 const WORKPLACE_DETAIL_SELECT_BASE =
-  "id, name, company_name, vat_number, street_name, street_number, address_extra, postal_code, city, country_code, contact_email, phone, employee_count_band, stripe_customer_id, lifecycle_stage, language, imported_files_count, active_employee_invites, manual_shifts_created_count, subscription_status, lifecycle_updated_at, employee_swap_permission_level, push_include_shift_type_ids, push_include_employee_type_ids, created_at";
+  "id, name, company_name, vat_number, street_name, street_number, address_extra, postal_code, city, country_code, contact_email, phone, employee_count_band, stripe_customer_id, lifecycle_stage, language, imported_files_count, active_employee_invites, manual_shifts_created_count, subscription_status, subscription_tier, lifecycle_updated_at, employee_swap_permission_level, push_include_shift_type_ids, push_include_employee_type_ids, created_at";
 
 const WORKPLACE_DETAIL_SELECT_LEGACY =
   "id, name, company_name, vat_number, street_name, street_number, address_extra, postal_code, city, country_code, contact_email, phone, employee_count_band, stripe_customer_id, push_include_shift_type_ids, push_include_employee_type_ids, created_at";
@@ -1105,6 +1114,7 @@ export type UpdateWorkplaceInput = Partial<{
   stripe_customer_id: string | null;
   language: string;
   subscription_status: string;
+  subscription_tier: SubscriptionTier;
   employee_swap_permission_level: number;
   push_include_shift_type_ids: string[];
   push_include_employee_type_ids: string[];
@@ -1135,6 +1145,12 @@ export async function updateWorkplace(
       if (!Number.isFinite(v) || ![1, 2, 3].includes(Math.trunc(v))) {
         return { ok: false, error: "Bytte-rettighed skal være 1, 2 eller 3." };
       }
+    }
+    if (
+      patch.subscription_tier !== undefined &&
+      !isSubscriptionTier(patch.subscription_tier)
+    ) {
+      return { ok: false, error: "Ugyldigt abonnement-tier." };
     }
     const admin = getAdminClient();
     const row: Record<string, unknown> = { ...patch };

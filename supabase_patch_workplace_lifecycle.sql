@@ -31,6 +31,8 @@ alter table public.workplaces
 alter table public.workplaces
   add column if not exists subscription_status text not null default 'inactive';
 alter table public.workplaces
+  add column if not exists subscription_tier text not null default 'FOUNDATION';
+alter table public.workplaces
   add column if not exists lifecycle_updated_at timestamptz;
 alter table public.workplaces
   add column if not exists employee_swap_permission_level smallint not null default 2;
@@ -41,6 +43,7 @@ comment on column public.workplaces.imported_files_count is 'Antal importerede p
 comment on column public.workplaces.active_employee_invites is 'Aktive medarbejderinvitationer.';
 comment on column public.workplaces.manual_shifts_created_count is 'Antal manuelt oprettede vagter.';
 comment on column public.workplaces.employee_swap_permission_level is '1=autopilot, 2=manuel godkendelse, 3=skrivebeskyttet';
+comment on column public.workplaces.subscription_tier is 'Produkt-tier: FOUNDATION, PRO_PLANNER, HYBRID_APP, AUTOPILOT.';
 
 do $$
 begin
@@ -51,6 +54,25 @@ begin
     alter table public.workplaces
       add constraint workplaces_language_iso639_1_check
       check (language ~ '^[a-z]{2}$');
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'workplaces_subscription_tier_check'
+  ) then
+    alter table public.workplaces
+      add constraint workplaces_subscription_tier_check
+      check (
+        subscription_tier in (
+          'FOUNDATION',
+          'PRO_PLANNER',
+          'HYBRID_APP',
+          'AUTOPILOT'
+        )
+      );
   end if;
 end $$;
 

@@ -1,6 +1,9 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import WorkplaceDetailClient from "@/app/super-admin/workplaces/[id]/workplace-detail-client";
+import { PremiumFeatureGuard } from "@/src/components/premium-feature-guard";
+import { subscriptionHasFeature } from "@/src/config/subscriptions";
+import { resolveWorkplaceSubscriptionTier } from "@/src/lib/workplace-subscription-server";
 import {
   getWorkplaceById,
   getWorkplaceDepartmentsOverview,
@@ -20,6 +23,22 @@ export default async function WorkplaceSettingsPage() {
   }
 
   const workplaceId = raw;
+  const subscriptionTier = await resolveWorkplaceSubscriptionTier(workplaceId);
+  const canAccessOnlineSettings = subscriptionHasFeature(
+    subscriptionTier,
+    "canAccessOnlineSettings"
+  );
+  if (!canAccessOnlineSettings) {
+    return (
+      <PremiumFeatureGuard
+        requiredFeature="canAccessOnlineSettings"
+        featureName="Dashboard settings"
+        initialTier={subscriptionTier}
+        initialWorkplaceId={workplaceId}
+      />
+    );
+  }
+
   const [wp, types, keys, et, st, dept, countries] = await Promise.all([
     getWorkplaceById(workplaceId),
     getWorkplaceTypes(workplaceId),

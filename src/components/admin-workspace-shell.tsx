@@ -11,6 +11,7 @@ import {
   ChevronRight,
   FileSpreadsheet,
   LayoutDashboard,
+  Lock,
   LogOut,
   Scale,
   Settings,
@@ -22,6 +23,8 @@ import type { UiThemeId } from "@/src/lib/ui-theme";
 import { getActiveWorkplaceIdFromCookie } from "@/src/lib/workplaces";
 import { useTranslations } from "@/src/contexts/translations-context";
 import { LayoutThemeSidebar } from "@/src/components/layout-theme-sidebar";
+import type { SubscriptionFeature } from "@/src/config/subscriptions";
+import { useSubscription } from "@/src/hooks/use-subscription";
 import { createClient } from "@/src/utils/supabase/client";
 
 type Props = {
@@ -39,12 +42,24 @@ type Props = {
  */
 const ADMIN_NAV_LINKS = [
   { href: "/dashboard", navKey: "admin.nav.calendar", labelDa: "Kalender", icon: LayoutDashboard },
-  { href: "/dashboard/fremtiden", navKey: "admin.nav.future", labelDa: "Fremtiden", icon: CalendarClock },
+  {
+    href: "/dashboard/fremtiden",
+    navKey: "admin.nav.future",
+    labelDa: "Fremtiden",
+    icon: CalendarClock,
+    requiredFeature: "canUseWebBuilder" as SubscriptionFeature,
+  },
   { href: "/dashboard/notifikationer", navKey: "admin.nav.notifications", labelDa: "Notifikationer", icon: Bell },
   { href: "/dashboard/regler", navKey: "admin.nav.rules", labelDa: "Regler", icon: Scale },
   { href: "/dashboard/data-eksport", navKey: "admin.nav.data_export", labelDa: "Data eksport", icon: FileSpreadsheet },
   { href: "/dashboard/compliance", navKey: "admin.nav.compliance", labelDa: "Compliance", icon: ShieldCheck },
-  { href: "/dashboard/indstillinger", navKey: "admin.nav.settings", labelDa: "Indstillinger", icon: Settings },
+  {
+    href: "/dashboard/indstillinger",
+    navKey: "admin.nav.settings",
+    labelDa: "Indstillinger",
+    icon: Settings,
+    requiredFeature: "canAccessOnlineSettings" as SubscriptionFeature,
+  },
 ] as const;
 
 /** Klient-fallback hvis layout ikke når at få navn (cookie/session timing). */
@@ -123,6 +138,7 @@ export function AdminWorkspaceShell({
   );
   const [signingOut, setSigningOut] = useState(false);
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
+  const { hasFeature } = useSubscription();
 
   useEffect(() => {
     let cancelled = false;
@@ -248,8 +264,9 @@ export function AdminWorkspaceShell({
         <div className="flex min-h-0 flex-1 flex-col px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-0">
           <nav className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden py-2">
             <div className="flex flex-col gap-0.5">
-              {ADMIN_NAV_LINKS.map(({ href, navKey, labelDa, icon: Icon }) => {
+              {ADMIN_NAV_LINKS.map(({ href, navKey, labelDa, icon: Icon, requiredFeature }) => {
                 const active = isActive(href);
+                const locked = requiredFeature ? !hasFeature(requiredFeature) : false;
                 return (
                   <Link
                     key={href}
@@ -263,6 +280,12 @@ export function AdminWorkspaceShell({
                     <Icon className="h-4 w-4 shrink-0 text-zinc-500" aria-hidden />
                     <span className="relative inline-flex items-center">
                       {t(navKey, labelDa)}
+                      {locked ? (
+                        <span className="ml-2 inline-flex items-center gap-1 rounded-md border border-zinc-300 bg-zinc-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-600 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+                          <Lock className="h-2.5 w-2.5" />
+                          Pro
+                        </span>
+                      ) : null}
                       {href === "/dashboard/notifikationer" &&
                       unreadNotificationsCount > 0 ? (
                         <span className="ml-2 inline-flex h-2.5 w-2.5">

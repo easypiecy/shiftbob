@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { assertWorkplaceAdminOrSuperAdmin } from "@/src/lib/workplace-admin-server";
+import { assertWorkplaceSubscriptionFeature } from "@/src/lib/workplace-subscription-server";
 import {
   addDaysYmd,
   compareYmd,
@@ -71,6 +72,7 @@ export async function getFuturePlanningSnapshot(
 > {
   try {
     await assertWorkplaceAdminOrSuperAdmin(workplaceId);
+    await assertWorkplaceSubscriptionFeature(workplaceId, "canUseWebBuilder");
     const admin = getAdminClient();
     const { data, error } = await admin
       .from("workplaces")
@@ -192,6 +194,7 @@ export async function generateAiPlanPreview(
 > {
   try {
     await assertWorkplaceAdminOrSuperAdmin(workplaceId);
+    await assertWorkplaceSubscriptionFeature(workplaceId, "canUseAutoScheduler");
     const admin = getAdminClient();
     const { data: wp, error } = await admin
       .from("workplaces")
@@ -308,6 +311,7 @@ export async function releaseCalendarWeeks(
 > {
   try {
     await assertWorkplaceAdminOrSuperAdmin(workplaceId);
+    await assertWorkplaceSubscriptionFeature(workplaceId, "canUseWebBuilder");
     const w = Math.min(104, Math.max(1, Math.floor(weeks)));
     const admin = getAdminClient();
     const { data: wp, error } = await admin
@@ -376,6 +380,7 @@ export async function saveSeasonTemplate(
   workplaceId: string,
   template: SeasonTemplatePayload
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  await assertWorkplaceSubscriptionFeature(workplaceId, "canUseWebBuilder");
   const normalized = normalizeSeasonTemplate(template);
   const res = await updateWorkplace(workplaceId, {
     season_template_json: normalized,

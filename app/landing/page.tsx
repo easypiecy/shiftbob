@@ -1,0 +1,176 @@
+import Image from "next/image";
+import Link from "next/link";
+import { Apple, Play } from "lucide-react";
+import { ProductChoices } from "./product-choices";
+import { ScrollFadeInImage } from "./scroll-fade-in-image";
+
+const europeanLanguages = [
+  { code: "bg", label: "🇧🇬 Български" },
+  { code: "hr", label: "🇭🇷 Hrvatski" },
+  { code: "cs", label: "🇨🇿 Čeština" },
+  { code: "da", label: "🇩🇰 Dansk" },
+  { code: "nl", label: "🇳🇱 Nederlands" },
+  { code: "en", label: "🇬🇧 English" },
+  { code: "et", label: "🇪🇪 Eesti" },
+  { code: "fi", label: "🇫🇮 Suomi" },
+  { code: "fr", label: "🇫🇷 Français" },
+  { code: "de", label: "🇩🇪 Deutsch" },
+  { code: "el", label: "🇬🇷 Ελληνικά" },
+  { code: "hu", label: "🇭🇺 Magyar" },
+  { code: "ga", label: "🇮🇪 Gaeilge" },
+  { code: "it", label: "🇮🇹 Italiano" },
+  { code: "lv", label: "🇱🇻 Latviešu" },
+  { code: "lt", label: "🇱🇹 Lietuvių" },
+  { code: "mt", label: "🇲🇹 Malti" },
+  { code: "pl", label: "🇵🇱 Polski" },
+  { code: "pt", label: "🇵🇹 Português" },
+  { code: "ro", label: "🇷🇴 Română" },
+  { code: "sk", label: "🇸🇰 Slovenčina" },
+  { code: "sl", label: "🇸🇮 Slovenščina" },
+  { code: "es", label: "🇪🇸 Español" },
+  { code: "sv", label: "🇸🇪 Svenska" },
+];
+
+export default function LandingPage() {
+  return (
+    <div className="min-h-full bg-white text-zinc-900">
+      <header
+        data-version="landing-v2"
+        className="sticky top-0 z-50 border-b border-zinc-200/70 bg-white/95 backdrop-blur"
+      >
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-5 sm:px-6 sm:py-6">
+          <Link href="/" className="flex items-center gap-4">
+            <Image
+              src="/landing-logo"
+              alt="ShiftBob logo"
+              width={300}
+              height={300}
+              className="h-16 w-16 object-contain sm:h-20 sm:w-20"
+              priority
+              unoptimized
+            />
+            <span className="text-2xl font-bold tracking-tight sm:text-3xl">shiftBOB.io</span>
+          </Link>
+
+          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+            <Link
+              href="/login"
+              className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:border-zinc-500 hover:text-zinc-900"
+            >
+              Login
+            </Link>
+
+            <label className="sr-only" htmlFor="landing-language">
+              Choose language
+            </label>
+            <select
+              id="landing-language"
+              defaultValue="en"
+              className="max-w-44 rounded-full border border-zinc-300 bg-white px-3 py-2 text-xs font-medium text-zinc-700 outline-none transition focus:border-[#4A90E2] sm:max-w-52 sm:text-sm"
+            >
+              {europeanLanguages.map((language) => (
+                <option key={language.code} value={language.code}>
+                  {language.label}
+                </option>
+              ))}
+            </select>
+
+            <Link
+              href="/login"
+              className="rounded-full bg-[#4A90E2] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#3A7FD1]"
+            >
+              Prøv gratis
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section className="relative isolate overflow-hidden">
+          <div
+            className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: "url('/landing-hero')" }}
+          />
+          <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0)_20%,rgba(255,255,255,0)_80%,rgba(255,255,255,0.95)_100%)]" />
+
+          <div className="mx-auto grid w-full max-w-7xl items-center gap-8 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-24">
+            <div />
+            <div
+              data-hero-version="v3"
+              className="justify-self-end rounded-3xl border border-white/70 bg-white/80 p-8 text-center shadow-xl backdrop-blur-sm"
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4A90E2]">
+                Shift Scheduling
+              </p>
+              <h1 className="mt-3 max-w-xl text-3xl font-black uppercase leading-[1.05] text-zinc-900 sm:text-4xl lg:text-5xl">
+                Give Your Excel Shift Plan Extra Power 💥
+              </h1>
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto grid w-full max-w-7xl items-center gap-10 px-4 py-18 sm:px-6 sm:py-24 md:grid-cols-5 md:gap-14">
+          <div className="text-center md:col-span-3">
+            <div className="mb-5 flex items-center justify-center gap-3">
+              <span className="inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 shadow-sm sm:text-sm">
+                <Apple className="h-4 w-4" aria-hidden="true" />
+                App Store
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 shadow-sm sm:text-sm">
+                <Play className="h-4 w-4" aria-hidden="true" />
+                Google Play
+              </span>
+            </div>
+            <h2 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
+              You keep the spreadsheet.
+              <br />
+              Your team get the app.
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-zinc-800 sm:text-lg">
+              Give your team the modern, lightning-fast mobile experience they
+              expect. Instead of zooming in on static PDFs or navigating messy
+              WhatsApp groups, your employees get a sleek, native app with a
+              crystal-clear overview of their shifts right in their pockets. It
+              empowers them to seamlessly request shift swaps, pick up open hours,
+              and manage their work life on the go. With instant push notifications
+              for every update, communication chaos is completely eliminated,
+              ensuring everyone is always connected and on the exact same page.
+            </p>
+          </div>
+          <div className="flex flex-col items-center justify-center gap-4 md:col-span-2 md:items-end md:justify-end">
+            <ScrollFadeInImage />
+          </div>
+        </section>
+
+        <section className="mx-auto grid w-full max-w-7xl items-center gap-10 px-4 pb-18 sm:px-6 sm:pb-24 md:grid-cols-5 md:gap-14">
+          <div className="flex justify-center md:col-span-2 md:justify-start">
+            <ScrollFadeInImage
+              src="/landing-eu-compliance"
+              alt="Team compliance and schedule overview"
+            />
+          </div>
+
+          <div className="text-center md:col-span-3 md:text-left">
+            <h2 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
+              Bulletproof EU Compliance. Zero Effort.
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-zinc-800 sm:text-lg">
+              Start by uploading your Excel schedule, and ShiftBob instantly scans
+              the data to flag any violations, like the mandatory 11-hour daily
+              rest rule. When you roll out the mobile app to your team, the
+              platform acts as a strict gatekeeper, actively blocking staff from
+              swapping or picking up shifts if the change breaks labor laws.
+              Finally, with our full online Autopilot, compliance becomes
+              completely hands-off. The engine automatically generates a 100%
+              compliant schedule from scratch, perfectly balancing legal
+              requirements with your team&apos;s personal preferences before you
+              even review it.
+            </p>
+          </div>
+        </section>
+
+        <ProductChoices />
+      </main>
+    </div>
+  );
+}

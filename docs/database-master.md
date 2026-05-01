@@ -25,6 +25,7 @@ Single source of truth for `public` schema objects defined in this repo’s SQL 
 | `supabase_rpc_workplace_session_reads.sql` | RPC’er `get_my_workplaces`, `get_my_roles_for_workplace`, `has_super_admin_membership` (SECURITY DEFINER, filtrerer på `auth.uid()`) — app bruger dem først så arbejdsplads/roller virker selv ved RLS-problemer |
 | `supabase_seed_philip_workplace_member.sql` | Dev: tilknyt `philip.schoenbaum@gmail.com` til en arbejdsplads (`ADMIN`) — se `user_roles`-kun Super Admin viser ikke arbejdspladser uden `workplace_members` |
 | `supabase_patch_workplace_future_planning.sql` | `future_planning_weeks`, `calendar_released_until`, `season_template_json` på `workplaces` (Fremtiden / frigivelse) |
+| `supabase_patch_workplace_subscription_tier.sql` | Tilføjer `workplaces.subscription_tier` med default `FOUNDATION` og check-constraint for tiers (`FOUNDATION`, `PRO_PLANNER`, `HYBRID_APP`, `AUTOPILOT`) |
 | `supabase_seed_ui_translations_app.sql` | Udvider `ui_translations` med app-strenge (`en-US` + `da`): admin-menu, super-admin-menu, layout-tema, upload, dashboard-sider, Fremtiden, indstillinger, Compliance m.m. — idempotent (`ON CONFLICT DO UPDATE`). Kør efter `supabase_i18n_setup.sql`. |
 | `supabase_seed_ui_translations_compliance.sql` | Kun Compliance + `admin.nav.compliance` i `ui_translations` (samme som del af app-seed). Alternativ: `npm run seed:compliance-translations` med `SUPABASE_SERVICE_ROLE_KEY` i `.env.local` — nødvendigt for at rækkerne vises i `/super-admin/translations` (kildesprog `en-US`). |
 | `supabase_reload_api_schema.sql` | Valgfrit: `NOTIFY pgrst, 'reload schema';` hvis API stadig mangler ny tabel i cache |
@@ -158,6 +159,8 @@ Where `role` appears (`user_roles.role`, `workplace_members.role`), allowed valu
 | `future_planning_weeks` | `integer` | Default `8`, check `1…104` — antal uger af ufrigivet kalender vist under **Administrator → Fremtiden** |
 | `calendar_released_until` | `date` | Valgfri — sidste dato medarbejdere kan se planlagte vagter; efter denne dato er planen kun synlig for admin indtil frigivelse |
 | `season_template_json` | `jsonb` | Sæson-skabelon (perioder, krav pr. ugedag) til AI-analyse og planlægning |
+| `subscription_status` | `text` | Stripe-/betalingsstatus (`inactive`, `trialing`, `active`, `past_due`, `canceled`) |
+| `subscription_tier` | `text` | Produkt-tier til feature-gating: `FOUNDATION` (default), `PRO_PLANNER`, `HYBRID_APP`, `AUTOPILOT` |
 | `created_at` | `timestamptz` | |
 
 **Fjernet fra nuværende schema:** kolonnen `push_send_none` bruges ikke længere (styring via typer/kanal; patch ovenfor dropper den på gamle DB’er).
