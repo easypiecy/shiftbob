@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {
+  Bot,
   Building2,
   CalendarRange,
   ChevronRight,
@@ -31,6 +32,13 @@ const cards = [
     description:
       "Indgående supportmails, POP3/IMAP konfiguration, templates og oversættelser.",
     icon: LifeBuoy,
+  },
+  {
+    href: "/super-admin/salesbot",
+    title: "SalesBot",
+    description:
+      "Manifest og knowledge base til salgs-chatbotten på landing-siden.",
+    icon: Bot,
   },
   {
     href: "/super-admin/workplace-templates",

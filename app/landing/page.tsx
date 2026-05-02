@@ -10,6 +10,7 @@ import {
   getUiTranslations,
   resolveRequestUiLanguage,
 } from "@/src/lib/ui-language-server";
+import { SalesBotWidget } from "./sales-bot-widget";
 
 export default async function LandingPage() {
   const [map, lang] = await Promise.all([
@@ -149,7 +150,7 @@ export default async function LandingPage() {
             <p className="mt-4 text-base leading-relaxed text-zinc-800 sm:text-lg">
               {t(
                 "landing.compliance.body",
-                "Start by uploading your Excel schedule, and ShiftBob instantly scans the data to flag any violations, like the mandatory 11-hour daily rest rule. When you roll out the mobile app to your team, the platform acts as a strict gatekeeper, actively blocking staff from swapping or picking up shifts if the change breaks labor laws. Finally, with our full online Autopilot, compliance becomes completely hands-off. Shiftbob automatically generates a 100% compliant schedule from scratch, perfectly balancing legal requirements with your team's personal preferences."
+                "Start by uploading your Excel schedule, and ShiftBob instantly scans the data to flag any violations, like the mandatory 11-hour daily rest rule. When you roll out the mobile app to your team, the platform acts as a strict gatekeeper, actively blocking staff from swapping or picking up shifts if the change breaks labor laws. Finally, with our full online Autopilot, compliance becomes fully automated. Shiftbob automatically generates a 100% compliant schedule from scratch, perfectly balancing legal requirements with your team's personal preferences."
               )}
             </p>
           </div>
@@ -165,6 +166,18 @@ export default async function LandingPage() {
           )}
         </div>
       </footer>
+      <SalesBotWidget
+        languageCode={lang}
+        iconUrl="https://pwooqmqdershicxpnfuo.supabase.co/storage/v1/object/public/website_assets/chat.png"
+        buttonLabel={t("landing.salesbot.button_aria", "Open SalesBot chat")}
+        panelTitle={t("landing.salesbot.title", "SalesBot")}
+        inputPlaceholder={t(
+          "landing.salesbot.input_placeholder",
+          "Ask about pricing, features, or onboarding..."
+        )}
+        sendLabel={t("landing.salesbot.send", "Send")}
+        closeLabel={t("landing.salesbot.close", "Close chat")}
+      />
     </div>
   );
 }

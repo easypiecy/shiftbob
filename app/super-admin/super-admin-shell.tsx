@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ArrowLeftRight,
+  Bot,
   Building2,
   CalendarRange,
   ChevronLeft,
@@ -48,6 +49,13 @@ const links = [
     navKey: "super_admin.nav.support",
     labelDa: "Support tickets",
     icon: LifeBuoy,
+    match: "path",
+  },
+  {
+    href: "/super-admin/salesbot",
+    navKey: "super_admin.nav.salesbot",
+    labelDa: "SalesBot",
+    icon: Bot,
     match: "path",
   },
   {

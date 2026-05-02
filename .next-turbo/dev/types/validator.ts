@@ -209,6 +209,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../../app/super-admin/salesbot/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/super-admin/salesbot">> = Specific
+  const handler = {} as typeof import("../../../app/super-admin/salesbot/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../../app/super-admin/support/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/super-admin/support">> = Specific
@@ -276,6 +285,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/ai/explain">> = Specific
   const handler = {} as typeof import("../../../app/api/ai/explain/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../app/api/salesbot/chat/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/salesbot/chat">> = Specific
+  const handler = {} as typeof import("../../../app/api/salesbot/chat/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

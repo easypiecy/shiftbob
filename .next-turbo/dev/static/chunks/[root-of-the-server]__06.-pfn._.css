@@ -161,6 +161,9 @@
       --tw-backdrop-sepia: initial;
       --tw-duration: initial;
       --tw-ease: initial;
+      --tw-scale-x: 1;
+      --tw-scale-y: 1;
+      --tw-scale-z: 1;
     }
   }
 }
@@ -767,6 +770,10 @@
     right: calc(var(--spacing) * 4);
   }
 
+  .right-6 {
+    right: calc(var(--spacing) * 6);
+  }
+
   .-bottom-16 {
     bottom: calc(var(--spacing) * -16);
   }
@@ -777,6 +784,14 @@
 
   .bottom-1 {
     bottom: calc(var(--spacing) * 1);
+  }
+
+  .bottom-6 {
+    bottom: calc(var(--spacing) * 6);
+  }
+
+  .bottom-24 {
+    bottom: calc(var(--spacing) * 24);
   }
 
   .-left-16 {
@@ -1027,6 +1042,10 @@
     margin-left: calc(var(--spacing) * 2);
   }
 
+  .ml-auto {
+    margin-left: auto;
+  }
+
   .line-clamp-2 {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -1127,6 +1146,10 @@
     height: calc(var(--spacing) * 10);
   }
 
+  .h-14 {
+    height: calc(var(--spacing) * 14);
+  }
+
   .h-16 {
     height: calc(var(--spacing) * 16);
   }
@@ -1137,6 +1160,10 @@
 
   .h-\[5\.5rem\] {
     height: 5.5rem;
+  }
+
+  .h-\[540px\] {
+    height: 540px;
   }
 
   .h-auto {
@@ -1323,6 +1350,10 @@
     width: 200px;
   }
 
+  .w-\[min\(92vw\,390px\)\] {
+    width: min(92vw, 390px);
+  }
+
   .w-\[min\(280px\,80vw\)\] {
     width: min(280px, 80vw);
   }
@@ -1365,6 +1396,10 @@
 
   .max-w-\[15rem\] {
     max-width: 15rem;
+  }
+
+  .max-w-\[92\%\] {
+    max-width: 92%;
   }
 
   .max-w-\[200px\] {
@@ -3316,8 +3351,21 @@
     }
   }
 
+  .placeholder\:text-zinc-400::placeholder {
+    color: var(--color-zinc-400);
+  }
+
   .placeholder\:text-zinc-600::placeholder {
     color: var(--color-zinc-600);
+  }
+
+  @media (hover: hover) {
+    .hover\:scale-105:hover {
+      --tw-scale-x: 105%;
+      --tw-scale-y: 105%;
+      --tw-scale-z: 105%;
+      scale: var(--tw-scale-x) var(--tw-scale-y);
+    }
   }
 
   @media (hover: hover) {
@@ -3600,6 +3648,10 @@
 
   .focus\:border-zinc-400:focus {
     border-color: var(--color-zinc-400);
+  }
+
+  .focus\:border-zinc-500:focus {
+    border-color: var(--color-zinc-500);
   }
 
   .focus\:ring-2:focus {
@@ -4458,6 +4510,16 @@
     background-color: var(--color-zinc-800);
   }
 
+  .dark\:bg-zinc-800\/40:where(.dark, .dark *) {
+    background-color: #27272a66;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .dark\:bg-zinc-800\/40:where(.dark, .dark *) {
+      background-color: color-mix(in oklab, var(--color-zinc-800) 40%, transparent);
+    }
+  }
+
   .dark\:bg-zinc-800\/50:where(.dark, .dark *) {
     background-color: #27272a80;
   }
@@ -4799,6 +4861,18 @@
   @media (hover: hover) {
     .dark\:hover\:bg-amber-600:where(.dark, .dark *):hover {
       background-color: var(--color-amber-600);
+    }
+  }
+
+  @media (hover: hover) {
+    .dark\:hover\:bg-red-950\/30:where(.dark, .dark *):hover {
+      background-color: #4608094d;
+    }
+
+    @supports (color: color-mix(in lab, red, red)) {
+      .dark\:hover\:bg-red-950\/30:where(.dark, .dark *):hover {
+        background-color: color-mix(in oklab, var(--color-red-950) 30%, transparent);
+      }
     }
   }
 
@@ -5669,6 +5743,24 @@ html[data-theme="unicorn"] .employee-calendar-name {
 @property --tw-ease {
   syntax: "*";
   inherits: false
+}
+
+@property --tw-scale-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --tw-scale-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --tw-scale-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
 }
 
 @keyframes spin {
