@@ -202,6 +202,10 @@ const plans = [
             {
                 key: "landing.plans.hybrid_app.feature5",
                 fallback: "Automated shift reminders & push notifications"
+            },
+            {
+                key: "landing.plans.hybrid_app.feature6",
+                fallback: "Seasonal businesses can pause their subscription freely during off-season periods"
             }
         ],
         ctas: [
@@ -304,7 +308,7 @@ function CtaButton({ label, href, style }) {
         children: label
     }, void 0, false, {
         fileName: "[project]/app/landing/product-choices.tsx",
-        lineNumber: 264,
+        lineNumber: 269,
         columnNumber: 5
     }, this);
 }
@@ -318,7 +322,7 @@ function PlanCard({ plan, t }) {
                 children: t(plan.badge.key, plan.badge.fallback)
             }, void 0, false, {
                 fileName: "[project]/app/landing/product-choices.tsx",
-                lineNumber: 288,
+                lineNumber: 293,
                 columnNumber: 9
             }, this) : null,
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -331,7 +335,7 @@ function PlanCard({ plan, t }) {
                             children: t(plan.title.key, plan.title.fallback)
                         }, void 0, false, {
                             fileName: "[project]/app/landing/product-choices.tsx",
-                            lineNumber: 294,
+                            lineNumber: 299,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -339,18 +343,18 @@ function PlanCard({ plan, t }) {
                             children: t(plan.subtitle.key, plan.subtitle.fallback)
                         }, void 0, false, {
                             fileName: "[project]/app/landing/product-choices.tsx",
-                            lineNumber: 297,
+                            lineNumber: 302,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/landing/product-choices.tsx",
-                    lineNumber: 293,
+                    lineNumber: 298,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/landing/product-choices.tsx",
-                lineNumber: 292,
+                lineNumber: 297,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -360,12 +364,12 @@ function PlanCard({ plan, t }) {
                     children: t(plan.modeLabel.key, plan.modeLabel.fallback)
                 }, void 0, false, {
                     fileName: "[project]/app/landing/product-choices.tsx",
-                    lineNumber: 303,
+                    lineNumber: 308,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/landing/product-choices.tsx",
-                lineNumber: 302,
+                lineNumber: 307,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -376,7 +380,7 @@ function PlanCard({ plan, t }) {
                         children: t(plan.price.key, plan.price.fallback)
                     }, void 0, false, {
                         fileName: "[project]/app/landing/product-choices.tsx",
-                        lineNumber: 311,
+                        lineNumber: 316,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -390,7 +394,7 @@ function PlanCard({ plan, t }) {
                                         children: t(plan.periodPerUser.key, plan.periodPerUser.fallback)
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/product-choices.tsx",
-                                        lineNumber: 319,
+                                        lineNumber: 324,
                                         columnNumber: 15
                                     }, this)
                                 ]
@@ -398,13 +402,13 @@ function PlanCard({ plan, t }) {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/landing/product-choices.tsx",
-                        lineNumber: 314,
+                        lineNumber: 319,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/landing/product-choices.tsx",
-                lineNumber: 310,
+                lineNumber: 315,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -412,7 +416,7 @@ function PlanCard({ plan, t }) {
                 children: t(plan.description.key, plan.description.fallback)
             }, void 0, false, {
                 fileName: "[project]/app/landing/product-choices.tsx",
-                lineNumber: 324,
+                lineNumber: 329,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -425,25 +429,25 @@ function PlanCard({ plan, t }) {
                                 "aria-hidden": "true"
                             }, void 0, false, {
                                 fileName: "[project]/app/landing/product-choices.tsx",
-                                lineNumber: 331,
+                                lineNumber: 336,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                 children: t(feature.key, feature.fallback)
                             }, void 0, false, {
                                 fileName: "[project]/app/landing/product-choices.tsx",
-                                lineNumber: 335,
+                                lineNumber: 340,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, feature.key, true, {
                         fileName: "[project]/app/landing/product-choices.tsx",
-                        lineNumber: 330,
+                        lineNumber: 335,
                         columnNumber: 11
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/app/landing/product-choices.tsx",
-                lineNumber: 328,
+                lineNumber: 333,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -454,18 +458,18 @@ function PlanCard({ plan, t }) {
                         style: cta.style
                     }, cta.label.key, false, {
                         fileName: "[project]/app/landing/product-choices.tsx",
-                        lineNumber: 342,
+                        lineNumber: 347,
                         columnNumber: 11
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/app/landing/product-choices.tsx",
-                lineNumber: 340,
+                lineNumber: 345,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/landing/product-choices.tsx",
-        lineNumber: 286,
+        lineNumber: 291,
         columnNumber: 5
     }, this);
 }
@@ -490,14 +494,14 @@ function ProductChoices({ translations }) {
                                             "aria-hidden": "true"
                                         }, void 0, false, {
                                             fileName: "[project]/app/landing/product-choices.tsx",
-                                            lineNumber: 367,
+                                            lineNumber: 372,
                                             columnNumber: 15
                                         }, this),
                                         t("landing.plans.header.excel", "Excel")
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/landing/product-choices.tsx",
-                                    lineNumber: 366,
+                                    lineNumber: 371,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -508,20 +512,20 @@ function ProductChoices({ translations }) {
                                             "aria-hidden": "true"
                                         }, void 0, false, {
                                             fileName: "[project]/app/landing/product-choices.tsx",
-                                            lineNumber: 371,
+                                            lineNumber: 376,
                                             columnNumber: 15
                                         }, this),
                                         t("landing.plans.header.google_sheets", "Google Sheets")
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/landing/product-choices.tsx",
-                                    lineNumber: 370,
+                                    lineNumber: 375,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/landing/product-choices.tsx",
-                            lineNumber: 365,
+                            lineNumber: 370,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -529,13 +533,13 @@ function ProductChoices({ translations }) {
                             children: t("landing.plans.header.title", "Your spreadsheet is still the boss—we just give it superpowers")
                         }, void 0, false, {
                             fileName: "[project]/app/landing/product-choices.tsx",
-                            lineNumber: 375,
+                            lineNumber: 380,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/landing/product-choices.tsx",
-                    lineNumber: 364,
+                    lineNumber: 369,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -545,23 +549,23 @@ function ProductChoices({ translations }) {
                             t: t
                         }, plan.id, false, {
                             fileName: "[project]/app/landing/product-choices.tsx",
-                            lineNumber: 385,
+                            lineNumber: 390,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/app/landing/product-choices.tsx",
-                    lineNumber: 383,
+                    lineNumber: 388,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/landing/product-choices.tsx",
-            lineNumber: 363,
+            lineNumber: 368,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/landing/product-choices.tsx",
-        lineNumber: 362,
+        lineNumber: 367,
         columnNumber: 5
     }, this);
 }

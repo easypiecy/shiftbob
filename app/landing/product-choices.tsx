@@ -168,6 +168,11 @@ const plans: Plan[] = [
         key: "landing.plans.hybrid_app.feature5",
         fallback: "Automated shift reminders & push notifications",
       },
+      {
+        key: "landing.plans.hybrid_app.feature6",
+        fallback:
+          "Seasonal businesses can pause their subscription freely during off-season periods",
+      },
     ],
     ctas: [
       {
