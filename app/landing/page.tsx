@@ -25,7 +25,7 @@ export default async function LandingPage() {
         className="sticky top-0 z-50 border-b border-zinc-200/70 bg-white/95 backdrop-blur"
       >
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-5 sm:px-6 sm:py-6">
-          <Link href="/" className="flex items-center gap-4">
+          <Link href="/" className="flex items-end gap-3 sm:gap-4">
             <Image
               src={WEBSITE_ASSETS.landingLogo}
               alt={t("landing.nav.logo_alt", "ShiftBob logo")}
@@ -35,7 +35,9 @@ export default async function LandingPage() {
               priority
               unoptimized
             />
-            <span className="text-2xl font-bold tracking-tight sm:text-3xl">shiftBOB.io</span>
+            <span className="pb-1 text-lg font-semibold tracking-tight sm:text-xl">
+              shiftbob.io
+            </span>
           </Link>
 
           <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
