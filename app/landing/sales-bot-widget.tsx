@@ -13,6 +13,7 @@ type ChatMessage = {
 type Props = {
   languageCode: string;
   iconUrl: string;
+  logoUrl: string;
   buttonLabel: string;
   panelTitle: string;
   initialAssistantMessage: string;
@@ -40,6 +41,7 @@ type SessionState = {
 export function SalesBotWidget({
   languageCode,
   iconUrl,
+  logoUrl,
   buttonLabel,
   panelTitle,
   initialAssistantMessage,
@@ -57,6 +59,7 @@ export function SalesBotWidget({
   supportNeedIdentityMessage,
   resetLabel,
 }: Props) {
+  const headerLogoSrc = logoUrl?.trim() || "/ShiftBob-circle-logo-dark-1024.png";
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -219,7 +222,18 @@ export function SalesBotWidget({
       {open ? (
         <section className="fixed bottom-24 right-6 z-[70] flex h-[540px] w-[min(92vw,390px)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl">
           <header className="flex items-center justify-between border-b border-[#3A7FD1] bg-[#4A90E2] px-4 py-3">
-            <h2 className="text-sm font-semibold text-white">{panelTitle}</h2>
+            <h2 className="flex items-center gap-2 text-base font-semibold text-white">
+              <span className="inline-flex items-center justify-center rounded-md bg-black p-0.5">
+                <Image
+                  src={headerLogoSrc}
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="h-6 w-6 object-contain"
+                />
+              </span>
+              <span>{panelTitle}</span>
+            </h2>
             <div className="flex items-center gap-1">
               <button
                 type="button"

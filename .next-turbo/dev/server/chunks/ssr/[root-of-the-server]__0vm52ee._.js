@@ -1000,10 +1000,27 @@ async function LandingPage() {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex justify-center md:col-span-2 md:justify-start",
-                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$landing$2f$scroll$2d$fade$2d$in$2d$image$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ScrollFadeInImage"], {
-                                    src: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$config$2f$website$2d$assets$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["WEBSITE_ASSETS"].landingEuCompliance,
-                                    alt: t("landing.compliance.image_alt", "Team compliance and schedule overview")
-                                }, void 0, false, {
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "inline-flex flex-col items-start",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$landing$2f$scroll$2d$fade$2d$in$2d$image$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ScrollFadeInImage"], {
+                                            src: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$config$2f$website$2d$assets$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["WEBSITE_ASSETS"].landingEuCompliance,
+                                            alt: t("landing.compliance.image_alt", "Team compliance and schedule overview")
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/landing/page.tsx",
+                                            lineNumber: 135,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "relative z-20 -mt-8 self-center rounded-md bg-[#d5d902]/80 px-3 py-1.5 text-xs font-bold text-black shadow-lg sm:text-sm",
+                                            children: "All EU languages supported"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/landing/page.tsx",
+                                            lineNumber: 142,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
                                     fileName: "[project]/app/landing/page.tsx",
                                     lineNumber: 134,
                                     columnNumber: 13
@@ -1021,7 +1038,7 @@ async function LandingPage() {
                                         children: t("landing.compliance.title", "Never accidentally break the 11-hour rule again.")
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/page.tsx",
-                                        lineNumber: 144,
+                                        lineNumber: 149,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1029,13 +1046,13 @@ async function LandingPage() {
                                         children: t("landing.compliance.body", "Start by uploading your Excel schedule, and ShiftBob instantly scans the data to flag any violations, like the mandatory 11-hour daily rest rule. When you roll out the mobile app to your team, the platform acts as a strict gatekeeper, actively blocking staff from swapping or picking up shifts if the change breaks labor laws. Finally, with our full online Autopilot, compliance becomes fully automated. Shiftbob automatically generates a 100% compliant schedule from scratch, perfectly balancing legal requirements with your team's personal preferences.")
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/page.tsx",
-                                        lineNumber: 150,
+                                        lineNumber: 155,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/landing/page.tsx",
-                                lineNumber: 143,
+                                lineNumber: 148,
                                 columnNumber: 11
                             }, this)
                         ]
@@ -1048,7 +1065,7 @@ async function LandingPage() {
                         translations: map
                     }, void 0, false, {
                         fileName: "[project]/app/landing/page.tsx",
-                        lineNumber: 159,
+                        lineNumber: 164,
                         columnNumber: 9
                     }, this)
                 ]
@@ -1064,17 +1081,18 @@ async function LandingPage() {
                     children: t("landing.footer.company_line", "P.S. Creations - Vlněna 5 - 602 00 Brno-střed - Czech Republic - support@shiftbob.io")
                 }, void 0, false, {
                     fileName: "[project]/app/landing/page.tsx",
-                    lineNumber: 162,
+                    lineNumber: 167,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/landing/page.tsx",
-                lineNumber: 161,
+                lineNumber: 166,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$landing$2f$sales$2d$bot$2d$widget$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["SalesBotWidget"], {
                 languageCode: lang,
                 iconUrl: "https://pwooqmqdershicxpnfuo.supabase.co/storage/v1/object/public/website_assets/chat.png",
+                logoUrl: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$config$2f$website$2d$assets$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["WEBSITE_ASSETS"].landingLogo,
                 buttonLabel: t("landing.salesbot.button_aria", "Ask shiftBOB"),
                 panelTitle: "shiftBOB",
                 initialAssistantMessage: t("landing.salesbot.initial_message", "Ask me anything about ShiftBob and your shift plan."),
@@ -1093,7 +1111,7 @@ async function LandingPage() {
                 resetLabel: t("landing.salesbot.reset", "Reset chat")
             }, void 0, false, {
                 fileName: "[project]/app/landing/page.tsx",
-                lineNumber: 169,
+                lineNumber: 174,
                 columnNumber: 7
             }, this)
         ]

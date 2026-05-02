@@ -131,13 +131,18 @@ export default async function LandingPage() {
 
         <section className="mx-auto grid w-full max-w-7xl items-center gap-10 px-4 pb-18 sm:px-6 sm:pb-24 md:grid-cols-5 md:gap-14">
           <div className="flex justify-center md:col-span-2 md:justify-start">
-            <ScrollFadeInImage
-              src={WEBSITE_ASSETS.landingEuCompliance}
-              alt={t(
-                "landing.compliance.image_alt",
-                "Team compliance and schedule overview"
-              )}
-            />
+            <div className="inline-flex flex-col items-start">
+              <ScrollFadeInImage
+                src={WEBSITE_ASSETS.landingEuCompliance}
+                alt={t(
+                  "landing.compliance.image_alt",
+                  "Team compliance and schedule overview"
+                )}
+              />
+              <div className="relative z-20 -mt-8 self-center rounded-md bg-[#d5d902]/80 px-3 py-1.5 text-xs font-bold text-black shadow-lg sm:text-sm">
+                All EU languages supported
+              </div>
+            </div>
           </div>
 
           <div className="text-center md:col-span-3">
@@ -169,6 +174,7 @@ export default async function LandingPage() {
       <SalesBotWidget
         languageCode={lang}
         iconUrl="https://pwooqmqdershicxpnfuo.supabase.co/storage/v1/object/public/website_assets/chat.png"
+        logoUrl={WEBSITE_ASSETS.landingLogo}
         buttonLabel={t("landing.salesbot.button_aria", "Ask shiftBOB")}
         panelTitle="shiftBOB"
         initialAssistantMessage={t(
