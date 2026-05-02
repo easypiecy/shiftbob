@@ -1,5 +1,5 @@
-{"timestamp":"00:00:00.746","source":"Server","level":"LOG","message":"- Experiments (use with caution):"}
-{"timestamp":"00:00:00.746","source":"Server","level":"LOG","message":"  ⨯ turbopackFileSystemCacheForDev"}
-{"timestamp":"00:00:00.746","source":"Server","level":"LOG","message":""}
-{"timestamp":"00:00:02.713","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
-{"timestamp":"00:00:02.760","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:00:00.810","source":"Server","level":"LOG","message":"- Experiments (use with caution):"}
+{"timestamp":"00:00:00.810","source":"Server","level":"LOG","message":"  ⨯ turbopackFileSystemCacheForDev"}
+{"timestamp":"00:00:00.810","source":"Server","level":"LOG","message":""}
+{"timestamp":"00:00:02.756","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:00:02.823","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}

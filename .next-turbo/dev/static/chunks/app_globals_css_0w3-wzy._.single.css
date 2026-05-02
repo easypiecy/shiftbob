@@ -3789,6 +3789,12 @@
   }
 
   @media (min-width: 40rem) {
+    .sm\:p-2 {
+      padding: calc(var(--spacing) * 2);
+    }
+  }
+
+  @media (min-width: 40rem) {
     .sm\:p-4 {
       padding: calc(var(--spacing) * 4);
     }

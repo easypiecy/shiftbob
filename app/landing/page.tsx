@@ -26,15 +26,17 @@ export default async function LandingPage() {
       >
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-5 sm:px-6 sm:py-6">
           <Link href="/" className="flex items-end gap-3 sm:gap-4">
-            <Image
-              src={WEBSITE_ASSETS.landingLogo}
-              alt={t("landing.nav.logo_alt", "ShiftBob logo")}
-              width={300}
-              height={300}
-              className="h-16 w-16 object-contain sm:h-20 sm:w-20"
-              priority
-              unoptimized
-            />
+            <div className="rounded-xl bg-black p-1.5 sm:p-2">
+              <Image
+                src={WEBSITE_ASSETS.landingLogo}
+                alt={t("landing.nav.logo_alt", "ShiftBob logo")}
+                width={300}
+                height={300}
+                className="h-16 w-16 object-contain sm:h-20 sm:w-20"
+                priority
+                unoptimized
+              />
+            </div>
             <span className="pb-1 text-lg font-semibold tracking-tight sm:text-xl">
               shiftbob.io
             </span>
@@ -112,7 +114,7 @@ export default async function LandingPage() {
             <p className="mt-4 text-base leading-relaxed text-zinc-800 sm:text-lg">
               {t(
                 "landing.app.body",
-                "Give your team the modern, lightning-fast mobile experience they expect. Instead of zooming in on static PDFs or navigating messy WhatsApp groups, your employees get a sleek, native app with a crystal-clear overview of their shifts right in their pockets. It empowers them to seamlessly request shift swaps, pick up open hours, and manage their work life on the go. With instant push notifications for every update, communication chaos is completely eliminated, ensuring everyone is always connected and on the exact same page."
+                "Give your team the modern, lightning-fast mobile experience they expect. Instead of zooming in on PDFs or navigating messy WhatsApp groups, your employees get a sleek app with a clear shift overview. It empowers them to easily request schedule changes, pick up open hours, and manage their work life on the go. With instant push notifications for every update, communication chaos is completely eliminated, ensuring everyone is always connected and on the exact same page."
               )}
             </p>
           </div>
@@ -137,7 +139,7 @@ export default async function LandingPage() {
             />
           </div>
 
-          <div className="text-center md:col-span-3 md:text-left">
+          <div className="text-center md:col-span-3">
             <h2 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl">
               {t(
                 "landing.compliance.title",
@@ -147,7 +149,7 @@ export default async function LandingPage() {
             <p className="mt-4 text-base leading-relaxed text-zinc-800 sm:text-lg">
               {t(
                 "landing.compliance.body",
-                "Start by uploading your Excel schedule, and ShiftBob instantly scans the data to flag any violations, like the mandatory 11-hour daily rest rule. When you roll out the mobile app to your team, the platform acts as a strict gatekeeper, actively blocking staff from swapping or picking up shifts if the change breaks labor laws. Finally, with our full online Autopilot, compliance becomes completely hands-off. The engine automatically generates a 100% compliant schedule from scratch, perfectly balancing legal requirements with your team's personal preferences before you even review it."
+                "Start by uploading your Excel schedule, and ShiftBob instantly scans the data to flag any violations, like the mandatory 11-hour daily rest rule. When you roll out the mobile app to your team, the platform acts as a strict gatekeeper, actively blocking staff from swapping or picking up shifts if the change breaks labor laws. Finally, with our full online Autopilot, compliance becomes completely hands-off. Shiftbob automatically generates a 100% compliant schedule from scratch, perfectly balancing legal requirements with your team's personal preferences."
               )}
             </p>
           </div>

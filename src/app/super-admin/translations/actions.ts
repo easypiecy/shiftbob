@@ -99,19 +99,31 @@ export async function loadTargetTexts(
     const supabase = await createServerSupabase();
     await assertSuperAdminAccess(supabase);
 
-    const { data, error } = await supabase
-      .from("ui_translations")
-      .select("translation_key, text_value")
-      .eq("language_code", languageCode);
-
-    if (error) {
-      return { ok: false, error: error.message };
-    }
-
     const map: Record<string, string> = {};
-    for (const row of data ?? []) {
-      map[row.translation_key as string] = row.text_value as string;
+    const pageSize = 1000;
+    let from = 0;
+
+    while (true) {
+      const { data, error } = await supabase
+        .from("ui_translations")
+        .select("translation_key, text_value")
+        .eq("language_code", languageCode)
+        .order("translation_key")
+        .range(from, from + pageSize - 1);
+
+      if (error) {
+        return { ok: false, error: error.message };
+      }
+
+      const chunk = data ?? [];
+      for (const row of chunk) {
+        map[row.translation_key as string] = row.text_value as string;
+      }
+
+      if (chunk.length < pageSize) break;
+      from += pageSize;
     }
+
     return { ok: true, map };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Kunne ikke hente oversættelser.";

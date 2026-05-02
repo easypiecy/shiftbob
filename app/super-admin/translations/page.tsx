@@ -17,24 +17,40 @@ export default async function SuperAdminTranslationsPage() {
     );
   }
 
-  const { data: sourceRows, error: srcErr } = await supabase
-    .from("ui_translations")
-    .select("translation_key, text_value, context_description")
-    .eq("language_code", "en-US")
-    .order("translation_key");
+  const sourceRows: Array<{
+    translation_key: string;
+    text_value: string;
+    context_description: string;
+  }> = [];
+  const pageSize = 1000;
+  let from = 0;
 
-  if (srcErr) {
-    return (
-      <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/60 dark:bg-red-950/50 dark:text-red-100">
-        Kunne ikke hente kildetekster: {srcErr.message}
-      </div>
-    );
+  while (true) {
+    const { data, error } = await supabase
+      .from("ui_translations")
+      .select("translation_key, text_value, context_description")
+      .eq("language_code", "en-US")
+      .order("translation_key")
+      .range(from, from + pageSize - 1);
+
+    if (error) {
+      return (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/60 dark:bg-red-950/50 dark:text-red-100">
+          Kunne ikke hente kildetekster: {error.message}
+        </div>
+      );
+    }
+
+    const chunk = data ?? [];
+    sourceRows.push(...chunk);
+    if (chunk.length < pageSize) break;
+    from += pageSize;
   }
 
   return (
     <TranslationsEditor
       languages={languages ?? []}
-      sourceRows={sourceRows ?? []}
+      sourceRows={sourceRows}
     />
   );
 }

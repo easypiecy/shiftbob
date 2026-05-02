@@ -714,14 +714,21 @@ async function LandingPage() {
                             href: "/",
                             className: "flex items-end gap-3 sm:gap-4",
                             children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
-                                    src: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$config$2f$website$2d$assets$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["WEBSITE_ASSETS"].landingLogo,
-                                    alt: t("landing.nav.logo_alt", "ShiftBob logo"),
-                                    width: 300,
-                                    height: 300,
-                                    className: "h-16 w-16 object-contain sm:h-20 sm:w-20",
-                                    priority: true,
-                                    unoptimized: true
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "rounded-xl bg-black p-1.5 sm:p-2",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
+                                        src: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$config$2f$website$2d$assets$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["WEBSITE_ASSETS"].landingLogo,
+                                        alt: t("landing.nav.logo_alt", "ShiftBob logo"),
+                                        width: 300,
+                                        height: 300,
+                                        className: "h-16 w-16 object-contain sm:h-20 sm:w-20",
+                                        priority: true,
+                                        unoptimized: true
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/landing/page.tsx",
+                                        lineNumber: 30,
+                                        columnNumber: 15
+                                    }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/landing/page.tsx",
                                     lineNumber: 29,
@@ -732,7 +739,7 @@ async function LandingPage() {
                                     children: "shiftbob.io"
                                 }, void 0, false, {
                                     fileName: "[project]/app/landing/page.tsx",
-                                    lineNumber: 38,
+                                    lineNumber: 40,
                                     columnNumber: 13
                                 }, this)
                             ]
@@ -750,7 +757,7 @@ async function LandingPage() {
                                     children: t("landing.nav.login", "Login")
                                 }, void 0, false, {
                                     fileName: "[project]/app/landing/page.tsx",
-                                    lineNumber: 44,
+                                    lineNumber: 46,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$login$2f$login$2d$language$2d$picker$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["UiLanguageSelect"], {
@@ -760,7 +767,7 @@ async function LandingPage() {
                                     variant: "light"
                                 }, void 0, false, {
                                     fileName: "[project]/app/landing/page.tsx",
-                                    lineNumber: 50,
+                                    lineNumber: 52,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$react$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
@@ -769,13 +776,13 @@ async function LandingPage() {
                                     children: t("landing.nav.try_for_free", "Try for free")
                                 }, void 0, false, {
                                     fileName: "[project]/app/landing/page.tsx",
-                                    lineNumber: 57,
+                                    lineNumber: 59,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/landing/page.tsx",
-                            lineNumber: 43,
+                            lineNumber: 45,
                             columnNumber: 11
                         }, this)
                     ]
@@ -801,14 +808,14 @@ async function LandingPage() {
                                 }
                             }, void 0, false, {
                                 fileName: "[project]/app/landing/page.tsx",
-                                lineNumber: 69,
+                                lineNumber: 71,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0)_20%,rgba(255,255,255,0)_80%,rgba(255,255,255,0.95)_100%)]"
                             }, void 0, false, {
                                 fileName: "[project]/app/landing/page.tsx",
-                                lineNumber: 73,
+                                lineNumber: 75,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -816,7 +823,7 @@ async function LandingPage() {
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {}, void 0, false, {
                                         fileName: "[project]/app/landing/page.tsx",
-                                        lineNumber: 76,
+                                        lineNumber: 78,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -828,7 +835,7 @@ async function LandingPage() {
                                                 children: t("landing.hero.eyebrow", "Shift Scheduling")
                                             }, void 0, false, {
                                                 fileName: "[project]/app/landing/page.tsx",
-                                                lineNumber: 81,
+                                                lineNumber: 83,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -836,25 +843,25 @@ async function LandingPage() {
                                                 children: t("landing.hero.title", "Give Your Excel Shift Plan Extra Power 💥")
                                             }, void 0, false, {
                                                 fileName: "[project]/app/landing/page.tsx",
-                                                lineNumber: 84,
+                                                lineNumber: 86,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/landing/page.tsx",
-                                        lineNumber: 77,
+                                        lineNumber: 79,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/landing/page.tsx",
-                                lineNumber: 75,
+                                lineNumber: 77,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/landing/page.tsx",
-                        lineNumber: 68,
+                        lineNumber: 70,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -874,14 +881,14 @@ async function LandingPage() {
                                                         "aria-hidden": "true"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/landing/page.tsx",
-                                                        lineNumber: 98,
+                                                        lineNumber: 100,
                                                         columnNumber: 17
                                                     }, this),
                                                     t("landing.app.badge.app_store", "App Store")
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/landing/page.tsx",
-                                                lineNumber: 97,
+                                                lineNumber: 99,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -892,20 +899,20 @@ async function LandingPage() {
                                                         "aria-hidden": "true"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/landing/page.tsx",
-                                                        lineNumber: 102,
+                                                        lineNumber: 104,
                                                         columnNumber: 17
                                                     }, this),
                                                     t("landing.app.badge.google_play", "Google Play")
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/landing/page.tsx",
-                                                lineNumber: 101,
+                                                lineNumber: 103,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/landing/page.tsx",
-                                        lineNumber: 96,
+                                        lineNumber: 98,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -913,21 +920,21 @@ async function LandingPage() {
                                         children: t("landing.app.title", "From your spreadsheet to the team app—like magic.")
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/page.tsx",
-                                        lineNumber: 106,
+                                        lineNumber: 108,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         className: "mt-4 text-base leading-relaxed text-zinc-800 sm:text-lg",
-                                        children: t("landing.app.body", "Give your team the modern, lightning-fast mobile experience they expect. Instead of zooming in on static PDFs or navigating messy WhatsApp groups, your employees get a sleek, native app with a crystal-clear overview of their shifts right in their pockets. It empowers them to seamlessly request shift swaps, pick up open hours, and manage their work life on the go. With instant push notifications for every update, communication chaos is completely eliminated, ensuring everyone is always connected and on the exact same page.")
+                                        children: t("landing.app.body", "Give your team the modern, lightning-fast mobile experience they expect. Instead of zooming in on PDFs or navigating messy WhatsApp groups, your employees get a sleek app with a clear shift overview. It empowers them to easily request schedule changes, pick up open hours, and manage their work life on the go. With instant push notifications for every update, communication chaos is completely eliminated, ensuring everyone is always connected and on the exact same page.")
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/page.tsx",
-                                        lineNumber: 112,
+                                        lineNumber: 114,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/landing/page.tsx",
-                                lineNumber: 95,
+                                lineNumber: 97,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -936,18 +943,18 @@ async function LandingPage() {
                                     alt: t("landing.app.image_alt", "Employee checking shifts on mobile app")
                                 }, void 0, false, {
                                     fileName: "[project]/app/landing/page.tsx",
-                                    lineNumber: 120,
+                                    lineNumber: 122,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/landing/page.tsx",
-                                lineNumber: 119,
+                                lineNumber: 121,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/landing/page.tsx",
-                        lineNumber: 94,
+                        lineNumber: 96,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -960,56 +967,56 @@ async function LandingPage() {
                                     alt: t("landing.compliance.image_alt", "Team compliance and schedule overview")
                                 }, void 0, false, {
                                     fileName: "[project]/app/landing/page.tsx",
-                                    lineNumber: 131,
+                                    lineNumber: 133,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/landing/page.tsx",
-                                lineNumber: 130,
+                                lineNumber: 132,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "text-center md:col-span-3 md:text-left",
+                                className: "text-center md:col-span-3",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                                         className: "text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl",
                                         children: t("landing.compliance.title", "Never accidentally break the 11-hour rule again.")
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/page.tsx",
-                                        lineNumber: 141,
+                                        lineNumber: 143,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         className: "mt-4 text-base leading-relaxed text-zinc-800 sm:text-lg",
-                                        children: t("landing.compliance.body", "Start by uploading your Excel schedule, and ShiftBob instantly scans the data to flag any violations, like the mandatory 11-hour daily rest rule. When you roll out the mobile app to your team, the platform acts as a strict gatekeeper, actively blocking staff from swapping or picking up shifts if the change breaks labor laws. Finally, with our full online Autopilot, compliance becomes completely hands-off. The engine automatically generates a 100% compliant schedule from scratch, perfectly balancing legal requirements with your team's personal preferences before you even review it.")
+                                        children: t("landing.compliance.body", "Start by uploading your Excel schedule, and ShiftBob instantly scans the data to flag any violations, like the mandatory 11-hour daily rest rule. When you roll out the mobile app to your team, the platform acts as a strict gatekeeper, actively blocking staff from swapping or picking up shifts if the change breaks labor laws. Finally, with our full online Autopilot, compliance becomes completely hands-off. Shiftbob automatically generates a 100% compliant schedule from scratch, perfectly balancing legal requirements with your team's personal preferences.")
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/page.tsx",
-                                        lineNumber: 147,
+                                        lineNumber: 149,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/landing/page.tsx",
-                                lineNumber: 140,
+                                lineNumber: 142,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/landing/page.tsx",
-                        lineNumber: 129,
+                        lineNumber: 131,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$landing$2f$product$2d$choices$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ProductChoices"], {
                         translations: map
                     }, void 0, false, {
                         fileName: "[project]/app/landing/page.tsx",
-                        lineNumber: 156,
+                        lineNumber: 158,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/landing/page.tsx",
-                lineNumber: 67,
+                lineNumber: 69,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
@@ -1019,12 +1026,12 @@ async function LandingPage() {
                     children: t("landing.footer.company_line", "P.S. Creations - Vlněna 5 - 602 00 Brno-střed - Czech Republic - support@shiftbob.io")
                 }, void 0, false, {
                     fileName: "[project]/app/landing/page.tsx",
-                    lineNumber: 159,
+                    lineNumber: 161,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/landing/page.tsx",
-                lineNumber: 158,
+                lineNumber: 160,
                 columnNumber: 7
             }, this)
         ]
