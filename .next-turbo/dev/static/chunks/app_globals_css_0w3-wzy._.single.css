@@ -2876,6 +2876,10 @@
     color: #1d6f42;
   }
 
+  .text-\[\#3A7FD1\] {
+    color: #3a7fd1;
+  }
+
   .text-\[\#4A90E2\] {
     color: #4a90e2;
   }
@@ -3089,6 +3093,10 @@
 
   .underline {
     text-decoration-line: underline;
+  }
+
+  .underline-offset-2 {
+    text-underline-offset: 2px;
   }
 
   .underline-offset-4 {
@@ -3544,6 +3552,12 @@
   @media (hover: hover) {
     .hover\:bg-zinc-800:hover {
       background-color: var(--color-zinc-800);
+    }
+  }
+
+  @media (hover: hover) {
+    .hover\:text-\[\#2b69af\]:hover {
+      color: #2b69af;
     }
   }
 

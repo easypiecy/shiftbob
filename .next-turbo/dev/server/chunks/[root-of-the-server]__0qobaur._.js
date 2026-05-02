@@ -176,10 +176,15 @@ async function getSalesBotRuntime(languageCode) {
 function buildSalesBotReply(input) {
     const message = input.question.trim();
     const suggestions = input.knowledge.slice(0, 3).map((entry)=>entry.question);
+    const ctaLabel = input.manifest.cta_label.trim();
+    const ctaHref = input.manifest.cta_href.trim();
+    const showCta = ctaLabel.length > 0 && ctaHref.length > 0;
     if (!message) {
         return {
             reply: input.manifest.welcome_message,
-            suggestions
+            suggestions,
+            ctaLabel: showCta ? ctaLabel : null,
+            ctaHref: showCta ? ctaHref : null
         };
     }
     const ranked = input.knowledge.map((entry)=>({
@@ -188,16 +193,18 @@ function buildSalesBotReply(input) {
         })).sort((a, b)=>b.score - a.score);
     const best = ranked[0];
     if (!best || best.score < 1) {
-        const fallbackWithCta = input.manifest.cta_href ? `${input.manifest.fallback_reply}\n\n${input.manifest.cta_label}: ${input.manifest.cta_href}` : input.manifest.fallback_reply;
         return {
-            reply: fallbackWithCta,
-            suggestions
+            reply: input.manifest.fallback_reply,
+            suggestions,
+            ctaLabel: showCta ? ctaLabel : null,
+            ctaHref: showCta ? ctaHref : null
         };
     }
-    const withCta = input.manifest.cta_href ? `${best.entry.answer}\n\n${input.manifest.cta_label}: ${input.manifest.cta_href}` : best.entry.answer;
     return {
-        reply: withCta,
-        suggestions
+        reply: best.entry.answer,
+        suggestions,
+        ctaLabel: showCta ? ctaLabel : null,
+        ctaHref: showCta ? ctaHref : null
     };
 }
 }),
@@ -222,7 +229,7 @@ async function POST(req) {
         const languageCode = body.languageCode?.trim() || "en-US";
         const message = body.message?.trim() || "";
         const runtime = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$salesbot$2d$runtime$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["getSalesBotRuntime"])(languageCode);
-        const { reply, suggestions } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$salesbot$2d$runtime$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["buildSalesBotReply"])({
+        const { reply, suggestions, ctaLabel, ctaHref } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$salesbot$2d$runtime$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["buildSalesBotReply"])({
             question: message,
             manifest: runtime.manifest,
             knowledge: runtime.knowledge
@@ -230,7 +237,9 @@ async function POST(req) {
         return Response.json({
             ok: true,
             reply,
-            suggestions
+            suggestions,
+            ctaLabel,
+            ctaHref
         });
     } catch (e) {
         const error = e instanceof Error ? e.message : "Ukendt fejl";

@@ -8,6 +8,8 @@ type ChatMessage = {
   id: string;
   role: "assistant" | "user";
   text: string;
+  ctaLabel?: string | null;
+  ctaHref?: string | null;
 };
 
 type Props = {
@@ -88,7 +90,10 @@ export function SalesBotWidget({
   }, [languageCode]);
 
   function addAssistantMessage(text: string) {
-    setMessages((prev) => [...prev, { id: `assistant-${Date.now()}`, role: "assistant", text }]);
+    setMessages((prev) => [
+      ...prev,
+      { id: `assistant-${Date.now()}`, role: "assistant", text, ctaLabel: null, ctaHref: null },
+    ]);
   }
 
   async function initializeChat(force = false) {
@@ -138,12 +143,23 @@ export function SalesBotWidget({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ languageCode, message: trimmed }),
       });
-      const data = (await res.json()) as { ok?: boolean; reply?: string };
+      const data = (await res.json()) as {
+        ok?: boolean;
+        reply?: string;
+        ctaLabel?: string | null;
+        ctaHref?: string | null;
+      };
       const reply =
         data.ok && data.reply ? data.reply : "Sorry, I could not answer right now. Please try again.";
       setMessages((prev) => [
         ...prev,
-        { id: `assistant-${Date.now() + 1}`, role: "assistant", text: reply },
+        {
+          id: `assistant-${Date.now() + 1}`,
+          role: "assistant",
+          text: reply,
+          ctaLabel: data.ctaLabel?.trim() || null,
+          ctaHref: data.ctaHref?.trim() || null,
+        },
       ]);
     } finally {
       setLoading(false);
@@ -270,6 +286,14 @@ export function SalesBotWidget({
                 }
               >
                 <p className="whitespace-pre-wrap">{message.text}</p>
+                {message.role === "assistant" && message.ctaLabel && message.ctaHref ? (
+                  <a
+                    href={message.ctaHref}
+                    className="mt-2 inline-flex text-sm font-semibold text-[#3A7FD1] underline underline-offset-2 hover:text-[#2b69af]"
+                  >
+                    {message.ctaLabel}
+                  </a>
+                ) : null}
               </div>
             ))}
             {loading ? (

@@ -127,8 +127,9 @@ export async function saveSalesBotManifest(input: {
       welcome_message:
         input.welcome_message.trim() || DEFAULT_SALESBOT_MANIFEST.welcome_message,
       tone_of_voice: input.tone_of_voice.trim() || DEFAULT_SALESBOT_MANIFEST.tone_of_voice,
-      cta_label: input.cta_label.trim() || DEFAULT_SALESBOT_MANIFEST.cta_label,
-      cta_href: input.cta_href.trim() || DEFAULT_SALESBOT_MANIFEST.cta_href,
+      // Allow explicit empty CTA fields (no link shown in chat).
+      cta_label: input.cta_label.trim(),
+      cta_href: input.cta_href.trim(),
       fallback_reply: input.fallback_reply.trim() || DEFAULT_SALESBOT_MANIFEST.fallback_reply,
       updated_at: new Date().toISOString(),
     };

@@ -1013,7 +1013,7 @@ async function LandingPage() {
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "relative z-20 -mt-8 self-center rounded-md bg-[#d5d902]/80 px-3 py-1.5 text-xs font-bold text-black shadow-lg sm:text-sm",
-                                            children: "All EU languages supported"
+                                            children: t("landing.compliance.eu_languages_badge", "All EU languages supported")
                                         }, void 0, false, {
                                             fileName: "[project]/app/landing/page.tsx",
                                             lineNumber: 142,
@@ -1038,7 +1038,7 @@ async function LandingPage() {
                                         children: t("landing.compliance.title", "Never accidentally break the 11-hour rule again.")
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/page.tsx",
-                                        lineNumber: 149,
+                                        lineNumber: 152,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1046,13 +1046,13 @@ async function LandingPage() {
                                         children: t("landing.compliance.body", "Start by uploading your Excel schedule, and ShiftBob instantly scans the data to flag any violations, like the mandatory 11-hour daily rest rule. When you roll out the mobile app to your team, the platform acts as a strict gatekeeper, actively blocking staff from swapping or picking up shifts if the change breaks labor laws. Finally, with our full online Autopilot, compliance becomes fully automated. Shiftbob automatically generates a 100% compliant schedule from scratch, perfectly balancing legal requirements with your team's personal preferences.")
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/page.tsx",
-                                        lineNumber: 155,
+                                        lineNumber: 158,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/landing/page.tsx",
-                                lineNumber: 148,
+                                lineNumber: 151,
                                 columnNumber: 11
                             }, this)
                         ]
@@ -1065,7 +1065,7 @@ async function LandingPage() {
                         translations: map
                     }, void 0, false, {
                         fileName: "[project]/app/landing/page.tsx",
-                        lineNumber: 164,
+                        lineNumber: 167,
                         columnNumber: 9
                     }, this)
                 ]
@@ -1081,12 +1081,12 @@ async function LandingPage() {
                     children: t("landing.footer.company_line", "P.S. Creations - Vlněna 5 - 602 00 Brno-střed - Czech Republic - support@shiftbob.io")
                 }, void 0, false, {
                     fileName: "[project]/app/landing/page.tsx",
-                    lineNumber: 167,
+                    lineNumber: 170,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/landing/page.tsx",
-                lineNumber: 166,
+                lineNumber: 169,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$landing$2f$sales$2d$bot$2d$widget$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["SalesBotWidget"], {
@@ -1111,7 +1111,7 @@ async function LandingPage() {
                 resetLabel: t("landing.salesbot.reset", "Reset chat")
             }, void 0, false, {
                 fileName: "[project]/app/landing/page.tsx",
-                lineNumber: 174,
+                lineNumber: 177,
                 columnNumber: 7
             }, this)
         ]

@@ -140,7 +140,10 @@ export default async function LandingPage() {
                 )}
               />
               <div className="relative z-20 -mt-8 self-center rounded-md bg-[#d5d902]/80 px-3 py-1.5 text-xs font-bold text-black shadow-lg sm:text-sm">
-                All EU languages supported
+                {t(
+                  "landing.compliance.eu_languages_badge",
+                  "All EU languages supported"
+                )}
               </div>
             </div>
           </div>

@@ -81,13 +81,18 @@ export default function SalesBotAdminClient({
               className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-600 dark:bg-zinc-950"
             />
           </label>
-          <label className="space-y-1 text-sm">
-            <span>Tone of voice</span>
-            <input
+          <label className="space-y-1 text-sm md:col-span-2">
+            <span>Overordnet bot-instruktion (prompt)</span>
+            <textarea
+              rows={5}
               value={manifest.tone_of_voice}
               onChange={(e) => setManifest((x) => ({ ...x, tone_of_voice: e.target.value }))}
               className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-600 dark:bg-zinc-950"
+              placeholder="Beskriv hvordan botten skal optræde: tone, længde, do/don't, hvordan usikkerhed håndteres, hvordan den skal henvise til priser og produkter osv."
             />
+            <p className="text-xs text-zinc-500">
+              Brug feltet til en detaljeret instruktion om bot-adfærd og svarstil.
+            </p>
           </label>
           <label className="space-y-1 text-sm md:col-span-2">
             <span>Velkomstbesked</span>

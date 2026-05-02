@@ -10,13 +10,13 @@ export async function POST(req: Request) {
     const message = body.message?.trim() || "";
 
     const runtime = await getSalesBotRuntime(languageCode);
-    const { reply, suggestions } = buildSalesBotReply({
+    const { reply, suggestions, ctaLabel, ctaHref } = buildSalesBotReply({
       question: message,
       manifest: runtime.manifest,
       knowledge: runtime.knowledge,
     });
 
-    return Response.json({ ok: true, reply, suggestions });
+    return Response.json({ ok: true, reply, suggestions, ctaLabel, ctaHref });
   } catch (e) {
     const error = e instanceof Error ? e.message : "Ukendt fejl";
     return Response.json({ ok: false, error }, { status: 500 });

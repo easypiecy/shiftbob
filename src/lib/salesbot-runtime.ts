@@ -169,12 +169,20 @@ export function buildSalesBotReply(input: {
   question: string;
   manifest: SalesBotManifest;
   knowledge: SalesBotKnowledgeEntry[];
-}): { reply: string; suggestions: string[] } {
+}): { reply: string; suggestions: string[]; ctaLabel: string | null; ctaHref: string | null } {
   const message = input.question.trim();
   const suggestions = input.knowledge.slice(0, 3).map((entry) => entry.question);
+  const ctaLabel = input.manifest.cta_label.trim();
+  const ctaHref = input.manifest.cta_href.trim();
+  const showCta = ctaLabel.length > 0 && ctaHref.length > 0;
 
   if (!message) {
-    return { reply: input.manifest.welcome_message, suggestions };
+    return {
+      reply: input.manifest.welcome_message,
+      suggestions,
+      ctaLabel: showCta ? ctaLabel : null,
+      ctaHref: showCta ? ctaHref : null,
+    };
   }
 
   const ranked = input.knowledge
@@ -183,14 +191,18 @@ export function buildSalesBotReply(input: {
 
   const best = ranked[0];
   if (!best || best.score < 1) {
-    const fallbackWithCta = input.manifest.cta_href
-      ? `${input.manifest.fallback_reply}\n\n${input.manifest.cta_label}: ${input.manifest.cta_href}`
-      : input.manifest.fallback_reply;
-    return { reply: fallbackWithCta, suggestions };
+    return {
+      reply: input.manifest.fallback_reply,
+      suggestions,
+      ctaLabel: showCta ? ctaLabel : null,
+      ctaHref: showCta ? ctaHref : null,
+    };
   }
 
-  const withCta = input.manifest.cta_href
-    ? `${best.entry.answer}\n\n${input.manifest.cta_label}: ${input.manifest.cta_href}`
-    : best.entry.answer;
-  return { reply: withCta, suggestions };
+  return {
+    reply: best.entry.answer,
+    suggestions,
+    ctaLabel: showCta ? ctaLabel : null,
+    ctaHref: showCta ? ctaHref : null,
+  };
 }
