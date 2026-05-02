@@ -385,6 +385,7 @@ __turbopack_context__.s([
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/loader-circle.js [app-client] (ecmascript) <export default as Loader2>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$rotate$2d$ccw$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__RotateCcw$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/rotate-ccw.js [app-client] (ecmascript) <export default as RotateCcw>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$send$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Send$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/send.js [app-client] (ecmascript) <export default as Send>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/x.js [app-client] (ecmascript) <export default as X>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/image.js [app-client] (ecmascript)");
@@ -394,19 +395,51 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
-function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, initialAssistantMessage, inputPlaceholder, sendLabel, closeLabel }) {
+function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, initialAssistantMessage, inputPlaceholder, sendLabel, closeLabel, supportButtonLabel, supportPanelTitle, supportSubjectLabel, supportMessageLabel, supportNameLabel, supportEmailLabel, supportSubmitLabel, supportSuccessTemplate, supportNeedIdentityMessage, resetLabel }) {
     _s();
     const [open, setOpen] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [messages, setMessages] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [input, setInput] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [session, setSession] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [supportOpen, setSupportOpen] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [supportLoading, setSupportLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [supportSubject, setSupportSubject] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [supportMessage, setSupportMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [supportName, setSupportName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [supportEmail, setSupportEmail] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const hasMessages = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
         "SalesBotWidget.useMemo[hasMessages]": ()=>messages.length > 0
     }["SalesBotWidget.useMemo[hasMessages]"], [
         messages.length
     ]);
-    async function initializeChat() {
-        if (hasMessages || loading) return;
+    function resetChat() {
+        setMessages([]);
+        setInput("");
+        setSupportOpen(false);
+        setSupportSubject("");
+        setSupportMessage("");
+    }
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "SalesBotWidget.useEffect": ()=>{
+            // Language switch means a fresh conversation context.
+            resetChat();
+        }
+    }["SalesBotWidget.useEffect"], [
+        languageCode
+    ]);
+    function addAssistantMessage(text) {
+        setMessages((prev)=>[
+                ...prev,
+                {
+                    id: `assistant-${Date.now()}`,
+                    role: "assistant",
+                    text
+                }
+            ]);
+    }
+    async function initializeChat(force = false) {
+        if (!force && (hasMessages || loading)) return;
         setMessages([
             {
                 id: `assistant-${Date.now()}`,
@@ -414,6 +447,26 @@ function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, initia
                 text: initialAssistantMessage
             }
         ]);
+        try {
+            const res = await fetch("/api/salesbot/session", {
+                method: "GET"
+            });
+            const data = await res.json();
+            if (!data.ok) return;
+            const nextSession = {
+                loggedIn: Boolean(data.loggedIn),
+                name: data.name?.trim() || "",
+                email: data.email?.trim() || ""
+            };
+            setSession(nextSession);
+            if (!nextSession.loggedIn) {
+                addAssistantMessage(supportNeedIdentityMessage);
+            }
+            setSupportName(nextSession.name);
+            setSupportEmail(nextSession.email);
+        } catch  {
+        // Ignore session fetch errors and allow normal chat usage.
+        }
     }
     async function sendMessage(message) {
         const trimmed = message.trim();
@@ -458,6 +511,40 @@ function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, initia
         e.preventDefault();
         await sendMessage(input);
     }
+    async function submitSupportTicket(e) {
+        e.preventDefault();
+        if (!supportSubject.trim() || !supportMessage.trim() || supportLoading) return;
+        setSupportLoading(true);
+        try {
+            const res = await fetch("/api/salesbot/support-ticket", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    languageCode,
+                    subject: supportSubject.trim(),
+                    message: supportMessage.trim(),
+                    name: supportName.trim(),
+                    email: supportEmail.trim()
+                })
+            });
+            const data = await res.json();
+            if (!data.ok) {
+                addAssistantMessage(data.error || "Could not submit support ticket.");
+                if (data.requiresIdentity) {
+                    setSupportOpen(true);
+                }
+                return;
+            }
+            addAssistantMessage(supportSuccessTemplate.replace("{ticketId}", data.ticketId || "created"));
+            setSupportOpen(false);
+            setSupportSubject("");
+            setSupportMessage("");
+        } finally{
+            setSupportLoading(false);
+        }
+    }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -479,12 +566,12 @@ function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, initia
                     className: "h-20 w-20 object-contain [filter:drop-shadow(0_0_12px_rgba(255,255,255,0.98))]"
                 }, void 0, false, {
                     fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                    lineNumber: 96,
+                    lineNumber: 210,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                lineNumber: 84,
+                lineNumber: 198,
                 columnNumber: 7
             }, this),
             open ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -498,31 +585,61 @@ function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, initia
                                 children: panelTitle
                             }, void 0, false, {
                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                lineNumber: 108,
+                                lineNumber: 222,
                                 columnNumber: 13
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                type: "button",
-                                onClick: ()=>setOpen(false),
-                                className: "rounded-md p-1 text-white/90 hover:bg-white/15 hover:text-white",
-                                "aria-label": closeLabel,
-                                title: closeLabel,
-                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
-                                    className: "h-4 w-4"
-                                }, void 0, false, {
-                                    fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                    lineNumber: 116,
-                                    columnNumber: 15
-                                }, this)
-                            }, void 0, false, {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex items-center gap-1",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                        type: "button",
+                                        onClick: ()=>{
+                                            resetChat();
+                                            void initializeChat(true);
+                                        },
+                                        className: "rounded-md p-1 text-white/85 hover:bg-white/15 hover:text-white",
+                                        "aria-label": resetLabel,
+                                        title: resetLabel,
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$rotate$2d$ccw$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__RotateCcw$3e$__["RotateCcw"], {
+                                            className: "h-3.5 w-3.5"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                            lineNumber: 234,
+                                            columnNumber: 17
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                        lineNumber: 224,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                        type: "button",
+                                        onClick: ()=>setOpen(false),
+                                        className: "rounded-md p-1 text-white/90 hover:bg-white/15 hover:text-white",
+                                        "aria-label": closeLabel,
+                                        title: closeLabel,
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
+                                            className: "h-4 w-4"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                            lineNumber: 243,
+                                            columnNumber: 17
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                        lineNumber: 236,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                lineNumber: 109,
+                                lineNumber: 223,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                        lineNumber: 107,
+                        lineNumber: 221,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -535,12 +652,12 @@ function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, initia
                                         children: message.text
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 130,
+                                        lineNumber: 258,
                                         columnNumber: 17
                                     }, this)
                                 }, message.id, false, {
                                     fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                    lineNumber: 122,
+                                    lineNumber: 250,
                                     columnNumber: 15
                                 }, this)),
                             loading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -550,78 +667,203 @@ function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, initia
                                         className: "h-3.5 w-3.5 animate-spin"
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 135,
+                                        lineNumber: 263,
                                         columnNumber: 17
                                     }, this),
                                     "Thinking..."
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                lineNumber: 134,
+                                lineNumber: 262,
+                                columnNumber: 15
+                            }, this) : null,
+                            supportOpen ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
+                                onSubmit: submitSupportTicket,
+                                className: "space-y-2 rounded-xl border border-zinc-200 bg-white p-3",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-xs font-semibold uppercase tracking-wide text-zinc-500",
+                                        children: supportPanelTitle
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                        lineNumber: 273,
+                                        columnNumber: 17
+                                    }, this),
+                                    !session?.loggedIn ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "grid gap-2 sm:grid-cols-2",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                value: supportName,
+                                                onChange: (e)=>setSupportName(e.target.value),
+                                                placeholder: supportNameLabel,
+                                                className: "h-9 rounded-md border border-zinc-300 px-2 text-sm"
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                                lineNumber: 278,
+                                                columnNumber: 21
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                value: supportEmail,
+                                                onChange: (e)=>setSupportEmail(e.target.value),
+                                                placeholder: supportEmailLabel,
+                                                className: "h-9 rounded-md border border-zinc-300 px-2 text-sm"
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                                lineNumber: 284,
+                                                columnNumber: 21
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                        lineNumber: 277,
+                                        columnNumber: 19
+                                    }, this) : null,
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        value: supportSubject,
+                                        onChange: (e)=>setSupportSubject(e.target.value),
+                                        placeholder: supportSubjectLabel,
+                                        className: "h-9 w-full rounded-md border border-zinc-300 px-2 text-sm"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                        lineNumber: 292,
+                                        columnNumber: 17
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
+                                        rows: 4,
+                                        value: supportMessage,
+                                        onChange: (e)=>setSupportMessage(e.target.value),
+                                        placeholder: supportMessageLabel,
+                                        className: "w-full rounded-md border border-zinc-300 px-2 py-2 text-sm"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                        lineNumber: 298,
+                                        columnNumber: 17
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "flex items-center justify-end gap-2",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                type: "button",
+                                                onClick: ()=>setSupportOpen(false),
+                                                className: "rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs text-zinc-700",
+                                                children: closeLabel
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                                lineNumber: 306,
+                                                columnNumber: 19
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                type: "submit",
+                                                disabled: supportLoading || !supportSubject.trim() || !supportMessage.trim() || !session?.loggedIn && (!supportName.trim() || !supportEmail.trim()),
+                                                className: "inline-flex items-center gap-1.5 rounded-md bg-[#4A90E2] px-2.5 py-1.5 text-xs font-semibold text-white disabled:opacity-50",
+                                                children: [
+                                                    supportLoading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
+                                                        className: "h-3.5 w-3.5 animate-spin"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                                        lineNumber: 323,
+                                                        columnNumber: 39
+                                                    }, this) : null,
+                                                    supportSubmitLabel
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                                lineNumber: 313,
+                                                columnNumber: 19
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                        lineNumber: 305,
+                                        columnNumber: 17
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                lineNumber: 269,
                                 columnNumber: 15
                             }, this) : null
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                        lineNumber: 120,
+                        lineNumber: 248,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
                         onSubmit: onSubmit,
                         className: "border-t border-zinc-200 bg-white p-3",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "flex items-center gap-2",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                    value: input,
-                                    onChange: (e)=>setInput(e.target.value),
-                                    placeholder: inputPlaceholder,
-                                    className: "h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "mb-2 flex justify-start",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    type: "button",
+                                    onClick: ()=>setSupportOpen((value)=>!value),
+                                    className: "rounded-full border border-zinc-300 px-2.5 py-1 text-xs text-zinc-700 hover:bg-zinc-100",
+                                    children: supportButtonLabel
                                 }, void 0, false, {
                                     fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                    lineNumber: 143,
-                                    columnNumber: 15
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                    type: "submit",
-                                    disabled: loading || !input.trim(),
-                                    className: "inline-flex h-10 items-center gap-1.5 rounded-lg bg-[#4A90E2] px-3 text-xs font-semibold text-white transition hover:bg-[#3A7FD1] disabled:opacity-50",
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$send$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Send$3e$__["Send"], {
-                                            className: "h-3.5 w-3.5"
-                                        }, void 0, false, {
-                                            fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                            lineNumber: 154,
-                                            columnNumber: 17
-                                        }, this),
-                                        sendLabel
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                    lineNumber: 149,
+                                    lineNumber: 333,
                                     columnNumber: 15
                                 }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                            lineNumber: 142,
-                            columnNumber: 13
-                        }, this)
-                    }, void 0, false, {
+                            }, void 0, false, {
+                                fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                lineNumber: 332,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex items-center gap-2",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        value: input,
+                                        onChange: (e)=>setInput(e.target.value),
+                                        placeholder: inputPlaceholder,
+                                        className: "h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                        lineNumber: 342,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                        type: "submit",
+                                        disabled: loading || !input.trim(),
+                                        className: "inline-flex h-10 items-center gap-1.5 rounded-lg bg-[#4A90E2] px-3 text-xs font-semibold text-white transition hover:bg-[#3A7FD1] disabled:opacity-50",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$send$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Send$3e$__["Send"], {
+                                                className: "h-3.5 w-3.5"
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                                lineNumber: 353,
+                                                columnNumber: 17
+                                            }, this),
+                                            sendLabel
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                        lineNumber: 348,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/app/landing/sales-bot-widget.tsx",
+                                lineNumber: 341,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                        lineNumber: 141,
+                        lineNumber: 331,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                lineNumber: 106,
+                lineNumber: 220,
                 columnNumber: 9
             }, this) : null
         ]
     }, void 0, true);
 }
-_s(SalesBotWidget, "zcOWerCukNEGMaihXMR5IK57YQo=");
+_s(SalesBotWidget, "XVezJfCKob5eGHPi9UzaGsnQDWw=");
 _c = SalesBotWidget;
 var _c;
 __turbopack_context__.k.register(_c, "SalesBotWidget");

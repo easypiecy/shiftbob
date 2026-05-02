@@ -181,6 +181,22 @@ export default async function LandingPage() {
         )}
         sendLabel={t("landing.salesbot.send", "Send")}
         closeLabel={t("landing.salesbot.close", "Close chat")}
+        supportButtonLabel={t("landing.salesbot.support_button", "Support ticket")}
+        supportPanelTitle={t("landing.salesbot.support_panel_title", "Create support ticket")}
+        supportSubjectLabel={t("landing.salesbot.support_subject", "Subject")}
+        supportMessageLabel={t("landing.salesbot.support_message", "Describe your issue")}
+        supportNameLabel={t("landing.salesbot.support_name", "Your name")}
+        supportEmailLabel={t("landing.salesbot.support_email", "Your email")}
+        supportSubmitLabel={t("landing.salesbot.support_submit", "Submit ticket")}
+        supportSuccessTemplate={t(
+          "landing.salesbot.support_success",
+          "Thanks! Your support ticket is created: {ticketId}"
+        )}
+        supportNeedIdentityMessage={t(
+          "landing.salesbot.support_need_identity",
+          "To create a support ticket, please provide your name and email."
+        )}
+        resetLabel={t("landing.salesbot.reset", "Reset chat")}
       />
     </div>
   );

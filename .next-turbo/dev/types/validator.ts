@@ -299,6 +299,24 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../../app/api/salesbot/session/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/salesbot/session">> = Specific
+  const handler = {} as typeof import("../../../app/api/salesbot/session/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../app/api/salesbot/support-ticket/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/salesbot/support-ticket">> = Specific
+  const handler = {} as typeof import("../../../app/api/salesbot/support-ticket/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../../app/api/solver/route.ts
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/solver">> = Specific

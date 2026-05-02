@@ -5,3 +5,18 @@
 {"timestamp":"00:00:03.058","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
 {"timestamp":"00:00:35.438","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
 {"timestamp":"00:02:38.483","source":"Server","level":"LOG","message":"✓ Compiled in 245ms"}
+{"timestamp":"00:09:48.519","source":"Server","level":"LOG","message":"✓ Compiled in 118ms"}
+{"timestamp":"00:09:48.537","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
+{"timestamp":"00:09:48.537","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
+{"timestamp":"00:09:48.537","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
+{"timestamp":"00:09:49.928","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:09:49.930","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:09:56.415","source":"Server","level":"LOG","message":"✓ Compiled in 107ms"}
+{"timestamp":"00:09:56.459","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
+{"timestamp":"00:09:56.459","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload"}
+{"timestamp":"00:09:57.005","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:09:57.025","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:10:14.935","source":"Server","level":"LOG","message":"✓ Compiled in 78ms"}
+{"timestamp":"00:16:59.756","source":"Server","level":"LOG","message":"✓ Compiled in 119ms"}
+{"timestamp":"00:17:02.759","source":"Server","level":"LOG","message":"✓ Compiled in 43ms"}
+{"timestamp":"00:17:40.688","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
