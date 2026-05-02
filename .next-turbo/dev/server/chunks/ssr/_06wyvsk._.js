@@ -11,7 +11,7 @@ const WEBSITE_ASSETS = {
     landingLogo: `${SUPABASE_WEBSITE_ASSETS_BASE_URL}/ShiftBob-circle-logo-light-300x.png`,
     landingHero: `${SUPABASE_WEBSITE_ASSETS_BASE_URL}/hero-power-top.jpg`,
     landingEmployeePhoto: `${SUPABASE_WEBSITE_ASSETS_BASE_URL}/employee_on-mob.jpg`,
-    landingEuCompliance: `${SUPABASE_WEBSITE_ASSETS_BASE_URL}/eu.jpg`
+    landingEuCompliance: `${SUPABASE_WEBSITE_ASSETS_BASE_URL}/eu2.jpg`
 };
 }),
 "[project]/app/landing/scroll-fade-in-image.tsx [app-ssr] (ecmascript)", ((__turbopack_context__) => {
