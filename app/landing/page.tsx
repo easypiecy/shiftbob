@@ -169,8 +169,12 @@ export default async function LandingPage() {
       <SalesBotWidget
         languageCode={lang}
         iconUrl="https://pwooqmqdershicxpnfuo.supabase.co/storage/v1/object/public/website_assets/chat.png"
-        buttonLabel={t("landing.salesbot.button_aria", "Open SalesBot chat")}
-        panelTitle={t("landing.salesbot.title", "SalesBot")}
+        buttonLabel={t("landing.salesbot.button_aria", "Ask shiftBOB")}
+        panelTitle="shiftBOB"
+        initialAssistantMessage={t(
+          "landing.salesbot.initial_message",
+          "Ask me anything about ShiftBob and your shift plan."
+        )}
         inputPlaceholder={t(
           "landing.salesbot.input_placeholder",
           "Ask about pricing, features, or onboarding..."

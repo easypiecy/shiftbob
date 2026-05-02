@@ -1075,8 +1075,9 @@ async function LandingPage() {
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$landing$2f$sales$2d$bot$2d$widget$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["SalesBotWidget"], {
                 languageCode: lang,
                 iconUrl: "https://pwooqmqdershicxpnfuo.supabase.co/storage/v1/object/public/website_assets/chat.png",
-                buttonLabel: t("landing.salesbot.button_aria", "Open SalesBot chat"),
-                panelTitle: t("landing.salesbot.title", "SalesBot"),
+                buttonLabel: t("landing.salesbot.button_aria", "Ask shiftBOB"),
+                panelTitle: "shiftBOB",
+                initialAssistantMessage: t("landing.salesbot.initial_message", "Ask me anything about ShiftBob and your shift plan."),
                 inputPlaceholder: t("landing.salesbot.input_placeholder", "Ask about pricing, features, or onboarding..."),
                 sendLabel: t("landing.salesbot.send", "Send"),
                 closeLabel: t("landing.salesbot.close", "Close chat")

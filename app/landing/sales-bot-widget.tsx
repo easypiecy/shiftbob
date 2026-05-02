@@ -15,6 +15,7 @@ type Props = {
   iconUrl: string;
   buttonLabel: string;
   panelTitle: string;
+  initialAssistantMessage: string;
   inputPlaceholder: string;
   sendLabel: string;
   closeLabel: string;
@@ -25,6 +26,7 @@ export function SalesBotWidget({
   iconUrl,
   buttonLabel,
   panelTitle,
+  initialAssistantMessage,
   inputPlaceholder,
   sendLabel,
   closeLabel,
@@ -32,27 +34,13 @@ export function SalesBotWidget({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
   const [input, setInput] = useState("");
 
   const hasMessages = useMemo(() => messages.length > 0, [messages.length]);
 
   async function initializeChat() {
     if (hasMessages || loading) return;
-    setLoading(true);
-    try {
-      const res = await fetch("/api/salesbot/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ languageCode, message: "" }),
-      });
-      const data = (await res.json()) as { ok?: boolean; reply?: string; suggestions?: string[] };
-      if (!data.ok || !data.reply) return;
-      setMessages([{ id: `assistant-${Date.now()}`, role: "assistant", text: data.reply }]);
-      setSuggestions(data.suggestions ?? []);
-    } finally {
-      setLoading(false);
-    }
+    setMessages([{ id: `assistant-${Date.now()}`, role: "assistant", text: initialAssistantMessage }]);
   }
 
   async function sendMessage(message: string) {
@@ -74,14 +62,13 @@ export function SalesBotWidget({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ languageCode, message: trimmed }),
       });
-      const data = (await res.json()) as { ok?: boolean; reply?: string; suggestions?: string[] };
+      const data = (await res.json()) as { ok?: boolean; reply?: string };
       const reply =
         data.ok && data.reply ? data.reply : "Sorry, I could not answer right now. Please try again.";
       setMessages((prev) => [
         ...prev,
         { id: `assistant-${Date.now() + 1}`, role: "assistant", text: reply },
       ]);
-      setSuggestions(data.suggestions ?? []);
     } finally {
       setLoading(false);
     }
@@ -102,21 +89,27 @@ export function SalesBotWidget({
             await initializeChat();
           }
         }}
-        className="fixed bottom-6 right-6 z-[70] inline-flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-lg ring-1 ring-zinc-200 transition hover:scale-105"
+        className="fixed bottom-5 right-5 z-[70] inline-flex items-center justify-center p-0 transition hover:scale-105"
         aria-label={buttonLabel}
         title={buttonLabel}
       >
-        <Image src={iconUrl} alt="" width={36} height={36} className="h-9 w-9 object-contain" />
+        <Image
+          src={iconUrl}
+          alt=""
+          width={84}
+          height={84}
+          className="h-20 w-20 object-contain [filter:drop-shadow(0_0_12px_rgba(255,255,255,0.98))]"
+        />
       </button>
 
       {open ? (
         <section className="fixed bottom-24 right-6 z-[70] flex h-[540px] w-[min(92vw,390px)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl">
-          <header className="flex items-center justify-between border-b border-zinc-200 px-4 py-3">
-            <h2 className="text-sm font-semibold text-zinc-900">{panelTitle}</h2>
+          <header className="flex items-center justify-between border-b border-[#3A7FD1] bg-[#4A90E2] px-4 py-3">
+            <h2 className="text-sm font-semibold text-white">{panelTitle}</h2>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-md p-1 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
+              className="rounded-md p-1 text-white/90 hover:bg-white/15 hover:text-white"
               aria-label={closeLabel}
               title={closeLabel}
             >
@@ -145,25 +138,6 @@ export function SalesBotWidget({
             ) : null}
           </div>
 
-          {suggestions.length > 0 ? (
-            <div className="border-t border-zinc-200 px-3 py-2">
-              <div className="flex flex-wrap gap-1.5">
-                {suggestions.slice(0, 3).map((suggestion) => (
-                  <button
-                    key={suggestion}
-                    type="button"
-                    onClick={() => {
-                      void sendMessage(suggestion);
-                    }}
-                    className="rounded-full border border-zinc-300 px-2.5 py-1 text-xs text-zinc-700 hover:bg-zinc-100"
-                  >
-                    {suggestion}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ) : null}
-
           <form onSubmit={onSubmit} className="border-t border-zinc-200 bg-white p-3">
             <div className="flex items-center gap-2">
               <input
@@ -175,7 +149,7 @@ export function SalesBotWidget({
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
-                className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-zinc-900 px-3 text-xs font-semibold text-white disabled:opacity-50"
+                className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-[#4A90E2] px-3 text-xs font-semibold text-white transition hover:bg-[#3A7FD1] disabled:opacity-50"
               >
                 <Send className="h-3.5 w-3.5" />
                 {sendLabel}

@@ -349,42 +349,23 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$imag
 ;
 ;
 ;
-function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, inputPlaceholder, sendLabel, closeLabel }) {
+function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, initialAssistantMessage, inputPlaceholder, sendLabel, closeLabel }) {
     const [open, setOpen] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [messages, setMessages] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
-    const [suggestions, setSuggestions] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [input, setInput] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const hasMessages = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMemo"])(()=>messages.length > 0, [
         messages.length
     ]);
     async function initializeChat() {
         if (hasMessages || loading) return;
-        setLoading(true);
-        try {
-            const res = await fetch("/api/salesbot/chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    languageCode,
-                    message: ""
-                })
-            });
-            const data = await res.json();
-            if (!data.ok || !data.reply) return;
-            setMessages([
-                {
-                    id: `assistant-${Date.now()}`,
-                    role: "assistant",
-                    text: data.reply
-                }
-            ]);
-            setSuggestions(data.suggestions ?? []);
-        } finally{
-            setLoading(false);
-        }
+        setMessages([
+            {
+                id: `assistant-${Date.now()}`,
+                role: "assistant",
+                text: initialAssistantMessage
+            }
+        ]);
     }
     async function sendMessage(message) {
         const trimmed = message.trim();
@@ -421,7 +402,6 @@ function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, inputP
                         text: reply
                     }
                 ]);
-            setSuggestions(data.suggestions ?? []);
         } finally{
             setLoading(false);
         }
@@ -440,61 +420,61 @@ function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, inputP
                         await initializeChat();
                     }
                 },
-                className: "fixed bottom-6 right-6 z-[70] inline-flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-lg ring-1 ring-zinc-200 transition hover:scale-105",
+                className: "fixed bottom-5 right-5 z-[70] inline-flex items-center justify-center p-0 transition hover:scale-105",
                 "aria-label": buttonLabel,
                 title: buttonLabel,
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                     src: iconUrl,
                     alt: "",
-                    width: 36,
-                    height: 36,
-                    className: "h-9 w-9 object-contain"
+                    width: 84,
+                    height: 84,
+                    className: "h-20 w-20 object-contain [filter:drop-shadow(0_0_12px_rgba(255,255,255,0.98))]"
                 }, void 0, false, {
                     fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                    lineNumber: 109,
+                    lineNumber: 96,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                lineNumber: 97,
+                lineNumber: 84,
                 columnNumber: 7
             }, this),
             open ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
                 className: "fixed bottom-24 right-6 z-[70] flex h-[540px] w-[min(92vw,390px)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
-                        className: "flex items-center justify-between border-b border-zinc-200 px-4 py-3",
+                        className: "flex items-center justify-between border-b border-[#3A7FD1] bg-[#4A90E2] px-4 py-3",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                                className: "text-sm font-semibold text-zinc-900",
+                                className: "text-sm font-semibold text-white",
                                 children: panelTitle
                             }, void 0, false, {
                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                lineNumber: 115,
+                                lineNumber: 108,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 type: "button",
                                 onClick: ()=>setOpen(false),
-                                className: "rounded-md p-1 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900",
+                                className: "rounded-md p-1 text-white/90 hover:bg-white/15 hover:text-white",
                                 "aria-label": closeLabel,
                                 title: closeLabel,
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                                     className: "h-4 w-4"
                                 }, void 0, false, {
                                     fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                    lineNumber: 123,
+                                    lineNumber: 116,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                lineNumber: 116,
+                                lineNumber: 109,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                        lineNumber: 114,
+                        lineNumber: 107,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -507,12 +487,12 @@ function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, inputP
                                         children: message.text
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 137,
+                                        lineNumber: 130,
                                         columnNumber: 17
                                     }, this)
                                 }, message.id, false, {
                                     fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                    lineNumber: 129,
+                                    lineNumber: 122,
                                     columnNumber: 15
                                 }, this)),
                             loading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -522,48 +502,22 @@ function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, inputP
                                         className: "h-3.5 w-3.5 animate-spin"
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 142,
+                                        lineNumber: 135,
                                         columnNumber: 17
                                     }, this),
                                     "Thinking..."
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                lineNumber: 141,
+                                lineNumber: 134,
                                 columnNumber: 15
                             }, this) : null
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                        lineNumber: 127,
+                        lineNumber: 120,
                         columnNumber: 11
                     }, this),
-                    suggestions.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "border-t border-zinc-200 px-3 py-2",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "flex flex-wrap gap-1.5",
-                            children: suggestions.slice(0, 3).map((suggestion)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                    type: "button",
-                                    onClick: ()=>{
-                                        void sendMessage(suggestion);
-                                    },
-                                    className: "rounded-full border border-zinc-300 px-2.5 py-1 text-xs text-zinc-700 hover:bg-zinc-100",
-                                    children: suggestion
-                                }, suggestion, false, {
-                                    fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                    lineNumber: 152,
-                                    columnNumber: 19
-                                }, this))
-                        }, void 0, false, {
-                            fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                            lineNumber: 150,
-                            columnNumber: 15
-                        }, this)
-                    }, void 0, false, {
-                        fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                        lineNumber: 149,
-                        columnNumber: 13
-                    }, this) : null,
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
                         onSubmit: onSubmit,
                         className: "border-t border-zinc-200 bg-white p-3",
@@ -577,43 +531,43 @@ function SalesBotWidget({ languageCode, iconUrl, buttonLabel, panelTitle, inputP
                                     className: "h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
                                 }, void 0, false, {
                                     fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                    lineNumber: 169,
+                                    lineNumber: 143,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                     type: "submit",
                                     disabled: loading || !input.trim(),
-                                    className: "inline-flex h-10 items-center gap-1.5 rounded-lg bg-zinc-900 px-3 text-xs font-semibold text-white disabled:opacity-50",
+                                    className: "inline-flex h-10 items-center gap-1.5 rounded-lg bg-[#4A90E2] px-3 text-xs font-semibold text-white transition hover:bg-[#3A7FD1] disabled:opacity-50",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$send$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Send$3e$__["Send"], {
                                             className: "h-3.5 w-3.5"
                                         }, void 0, false, {
                                             fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                            lineNumber: 180,
+                                            lineNumber: 154,
                                             columnNumber: 17
                                         }, this),
                                         sendLabel
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                    lineNumber: 175,
+                                    lineNumber: 149,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                            lineNumber: 168,
+                            lineNumber: 142,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                        lineNumber: 167,
+                        lineNumber: 141,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                lineNumber: 113,
+                lineNumber: 106,
                 columnNumber: 9
             }, this) : null
         ]
