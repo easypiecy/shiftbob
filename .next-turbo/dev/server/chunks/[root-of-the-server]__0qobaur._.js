@@ -110,18 +110,136 @@ function resolveKnowledgeForLanguage(entries, languageCode) {
     return entries;
 }
 function tokenize(value) {
-    return value.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").split(/\s+/).map((token)=>token.trim()).filter((token)=>token.length > 1);
+    const stopwords = new Set([
+        "og",
+        "i",
+        "på",
+        "om",
+        "for",
+        "til",
+        "at",
+        "er",
+        "kan",
+        "jeg",
+        "vi",
+        "de",
+        "det",
+        "den",
+        "der",
+        "the",
+        "and",
+        "for",
+        "with",
+        "can",
+        "you",
+        "we",
+        "is",
+        "are"
+    ]);
+    return value.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").split(/\s+/).map((token)=>token.trim()).filter((token)=>token.length > 1 && !stopwords.has(token));
+}
+function expandTokens(tokens) {
+    const synonyms = {
+        vinter: [
+            "sæsonpause",
+            "pause",
+            "offseason",
+            "off-season",
+            "seasonal"
+        ],
+        vinteren: [
+            "sæsonpause",
+            "pause",
+            "offseason",
+            "off-season",
+            "seasonal"
+        ],
+        bero: [
+            "pause",
+            "sæsonpause"
+        ],
+        pause: [
+            "sæsonpause",
+            "bero"
+        ],
+        sæsonpause: [
+            "pause",
+            "offseason",
+            "off-season",
+            "seasonal"
+        ],
+        seasonal: [
+            "offseason",
+            "off-season",
+            "pause",
+            "sæsonpause"
+        ],
+        offseason: [
+            "seasonal",
+            "pause",
+            "sæsonpause"
+        ],
+        "off-season": [
+            "seasonal",
+            "pause",
+            "sæsonpause"
+        ],
+        abonnement: [
+            "plan",
+            "subscription"
+        ],
+        subscription: [
+            "plan",
+            "abonnement"
+        ]
+    };
+    const out = new Set(tokens);
+    for (const token of tokens){
+        for (const alt of synonyms[token] ?? []){
+            out.add(alt);
+        }
+    }
+    return [
+        ...out
+    ];
 }
 function scoreKnowledgeMatch(question, row) {
-    const hay = `${row.title} ${row.question} ${row.tags.join(" ")}`.toLowerCase();
-    const tokens = tokenize(question);
+    const tokens = expandTokens(tokenize(question));
     if (tokens.length === 0) return 0;
+    const normalizedQuestion = question.trim().toLowerCase();
+    const hayPrimary = `${row.title} ${row.question} ${row.tags.join(" ")}`.toLowerCase();
+    const hayFull = `${row.title} ${row.question} ${row.answer} ${row.tags.join(" ")}`.toLowerCase();
     let score = 0;
+    let matchedCount = 0;
     for (const token of tokens){
-        if (hay.includes(token)) score += 1;
+        if (hayPrimary.includes(token)) {
+            score += 3;
+            matchedCount += 1;
+            continue;
+        }
+        if (hayFull.includes(token)) {
+            score += 2;
+            matchedCount += 1;
+        }
     }
-    if (hay.includes(question.trim().toLowerCase())) score += 2;
+    if (hayFull.includes(normalizedQuestion)) score += 5;
+    if (row.question.trim().toLowerCase() === normalizedQuestion) score += 8;
+    if (matchedCount > 0) {
+        score += matchedCount / tokens.length * 4;
+    }
     return score;
+}
+function countMatchedTokens(tokens, row) {
+    if (tokens.length === 0) return 0;
+    const hayPrimary = `${row.title} ${row.question} ${row.tags.join(" ")}`.toLowerCase();
+    const hayFull = `${row.title} ${row.question} ${row.answer} ${row.tags.join(" ")}`.toLowerCase();
+    let matchedCount = 0;
+    for (const token of tokens){
+        if (hayPrimary.includes(token) || hayFull.includes(token)) {
+            matchedCount += 1;
+        }
+    }
+    return matchedCount;
 }
 async function getSalesBotRuntime(languageCode) {
     const preferredLanguage = normalizeLanguageCode(languageCode);
@@ -175,6 +293,7 @@ async function getSalesBotRuntime(languageCode) {
 }
 function buildSalesBotReply(input) {
     const message = input.question.trim();
+    const messageTokens = expandTokens(tokenize(message));
     const suggestions = input.knowledge.slice(0, 3).map((entry)=>entry.question);
     const ctaLabel = input.manifest.cta_label.trim();
     const ctaHref = input.manifest.cta_href.trim();
@@ -192,7 +311,14 @@ function buildSalesBotReply(input) {
             score: scoreKnowledgeMatch(message, entry)
         })).sort((a, b)=>b.score - a.score);
     const best = ranked[0];
-    if (!best || best.score < 1) {
+    const second = ranked[1];
+    const tokenMatches = best ? countMatchedTokens(messageTokens, best.entry) : 0;
+    const coverage = messageTokens.length > 0 ? tokenMatches / messageTokens.length : 0;
+    // Conservative confidence guardrails: prefer fallback over wrong answers.
+    const tooWeak = !best || best.score < 5;
+    const tooAmbiguous = !!best && !!second && best.score - second.score < 2;
+    const tooLowCoverage = messageTokens.length > 0 && coverage < 0.34;
+    if (tooWeak || tooAmbiguous || tooLowCoverage) {
         return {
             reply: input.manifest.fallback_reply,
             suggestions,

@@ -118,6 +118,7 @@ insert into public.salesbot_knowledge_entries (
 ('en-US', 'FAQ: EU languages', 'How many languages do you support?', 'ShiftBob supports all EU languages in the product experience.', array['faq_v2', 'languages', 'eu'], 12),
 ('en-US', 'FAQ: Who is this for?', 'Who is ShiftBob made for?', 'ShiftBob is made for managers who plan shifts, need compliance confidence, and want better communication with their teams.', array['faq_v2', 'target_group', 'managers'], 13),
 ('en-US', 'FAQ: Onboarding speed', 'How fast can we get started?', 'Most teams can start quickly by selecting a plan and using existing scheduling data right away.', array['faq_v2', 'onboarding', 'setup'], 14),
+('en-US', 'FAQ: Seasonal pause', 'Can I pause the subscription during winter or off-season?', 'Yes. Seasonal businesses can pause their subscription during off-season periods on the Hybrid App plan.', array['faq_v2', 'seasonal', 'pause', 'winter', 'off-season', 'hybrid_app'], 15),
 ('da', 'FAQ: Basic pris', 'Hvad koster Basic-planen?', 'Den gratis Basic-plan koster 0 EUR og kan bruges uden tidsbegrænsning.', array['faq_v2', 'pris', 'basic'], 1),
 ('da', 'FAQ: Basic indhold', 'Hvad er inkluderet i den gratis Basic-plan?', 'Den gratis Basic-plan indeholder professionel vagtplansskabelon, kompatibilitet med Excel og Google Sheets, tydeligt overblik over vagttyper, indbygget timeberegning samt ét gratis compliance-tjek pr. dag.', array['faq_v2', 'basic', 'funktioner'], 2),
 ('da', 'FAQ: Pro Planner pris', 'Hvad koster Pro Planner?', 'Pro Planner koster 49 EUR pr. måned.', array['faq_v2', 'pris', 'pro_planner'], 3),
@@ -131,5 +132,6 @@ insert into public.salesbot_knowledge_entries (
 ('da', 'FAQ: 11-timers-reglen', 'Hvordan håndterer I 11-timers-reglen?', 'ShiftBob tjekker vagtplaner for compliance og forhindrer bytter/overtagelser, der bryder regler som fx 11-timers daglig hvile.', array['faq_v2', 'compliance', '11-timers'], 11),
 ('da', 'FAQ: EU-sprog', 'Hvor mange sprog understøtter I?', 'ShiftBob understøtter alle EU-sprog i produktoplevelsen.', array['faq_v2', 'sprog', 'eu'], 12),
 ('da', 'FAQ: Hvem passer ShiftBob til?', 'Hvem er ShiftBob lavet til?', 'ShiftBob er lavet til ledere der planlægger vagter, vil være trygge ved compliance og ønsker bedre kommunikation med deres teams.', array['faq_v2', 'målgruppe', 'ledere'], 13),
-('da', 'FAQ: Opstartshastighed', 'Hvor hurtigt kan vi komme i gang?', 'De fleste teams kan komme hurtigt i gang ved at vælge en plan og bruge deres eksisterende planlægningsdata med det samme.', array['faq_v2', 'onboarding', 'opstart'], 14)
+('da', 'FAQ: Opstartshastighed', 'Hvor hurtigt kan vi komme i gang?', 'De fleste teams kan komme hurtigt i gang ved at vælge en plan og bruge deres eksisterende planlægningsdata med det samme.', array['faq_v2', 'onboarding', 'opstart'], 14),
+('da', 'FAQ: Sæsonpause', 'Kan jeg sætte abonnementet i bero om vinteren?', 'Ja. Sæsonbaserede virksomheder kan sætte abonnementet på pause i lavsæsonen på Hybrid App-planen.', array['faq_v2', 'sæsonpause', 'pause', 'vinter', 'bero', 'hybrid_app'], 15)
 on conflict do nothing;
