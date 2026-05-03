@@ -117,6 +117,8 @@ function tokenize(value) {
         "om",
         "for",
         "til",
+        "når",
+        "også",
         "at",
         "er",
         "kan",
@@ -124,12 +126,7 @@ function tokenize(value) {
         "mit",
         "min",
         "mine",
-        "eget",
-        "jeres",
         "eller",
-        "før",
-        "her",
-        "virker",
         "hvad",
         "det",
         "vi",
@@ -198,8 +195,49 @@ function expandTokens(tokens) {
         abonnement: [
             "subscription"
         ],
+        abonnementet: [
+            "subscription",
+            "abonnement"
+        ],
+        aboennement: [
+            "abonnement",
+            "subscription"
+        ],
+        abonnenement: [
+            "abonnement",
+            "subscription"
+        ],
+        abonement: [
+            "abonnement",
+            "subscription"
+        ],
         subscription: [
             "abonnement"
+        ],
+        betale: [
+            "pris",
+            "koster",
+            "pause",
+            "sæsonpause"
+        ],
+        betaling: [
+            "pris",
+            "koster",
+            "pause",
+            "sæsonpause"
+        ],
+        lukket: [
+            "lavsæsonen",
+            "pause",
+            "sæsonpause",
+            "offseason",
+            "off-season"
+        ],
+        lavsæsonen: [
+            "pause",
+            "sæsonpause",
+            "offseason",
+            "off-season"
         ],
         regneark: [
             "excel",
@@ -240,6 +278,21 @@ function intentBoost(question, row) {
         const hay = `${row.title} ${row.question} ${row.answer}`.toLowerCase();
         if (hay.includes("excel") || hay.includes("google sheets") || hay.includes("regneark")) {
             boost += 3;
+        }
+    }
+    const asksTemplatePolicy = (q.includes("eget") || q.includes("mit")) && (q.includes("jeres") || q.includes("template")) && (q.includes("regneark") || q.includes("excel") || q.includes("google sheets"));
+    if (asksTemplatePolicy) {
+        const tags = row.tags.map((t)=>t.toLowerCase());
+        const hay = `${row.title} ${row.question} ${row.answer}`.toLowerCase();
+        if (tags.includes("template") || hay.includes("template-regnearket")) {
+            boost += 8;
+        }
+    }
+    const asksSeasonalPayment = (q.includes("vinter") || q.includes("lavsæson") || q.includes("lukket")) && (q.includes("betal") || q.includes("pris") || q.includes("abonnement"));
+    if (asksSeasonalPayment) {
+        const tags = row.tags.map((t)=>t.toLowerCase());
+        if (tags.includes("sæsonpause") || tags.includes("seasonal") || tags.includes("pause") || tags.includes("hybrid_app")) {
+            boost += 7;
         }
     }
     return boost;
@@ -323,6 +376,31 @@ function rephraseForExplainIntent(question, answer, languageBase) {
     }
     return `Great question. In practice, this means: ${a}`;
 }
+function applyWarmTone(question, answer, languageBase) {
+    const a = answer.trim();
+    if (!a) return a;
+    if (languageBase === "da") {
+        const alreadyWarm = /godt spørgsmål|helt fair|selvfølgelig|klart|tak for spørgsmålet/i.test(a);
+        const intro = alreadyWarm ? "" : "Godt spørgsmål.";
+        const hasOutro = /sig til|sig endelig|uddybe|konkret eksempel/i.test(a);
+        const asksForClarification = /kan|skal|hvad|hvordan|hvorfor/i.test(question.toLowerCase());
+        const outro = hasOutro ? "" : asksForClarification ? "Sig endelig til, hvis du vil have et konkret eksempel på, hvordan det ser ud i praksis." : "Sig endelig til, hvis du vil have, at jeg uddyber.";
+        return [
+            intro,
+            a,
+            outro
+        ].filter(Boolean).join(" ");
+    }
+    const alreadyWarm = /great question|totally fair|happy to explain|gladly explain|thanks for asking/i.test(a);
+    const intro = alreadyWarm ? "" : "Great question.";
+    const hasOutro = /let me know|happy to|gladly/i.test(a);
+    const outro = hasOutro ? "" : "Let me know if you want a concrete example for your setup.";
+    return [
+        intro,
+        a,
+        outro
+    ].filter(Boolean).join(" ");
+}
 async function getSalesBotRuntime(languageCode) {
     const preferredLanguage = normalizeLanguageCode(languageCode);
     try {
@@ -382,7 +460,7 @@ function buildSalesBotReply(input) {
     const ctaHref = input.manifest.cta_href.trim();
     const showCta = ctaLabel.length > 0 && ctaHref.length > 0;
     const langBase = (input.languageCode?.trim().split("-")[0] || "en").toLowerCase();
-    const localizedFallback = langBase === "da" ? "Jeg har ikke et præcist svar på det endnu. Prøv gerne at omformulere spørgsmålet lidt mere konkret, fx:\n• \"Kan vi sætte abonnementet på pause i lavsæsonen?\"\n• \"Hvad indeholder Hybrid App-planen?\"\n• \"Hvad er prisen pr. bruger?\"" : "I do not have a precise answer yet. Please try rephrasing your question with a bit more detail, for example:\n• \"Can we pause the subscription during off-season?\"\n• \"What is included in the Hybrid App plan?\"\n• \"What is the price per user?\"";
+    const localizedFallback = langBase === "da" ? "Tak for spørgsmålet. Jeg har ikke et præcist svar på det endnu. Prøv gerne at omformulere spørgsmålet lidt mere konkret, fx:\n• \"Kan vi sætte abonnementet på pause i lavsæsonen?\"\n• \"Hvad indeholder Hybrid App-planen?\"\n• \"Hvad er prisen pr. bruger?\"" : "Thanks for asking. I do not have a precise answer yet. Please try rephrasing your question with a bit more detail, for example:\n• \"Can we pause the subscription during off-season?\"\n• \"What is included in the Hybrid App plan?\"\n• \"What is the price per user?\"";
     const contextEntry = input.contextKnowledgeId?.trim() && input.contextKnowledgeId.trim().length > 0 ? input.knowledge.find((row)=>row.id === input.contextKnowledgeId?.trim()) ?? null : null;
     function localizedConfirmationPrefix() {
         if (langBase === "da") return "Ja, præcis.";
@@ -413,7 +491,7 @@ function buildSalesBotReply(input) {
     const looksLikeFollowup = messageTokens.length <= 8 && followupHints.some((hint)=>lowerMessage.startsWith(hint) || lowerMessage.includes(` ${hint}`));
     if (contextEntry && looksLikeFollowup) {
         return {
-            reply: `${localizedConfirmationPrefix()} ${contextEntry.answer}`,
+            reply: applyWarmTone(message, `${localizedConfirmationPrefix()} ${contextEntry.answer}`, langBase),
             suggestions,
             ctaLabel: showCta ? ctaLabel : null,
             ctaHref: showCta ? ctaHref : null,
@@ -445,12 +523,52 @@ function buildSalesBotReply(input) {
         };
     }
     return {
-        reply: rephraseForExplainIntent(message, best.entry.answer, langBase),
+        reply: applyWarmTone(message, rephraseForExplainIntent(message, best.entry.answer, langBase), langBase),
         suggestions,
         ctaLabel: showCta ? ctaLabel : null,
         ctaHref: showCta ? ctaHref : null,
         matchedKnowledgeId: best.entry.id
     };
+}
+}),
+"[externals]/next/dist/server/app-render/after-task-async-storage.external.js [external] (next/dist/server/app-render/after-task-async-storage.external.js, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("next/dist/server/app-render/after-task-async-storage.external.js", () => require("next/dist/server/app-render/after-task-async-storage.external.js"));
+
+module.exports = mod;
+}),
+"[project]/src/utils/supabase/server.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "createServerSupabase",
+    ()=>createServerSupabase
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$index$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@supabase/ssr/dist/module/index.js [app-route] (ecmascript) <locals>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$createServerClient$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@supabase/ssr/dist/module/createServerClient.js [app-route] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$headers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/headers.js [app-route] (ecmascript)");
+;
+;
+async function createServerSupabase() {
+    const url = ("TURBOPACK compile-time value", "https://pwooqmqdershicxpnfuo.supabase.co");
+    const anonKey = ("TURBOPACK compile-time value", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3b29xbXFkZXJzaGljeHBuZnVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwODI5MjUsImV4cCI6MjA4OTY1ODkyNX0.GoCzr9bTva2fqF0tbQbHy2F5BB9KRUajB8RzvtECAGE");
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    const cookieStore = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$headers$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["cookies"])();
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$createServerClient$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["createServerClient"])(url, anonKey, {
+        cookies: {
+            getAll () {
+                return cookieStore.getAll();
+            },
+            setAll (cookiesToSet) {
+                try {
+                    cookiesToSet.forEach(({ name, value, options })=>cookieStore.set(name, value, options));
+                } catch  {
+                // Server Actions kan køre uden mulighed for at sætte cookies
+                }
+            }
+        }
+    });
 }
 }),
 "[project]/app/api/salesbot/chat/route.ts [app-route] (ecmascript)", ((__turbopack_context__) => {
@@ -465,6 +583,10 @@ __turbopack_context__.s([
     ()=>runtime
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$salesbot$2d$runtime$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/salesbot-runtime.ts [app-route] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$supabase$2f$server$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/utils/supabase/server.ts [app-route] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$supabase$2f$admin$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/utils/supabase/admin.ts [app-route] (ecmascript)");
+;
+;
 ;
 const runtime = "nodejs";
 const dynamic = "force-dynamic";
@@ -482,6 +604,25 @@ async function POST(req) {
             languageCode,
             contextKnowledgeId
         });
+        if (message) {
+            try {
+                const admin = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$supabase$2f$admin$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["getAdminClient"])();
+                const supabase = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$supabase$2f$server$2e$ts__$5b$app$2d$route$5d$__$28$ecmascript$29$__["createServerSupabase"])();
+                const { data: { user } } = await supabase.auth.getUser();
+                await admin.from("salesbot_chat_logs").insert({
+                    language_code: languageCode,
+                    user_message: message,
+                    bot_reply: result.reply,
+                    matched_knowledge_id: result.matchedKnowledgeId,
+                    context_knowledge_id: contextKnowledgeId || null,
+                    cta_label: result.ctaLabel,
+                    cta_href: result.ctaHref,
+                    user_id: user?.id ?? null
+                });
+            } catch  {
+            // Non-blocking logging.
+            }
+        }
         return Response.json({
             ok: true,
             reply: result.reply,
@@ -503,4 +644,4 @@ async function POST(req) {
 }),
 ];
 
-//# sourceMappingURL=%5Broot-of-the-server%5D__0qobaur._.js.map
+//# sourceMappingURL=%5Broot-of-the-server%5D__0.4_-6u._.js.map

@@ -82,10 +82,18 @@ function tokenize(value: string): string[] {
     "om",
     "for",
     "til",
+    "når",
+    "også",
     "at",
     "er",
     "kan",
     "jeg",
+    "mit",
+    "min",
+    "mine",
+    "eller",
+    "hvad",
+    "det",
     "vi",
     "de",
     "det",
@@ -119,8 +127,19 @@ function expandTokens(tokens: string[]): string[] {
     seasonal: ["offseason", "off-season", "pause", "sæsonpause"],
     offseason: ["seasonal", "pause", "sæsonpause"],
     "off-season": ["seasonal", "pause", "sæsonpause"],
-    abonnement: ["plan", "subscription"],
-    subscription: ["plan", "abonnement"],
+    abonnement: ["subscription"],
+    abonnementet: ["subscription", "abonnement"],
+    aboennement: ["abonnement", "subscription"],
+    abonnenement: ["abonnement", "subscription"],
+    abonement: ["abonnement", "subscription"],
+    subscription: ["abonnement"],
+    betale: ["pris", "koster", "pause", "sæsonpause"],
+    betaling: ["pris", "koster", "pause", "sæsonpause"],
+    lukket: ["lavsæsonen", "pause", "sæsonpause", "offseason", "off-season"],
+    lavsæsonen: ["pause", "sæsonpause", "offseason", "off-season"],
+    regneark: ["excel", "spreadsheet", "google", "sheets"],
+    excel: ["regneark", "spreadsheet", "google", "sheets"],
+    spreadsheet: ["regneark", "excel", "google", "sheets"],
   };
 
   const out = new Set<string>(tokens);
@@ -130,6 +149,54 @@ function expandTokens(tokens: string[]): string[] {
     }
   }
   return [...out];
+}
+
+function intentBoost(question: string, row: SalesBotKnowledgeEntry): number {
+  const q = question.toLowerCase();
+  let boost = 0;
+
+  const asksSpreadsheet =
+    q.includes("regneark") ||
+    q.includes("excel") ||
+    q.includes("google sheets") ||
+    q.includes("spreadsheet");
+  if (asksSpreadsheet) {
+    const tags = row.tags.map((t) => t.toLowerCase());
+    if (tags.includes("excel") || tags.includes("onboarding")) boost += 3;
+    const hay = `${row.title} ${row.question} ${row.answer}`.toLowerCase();
+    if (hay.includes("excel") || hay.includes("google sheets") || hay.includes("regneark")) {
+      boost += 3;
+    }
+  }
+
+  const asksTemplatePolicy =
+    (q.includes("eget") || q.includes("mit")) &&
+    (q.includes("jeres") || q.includes("template")) &&
+    (q.includes("regneark") || q.includes("excel") || q.includes("google sheets"));
+  if (asksTemplatePolicy) {
+    const tags = row.tags.map((t) => t.toLowerCase());
+    const hay = `${row.title} ${row.question} ${row.answer}`.toLowerCase();
+    if (tags.includes("template") || hay.includes("template-regnearket")) {
+      boost += 8;
+    }
+  }
+
+  const asksSeasonalPayment =
+    (q.includes("vinter") || q.includes("lavsæson") || q.includes("lukket")) &&
+    (q.includes("betal") || q.includes("pris") || q.includes("abonnement"));
+  if (asksSeasonalPayment) {
+    const tags = row.tags.map((t) => t.toLowerCase());
+    if (
+      tags.includes("sæsonpause") ||
+      tags.includes("seasonal") ||
+      tags.includes("pause") ||
+      tags.includes("hybrid_app")
+    ) {
+      boost += 7;
+    }
+  }
+
+  return boost;
 }
 
 function scoreKnowledgeMatch(question: string, row: SalesBotKnowledgeEntry): number {
@@ -157,6 +224,7 @@ function scoreKnowledgeMatch(question: string, row: SalesBotKnowledgeEntry): num
   if (matchedCount > 0) {
     score += (matchedCount / tokens.length) * 4;
   }
+  score += intentBoost(question, row);
   return score;
 }
 
@@ -171,6 +239,81 @@ function countMatchedTokens(tokens: string[], row: SalesBotKnowledgeEntry): numb
     }
   }
   return matchedCount;
+}
+
+function isExplainIntent(question: string): boolean {
+  const q = question.toLowerCase().trim();
+  const explainHints = [
+    "hvad betyder",
+    "hvad menes",
+    "forklar",
+    "uddyb",
+    "hvordan skal",
+    "how does",
+    "what does it mean",
+    "explain",
+    "elaborate",
+  ];
+  return explainHints.some((hint) => q.includes(hint));
+}
+
+function rephraseForExplainIntent(
+  question: string,
+  answer: string,
+  languageBase: string
+): string {
+  if (!isExplainIntent(question)) return answer;
+
+  const a = answer.trim();
+  const lower = a.toLowerCase();
+
+  if (languageBase === "da") {
+    const points: string[] = [];
+    if (lower.includes("ios") || lower.includes("android") || lower.includes("app")) {
+      points.push("medarbejderne får en mobil app til den daglige vagtkommunikation");
+    }
+    if (lower.includes("vagtbytte")) {
+      points.push("de kan håndtere vagtbytte direkte i appen");
+    }
+    if (lower.includes("push")) {
+      points.push("de får push-notifikationer ved ændringer");
+    }
+    if (lower.includes("godkendelsesdashboard")) {
+      points.push("ledelsen kan godkende og styre ændringer i et dashboard");
+    }
+    if (points.length > 0) {
+      return `Godt spørgsmål. Det betyder i praksis, at ${points.join(", ")}.\n\nKort sagt: ${a}`;
+    }
+    return `Godt spørgsmål. Det betyder i praksis: ${a}`;
+  }
+
+  return `Great question. In practice, this means: ${a}`;
+}
+
+function applyWarmTone(question: string, answer: string, languageBase: string): string {
+  const a = answer.trim();
+  if (!a) return a;
+
+  if (languageBase === "da") {
+    const alreadyWarm =
+      /godt spørgsmål|helt fair|selvfølgelig|klart|tak for spørgsmålet/i.test(a);
+    const intro = alreadyWarm ? "" : "Godt spørgsmål.";
+    const hasOutro = /sig til|sig endelig|uddybe|konkret eksempel/i.test(a);
+    const asksForClarification = /kan|skal|hvad|hvordan|hvorfor/i.test(question.toLowerCase());
+    const outro = hasOutro
+      ? ""
+      : asksForClarification
+        ? "Sig endelig til, hvis du vil have et konkret eksempel på, hvordan det ser ud i praksis."
+        : "Sig endelig til, hvis du vil have, at jeg uddyber.";
+    return [intro, a, outro].filter(Boolean).join(" ");
+  }
+
+  const alreadyWarm =
+    /great question|totally fair|happy to explain|gladly explain|thanks for asking/i.test(a);
+  const intro = alreadyWarm ? "" : "Great question.";
+  const hasOutro = /let me know|happy to|gladly/i.test(a);
+  const outro = hasOutro ? "" : "Let me know if you want a concrete example for your setup.";
+  return [intro, a, outro].filter(Boolean).join(" ");
 }
 
 export async function getSalesBotRuntime(languageCode?: string): Promise<{
@@ -246,13 +389,36 @@ export function buildSalesBotReply(input: {
   question: string;
   manifest: SalesBotManifest;
   knowledge: SalesBotKnowledgeEntry[];
-}): { reply: string; suggestions: string[]; ctaLabel: string | null; ctaHref: string | null } {
+  languageCode?: string;
+  contextKnowledgeId?: string;
+}): {
+  reply: string;
+  suggestions: string[];
+  ctaLabel: string | null;
+  ctaHref: string | null;
+  matchedKnowledgeId: string | null;
+} {
   const message = input.question.trim();
-  const messageTokens = expandTokens(tokenize(message));
+  const baseTokens = tokenize(message);
+  const messageTokens = expandTokens(baseTokens);
   const suggestions = input.knowledge.slice(0, 3).map((entry) => entry.question);
   const ctaLabel = input.manifest.cta_label.trim();
   const ctaHref = input.manifest.cta_href.trim();
   const showCta = ctaLabel.length > 0 && ctaHref.length > 0;
+  const langBase = (input.languageCode?.trim().split("-")[0] || "en").toLowerCase();
+  const localizedFallback =
+    langBase === "da"
+      ? "Tak for spørgsmålet. Jeg har ikke et præcist svar på det endnu. Prøv gerne at omformulere spørgsmålet lidt mere konkret, fx:\n• \"Kan vi sætte abonnementet på pause i lavsæsonen?\"\n• \"Hvad indeholder Hybrid App-planen?\"\n• \"Hvad er prisen pr. bruger?\""
+      : "Thanks for asking. I do not have a precise answer yet. Please try rephrasing your question with a bit more detail, for example:\n• \"Can we pause the subscription during off-season?\"\n• \"What is included in the Hybrid App plan?\"\n• \"What is the price per user?\"";
+  const contextEntry =
+    input.contextKnowledgeId?.trim() && input.contextKnowledgeId.trim().length > 0
+      ? input.knowledge.find((row) => row.id === input.contextKnowledgeId?.trim()) ?? null
+      : null;
+
+  function localizedConfirmationPrefix() {
+    if (langBase === "da") return "Ja, præcis.";
+    return "Yes, exactly.";
+  }
 
   if (!message) {
     return {
@@ -260,6 +426,37 @@ export function buildSalesBotReply(input: {
       suggestions,
       ctaLabel: showCta ? ctaLabel : null,
       ctaHref: showCta ? ctaHref : null,
+      matchedKnowledgeId: null,
+    };
+  }
+
+  const followupHints = [
+    "så",
+    "altså",
+    "det betyder",
+    "så man kan",
+    "kan man så",
+    "forstået",
+    "got it",
+    "so ",
+    "so that",
+    "meaning",
+  ];
+  const lowerMessage = message.toLowerCase();
+  const looksLikeFollowup =
+    messageTokens.length <= 8 &&
+    followupHints.some((hint) => lowerMessage.startsWith(hint) || lowerMessage.includes(` ${hint}`));
+  if (contextEntry && looksLikeFollowup) {
+    return {
+      reply: applyWarmTone(
+        message,
+        `${localizedConfirmationPrefix()} ${contextEntry.answer}`,
+        langBase
+      ),
+      suggestions,
+      ctaLabel: showCta ? ctaLabel : null,
+      ctaHref: showCta ? ctaHref : null,
+      matchedKnowledgeId: contextEntry.id,
     };
   }
 
@@ -270,26 +467,39 @@ export function buildSalesBotReply(input: {
   const best = ranked[0];
   const second = ranked[1];
   const tokenMatches = best ? countMatchedTokens(messageTokens, best.entry) : 0;
+  const baseTokenMatches = best ? countMatchedTokens(baseTokens, best.entry) : 0;
   const coverage = messageTokens.length > 0 ? tokenMatches / messageTokens.length : 0;
+  const baseCoverage = baseTokens.length > 0 ? baseTokenMatches / baseTokens.length : 0;
 
   // Conservative confidence guardrails: prefer fallback over wrong answers.
-  const tooWeak = !best || best.score < 5;
-  const tooAmbiguous = !!best && !!second && best.score - second.score < 2;
-  const tooLowCoverage = messageTokens.length > 0 && coverage < 0.34;
+  const tooWeak = !best || best.score < 3.6;
+  const tooAmbiguous =
+    !!best &&
+    !!second &&
+    best.score - second.score < 1.2 &&
+    // If original (non-expanded) tokens already match well, trust the best hit.
+    !(baseCoverage >= 0.5 && best.score >= 4.2);
+  const tooLowCoverage = messageTokens.length >= 3 && coverage < 0.24;
 
   if (tooWeak || tooAmbiguous || tooLowCoverage) {
     return {
-      reply: input.manifest.fallback_reply,
+      reply: localizedFallback,
       suggestions,
       ctaLabel: showCta ? ctaLabel : null,
       ctaHref: showCta ? ctaHref : null,
+      matchedKnowledgeId: null,
     };
   }
 
   return {
-    reply: best.entry.answer,
+    reply: applyWarmTone(
+      message,
+      rephraseForExplainIntent(message, best.entry.answer, langBase),
+      langBase
+    ),
     suggestions,
     ctaLabel: showCta ? ctaLabel : null,
     ctaHref: showCta ? ctaHref : null,
+    matchedKnowledgeId: best.entry.id,
   };
 }

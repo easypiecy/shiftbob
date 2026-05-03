@@ -31,11 +31,29 @@ create table if not exists public.salesbot_knowledge_entries (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.salesbot_chat_logs (
+  id uuid primary key default gen_random_uuid(),
+  language_code varchar(35) not null default 'en-US',
+  user_message text not null,
+  bot_reply text not null,
+  matched_knowledge_id uuid null references public.salesbot_knowledge_entries(id) on delete set null,
+  context_knowledge_id uuid null references public.salesbot_knowledge_entries(id) on delete set null,
+  cta_label text null,
+  cta_href text null,
+  user_id uuid null references auth.users(id) on delete set null,
+  created_at timestamptz not null default now()
+);
+
 create index if not exists salesbot_knowledge_entries_lang_idx
   on public.salesbot_knowledge_entries (language_code, active, sort_order, created_at desc);
+create index if not exists salesbot_chat_logs_created_idx
+  on public.salesbot_chat_logs (created_at desc);
+create index if not exists salesbot_chat_logs_language_idx
+  on public.salesbot_chat_logs (language_code, created_at desc);
 
 alter table public.salesbot_manifests enable row level security;
 alter table public.salesbot_knowledge_entries enable row level security;
+alter table public.salesbot_chat_logs enable row level security;
 
 drop policy if exists "salesbot_manifests_select_public" on public.salesbot_manifests;
 create policy "salesbot_manifests_select_public"
@@ -67,8 +85,24 @@ create policy "salesbot_knowledge_entries_write_super_admin"
   using (public.has_super_admin_membership())
   with check (public.has_super_admin_membership());
 
+drop policy if exists "salesbot_chat_logs_select_super_admin" on public.salesbot_chat_logs;
+create policy "salesbot_chat_logs_select_super_admin"
+  on public.salesbot_chat_logs
+  for select
+  to authenticated
+  using (public.has_super_admin_membership());
+
+drop policy if exists "salesbot_chat_logs_insert_auth" on public.salesbot_chat_logs;
+create policy "salesbot_chat_logs_insert_auth"
+  on public.salesbot_chat_logs
+  for insert
+  to authenticated, anon
+  with check (true);
+
 grant select on public.salesbot_manifests to anon, authenticated;
 grant select on public.salesbot_knowledge_entries to anon, authenticated;
+grant select on public.salesbot_chat_logs to authenticated;
+grant insert on public.salesbot_chat_logs to anon, authenticated;
 grant insert, update, delete on public.salesbot_manifests to authenticated;
 grant insert, update, delete on public.salesbot_knowledge_entries to authenticated;
 
@@ -97,7 +131,7 @@ insert into public.salesbot_knowledge_entries (
   tags,
   sort_order
 ) values
-('en-US', 'Spreadsheet upload', 'How do we start with ShiftBob?', 'Upload your existing Excel or Google Sheets planning file, and ShiftBob converts it into a modern flow with compliance checks and mobile access for your team.', array['onboarding', 'excel', 'setup'], 10),
+('en-US', 'Spreadsheet upload', 'How do we start with ShiftBob?', 'Start with the free ShiftBob template spreadsheet. It is the compatible format for EU compliance checks and can also be used on its own for shift planning without our service.', array['onboarding', 'excel', 'setup', 'template'], 10),
 ('en-US', 'Compliance', 'Does ShiftBob help with compliance?', 'Yes. ShiftBob continuously validates schedules against EU-style rest rules, and blocks problematic swaps before they become violations.', array['compliance', 'eu', 'labor-law'], 20),
 ('en-US', 'Employee app', 'Do employees get a mobile app?', 'Yes. Employees get iOS and Android access for shift overview, swap requests, open shifts, and push notifications.', array['mobile', 'app', 'employees'], 30),
 ('en-US', 'Pricing model', 'How is pricing structured?', 'You can start free and then move to paid tiers based on workflow and app usage. We can recommend the right tier after a short intro call.', array['pricing', 'plans'], 40),
@@ -112,13 +146,15 @@ insert into public.salesbot_knowledge_entries (
 ('en-US', 'FAQ: Hybrid App included', 'What do we get with Hybrid App?', 'Hybrid App includes everything in Basic and Pro Planner plus iOS/Android employee app access, in-app shift swap tools, approval dashboard, push reminders, and seasonal pause flexibility.', array['faq_v2', 'hybrid_app', 'features'], 6),
 ('en-US', 'FAQ: Autopilot price', 'How much is Autopilot?', 'Autopilot is 59 EUR per month plus 1 EUR per user.', array['faq_v2', 'pricing', 'autopilot'], 7),
 ('en-US', 'FAQ: Autopilot included', 'What is included in Autopilot?', 'Autopilot includes all previous plan features plus automatic shift generation, preference matching, advanced employee options, open-shift publishing, time export, custom shift types, and API access.', array['faq_v2', 'autopilot', 'features'], 8),
-('en-US', 'FAQ: Spreadsheet vs online', 'Do we need to leave Excel?', 'No. You can stay in Excel/Google Sheets with Basic, Pro Planner, or Hybrid App. Autopilot is the fully online option if you want to leave spreadsheets.', array['faq_v2', 'excel', 'autopilot'], 9),
+('en-US', 'FAQ: Spreadsheet vs online', 'Do we need to leave Excel?', 'No. You can continue using the free ShiftBob template spreadsheet with Basic, Pro Planner, or Hybrid App. The template is compatible with EU checks and can also be used on its own. Autopilot is the fully online option if you want to leave spreadsheets.', array['faq_v2', 'excel', 'autopilot', 'template'], 9),
 ('en-US', 'FAQ: Employee app platforms', 'Is the employee app available on iOS and Android?', 'Yes. The employee app is available on both App Store and Google Play.', array['faq_v2', 'mobile', 'ios', 'android'], 10),
 ('en-US', 'FAQ: Compliance 11-hour rule', 'How do you handle the 11-hour rule?', 'ShiftBob checks schedules for compliance and prevents swaps or picks that violate rules such as the 11-hour daily rest requirement.', array['faq_v2', 'compliance', '11-hour'], 11),
 ('en-US', 'FAQ: EU languages', 'How many languages do you support?', 'ShiftBob supports all EU languages in the product experience.', array['faq_v2', 'languages', 'eu'], 12),
 ('en-US', 'FAQ: Who is this for?', 'Who is ShiftBob made for?', 'ShiftBob is made for managers who plan shifts, need compliance confidence, and want better communication with their teams.', array['faq_v2', 'target_group', 'managers'], 13),
 ('en-US', 'FAQ: Onboarding speed', 'How fast can we get started?', 'Most teams can start quickly by selecting a plan and using existing scheduling data right away.', array['faq_v2', 'onboarding', 'setup'], 14),
 ('en-US', 'FAQ: Seasonal pause', 'Can I pause the subscription during winter or off-season?', 'Yes. Seasonal businesses can pause their subscription during off-season periods on the Hybrid App plan.', array['faq_v2', 'seasonal', 'pause', 'winter', 'off-season', 'hybrid_app'], 15),
+('en-US', 'FAQ: Own spreadsheet', 'Can I use my own spreadsheet, or do I need yours before this works?', 'Use the ShiftBob template spreadsheet. It is free, compatible with EU checks, and can also run shift planning on its own without our service.', array['faq_v2', 'excel', 'spreadsheet', 'onboarding', 'template'], 16),
+('en-US', 'FAQ: Pay during winter closure', 'Do I still have to pay the subscription when closed during winter?', 'No monthly app usage cost is needed while paused for off-season on the Hybrid App plan. Seasonal businesses can pause the subscription in low season and resume when operations restart.', array['faq_v2', 'seasonal', 'pause', 'winter', 'pricing', 'hybrid_app'], 17),
 ('da', 'FAQ: Basic pris', 'Hvad koster Basic-planen?', 'Den gratis Basic-plan koster 0 EUR og kan bruges uden tidsbegrænsning.', array['faq_v2', 'pris', 'basic'], 1),
 ('da', 'FAQ: Basic indhold', 'Hvad er inkluderet i den gratis Basic-plan?', 'Den gratis Basic-plan indeholder professionel vagtplansskabelon, kompatibilitet med Excel og Google Sheets, tydeligt overblik over vagttyper, indbygget timeberegning samt ét gratis compliance-tjek pr. dag.', array['faq_v2', 'basic', 'funktioner'], 2),
 ('da', 'FAQ: Pro Planner pris', 'Hvad koster Pro Planner?', 'Pro Planner koster 49 EUR pr. måned.', array['faq_v2', 'pris', 'pro_planner'], 3),
@@ -127,11 +163,13 @@ insert into public.salesbot_knowledge_entries (
 ('da', 'FAQ: Hybrid App indhold', 'Hvad får vi i Hybrid App?', 'Hybrid App indeholder alt i Basic og Pro Planner samt iOS/Android app til medarbejdere, værktøjer til vagtbytte i appen, godkendelsesdashboard, push-påmindelser og mulighed for sæsonpause.', array['faq_v2', 'hybrid_app', 'funktioner'], 6),
 ('da', 'FAQ: Autopilot pris', 'Hvad koster Autopilot?', 'Autopilot koster 59 EUR pr. måned plus 1 EUR pr. bruger.', array['faq_v2', 'pris', 'autopilot'], 7),
 ('da', 'FAQ: Autopilot indhold', 'Hvad er inkluderet i Autopilot?', 'Autopilot indeholder alle tidligere funktioner samt automatisk vagtgenerering, match med medarbejderpræferencer, avancerede medarbejderindstillinger, publicering af ledige vagter, tidseksport, egne vagttyper og API-adgang.', array['faq_v2', 'autopilot', 'funktioner'], 8),
-('da', 'FAQ: Excel eller online', 'Skal vi stoppe med Excel?', 'Nej. I kan fortsætte i Excel/Google Sheets med Basic, Pro Planner eller Hybrid App. Autopilot er den fulde online-løsning, hvis I vil væk fra regneark.', array['faq_v2', 'excel', 'autopilot'], 9),
+('da', 'FAQ: Excel eller online', 'Skal vi stoppe med Excel?', 'Nej. I kan fortsætte med ShiftBob template-regnearket i Basic, Pro Planner eller Hybrid App. Template-regnearket er gratis, kompatibelt med EU-tjek og kan også bruges alene til vagtplanlægning. Autopilot er den fulde online-løsning, hvis I vil væk fra regneark.', array['faq_v2', 'excel', 'autopilot', 'template'], 9),
 ('da', 'FAQ: Medarbejderapp platforme', 'Er medarbejderappen til både iOS og Android?', 'Ja. Medarbejderappen findes både i App Store og Google Play.', array['faq_v2', 'mobil', 'ios', 'android'], 10),
 ('da', 'FAQ: 11-timers-reglen', 'Hvordan håndterer I 11-timers-reglen?', 'ShiftBob tjekker vagtplaner for compliance og forhindrer bytter/overtagelser, der bryder regler som fx 11-timers daglig hvile.', array['faq_v2', 'compliance', '11-timers'], 11),
 ('da', 'FAQ: EU-sprog', 'Hvor mange sprog understøtter I?', 'ShiftBob understøtter alle EU-sprog i produktoplevelsen.', array['faq_v2', 'sprog', 'eu'], 12),
 ('da', 'FAQ: Hvem passer ShiftBob til?', 'Hvem er ShiftBob lavet til?', 'ShiftBob er lavet til ledere der planlægger vagter, vil være trygge ved compliance og ønsker bedre kommunikation med deres teams.', array['faq_v2', 'målgruppe', 'ledere'], 13),
 ('da', 'FAQ: Opstartshastighed', 'Hvor hurtigt kan vi komme i gang?', 'De fleste teams kan komme hurtigt i gang ved at vælge en plan og bruge deres eksisterende planlægningsdata med det samme.', array['faq_v2', 'onboarding', 'opstart'], 14),
-('da', 'FAQ: Sæsonpause', 'Kan jeg sætte abonnementet i bero om vinteren?', 'Ja. Sæsonbaserede virksomheder kan sætte abonnementet på pause i lavsæsonen på Hybrid App-planen.', array['faq_v2', 'sæsonpause', 'pause', 'vinter', 'bero', 'hybrid_app'], 15)
+('da', 'FAQ: Sæsonpause', 'Kan jeg sætte abonnementet i bero om vinteren?', 'Ja. Sæsonbaserede virksomheder kan sætte abonnementet på pause i lavsæsonen på Hybrid App-planen.', array['faq_v2', 'sæsonpause', 'pause', 'vinter', 'bero', 'hybrid_app'], 15),
+('da', 'FAQ: Eget regneark', 'Kan jeg bruge mit eget regneark, eller skal jeg bruge jeres regneark, før det virker?', 'I skal bruge ShiftBob template-regnearket for at det virker korrekt med vores setup. Template-regnearket er gratis, kompatibelt med EU-tjek og kan også bruges alene til at styre vagtplaner uden vores service.', array['faq_v2', 'excel', 'regneark', 'opstart', 'template'], 16),
+('da', 'FAQ: Betaling i vinterlukket', 'Skal jeg også betale abonnement når jeg holder lukket om vinteren?', 'Nej, ikke i perioder hvor abonnementet er sat på pause i lavsæsonen på Hybrid App-planen. I kan pause i vinterperioden og genoptage når driften starter igen.', array['faq_v2', 'sæsonpause', 'pause', 'vinter', 'betaling', 'hybrid_app'], 17)
 on conflict do nothing;

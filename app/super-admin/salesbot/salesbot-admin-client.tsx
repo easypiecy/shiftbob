@@ -7,6 +7,7 @@ import {
   deleteSalesBotKnowledgeEntry,
   saveSalesBotManifest,
   type LanguageOptionRow,
+  type SalesBotChatLogRow,
 } from "@/src/app/super-admin/salesbot-actions";
 import type { SalesBotKnowledgeEntry, SalesBotManifest } from "@/src/lib/salesbot-runtime";
 
@@ -14,17 +15,20 @@ type Props = {
   initialManifest: SalesBotManifest;
   initialKnowledge: SalesBotKnowledgeEntry[];
   languages: LanguageOptionRow[];
+  initialLogs: SalesBotChatLogRow[];
 };
 
 export default function SalesBotAdminClient({
   initialManifest,
   initialKnowledge,
   languages,
+  initialLogs,
 }: Props) {
   const [manifest, setManifest] = useState(initialManifest);
   const [knowledge, setKnowledge] = useState(initialKnowledge);
   const [busy, setBusy] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [logs] = useState(initialLogs);
 
   const [draft, setDraft] = useState({
     language_code: languages[0]?.language_code ?? "en-US",
@@ -315,6 +319,44 @@ export default function SalesBotAdminClient({
             Tilføj entry
           </button>
         </div>
+      </section>
+
+      <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <div>
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">Chatlog</h2>
+          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            Seneste spørgsmål/svar til løbende FAQ-optimering.
+          </p>
+        </div>
+
+        {logs.length === 0 ? (
+          <p className="text-sm text-zinc-500">Ingen chatlog endnu.</p>
+        ) : (
+          <div className="space-y-2">
+            {logs.map((log) => (
+              <article
+                key={log.id}
+                className="rounded-lg border border-zinc-200 p-3 text-sm dark:border-zinc-700"
+              >
+                <p className="text-xs text-zinc-500">
+                  {new Date(log.created_at).toLocaleString()} · {log.language_code}
+                  {log.user_id ? ` · user ${log.user_id.slice(0, 8)}...` : " · guest"}
+                </p>
+                <p className="mt-1">
+                  <strong>Q:</strong> {log.user_message}
+                </p>
+                <p className="mt-1 whitespace-pre-wrap">
+                  <strong>A:</strong> {log.bot_reply}
+                </p>
+                {log.matched_knowledge_id ? (
+                  <p className="mt-1 text-xs text-zinc-500">
+                    matched knowledge: {log.matched_knowledge_id}
+                  </p>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

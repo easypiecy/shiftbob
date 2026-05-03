@@ -435,6 +435,9 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
             ]);
         setInput("");
         setLoading(true);
+        const latestAssistantMatch = [
+            ...messages
+        ].reverse().find((m)=>m.role === "assistant" && m.matchedKnowledgeId)?.matchedKnowledgeId || null;
         try {
             const res = await fetch("/api/salesbot/chat", {
                 method: "POST",
@@ -443,7 +446,8 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                 },
                 body: JSON.stringify({
                     languageCode,
-                    message: trimmed
+                    message: trimmed,
+                    contextKnowledgeId: latestAssistantMatch
                 })
             });
             const data = await res.json();
@@ -455,7 +459,8 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                         role: "assistant",
                         text: reply,
                         ctaLabel: data.ctaLabel?.trim() || null,
-                        ctaHref: data.ctaHref?.trim() || null
+                        ctaHref: data.ctaHref?.trim() || null,
+                        matchedKnowledgeId: data.matchedKnowledgeId?.trim() || null
                     }
                 ]);
         } finally{
@@ -521,12 +526,12 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                     className: "h-20 w-20 object-contain [filter:drop-shadow(0_0_12px_rgba(255,255,255,0.98))]"
                 }, void 0, false, {
                     fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                    lineNumber: 229,
+                    lineNumber: 240,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                lineNumber: 217,
+                lineNumber: 228,
                 columnNumber: 7
             }, this),
             open ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -548,25 +553,25 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                             className: "h-6 w-6 object-contain"
                                         }, void 0, false, {
                                             fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                            lineNumber: 243,
+                                            lineNumber: 254,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 242,
+                                        lineNumber: 253,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: panelTitle
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 251,
+                                        lineNumber: 262,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                lineNumber: 241,
+                                lineNumber: 252,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -582,15 +587,15 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                         "aria-label": resetLabel,
                                         title: resetLabel,
                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$rotate$2d$ccw$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__RotateCcw$3e$__["RotateCcw"], {
-                                            className: "h-3.5 w-3.5"
+                                            className: "h-5 w-5"
                                         }, void 0, false, {
                                             fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                            lineNumber: 264,
+                                            lineNumber: 275,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 254,
+                                        lineNumber: 265,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -600,27 +605,27 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                         "aria-label": closeLabel,
                                         title: closeLabel,
                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
-                                            className: "h-4 w-4"
+                                            className: "h-5 w-5"
                                         }, void 0, false, {
                                             fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                            lineNumber: 273,
+                                            lineNumber: 284,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 266,
+                                        lineNumber: 277,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                lineNumber: 253,
+                                lineNumber: 264,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                        lineNumber: 240,
+                        lineNumber: 251,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -634,7 +639,7 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                             children: message.text
                                         }, void 0, false, {
                                             fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                            lineNumber: 288,
+                                            lineNumber: 299,
                                             columnNumber: 17
                                         }, this),
                                         message.role === "assistant" && message.ctaLabel && message.ctaHref ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -643,13 +648,13 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                             children: message.ctaLabel
                                         }, void 0, false, {
                                             fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                            lineNumber: 290,
+                                            lineNumber: 301,
                                             columnNumber: 19
                                         }, this) : null
                                     ]
                                 }, message.id, true, {
                                     fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                    lineNumber: 280,
+                                    lineNumber: 291,
                                     columnNumber: 15
                                 }, this)),
                             loading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -659,14 +664,14 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                         className: "h-3.5 w-3.5 animate-spin"
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 301,
+                                        lineNumber: 312,
                                         columnNumber: 17
                                     }, this),
                                     "Thinking..."
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                lineNumber: 300,
+                                lineNumber: 311,
                                 columnNumber: 15
                             }, this) : null,
                             supportOpen ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -678,7 +683,7 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                         children: supportPanelTitle
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 311,
+                                        lineNumber: 322,
                                         columnNumber: 17
                                     }, this),
                                     !session?.loggedIn ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -691,7 +696,7 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                                 className: "h-9 rounded-md border border-zinc-300 px-2 text-sm"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                                lineNumber: 316,
+                                                lineNumber: 327,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -701,13 +706,13 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                                 className: "h-9 rounded-md border border-zinc-300 px-2 text-sm"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                                lineNumber: 322,
+                                                lineNumber: 333,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 315,
+                                        lineNumber: 326,
                                         columnNumber: 19
                                     }, this) : null,
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -717,7 +722,7 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                         className: "h-9 w-full rounded-md border border-zinc-300 px-2 text-sm"
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 330,
+                                        lineNumber: 341,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -728,7 +733,7 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                         className: "w-full rounded-md border border-zinc-300 px-2 py-2 text-sm"
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 336,
+                                        lineNumber: 347,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -741,7 +746,7 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                                 children: closeLabel
                                             }, void 0, false, {
                                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                                lineNumber: 344,
+                                                lineNumber: 355,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -753,32 +758,32 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                                         className: "h-3.5 w-3.5 animate-spin"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                                        lineNumber: 361,
+                                                        lineNumber: 372,
                                                         columnNumber: 39
                                                     }, this) : null,
                                                     supportSubmitLabel
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                                lineNumber: 351,
+                                                lineNumber: 362,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 343,
+                                        lineNumber: 354,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                lineNumber: 307,
+                                lineNumber: 318,
                                 columnNumber: 15
                             }, this) : null
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                        lineNumber: 278,
+                        lineNumber: 289,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -790,16 +795,16 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                     type: "button",
                                     onClick: ()=>setSupportOpen((value)=>!value),
-                                    className: "rounded-full border border-zinc-300 px-2.5 py-1 text-xs text-zinc-700 hover:bg-zinc-100",
+                                    className: "rounded-full border border-zinc-300 bg-yellow-100/60 px-3 py-1.5 text-sm text-zinc-700 hover:bg-yellow-100",
                                     children: supportButtonLabel
                                 }, void 0, false, {
                                     fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                    lineNumber: 371,
+                                    lineNumber: 382,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                lineNumber: 370,
+                                lineNumber: 381,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -812,7 +817,7 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                         className: "h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
                                     }, void 0, false, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 380,
+                                        lineNumber: 391,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -824,32 +829,32 @@ function SalesBotWidget({ languageCode, iconUrl, logoUrl, buttonLabel, panelTitl
                                                 className: "h-3.5 w-3.5"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                                lineNumber: 391,
+                                                lineNumber: 402,
                                                 columnNumber: 17
                                             }, this),
                                             sendLabel
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                        lineNumber: 386,
+                                        lineNumber: 397,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                                lineNumber: 379,
+                                lineNumber: 390,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                        lineNumber: 369,
+                        lineNumber: 380,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/landing/sales-bot-widget.tsx",
-                lineNumber: 239,
+                lineNumber: 250,
                 columnNumber: 9
             }, this) : null
         ]

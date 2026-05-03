@@ -1,6 +1,7 @@
 import {
   getSalesBotDashboardData,
   type LanguageOptionRow,
+  type SalesBotChatLogRow,
 } from "@/src/app/super-admin/salesbot-actions";
 import type { SalesBotKnowledgeEntry, SalesBotManifest } from "@/src/lib/salesbot-runtime";
 import SalesBotAdminClient from "./salesbot-admin-client";
@@ -20,6 +21,7 @@ export default async function SuperAdminSalesBotPage() {
       initialManifest={res.manifest as SalesBotManifest}
       initialKnowledge={res.knowledge as SalesBotKnowledgeEntry[]}
       languages={res.languages as LanguageOptionRow[]}
+      initialLogs={res.logs as SalesBotChatLogRow[]}
     />
   );
 }

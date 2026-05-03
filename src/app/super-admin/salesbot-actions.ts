@@ -15,6 +15,19 @@ export type LanguageOptionRow = {
   name: string;
 };
 
+export type SalesBotChatLogRow = {
+  id: string;
+  language_code: string;
+  user_message: string;
+  bot_reply: string;
+  matched_knowledge_id: string | null;
+  context_knowledge_id: string | null;
+  cta_label: string | null;
+  cta_href: string | null;
+  user_id: string | null;
+  created_at: string;
+};
+
 async function requireSuperAdmin() {
   const supabase = await createServerSupabase();
   await assertSuperAdminAccess(supabase);
@@ -36,13 +49,14 @@ export async function getSalesBotDashboardData(): Promise<
       manifest: SalesBotManifest;
       knowledge: SalesBotKnowledgeEntry[];
       languages: LanguageOptionRow[];
+      logs: SalesBotChatLogRow[];
     }
   | { ok: false; error: string }
 > {
   try {
     await requireSuperAdmin();
     const admin = getAdminClient();
-    const [manifestRes, knowledgeRes, languageRes] = await Promise.all([
+    const [manifestRes, knowledgeRes, languageRes, logsRes] = await Promise.all([
       admin
         .from("salesbot_manifests")
         .select(
@@ -57,6 +71,13 @@ export async function getSalesBotDashboardData(): Promise<
         .order("sort_order", { ascending: true })
         .order("created_at", { ascending: false }),
       admin.from("languages").select("language_code, name").order("name"),
+      admin
+        .from("salesbot_chat_logs")
+        .select(
+          "id, language_code, user_message, bot_reply, matched_knowledge_id, context_knowledge_id, cta_label, cta_href, user_id, created_at"
+        )
+        .order("created_at", { ascending: false })
+        .limit(300),
     ]);
 
     if (manifestRes.error && !isMissingSchemaError(manifestRes.error.message)) {
@@ -67,6 +88,9 @@ export async function getSalesBotDashboardData(): Promise<
     }
     if (languageRes.error && !isMissingSchemaError(languageRes.error.message)) {
       return { ok: false, error: languageRes.error.message };
+    }
+    if (logsRes.error && !isMissingSchemaError(logsRes.error.message)) {
+      return { ok: false, error: logsRes.error.message };
     }
 
     const manifest = manifestRes.data
@@ -103,7 +127,20 @@ export async function getSalesBotDashboardData(): Promise<
       name: String(row.name ?? ""),
     }));
 
-    return { ok: true, manifest, knowledge, languages };
+    const logs = ((logsRes.data ?? []) as Record<string, unknown>[]).map((row) => ({
+      id: String(row.id),
+      language_code: String(row.language_code ?? "en-US"),
+      user_message: String(row.user_message ?? ""),
+      bot_reply: String(row.bot_reply ?? ""),
+      matched_knowledge_id: (row.matched_knowledge_id as string | null) ?? null,
+      context_knowledge_id: (row.context_knowledge_id as string | null) ?? null,
+      cta_label: (row.cta_label as string | null) ?? null,
+      cta_href: (row.cta_href as string | null) ?? null,
+      user_id: (row.user_id as string | null) ?? null,
+      created_at: String(row.created_at ?? ""),
+    }));
+
+    return { ok: true, manifest, knowledge, languages, logs };
   } catch (e) {
     const message = e instanceof Error ? e.message : "Ukendt fejl";
     return { ok: false, error: message };

@@ -10,6 +10,7 @@ type ChatMessage = {
   text: string;
   ctaLabel?: string | null;
   ctaHref?: string | null;
+  matchedKnowledgeId?: string | null;
 };
 
 type Props = {
@@ -137,17 +138,26 @@ export function SalesBotWidget({
     setInput("");
     setLoading(true);
 
+    const latestAssistantMatch =
+      [...messages].reverse().find((m) => m.role === "assistant" && m.matchedKnowledgeId)
+        ?.matchedKnowledgeId || null;
+
     try {
       const res = await fetch("/api/salesbot/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ languageCode, message: trimmed }),
+        body: JSON.stringify({
+          languageCode,
+          message: trimmed,
+          contextKnowledgeId: latestAssistantMatch,
+        }),
       });
       const data = (await res.json()) as {
         ok?: boolean;
         reply?: string;
         ctaLabel?: string | null;
         ctaHref?: string | null;
+        matchedKnowledgeId?: string | null;
       };
       const reply =
         data.ok && data.reply ? data.reply : "Sorry, I could not answer right now. Please try again.";
@@ -159,6 +169,7 @@ export function SalesBotWidget({
           text: reply,
           ctaLabel: data.ctaLabel?.trim() || null,
           ctaHref: data.ctaHref?.trim() || null,
+          matchedKnowledgeId: data.matchedKnowledgeId?.trim() || null,
         },
       ]);
     } finally {
@@ -261,7 +272,7 @@ export function SalesBotWidget({
                 aria-label={resetLabel}
                 title={resetLabel}
               >
-                <RotateCcw className="h-3.5 w-3.5" />
+                <RotateCcw className="h-5 w-5" />
               </button>
               <button
                 type="button"
@@ -270,7 +281,7 @@ export function SalesBotWidget({
                 aria-label={closeLabel}
                 title={closeLabel}
               >
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
               </button>
             </div>
           </header>
@@ -371,7 +382,7 @@ export function SalesBotWidget({
               <button
                 type="button"
                 onClick={() => setSupportOpen((value) => !value)}
-                className="rounded-full border border-zinc-300 px-2.5 py-1 text-xs text-zinc-700 hover:bg-zinc-100"
+                className="rounded-full border border-zinc-300 bg-yellow-100/60 px-3 py-1.5 text-sm text-zinc-700 hover:bg-yellow-100"
               >
                 {supportButtonLabel}
               </button>
