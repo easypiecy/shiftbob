@@ -9,6 +9,9 @@ import {
 import { resolveUiThemeForRequest } from "@/src/lib/ui-theme-server";
 import "./globals.css";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

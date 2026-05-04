@@ -809,7 +809,7 @@ async function LandingPage() {
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$react$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
-                                    href: "/login",
+                                    href: "#landing-products",
                                     className: "rounded-full bg-[#4A90E2] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#3A7FD1]",
                                     children: t("landing.nav.try_for_free", "Try for free")
                                 }, void 0, false, {
@@ -1061,8 +1061,16 @@ async function LandingPage() {
                         lineNumber: 132,
                         columnNumber: 9
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$landing$2f$product$2d$choices$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ProductChoices"], {
-                        translations: map
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                        id: "landing-products",
+                        className: "scroll-mt-32",
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$landing$2f$product$2d$choices$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ProductChoices"], {
+                            translations: map
+                        }, void 0, false, {
+                            fileName: "[project]/app/landing/page.tsx",
+                            lineNumber: 168,
+                            columnNumber: 11
+                        }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/landing/page.tsx",
                         lineNumber: 167,
@@ -1081,12 +1089,12 @@ async function LandingPage() {
                     children: t("landing.footer.company_line", "P.S. Creations - Vlněna 5 - 602 00 Brno-střed - Czech Republic - support@shiftbob.io")
                 }, void 0, false, {
                     fileName: "[project]/app/landing/page.tsx",
-                    lineNumber: 170,
+                    lineNumber: 172,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/landing/page.tsx",
-                lineNumber: 169,
+                lineNumber: 171,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$landing$2f$sales$2d$bot$2d$widget$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["SalesBotWidget"], {
@@ -1111,7 +1119,7 @@ async function LandingPage() {
                 resetLabel: t("landing.salesbot.reset", "Reset chat")
             }, void 0, false, {
                 fileName: "[project]/app/landing/page.tsx",
-                lineNumber: 177,
+                lineNumber: 179,
                 columnNumber: 7
             }, this)
         ]

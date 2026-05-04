@@ -272,12 +272,13 @@ __turbopack_context__.s([
     "getTranslationsServer",
     ()=>getTranslationsServer
 ]);
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react.js [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$supabase$2f$admin$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/utils/supabase/admin.ts [app-rsc] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$cache$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/cache.js [app-rsc] (ecmascript)");
 ;
 ;
 const DEFAULT_UI_LANGUAGE = "da";
 async function getTranslationsServer(languageCode) {
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$cache$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["unstable_noStore"])();
     const url = ("TURBOPACK compile-time value", "https://pwooqmqdershicxpnfuo.supabase.co");
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     if (!url?.trim() || !serviceKey?.trim()) {
@@ -297,10 +298,10 @@ async function getTranslationsServer(languageCode) {
     }
     return out;
 }
-const getTranslationsCached = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["cache"])(async (languageCode)=>{
+async function getTranslationsCached(languageCode) {
     const lang = languageCode?.trim() || DEFAULT_UI_LANGUAGE;
     return getTranslationsServer(lang);
-});
+}
 function createTranslator(map) {
     return (key, fallback)=>map[key] ?? fallback ?? key;
 }
@@ -315,8 +316,8 @@ __turbopack_context__.s([
     "resolveRequestUiLanguage",
     ()=>resolveRequestUiLanguage
 ]);
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react.js [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$headers$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/headers.js [app-rsc] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$cache$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/cache.js [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$ui$2d$language$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/ui-language.ts [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$translations$2d$server$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/translations-server.ts [app-rsc] (ecmascript)");
 ;
@@ -325,16 +326,18 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$translations$2
 ;
 ;
 async function resolveRequestUiLanguage() {
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$cache$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["unstable_noStore"])();
     const jar = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$headers$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["cookies"])();
     const fromCookie = jar.get(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$ui$2d$language$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["UI_LANGUAGE_COOKIE"])?.value?.trim();
     if (fromCookie && (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$ui$2d$language$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["isSupportedUiLanguage"])(fromCookie)) return fromCookie;
     const h = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$headers$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["headers"])();
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$ui$2d$language$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["resolveLanguageFromAcceptLanguage"])(h.get("accept-language"));
 }
-const getUiTranslations = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["cache"])(async ()=>{
+async function getUiTranslations() {
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$cache$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["unstable_noStore"])();
     const lang = await resolveRequestUiLanguage();
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$translations$2d$server$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getTranslationsCached"])(lang);
-});
+}
 }),
 "[project]/src/utils/supabase/server.ts [app-rsc] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
@@ -448,10 +451,14 @@ async function resolveUiThemeForRequest() {
 __turbopack_context__.s([
     "default",
     ()=>RootLayout,
+    "dynamic",
+    ()=>dynamic,
     "generateViewport",
     ()=>generateViewport,
     "metadata",
-    ()=>metadata
+    ()=>metadata,
+    "revalidate",
+    ()=>revalidate
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-jsx-dev-runtime.js [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$next$5d2f$internal$2f$font$2f$google$2f$geist_a71539c9$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[next]/internal/font/google/geist_a71539c9.js [app-rsc] (ecmascript)");
@@ -468,6 +475,8 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$ui$2d$theme$2d
 ;
 ;
 ;
+const dynamic = "force-dynamic";
+const revalidate = 0;
 const metadata = {
     title: "ShiftBob",
     description: "ShiftBob app",
@@ -523,17 +532,17 @@ async function RootLayout({ children }) {
                 children: children
             }, void 0, false, {
                 fileName: "[project]/app/layout.tsx",
-                lineNumber: 76,
+                lineNumber: 79,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/app/layout.tsx",
-            lineNumber: 75,
+            lineNumber: 78,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/layout.tsx",
-        lineNumber: 74,
+        lineNumber: 77,
         columnNumber: 5
     }, this);
 }

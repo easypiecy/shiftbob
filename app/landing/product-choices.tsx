@@ -70,7 +70,7 @@ const plans: Plan[] = [
           key: "landing.plans.foundation.cta.download_excel",
           fallback: "Download free Excel",
         },
-        href: "/login",
+        href: "/employer-signup?product=basic",
         style: "secondary",
       },
       {
@@ -78,7 +78,7 @@ const plans: Plan[] = [
           key: "landing.plans.foundation.cta.free_check",
           fallback: "Free compliance check",
         },
-        href: "/login",
+        href: "/employer-signup?product=basic",
         style: "primary",
       },
     ],
@@ -126,7 +126,7 @@ const plans: Plan[] = [
           key: "landing.plans.pro_planner.cta.subscribe",
           fallback: "Subscribe Now",
         },
-        href: "/login",
+        href: "/employer-signup?product=pro_planner",
         style: "primary",
       },
     ],
@@ -180,7 +180,7 @@ const plans: Plan[] = [
           key: "landing.plans.hybrid_app.cta.upgrade",
           fallback: "Upgrade to next level!",
         },
-        href: "/login",
+        href: "/employer-signup?product=hybrid_app",
         style: "contrast",
       },
     ],
@@ -242,7 +242,7 @@ const plans: Plan[] = [
           key: "landing.plans.autopilot.cta.go",
           fallback: "Go Autopilot",
         },
-        href: "/login",
+        href: "/employer-signup?product=autopilot",
         style: "primary",
       },
     ],
@@ -262,13 +262,13 @@ function CtaButton({
     style === "secondary"
       ? "border border-zinc-300 bg-white text-zinc-900 hover:border-zinc-500"
       : style === "contrast"
-        ? "bg-[#111827] text-white hover:bg-black"
+        ? "bg-[#111827] text-white shadow-[0_8px_20px_rgba(17,24,39,0.22)] hover:-translate-y-0.5 hover:bg-black hover:shadow-[0_14px_28px_rgba(17,24,39,0.34)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111827]/40 active:translate-y-0"
         : "bg-[#4A90E2] text-white hover:bg-[#3A7FD1]";
 
   return (
     <Link
       href={href}
-      className={`inline-flex w-full items-center justify-center rounded-full px-5 py-2.5 text-sm font-bold transition ${styles}`}
+      className={`inline-flex w-full items-center justify-center rounded-full px-5 py-2.5 text-center text-sm font-bold leading-tight transition ${styles}`}
     >
       {label}
     </Link>

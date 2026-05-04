@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Apple, Play } from "lucide-react";
 import { ProductChoices } from "./product-choices";
 import { ScrollFadeInImage } from "./scroll-fade-in-image";
+import { ScrollToProductsButton } from "./scroll-to-products-button";
 import { WEBSITE_ASSETS } from "@/src/config/website-assets";
 import { UiLanguageSelect } from "../login/login-language-picker";
 import { createTranslator } from "@/src/lib/translations-server";
@@ -45,7 +46,7 @@ export default async function LandingPage() {
 
           <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
             <Link
-              href="/login"
+              href="/employer-login"
               className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:border-zinc-500 hover:text-zinc-900"
             >
               {t("landing.nav.login", "Login")}
@@ -57,12 +58,10 @@ export default async function LandingPage() {
               variant="light"
             />
 
-            <Link
-              href="/login"
+            <ScrollToProductsButton
+              label={t("landing.nav.try_for_free", "Try for free")}
               className="rounded-full bg-[#4A90E2] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#3A7FD1]"
-            >
-              {t("landing.nav.try_for_free", "Try for free")}
-            </Link>
+            />
           </div>
         </div>
       </header>
@@ -164,7 +163,9 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        <ProductChoices translations={map} />
+        <section id="landing-products" className="scroll-mt-32">
+          <ProductChoices translations={map} />
+        </section>
       </main>
       <footer className="border-t border-zinc-200 bg-zinc-50">
         <div className="mx-auto w-full max-w-7xl px-4 py-6 text-center text-sm text-zinc-700 sm:px-6">

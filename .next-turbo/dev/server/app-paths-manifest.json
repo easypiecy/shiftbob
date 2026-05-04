@@ -1,8 +1,6 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/api/salesbot/chat/route": "app/api/salesbot/chat/route.js",
-  "/api/salesbot/session/route": "app/api/salesbot/session/route.js",
+  "/employer-signup/page": "app/employer-signup/page.js",
   "/landing/page": "app/landing/page.js",
-  "/login/page": "app/login/page.js",
   "/manifest.webmanifest/route": "app/manifest.webmanifest/route.js"
 }

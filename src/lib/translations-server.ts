@@ -1,5 +1,5 @@
-import { cache } from "react";
 import { getAdminClient } from "@/src/utils/supabase/admin";
+import { unstable_noStore as noStore } from "next/cache";
 
 const DEFAULT_UI_LANGUAGE = "da";
 
@@ -10,6 +10,7 @@ const DEFAULT_UI_LANGUAGE = "da";
 export async function getTranslationsServer(
   languageCode: string
 ): Promise<Record<string, string>> {
+  noStore();
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url?.trim() || !serviceKey?.trim()) {
@@ -38,10 +39,10 @@ export async function getTranslationsServer(
   return out;
 }
 
-export const getTranslationsCached = cache(async (languageCode?: string) => {
+export async function getTranslationsCached(languageCode?: string) {
   const lang = languageCode?.trim() || DEFAULT_UI_LANGUAGE;
   return getTranslationsServer(lang);
-});
+}
 
 export function createTranslator(map: Record<string, string>) {
   return (key: string, fallback?: string) => map[key] ?? fallback ?? key;

@@ -1,5 +1,5 @@
-import { cache } from "react";
 import { cookies, headers } from "next/headers";
+import { unstable_noStore as noStore } from "next/cache";
 import {
   isSupportedUiLanguage,
   resolveLanguageFromAcceptLanguage,
@@ -13,6 +13,7 @@ export { UI_LANGUAGE_COOKIE };
  * Manuel cookie → ellers Accept-Language → ellers en-US.
  */
 export async function resolveRequestUiLanguage(): Promise<string> {
+  noStore();
   const jar = await cookies();
   const fromCookie = jar.get(UI_LANGUAGE_COOKIE)?.value?.trim();
   if (fromCookie && isSupportedUiLanguage(fromCookie)) return fromCookie;
@@ -21,8 +22,9 @@ export async function resolveRequestUiLanguage(): Promise<string> {
   return resolveLanguageFromAcceptLanguage(h.get("accept-language"));
 }
 
-/** Alle UI-strenge for det aktive sprog (én gang pr. request). */
-export const getUiTranslations = cache(async () => {
+/** Alle UI-strenge for det aktive sprog. */
+export async function getUiTranslations() {
+  noStore();
   const lang = await resolveRequestUiLanguage();
   return getTranslationsCached(lang);
-});
+}

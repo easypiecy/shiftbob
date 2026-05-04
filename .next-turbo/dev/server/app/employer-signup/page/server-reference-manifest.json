@@ -1,0 +1,17 @@
+{
+  "node": {
+    "4060c1b5d6843d5ed8308820011f0b2317f03d3595": {
+      "workers": {
+        "app/employer-signup/page": {
+          "moduleId": "[project]/.next-internal/server/app/employer-signup/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/ui-language-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "setUiLanguageAction",
+          "filename": "src/app/ui-language-actions.ts"
+        }
+      },
+      "exportedName": "setUiLanguageAction",
+      "filename": "src/app/ui-language-actions.ts"
+    }
+  },
+  "edge": {}
+}

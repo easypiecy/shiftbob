@@ -31,6 +31,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$imag
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/client/app-dir/link.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$arrow$2d$left$2d$right$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ArrowLeftRight$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/arrow-left-right.js [app-ssr] (ecmascript) <export default as ArrowLeftRight>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$bot$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Bot$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/bot.js [app-ssr] (ecmascript) <export default as Bot>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$building$2d$2$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Building2$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/building-2.js [app-ssr] (ecmascript) <export default as Building2>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2d$range$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CalendarRange$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/calendar-range.js [app-ssr] (ecmascript) <export default as CalendarRange>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$left$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronLeft$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/chevron-left.js [app-ssr] (ecmascript) <export default as ChevronLeft>");
@@ -80,6 +81,13 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$translati
         navKey: "super_admin.nav.support",
         labelDa: "Support tickets",
         icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$life$2d$buoy$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__LifeBuoy$3e$__["LifeBuoy"],
+        match: "path"
+    },
+    {
+        href: "/super-admin/salesbot",
+        navKey: "super_admin.nav.salesbot",
+        labelDa: "SalesBot",
+        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$bot$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Bot$3e$__["Bot"],
         match: "path"
     },
     {
@@ -140,7 +148,7 @@ function SuperAdminShell({ children }) {
                 onClick: ()=>setSidebarOpen(false)
             }, void 0, false, {
                 fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                lineNumber: 115,
+                lineNumber: 123,
                 columnNumber: 9
             }, this) : null,
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("aside", {
@@ -160,12 +168,12 @@ function SuperAdminShell({ children }) {
                                     "aria-hidden": true
                                 }, void 0, false, {
                                     fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                    lineNumber: 138,
+                                    lineNumber: 146,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                lineNumber: 131,
+                                lineNumber: 139,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -186,17 +194,17 @@ function SuperAdminShell({ children }) {
                                                 priority: true
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                                lineNumber: 147,
+                                                lineNumber: 155,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                            lineNumber: 146,
+                                            lineNumber: 154,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                        lineNumber: 141,
+                                        lineNumber: 149,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -207,7 +215,7 @@ function SuperAdminShell({ children }) {
                                                 children: t("super_admin.badge", "Super Admin")
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                                lineNumber: 158,
+                                                lineNumber: 166,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -221,30 +229,30 @@ function SuperAdminShell({ children }) {
                                                     "aria-hidden": true
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                                    lineNumber: 167,
+                                                    lineNumber: 175,
                                                     columnNumber: 17
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                                lineNumber: 161,
+                                                lineNumber: 169,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                        lineNumber: 157,
+                                        lineNumber: 165,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                lineNumber: 140,
+                                lineNumber: 148,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                        lineNumber: 130,
+                        lineNumber: 138,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -261,14 +269,14 @@ function SuperAdminShell({ children }) {
                                             "aria-hidden": true
                                         }, void 0, false, {
                                             fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                            lineNumber: 185,
+                                            lineNumber: 193,
                                             columnNumber: 17
                                         }, this),
                                         t(navKey, labelDa)
                                     ]
                                 }, href, true, {
                                     fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                    lineNumber: 176,
+                                    lineNumber: 184,
                                     columnNumber: 15
                                 }, this);
                             }),
@@ -290,31 +298,31 @@ function SuperAdminShell({ children }) {
                                             "aria-hidden": true
                                         }, void 0, false, {
                                             fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                            lineNumber: 202,
+                                            lineNumber: 210,
                                             columnNumber: 15
                                         }, this),
                                         signingOut ? t("common.logout.loading", "Logger ud…") : t("common.logout", "Log ud")
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                    lineNumber: 191,
+                                    lineNumber: 199,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                                lineNumber: 190,
+                                lineNumber: 198,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                        lineNumber: 172,
+                        lineNumber: 180,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                lineNumber: 123,
+                lineNumber: 131,
                 columnNumber: 7
             }, this),
             !sidebarOpen ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -328,12 +336,12 @@ function SuperAdminShell({ children }) {
                     "aria-hidden": true
                 }, void 0, false, {
                     fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                    lineNumber: 219,
+                    lineNumber: 227,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                lineNumber: 212,
+                lineNumber: 220,
                 columnNumber: 9
             }, this) : null,
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -341,13 +349,13 @@ function SuperAdminShell({ children }) {
                 children: children
             }, void 0, false, {
                 fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-                lineNumber: 223,
+                lineNumber: 231,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/super-admin/super-admin-shell.tsx",
-        lineNumber: 113,
+        lineNumber: 121,
         columnNumber: 5
     }, this);
 }

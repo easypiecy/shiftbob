@@ -30,6 +30,12 @@ export async function translateWithAI(
       "Du er en professionel UX-oversætter. " +
       `Oversæt følgende tekst til ${targetLanguage}. ` +
       `Brug denne kontekst for at sikre korrekt terminologi: ${context}. ` +
+      "HÅRD REGEL: Valutakoden 'EUR' må ALDRIG oversættes, translittereres eller omskrives. " +
+      "Bevar altid præcis 'EUR' med store bogstaver i output (fx '49 EUR'). " +
+      "HÅRD REGEL: Produktnavnet 'App Store' må ALDRIG oversættes, omskrives eller translittereres. " +
+      "Bevar altid præcis 'App Store' med samme stavning og store bogstaver. " +
+      "HÅRD REGEL: Produktnavnet 'Google Play' må ALDRIG oversættes, omskrives eller translittereres. " +
+      "Bevar altid præcis 'Google Play' med samme stavning og store bogstaver. " +
       "Returner KUN den oversatte tekst, intet andet.";
 
     const response = await ai.models.generateContent({

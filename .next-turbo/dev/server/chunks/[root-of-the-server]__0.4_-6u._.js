@@ -314,6 +314,17 @@ function intentBoost(question, row) {
             boost += 6;
         }
     }
+    const asksLanguageInApp = (q.includes("sprog") || q.includes("dansk") || q.includes("tysk") || q.includes("fransk") || q.includes("engelsk") || q.includes("german") || q.includes("french") || q.includes("english") || q.includes("language")) && (q.includes("app") || q.includes("medarbejder") || q.includes("vagtplan") || q.includes("regneark"));
+    if (asksLanguageInApp) {
+        const tags = row.tags.map((t)=>t.toLowerCase());
+        const hay = `${row.title} ${row.question} ${row.answer}`.toLowerCase();
+        if (tags.includes("languages") || tags.includes("sprog") || tags.includes("employee_language") || tags.includes("medarbejder_sprog") || tags.includes("menu_language") || tags.includes("menu_sprog") || tags.includes("eu")) {
+            boost += 10;
+        }
+        if (hay.includes("eget sprog") || hay.includes("forskellige sprog") || hay.includes("own app language") || hay.includes("different languages")) {
+            boost += 6;
+        }
+    }
     return boost;
 }
 function asksProductSalesPitch(message) {
