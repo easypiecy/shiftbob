@@ -195,6 +195,8 @@ insert into public.ui_translations (translation_key, language_code, text_value, 
 ('settings.employee_permissions.level3.title', 'da', 'Niveau 3: Skrivebeskyttet (Ingen indflydelse)', 'Korttitel.'),
 ('settings.employee_permissions.level3.description', 'en-US', 'The app works as a read-only calendar. Employees cannot swap shifts or put shifts up for sale.', 'Card description.'),
 ('settings.employee_permissions.level3.description', 'da', 'Appen fungerer udelukkende som en læse-kalender. Medarbejdere kan ikke bytte vagter eller sætte vagter til salg.', 'Kortbeskrivelse.'),
+('settings.tabs.eu_rules', 'en-US', 'EU rules', 'Settings tab label for EU rule setup and uploads.'),
+('settings.tabs.eu_rules', 'da', 'EU regler', 'Indstillinger-fane: EU-regler.'),
 
 -- Weekdays (Monday = 0 … Sunday = 6), labels for season grid
 ('calendar.weekday.0', 'en-US', 'Monday', 'Weekday column; planning grid.'),
@@ -758,6 +760,13 @@ set
   text_value = '',
   context_description = coalesce(context_description, 'Pending translation')
 where translation_key in ('admin.nav.calendar', 'admin.nav.future', 'admin.nav.import_spreadsheet')
+  and language_code not in ('da', 'en-US');
+
+update public.ui_translations
+set
+  text_value = '',
+  context_description = coalesce(context_description, 'Pending translation')
+where translation_key in ('settings.tabs.eu_rules')
   and language_code not in ('da', 'en-US');
 
 -- Keep this key empty for non-DA/non-EN so "AI for all empty" can translate it.

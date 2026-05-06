@@ -9,6 +9,12 @@ import { createServerSupabase } from "@/src/utils/supabase/server";
 
 type Matrix = Array<Array<string | number | boolean | null>>;
 
+export type ExtractedDepartment = {
+  dept_id: string;
+  department_name: string;
+  notes: string;
+};
+
 export type ExtractedEmployee = {
   employee_id: number;
   first_name: string;
@@ -27,6 +33,7 @@ export type ExtractedEmployee = {
   start_date: string;
   job_title: string;
   department: string;
+  department_id: string | null;
   type: string;
   status: string;
 };
@@ -61,9 +68,12 @@ type ShiftTypeLookup = Record<
   }
 >;
 
+type DepartmentLookup = Map<string, string>;
+
 export type SpreadsheetExtractResult =
   | {
       ok: true;
+      extractedDepartments: ExtractedDepartment[];
       extractedEmployees: ExtractedEmployee[];
       extractedShiftTypes: ExtractedShiftType[];
       extractedShifts: ExtractedShift[];
@@ -187,16 +197,65 @@ function findSheetByExactName(
   return name ? workbook.Sheets[name] : null;
 }
 
-function parseEmployees(workbook: XLSX.WorkBook): {
+function parseDepartments(workbook: XLSX.WorkBook): {
+  departments: ExtractedDepartment[];
+  departmentIdByName: DepartmentLookup;
+} {
+  const sheet = findSheetByExactName(workbook, "Departments");
+  if (!sheet) {
+    return { departments: [], departmentIdByName: new Map() };
+  }
+  const matrix = asMatrix(sheet);
+  if (matrix.length === 0) return { departments: [], departmentIdByName: new Map() };
+
+  const headerRowIndex = matrix.findIndex((row) => {
+    const headers = row.map(normalizeHeader);
+    return headers.includes("dept id") && headers.includes("department name");
+  });
+  if (headerRowIndex < 0) {
+    throw new Error("Departments sheet is missing the expected header row");
+  }
+
+  const header = matrix[headerRowIndex].map(normalizeHeader);
+  const col = {
+    deptId: findHeaderIndex(header, "dept id", "department id"),
+    departmentName: findHeaderIndex(header, "department name", "department"),
+    notes: findHeaderIndex(header, "notes", "note"),
+  };
+
+  const departments: ExtractedDepartment[] = [];
+  const departmentIdByName: DepartmentLookup = new Map();
+  for (let r = headerRowIndex + 1; r < matrix.length; r++) {
+    const row = matrix[r] ?? [];
+    const dept_id = readCellString(row, col.deptId);
+    const department_name = readCellString(row, col.departmentName);
+    if (!dept_id || !department_name) continue;
+    const item: ExtractedDepartment = {
+      dept_id,
+      department_name,
+      notes: readCellString(row, col.notes),
+    };
+    departments.push(item);
+    departmentIdByName.set(normalizeName(department_name), dept_id);
+  }
+  return { departments, departmentIdByName };
+}
+
+function parseEmployees(params: {
+  workbook: XLSX.WorkBook;
+  departmentIdByName: DepartmentLookup;
+}): {
   employees: ExtractedEmployee[];
   byName: Map<string, ExtractedEmployee>;
+  warnings: string[];
 } {
+  const { workbook, departmentIdByName } = params;
   const sheet = findSheetByExactName(workbook, "Employees");
   if (!sheet) {
     throw new Error("Missing required sheet: Employees");
   }
   const matrix = asMatrix(sheet);
-  if (matrix.length === 0) return { employees: [], byName: new Map() };
+  if (matrix.length === 0) return { employees: [], byName: new Map(), warnings: [] };
 
   const headerRowIndex = matrix.findIndex((row) => {
     const headers = row.map(normalizeHeader);
@@ -230,6 +289,7 @@ function parseEmployees(workbook: XLSX.WorkBook): {
 
   const employees: ExtractedEmployee[] = [];
   const byName = new Map<string, ExtractedEmployee>();
+  const warnings: string[] = [];
 
   for (let r = headerRowIndex + 1; r < matrix.length; r++) {
     const row = matrix[r] ?? [];
@@ -261,9 +321,19 @@ function parseEmployees(workbook: XLSX.WorkBook): {
       start_date: readCellString(row, col.startDate),
       job_title: readCellString(row, col.jobTitle),
       department: readCellString(row, col.department),
+      department_id: null,
       type: readCellString(row, col.type),
       status: readCellString(row, col.status),
     };
+    if (employee.department) {
+      employee.department_id =
+        departmentIdByName.get(normalizeName(employee.department)) ?? null;
+      if (!employee.department_id) {
+        warnings.push(
+          `Department '${employee.department}' for employee '${employee.full_name}' was not found in Departments sheet`
+        );
+      }
+    }
     employees.push(employee);
 
     byName.set(normalizeName(full_name), employee);
@@ -271,7 +341,7 @@ function parseEmployees(workbook: XLSX.WorkBook): {
       byName.set(normalizeName(`${last_name}, ${first_name}`), employee);
     }
   }
-  return { employees, byName };
+  return { employees, byName, warnings };
 }
 
 function parseShiftTypes(workbook: XLSX.WorkBook): {
@@ -527,7 +597,11 @@ export async function runSpreadsheetImportAction(
     const buffer = await file.arrayBuffer();
     const workbook = XLSX.read(buffer, { type: "array" });
 
-    const { employees, byName } = parseEmployees(workbook);
+    const { departments, departmentIdByName } = parseDepartments(workbook);
+    const { employees, byName, warnings: employeeWarnings } = parseEmployees({
+      workbook,
+      departmentIdByName,
+    });
     const { shiftTypes, lookup } = parseShiftTypes(workbook);
     const { shifts, warnings, matchedSheet } = parseMonthlySchedule({
       workbook,
@@ -542,11 +616,12 @@ export async function runSpreadsheetImportAction(
 
     return {
       ok: true,
+      extractedDepartments: departments,
       extractedEmployees: employees,
       extractedShiftTypes: shiftTypes,
       extractedShifts: shifts,
       euViolations,
-      warnings,
+      warnings: [...employeeWarnings, ...warnings],
       matchedSheet,
     };
   } catch (error) {

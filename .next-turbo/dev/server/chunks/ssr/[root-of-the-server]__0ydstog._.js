@@ -165,7 +165,54 @@ function findSheetByExactName(workbook, wantedName) {
     const name = workbook.SheetNames.find((n)=>n.trim().toLowerCase() === wantedName.trim().toLowerCase());
     return name ? workbook.Sheets[name] : null;
 }
-function parseEmployees(workbook) {
+function parseDepartments(workbook) {
+    const sheet = findSheetByExactName(workbook, "Departments");
+    if (!sheet) {
+        return {
+            departments: [],
+            departmentIdByName: new Map()
+        };
+    }
+    const matrix = asMatrix(sheet);
+    if (matrix.length === 0) return {
+        departments: [],
+        departmentIdByName: new Map()
+    };
+    const headerRowIndex = matrix.findIndex((row)=>{
+        const headers = row.map(normalizeHeader);
+        return headers.includes("dept id") && headers.includes("department name");
+    });
+    if (headerRowIndex < 0) {
+        throw new Error("Departments sheet is missing the expected header row");
+    }
+    const header = matrix[headerRowIndex].map(normalizeHeader);
+    const col = {
+        deptId: findHeaderIndex(header, "dept id", "department id"),
+        departmentName: findHeaderIndex(header, "department name", "department"),
+        notes: findHeaderIndex(header, "notes", "note")
+    };
+    const departments = [];
+    const departmentIdByName = new Map();
+    for(let r = headerRowIndex + 1; r < matrix.length; r++){
+        const row = matrix[r] ?? [];
+        const dept_id = readCellString(row, col.deptId);
+        const department_name = readCellString(row, col.departmentName);
+        if (!dept_id || !department_name) continue;
+        const item = {
+            dept_id,
+            department_name,
+            notes: readCellString(row, col.notes)
+        };
+        departments.push(item);
+        departmentIdByName.set(normalizeName(department_name), dept_id);
+    }
+    return {
+        departments,
+        departmentIdByName
+    };
+}
+function parseEmployees(params) {
+    const { workbook, departmentIdByName } = params;
     const sheet = findSheetByExactName(workbook, "Employees");
     if (!sheet) {
         throw new Error("Missing required sheet: Employees");
@@ -173,7 +220,8 @@ function parseEmployees(workbook) {
     const matrix = asMatrix(sheet);
     if (matrix.length === 0) return {
         employees: [],
-        byName: new Map()
+        byName: new Map(),
+        warnings: []
     };
     const headerRowIndex = matrix.findIndex((row)=>{
         const headers = row.map(normalizeHeader);
@@ -205,6 +253,7 @@ function parseEmployees(workbook) {
     };
     const employees = [];
     const byName = new Map();
+    const warnings = [];
     for(let r = headerRowIndex + 1; r < matrix.length; r++){
         const row = matrix[r] ?? [];
         const rawId = row[col.id];
@@ -234,9 +283,16 @@ function parseEmployees(workbook) {
             start_date: readCellString(row, col.startDate),
             job_title: readCellString(row, col.jobTitle),
             department: readCellString(row, col.department),
+            department_id: null,
             type: readCellString(row, col.type),
             status: readCellString(row, col.status)
         };
+        if (employee.department) {
+            employee.department_id = departmentIdByName.get(normalizeName(employee.department)) ?? null;
+            if (!employee.department_id) {
+                warnings.push(`Department '${employee.department}' for employee '${employee.full_name}' was not found in Departments sheet`);
+            }
+        }
         employees.push(employee);
         byName.set(normalizeName(full_name), employee);
         if (first_name && last_name) {
@@ -245,7 +301,8 @@ function parseEmployees(workbook) {
     }
     return {
         employees,
-        byName
+        byName,
+        warnings
     };
 }
 function parseShiftTypes(workbook) {
@@ -492,7 +549,11 @@ async function runSpreadsheetImportAction(input) {
         const workbook = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$xlsx$2f$xlsx$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["read"](buffer, {
             type: "array"
         });
-        const { employees, byName } = parseEmployees(workbook);
+        const { departments, departmentIdByName } = parseDepartments(workbook);
+        const { employees, byName, warnings: employeeWarnings } = parseEmployees({
+            workbook,
+            departmentIdByName
+        });
         const { shiftTypes, lookup } = parseShiftTypes(workbook);
         const { shifts, warnings, matchedSheet } = parseMonthlySchedule({
             workbook,
@@ -507,11 +568,15 @@ async function runSpreadsheetImportAction(input) {
         }) : [];
         return {
             ok: true,
+            extractedDepartments: departments,
             extractedEmployees: employees,
             extractedShiftTypes: shiftTypes,
             extractedShifts: shifts,
             euViolations,
-            warnings,
+            warnings: [
+                ...employeeWarnings,
+                ...warnings
+            ],
             matchedSheet
         };
     } catch (error) {

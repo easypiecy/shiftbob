@@ -13,7 +13,6 @@ import {
   Building2,
   CalendarClock,
   CreditCard,
-  FileSpreadsheet,
   KeyRound,
   Layers3,
   Loader2,
@@ -131,7 +130,6 @@ export default function WorkplaceDetailClient({
     | "api"
     | "appearance"
     | "rules"
-    | "dataExport"
     | "compliance"
     | "billing"
   >("company");
@@ -524,8 +522,11 @@ export default function WorkplaceDetailClient({
               { id: "planning", label: "Planlægning", icon: CalendarClock },
               { id: "types", label: "Typer", icon: Layers3 },
               { id: "appearance", label: "Farver", icon: Palette },
-              { id: "rules", label: "Regler", icon: Scale },
-              { id: "dataExport", label: "Data eksport", icon: FileSpreadsheet },
+              {
+                id: "rules",
+                label: tr("settings.tabs.eu_rules", "EU regler"),
+                icon: Scale,
+              },
               { id: "compliance", label: "Compliance", icon: ShieldCheck },
               { id: "api", label: "API", icon: KeyRound },
               { id: "billing", label: "Billing", icon: CreditCard },
@@ -544,7 +545,6 @@ export default function WorkplaceDetailClient({
                         | "types"
                         | "appearance"
                         | "rules"
-                        | "dataExport"
                         | "compliance"
                         | "api"
                         | "billing"
@@ -1585,54 +1585,181 @@ export default function WorkplaceDetailClient({
           <li>{tr("rules.page.bullet2")}</li>
           <li>{tr("rules.page.bullet3")}</li>
         </ul>
+
+        <div className="space-y-6 rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-700 dark:bg-zinc-950/40">
+          <section className="space-y-2">
+            <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+              EU Working Time Directive (2003/88/EC)
+            </h3>
+            <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
+              <table className="min-w-full text-left text-sm">
+                <thead className="bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+                  <tr>
+                    <th className="px-3 py-2 font-semibold">Parameter</th>
+                    <th className="px-3 py-2 font-semibold">Værdi</th>
+                    <th className="px-3 py-2 font-semibold">Noter</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
+                  <tr>
+                    <td className="px-3 py-2">Standard working week</td>
+                    <td className="px-3 py-2">40 hours/week</td>
+                    <td className="px-3 py-2">Set per employee contract (EU max is 48h)</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">EU maximum working week</td>
+                    <td className="px-3 py-2">48 hours/week</td>
+                    <td className="px-3 py-2">Averaged over 17-week reference period (Art. 6)</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Max hours per day</td>
+                    <td className="px-3 py-2">10 hours/day</td>
+                    <td className="px-3 py-2">Recommended maximum</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Minimum daily rest</td>
+                    <td className="px-3 py-2">11 hours</td>
+                    <td className="px-3 py-2">Hours between shifts (EU mandatory, Art. 3)</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Minimum weekly rest</td>
+                    <td className="px-3 py-2">24 consecutive hours/week</td>
+                    <td className="px-3 py-2">EU mandatory (Art. 5) - in practice 35h incl. daily rest</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Max consecutive working days</td>
+                    <td className="px-3 py-2">6 days</td>
+                    <td className="px-3 py-2">7th day should be rest (best practice)</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Break: shift &gt;= 6 hours</td>
+                    <td className="px-3 py-2">30 minutes</td>
+                    <td className="px-3 py-2">Minimum break</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Break: shift &gt;= 9 hours</td>
+                    <td className="px-3 py-2">45 minutes</td>
+                    <td className="px-3 py-2">Minimum break</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Night shift definition</td>
+                    <td className="px-3 py-2">22:00-06:00</td>
+                    <td className="px-3 py-2">Any shift with &gt;= 3 hours in this window</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Max night hours/week</td>
+                    <td className="px-3 py-2">8 hours average</td>
+                    <td className="px-3 py-2">Average over 17-week period (EU)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section className="space-y-2">
+            <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+              Young workers (under 18)
+            </h3>
+            <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
+              <table className="min-w-full text-left text-sm">
+                <thead className="bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+                  <tr>
+                    <th className="px-3 py-2 font-semibold">Parameter</th>
+                    <th className="px-3 py-2 font-semibold">Værdi</th>
+                    <th className="px-3 py-2 font-semibold">Noter</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
+                  <tr>
+                    <td className="px-3 py-2">Young workers rest</td>
+                    <td className="px-3 py-2">12 hours consecutive rest</td>
+                    <td className="px-3 py-2">Under 18</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section className="space-y-2">
+            <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+              Additional parameters from policy sheet
+            </h3>
+            <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
+              <table className="min-w-full text-left text-sm">
+                <thead className="bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+                  <tr>
+                    <th className="px-3 py-2 font-semibold">Category</th>
+                    <th className="px-3 py-2 font-semibold">Rule</th>
+                    <th className="px-3 py-2 font-semibold">Details</th>
+                    <th className="px-3 py-2 font-semibold">Notes</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
+                  <tr>
+                    <td className="px-3 py-2">Pay</td>
+                    <td className="px-3 py-2">Evening/weekend premium</td>
+                    <td className="px-3 py-2">Shifts after 18:00 and weekends</td>
+                    <td className="px-3 py-2">+25% above base rate (configurable)</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Pay</td>
+                    <td className="px-3 py-2">Night premium</td>
+                    <td className="px-3 py-2">Shifts classified as night work</td>
+                    <td className="px-3 py-2">+40% above base rate (configurable)</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Pay</td>
+                    <td className="px-3 py-2">Public holiday</td>
+                    <td className="px-3 py-2">Work on public holidays</td>
+                    <td className="px-3 py-2">+100% (double pay, configurable)</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Shift Types</td>
+                    <td className="px-3 py-2">Code</td>
+                    <td className="px-3 py-2">Short code used for ShiftBob import</td>
+                    <td className="px-3 py-2">MORNING, DAY, AFTERNOON ...</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Shift Types</td>
+                    <td className="px-3 py-2">Full Name</td>
+                    <td className="px-3 py-2">Display name shown in calendar cells</td>
+                    <td className="px-3 py-2">Morning, Day, Afternoon ...</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Shift Types</td>
+                    <td className="px-3 py-2">Start / End</td>
+                    <td className="px-3 py-2">Shift start and end times</td>
+                    <td className="px-3 py-2">06:00 / 14:00</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Shift Types</td>
+                    <td className="px-3 py-2">Break (min)</td>
+                    <td className="px-3 py-2">Mandatory break deducted from net hours</td>
+                    <td className="px-3 py-2">30 min for 8h shifts</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Shift Types</td>
+                    <td className="px-3 py-2">Net Hours</td>
+                    <td className="px-3 py-2">Paid hours after break deduction</td>
+                    <td className="px-3 py-2">7.5 for standard 8h shift</td>
+                  </tr>
+                  <tr>
+                    <td className="px-3 py-2">Shift Types</td>
+                    <td className="px-3 py-2">Pay Category</td>
+                    <td className="px-3 py-2">Pay multiplier category</td>
+                    <td className="px-3 py-2">Standard / Evening +25% / Night +40%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
         <AdminDocumentUploadPanel
           accept=".pdf,.doc,.docx,application/pdf"
           fileInputLabel={tr("rules.upload.label")}
           hint={tr("rules.upload.hint")}
         />
-      </section>
-      ) : null}
-
-      {dashboardTabsEnabled && activeSettingsTab === "dataExport" ? (
-      <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-          {tr("data_export.page.title")}
-        </h2>
-        <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-          {tr("data_export.page.intro")}
-        </p>
-        <ul className="list-inside list-disc space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
-          <li>{tr("data_export.page.bullet1")}</li>
-          <li>{tr("data_export.page.bullet2")}</li>
-          <li>{tr("data_export.page.bullet3")}</li>
-        </ul>
-        <div className="space-y-6">
-          <section>
-            <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-              {tr("data_export.section.csv_title")}
-            </h3>
-            <AdminDocumentUploadPanel
-              accept=".csv,text/csv"
-              fileInputLabel={tr("data_export.upload.csv_label")}
-              hint={tr("data_export.upload.csv_hint")}
-              showBetaNotice={false}
-            />
-          </section>
-          <section>
-            <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-              {tr("data_export.section.docs_title")}
-            </h3>
-            <AdminDocumentUploadPanel
-              accept=".pdf,.doc,.docx,.csv,.txt,text/plain"
-              fileInputLabel={tr("data_export.upload.docs_label")}
-              hint={tr("data_export.upload.docs_hint")}
-              showBetaNotice={false}
-            />
-          </section>
-        </div>
-        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-950 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-100">
-          {tr("data_export.beta_notice")}
-        </p>
       </section>
       ) : null}
 

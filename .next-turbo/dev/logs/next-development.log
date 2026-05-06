@@ -601,3 +601,43 @@
 {"timestamp":"00:18:41.459","source":"Server","level":"LOG","message":"✓ Compiled in 59ms"}
 {"timestamp":"00:18:48.533","source":"Server","level":"LOG","message":"✓ Compiled in 72ms"}
 {"timestamp":"00:18:49.951","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=7611"}
+{"timestamp":"00:20:31.537","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=4677"}
+{"timestamp":"00:20:33.901","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1218"}
+{"timestamp":"00:20:36.066","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceShiftsInRange wp=67bdce3c-1e39-452b-8f97-176339f05e66 dept=fc659468-f76c-473b-8234-2ecac4f2615a user=all rows=2 status=ok ms=981"}
+{"timestamp":"00:20:38.566","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceShiftsInRange wp=67bdce3c-1e39-452b-8f97-176339f05e66 dept=fc659468-f76c-473b-8234-2ecac4f2615a user=all rows=2 status=ok ms=2467"}
+{"timestamp":"00:20:38.705","source":"Browser","level":"DEBUG","message":"[calendar-client] dept=fc659468-f76c-473b-8234-2ecac4f2615a ok 2501.2ms shifts=2 range=2026-05-05T22:00..2026-05-08T22:00"}
+{"timestamp":"00:20:39.277","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceShiftsInRange wp=67bdce3c-1e39-452b-8f97-176339f05e66 dept=ecd01244-a5fd-40e9-ae0d-6a42a01fd944 user=all rows=8 status=ok ms=576"}
+{"timestamp":"00:20:39.419","source":"Browser","level":"DEBUG","message":"[calendar-client] dept=ecd01244-a5fd-40e9-ae0d-6a42a01fd944 ok 711.3ms shifts=8 range=2026-05-05T22:00..2026-05-08T22:00"}
+{"timestamp":"00:20:40.100","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceShiftsInRange wp=67bdce3c-1e39-452b-8f97-176339f05e66 dept=5d386d70-700a-43f7-bea7-3c46f78c1b06 user=all rows=3 status=ok ms=681"}
+{"timestamp":"00:20:40.238","source":"Browser","level":"DEBUG","message":"[calendar-client] dept=5d386d70-700a-43f7-bea7-3c46f78c1b06 ok 821.5ms shifts=3 range=2026-05-05T22:00..2026-05-08T22:00"}
+{"timestamp":"00:20:40.761","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceShiftsInRange wp=67bdce3c-1e39-452b-8f97-176339f05e66 dept=cc1af926-cabc-4ecb-a5b8-c916bdcd8bf3 user=all rows=5 status=ok ms=524"}
+{"timestamp":"00:20:40.911","source":"Browser","level":"DEBUG","message":"[calendar-client] dept=cc1af926-cabc-4ecb-a5b8-c916bdcd8bf3 ok 659.8ms shifts=5 range=2026-05-05T22:00..2026-05-08T22:00"}
+{"timestamp":"00:20:41.378","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceShiftsInRange wp=67bdce3c-1e39-452b-8f97-176339f05e66 dept=a9856c97-16b8-44c7-89c2-edf3f73a44a5 user=all rows=0 status=ok ms=469"}
+{"timestamp":"00:20:41.527","source":"Browser","level":"DEBUG","message":"[calendar-client] dept=a9856c97-16b8-44c7-89c2-edf3f73a44a5 ok 618.4ms shifts=0 range=2026-05-05T22:00..2026-05-08T22:00"}
+{"timestamp":"00:20:41.936","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceShiftsInRange wp=67bdce3c-1e39-452b-8f97-176339f05e66 dept=44da2125-a12a-48eb-90b1-ef2729de67a8 user=all rows=4 status=ok ms=415"}
+{"timestamp":"00:20:42.073","source":"Browser","level":"DEBUG","message":"[calendar-client] dept=44da2125-a12a-48eb-90b1-ef2729de67a8 ok 578.2ms shifts=4 range=2026-05-05T22:00..2026-05-08T22:00"}
+{"timestamp":"00:20:42.494","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceShiftsInRange wp=67bdce3c-1e39-452b-8f97-176339f05e66 dept=bcd4037a-96b7-40b9-adb5-6d10fe2a4408 user=all rows=0 status=ok ms=414"}
+{"timestamp":"00:20:42.632","source":"Browser","level":"DEBUG","message":"[calendar-client] dept=bcd4037a-96b7-40b9-adb5-6d10fe2a4408 ok 537.4ms shifts=0 range=2026-05-05T22:00..2026-05-08T22:00"}
+{"timestamp":"00:20:43.120","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceShiftsInRange wp=67bdce3c-1e39-452b-8f97-176339f05e66 dept=08e9daad-d94e-4581-a867-fd9c0675197a user=all rows=7 status=ok ms=478"}
+{"timestamp":"00:20:43.241","source":"Browser","level":"DEBUG","message":"[calendar-client] dept=08e9daad-d94e-4581-a867-fd9c0675197a ok 622.8ms shifts=7 range=2026-05-05T22:00..2026-05-08T22:00"}
+{"timestamp":"00:20:43.654","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceShiftsInRange wp=67bdce3c-1e39-452b-8f97-176339f05e66 dept=bdc87951-0964-490c-86fa-3c0b24348139 user=all rows=2 status=ok ms=403"}
+{"timestamp":"00:20:43.785","source":"Browser","level":"DEBUG","message":"[calendar-client] dept=bdc87951-0964-490c-86fa-3c0b24348139 ok 534.7ms shifts=2 range=2026-05-05T22:00..2026-05-08T22:00"}
+{"timestamp":"00:20:44.185","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceShiftsInRange wp=67bdce3c-1e39-452b-8f97-176339f05e66 dept=43c319bf-5507-4113-8991-98f5143ef09c user=all rows=0 status=ok ms=393"}
+{"timestamp":"00:20:44.321","source":"Browser","level":"DEBUG","message":"[calendar-client] dept=43c319bf-5507-4113-8991-98f5143ef09c ok 532.0ms shifts=0 range=2026-05-05T22:00..2026-05-08T22:00"}
+{"timestamp":"00:20:44.745","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceShiftsInRange wp=67bdce3c-1e39-452b-8f97-176339f05e66 dept=0235ceec-6682-4cb5-baa9-79e70222d60b user=all rows=5 status=ok ms=412"}
+{"timestamp":"00:20:44.880","source":"Browser","level":"DEBUG","message":"[calendar-client] dept=0235ceec-6682-4cb5-baa9-79e70222d60b ok 561.9ms shifts=5 range=2026-05-05T22:00..2026-05-08T22:00"}
+{"timestamp":"00:40:47.064","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=9359"}
+{"timestamp":"00:42:43.768","source":"Server","level":"LOG","message":"✓ Compiled in 118ms"}
+{"timestamp":"00:42:44.997","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1103"}
+{"timestamp":"00:42:45.086","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1073"}
+{"timestamp":"00:42:51.561","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=7823"}
+{"timestamp":"00:42:51.877","source":"Server","level":"LOG","message":"✓ Compiled in 85ms"}
+{"timestamp":"00:42:54.448","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=2390"}
+{"timestamp":"00:42:55.881","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=3907"}
+{"timestamp":"00:42:57.575","source":"Server","level":"LOG","message":"✓ Compiled in 72ms"}
+{"timestamp":"00:43:03.337","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=5565"}
+{"timestamp":"00:43:03.417","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=5831"}
+{"timestamp":"00:43:03.492","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=5819"}
+{"timestamp":"00:43:03.590","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=11748"}
+{"timestamp":"00:45:24.476","source":"Server","level":"LOG","message":"✓ Compiled in 64ms"}
+{"timestamp":"00:48:59.322","source":"Server","level":"LOG","message":"✓ Compiled in 125ms"}

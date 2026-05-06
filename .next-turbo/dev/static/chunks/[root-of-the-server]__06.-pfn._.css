@@ -4656,6 +4656,10 @@
     }
   }
 
+  :where(.dark\:divide-zinc-700:where(.dark, .dark *) > :not(:last-child)) {
+    border-color: var(--color-zinc-700);
+  }
+
   :where(.dark\:divide-zinc-800:where(.dark, .dark *) > :not(:last-child)) {
     border-color: var(--color-zinc-800);
   }
