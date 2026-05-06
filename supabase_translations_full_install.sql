@@ -303,10 +303,12 @@ insert into public.ui_translations (translation_key, language_code, text_value, 
 ('common.logout.loading', 'da', 'Logger ud…', 'Log ud-knap under anmodning.'),
 
 -- Administrator dashboard menu
-('admin.nav.calendar', 'en-US', 'Calendar', 'Admin sidebar: main calendar.'),
-('admin.nav.calendar', 'da', 'Kalender', 'Admin-menu: kalender.'),
-('admin.nav.future', 'en-US', 'Future', 'Admin sidebar: unreleased planning horizon.'),
-('admin.nav.future', 'da', 'Fremtiden', 'Admin-menu: fremtidsplanlægning.'),
+('admin.nav.calendar', 'en-US', 'Schedule', 'Admin sidebar: primary schedule view.'),
+('admin.nav.calendar', 'da', 'Vagtplan', 'Admin-menu: primær vagtplanvisning.'),
+('admin.nav.future', 'en-US', 'Automated planing', 'Admin sidebar: automated rollout planning.'),
+('admin.nav.future', 'da', 'Automatisk udrulning', 'Admin-menu: automatisk udrulning.'),
+('admin.nav.import_spreadsheet', 'en-US', 'Get spreadsheet', 'Admin sidebar action button: open picker for .xls/.xlsx import flow.'),
+('admin.nav.import_spreadsheet', 'da', 'Hent regneark', 'Admin-menu handling: vælg .xls/.xlsx og start import-flow.'),
 ('admin.nav.notifications', 'en-US', 'Notifications', 'Admin sidebar.'),
 ('admin.nav.notifications', 'da', 'Notifikationer', 'Admin-menu.'),
 ('admin.nav.rules', 'en-US', 'Rules', 'Admin sidebar: collective agreement / rules.'),
@@ -769,6 +771,13 @@ insert into public.ui_translations (translation_key, language_code, text_value, 
 on conflict (translation_key, language_code) do update set
   text_value = excluded.text_value,
   context_description = excluded.context_description;
+
+update public.ui_translations
+set
+  text_value = '',
+  context_description = coalesce(context_description, 'Pending translation')
+where translation_key in ('admin.nav.calendar', 'admin.nav.future', 'admin.nav.import_spreadsheet')
+  and language_code not in ('da', 'en-US');
 
 -- ---------------------------------------------------------------------------
 -- Standard type labels (shift + employee) with context per language.

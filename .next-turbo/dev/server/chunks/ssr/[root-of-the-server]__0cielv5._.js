@@ -173,9 +173,9 @@ function normalizeProduct(value) {
     return "basic";
 }
 async function EmployerSignupPage({ searchParams }) {
-    const [map, lang, sp] = await Promise.all([
-        (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$ui$2d$language$2d$server$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$locals$3e$__["getUiTranslations"])(),
-        (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$ui$2d$language$2d$server$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$locals$3e$__["resolveRequestUiLanguage"])(),
+    const lang = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$ui$2d$language$2d$server$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$locals$3e$__["resolveRequestUiLanguage"])();
+    const [map, sp] = await Promise.all([
+        (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$translations$2d$server$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getTranslationsCached"])(lang),
         searchParams
     ]);
     const t = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$translations$2d$server$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["createTranslator"])(map);
@@ -205,12 +205,12 @@ async function EmployerSignupPage({ searchParams }) {
                                         unoptimized: true
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/page.tsx",
-                                        lineNumber: 46,
+                                        lineNumber: 42,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/employer-signup/page.tsx",
-                                    lineNumber: 45,
+                                    lineNumber: 41,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -218,13 +218,13 @@ async function EmployerSignupPage({ searchParams }) {
                                     children: "shiftbob.io"
                                 }, void 0, false, {
                                     fileName: "[project]/app/employer-signup/page.tsx",
-                                    lineNumber: 56,
+                                    lineNumber: 52,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/employer-signup/page.tsx",
-                            lineNumber: 44,
+                            lineNumber: 40,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$login$2f$login$2d$language$2d$picker$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["UiLanguageSelect"], {
@@ -234,18 +234,18 @@ async function EmployerSignupPage({ searchParams }) {
                             variant: "light"
                         }, void 0, false, {
                             fileName: "[project]/app/employer-signup/page.tsx",
-                            lineNumber: 58,
+                            lineNumber: 54,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/employer-signup/page.tsx",
-                    lineNumber: 43,
+                    lineNumber: 39,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/employer-signup/page.tsx",
-                lineNumber: 42,
+                lineNumber: 38,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -256,22 +256,68 @@ async function EmployerSignupPage({ searchParams }) {
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: "mt-2 text-sm text-zinc-600 sm:text-base",
-                                children: "Udfyld nedenstående og du er klar!"
+                                children: t("employer_signup.subtitle", "Fill out the form below and you are ready!")
                             }, void 0, false, {
                                 fileName: "[project]/app/employer-signup/page.tsx",
-                                lineNumber: 70,
+                                lineNumber: 66,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/employer-signup/page.tsx",
-                            lineNumber: 69,
+                            lineNumber: 65,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$employer$2d$signup$2f$employer$2d$signup$2d$form$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["EmployerSignupForm"], {
-                            initialProduct: initialProduct
-                        }, void 0, false, {
+                            initialProduct: initialProduct,
+                            languageCode: lang,
+                            copy: {
+                                labelProduct: t("employer_signup.label.product", "Product"),
+                                productBasic: t("employer_signup.product.basic", "Basic (free)"),
+                                productProPlanner: t("employer_signup.product.pro_planner", "Pro Planner"),
+                                productHybridApp: t("employer_signup.product.hybrid_app", "Hybrid App"),
+                                productAutopilot: t("employer_signup.product.autopilot", "Autopilot"),
+                                labelCompanyName: t("employer_signup.label.company_name", "Company name"),
+                                labelFirstName: t("employer_signup.label.first_name", "First name"),
+                                labelLastName: t("employer_signup.label.last_name", "Last name"),
+                                labelEmail: t("employer_signup.label.email", "Email"),
+                                labelVat: t("employer_signup.label.vat", "CVR / VAT"),
+                                labelPhone: t("employer_signup.label.phone", "Phone"),
+                                labelAddress: t("employer_signup.label.address", "Address"),
+                                labelPostalCode: t("employer_signup.label.postal_code", "Postal code"),
+                                labelCity: t("employer_signup.label.city", "City"),
+                                labelCountry: t("employer_signup.label.country", "Country"),
+                                placeholderSelectCountry: t("employer_signup.placeholder.select_country", "Select country"),
+                                labelEmployeeCount: t("employer_signup.label.employee_count", "Number of employees"),
+                                labelCardholderName: t("employer_signup.label.cardholder_name", "Cardholder name"),
+                                labelCardNumber: t("employer_signup.label.card_number", "Card number"),
+                                labelCardExpiry: t("employer_signup.label.card_expiry", "Expiry (MM/YY)"),
+                                labelCardCvc: t("employer_signup.label.card_cvc", "CVC"),
+                                placeholderCompanyName: t("employer_signup.placeholder.company_name", "e.g. Sunrise Cafe Ltd."),
+                                placeholderFirstName: t("employer_signup.placeholder.first_name", "First name"),
+                                placeholderLastName: t("employer_signup.placeholder.last_name", "Last name"),
+                                placeholderEmail: t("employer_signup.placeholder.email", "name@company.com"),
+                                placeholderCardholderName: t("employer_signup.placeholder.cardholder_name", "Name on card"),
+                                placeholderCardNumber: t("employer_signup.placeholder.card_number", "1234 5678 9012 3456"),
+                                placeholderCardExpiry: t("employer_signup.placeholder.card_expiry", "MM/YY"),
+                                placeholderCardCvc: t("employer_signup.placeholder.card_cvc", "123"),
+                                marketingConsentText: t("employer_signup.marketing_consent", "By placing an order, you accept that ShiftBob may send marketing emails. You can unsubscribe at any time."),
+                                buttonBack: t("employer_signup.button.back", "Back"),
+                                buttonNext: t("employer_signup.button.next", "Next"),
+                                buttonDownloadExcel: t("employer_signup.button.download_excel", "Download Excel schedule"),
+                                buttonCreateCompany: t("employer_signup.button.create_company", "Create company"),
+                                buttonStartAccountTemplate: t("employer_signup.button.start_account_template", "Start {productName} {price} & create account"),
+                                buttonSending: t("employer_signup.button.sending", "Sending..."),
+                                errorRequiredFieldsStep1: t("employer_signup.error.required_step1", "Please fill in all required fields."),
+                                errorRequiredFieldsStep2: t("employer_signup.error.required_step2", "Please fill in all fields in step 2."),
+                                errorConsentRequired: t("employer_signup.error.consent_required", "You must accept marketing emails to continue."),
+                                errorSubmitFailed: t("employer_signup.error.submit_failed", "Could not create the request right now. Please try again in a moment."),
+                                errorNetwork: t("employer_signup.error.network", "Network error. Check your connection and try again."),
+                                successBasicTemplate: t("employer_signup.success.basic", "Thanks! We created your request ({ticketId}). The download step will be connected soon."),
+                                successOtherTemplate: t("employer_signup.success.other", "Thanks! We received your signup ({ticketId}). We will contact you as soon as possible.")
+                            }
+                        }, lang, false, {
                             fileName: "[project]/app/employer-signup/page.tsx",
-                            lineNumber: 75,
+                            lineNumber: 71,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -279,26 +325,26 @@ async function EmployerSignupPage({ searchParams }) {
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$react$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
                                 href: "/landing#landing-products",
                                 className: "font-medium text-zinc-700 underline underline-offset-4 hover:text-zinc-900",
-                                children: "Tilbage til produkter"
+                                children: t("employer_signup.link.back_to_products", "Back to products")
                             }, void 0, false, {
                                 fileName: "[project]/app/employer-signup/page.tsx",
-                                lineNumber: 78,
+                                lineNumber: 183,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/employer-signup/page.tsx",
-                            lineNumber: 77,
+                            lineNumber: 182,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/employer-signup/page.tsx",
-                    lineNumber: 68,
+                    lineNumber: 64,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/employer-signup/page.tsx",
-                lineNumber: 67,
+                lineNumber: 63,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$landing$2f$sales$2d$bot$2d$widget$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["SalesBotWidget"], {
@@ -323,13 +369,13 @@ async function EmployerSignupPage({ searchParams }) {
                 resetLabel: t("landing.salesbot.reset", "Reset chat")
             }, void 0, false, {
                 fileName: "[project]/app/employer-signup/page.tsx",
-                lineNumber: 88,
+                lineNumber: 193,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/employer-signup/page.tsx",
-        lineNumber: 41,
+        lineNumber: 37,
         columnNumber: 5
     }, this);
 }

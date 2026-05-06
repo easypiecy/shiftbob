@@ -1,22 +1,550 @@
 {
   "node": {
-    "4060c1b5d6843d5ed8308820011f0b2317f03d3595": {
+    "40e7e97d1ee568729bacc97ac9b101e76d0c0d7d4f": {
       "workers": {
-        "app/employer-signup/page": {
-          "moduleId": "[project]/.next-internal/server/app/employer-signup/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/ui-language-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+        "app/dashboard/import-regneark/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/import-regneark/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/dashboard/import-regneark/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
-          "exportedName": "setUiLanguageAction",
-          "filename": "src/app/ui-language-actions.ts"
-        },
-        "app/landing/page": {
-          "moduleId": "[project]/.next-internal/server/app/landing/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/ui-language-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
-          "async": false,
-          "exportedName": "setUiLanguageAction",
-          "filename": "src/app/ui-language-actions.ts"
+          "exportedName": "approveSpreadsheetPlanAction",
+          "filename": "app/dashboard/import-regneark/actions.ts"
         }
       },
-      "filename": "src/app/ui-language-actions.ts",
-      "exportedName": "setUiLanguageAction"
+      "filename": "app/dashboard/import-regneark/actions.ts",
+      "exportedName": "approveSpreadsheetPlanAction"
+    },
+    "4011b458bfbb978d88eb4dad4864186d4757f9e43f": {
+      "workers": {
+        "app/dashboard/import-regneark/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/import-regneark/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/dashboard/import-regneark/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "runSpreadsheetImportAction",
+          "filename": "app/dashboard/import-regneark/actions.ts"
+        }
+      },
+      "filename": "app/dashboard/import-regneark/actions.ts",
+      "exportedName": "runSpreadsheetImportAction"
+    },
+    "4097036f0e59aec84357e924d87bd58f69de126491": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceById",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceById",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "getWorkplaceById"
+    },
+    "603eaf18b83e2c3f89decbaed94cc37f20965ac7db": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceDepartmentsOverview",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceDepartmentsOverview",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "getWorkplaceDepartmentsOverview"
+    },
+    "401c7d7dedb936715b4809394f214f715255e98962": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceTypes",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceTypes",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "getWorkplaceTypes"
+    },
+    "60e64b9a3c08dd75808add0d0cf5abd6c40b79aaff": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkplaceShift",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "createWorkplaceShift"
+    },
+    "60089aac22dcd5516cf72cfe57feb91e14b20c1ae7": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteWorkplaceShift",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "deleteWorkplaceShift"
+    },
+    "70bd646879dbd70a4cbf76c51070f6ad255f836681": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "reassignWorkplaceShift",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "reassignWorkplaceShift"
+    },
+    "70bad88342a7866ea5ebcdd1c374738608ef02929e": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "swapWorkplaceShifts",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "swapWorkplaceShifts"
+    },
+    "7894d3dd170438ab50e4224a896a6dc957129fb9e3": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "updateWorkplaceShiftTiming",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "updateWorkplaceShiftTiming"
+    },
+    "7c9e716383349ef97703adb1c22b23a486dc885972": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceShiftsInRange",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "getWorkplaceShiftsInRange"
+    },
+    "60012e1d9e704a36a229d9d6f0720b8fee7709a2fc": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkplaceMemberWithProfile",
+          "filename": "src/app/dashboard/workplace-member-calendar-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
+      "exportedName": "createWorkplaceMemberWithProfile"
+    },
+    "60bd57ea04cceb2b3e887a2137f032fba556f7ffd0": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceMemberCvSignedUrl",
+          "filename": "src/app/dashboard/workplace-member-calendar-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
+      "exportedName": "getWorkplaceMemberCvSignedUrl"
+    },
+    "6008cd23a5aceac261034fd4dde27ac68cfb4194a2": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceMemberPreferences",
+          "filename": "src/app/dashboard/workplace-member-calendar-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
+      "exportedName": "getWorkplaceMemberPreferences"
+    },
+    "6055ad1197a06e0ad44b383394f363e108e1580cd1": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceMemberProfileDetails",
+          "filename": "src/app/dashboard/workplace-member-calendar-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
+      "exportedName": "getWorkplaceMemberProfileDetails"
+    },
+    "7079bf300e55699172b61a4d62a1de0c91e12f12da": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "saveWorkplaceMemberPreferences",
+          "filename": "src/app/dashboard/workplace-member-calendar-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
+      "exportedName": "saveWorkplaceMemberPreferences"
+    },
+    "70d77257cf7d1f8d421f779e1fadb8a317262e63a4": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "updateWorkplaceMemberWithProfile",
+          "filename": "src/app/dashboard/workplace-member-calendar-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
+      "exportedName": "updateWorkplaceMemberWithProfile"
+    },
+    "707d56f2e308f0705ec21f11ce49379a1fd73689c7": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "uploadWorkplaceMemberCv",
+          "filename": "src/app/dashboard/workplace-member-calendar-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
+      "exportedName": "uploadWorkplaceMemberCv"
+    },
+    "001a343955998fab1566a737e9a80dd3f7a04883ac": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaces",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "getWorkplaces"
+    },
+    "400a744797871fabd6c8784f613823629e129c71af": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "exportWorkplaceCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "exportWorkplaceCsv"
+    },
+    "403c25bb288df6145565a07ef821a88f917fd8aa37": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "deleteShiftTypeTemplate"
+    },
+    "405584b5b956900dcea57e862bf8c0d1f30748f610": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "createWorkplace"
+    },
+    "406d0f16e62da4fb8cc47dd7c46b3ba8ad86af6195": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "deleteEmployeeTypeTemplate"
+    },
+    "406fbd9aa1d285b94472b18cf4a8fca836fff886aa": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "createEmployeeTypeTemplate"
+    },
+    "4081521e0bfa388bf7a7929f4f2a842eab2dafc240": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "listShiftTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "listShiftTypeTemplates"
+    },
+    "408408ad6ff6c256b8db582905f9e1452a1fa028da": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "listEmployeeTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "listEmployeeTypeTemplates"
+    },
+    "4088bec09bfeaab68a8d7d8b96a3ce0bcd05c7234c": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "copyWorkplaceTemplatesFromStandards",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "copyWorkplaceTemplatesFromStandards"
+    },
+    "409d40d4c9e5171aa8f4cd4b34f29bb76ffbb6d088": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "listEuCountriesForWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "listEuCountriesForWorkplace"
+    },
+    "40c53e89d9d480416ba6f89b020f40cc7573f76181": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "listWorkplaceApiKeys",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "listWorkplaceApiKeys"
+    },
+    "40ef1c0b01fab1f0416afe02837b7a410958e48107": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkplaceLegacy",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "createWorkplaceLegacy"
+    },
+    "40f1c7b8028aa137282da3b9e76520d4d5b7ea6363": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "createShiftTypeTemplate"
+    },
+    "60125dff8ce82f2d68a31a95364d935c9aedccf43e": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkplaceShiftType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "createWorkplaceShiftType"
+    },
+    "602dab343e190bf3f645a3238a81e825b66e2b7d64": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkplaceEmployeeType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "createWorkplaceEmployeeType"
+    },
+    "60354e8506f41b7d6f61a0a265f5541909b514c912": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "updateWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "updateWorkplace"
+    },
+    "60370148a97e128bd87fbe4539c141ebeb200f9016": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "importWorkplaceMembersFromCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "importWorkplaceMembersFromCsv"
+    },
+    "60505118d199d20c1ace7c160e0ae7d58fea467f9b": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "updateEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "updateEmployeeTypeTemplate"
+    },
+    "606dff1ed694fdbe20b6d05870630e8ee1e66ab746": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "deleteWorkplaceDepartment"
+    },
+    "60867009d54b73dd5400ed4e2d6b333ac9b15eb9b9": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "updateShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "updateShiftTypeTemplate"
+    },
+    "608e44b4ed4db0e39782730959fd4e2e9d523abfb8": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "registerWorkplaceImportUpload",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "registerWorkplaceImportUpload"
+    },
+    "609c49c12dd94a2cc4c44d8c6b1f57edcb90be1098": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "revokeWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "revokeWorkplaceApiKey"
+    },
+    "60e4e4a6c2350ba5eeabef29cca8fc80773e95725a": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "createWorkplaceDepartment"
+    },
+    "60ee8d875180a268c31e6c884cc538d0c6b03ed7d3": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "generateWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "generateWorkplaceApiKey"
+    },
+    "60fa005521543123673f61050ebfde5ce49de26a60": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "saveWorkplaceDepartmentMemberships",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "filename": "src/app/super-admin/workplaces/actions.ts",
+      "exportedName": "saveWorkplaceDepartmentMemberships"
+    },
+    "40da134b10f7b4b87d5a66eca98ca4cf276edacf6e": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "setUserLayoutTheme",
+          "filename": "src/app/user-ui-actions.ts"
+        }
+      },
+      "filename": "src/app/user-ui-actions.ts",
+      "exportedName": "setUserLayoutTheme"
     }
   },
   "edge": {},

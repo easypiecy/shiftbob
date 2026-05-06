@@ -903,10 +903,10 @@ async function LandingPage() {
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         "data-hero-version": "v3",
-                                        className: "justify-self-end rounded-3xl border border-white/70 bg-white/80 p-8 text-center shadow-xl backdrop-blur-sm",
+                                        className: "justify-self-end rounded-3xl border border-white/25 bg-black/70 p-8 text-center shadow-xl backdrop-blur-sm",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "text-xs font-semibold uppercase tracking-[0.2em] text-[#4A90E2]",
+                                                className: "text-xs font-semibold uppercase tracking-[0.2em] text-white/85",
                                                 children: t("landing.hero.eyebrow", "Shift Scheduling")
                                             }, void 0, false, {
                                                 fileName: "[project]/app/landing/page.tsx",
@@ -914,7 +914,7 @@ async function LandingPage() {
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                                                className: "mt-3 max-w-xl text-3xl font-black uppercase leading-[1.05] text-zinc-900 sm:text-4xl lg:text-5xl",
+                                                className: "mt-3 max-w-xl text-3xl font-black uppercase leading-[1.05] text-white sm:text-4xl lg:text-5xl",
                                                 children: t("landing.hero.title", "Give Your Excel Shift Plan Extra Power 💥")
                                             }, void 0, false, {
                                                 fileName: "[project]/app/landing/page.tsx",

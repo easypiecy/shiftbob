@@ -6,16 +6,161 @@ type ProductId = "basic" | "pro_planner" | "hybrid_app" | "autopilot";
 
 type EmployerSignupFormProps = {
   initialProduct: ProductId;
+  languageCode?: string;
+  copy?: {
+    labelProduct: string;
+    productBasic: string;
+    productProPlanner: string;
+    productHybridApp: string;
+    productAutopilot: string;
+    labelCompanyName: string;
+    labelFirstName: string;
+    labelLastName: string;
+    labelEmail: string;
+    labelVat: string;
+    labelPhone: string;
+    labelAddress: string;
+    labelPostalCode: string;
+    labelCity: string;
+    labelCountry: string;
+    placeholderSelectCountry: string;
+    labelEmployeeCount: string;
+    labelCardholderName: string;
+    labelCardNumber: string;
+    labelCardExpiry: string;
+    labelCardCvc: string;
+    placeholderCompanyName: string;
+    placeholderFirstName: string;
+    placeholderLastName: string;
+    placeholderEmail: string;
+    placeholderCardholderName: string;
+    placeholderCardNumber: string;
+    placeholderCardExpiry: string;
+    placeholderCardCvc: string;
+    marketingConsentText: string;
+    buttonBack: string;
+    buttonNext: string;
+    buttonDownloadExcel: string;
+    buttonCreateCompany: string;
+    buttonStartAccountTemplate: string;
+    buttonSending: string;
+    errorRequiredFieldsStep1: string;
+    errorRequiredFieldsStep2: string;
+    errorConsentRequired: string;
+    errorSubmitFailed: string;
+    errorNetwork: string;
+    successBasicTemplate: string;
+    successOtherTemplate: string;
+  };
 };
 
 type MessageState = { kind: "success" | "error"; text: string } | null;
 
-const PRODUCT_OPTIONS: Array<{ id: ProductId; label: string }> = [
-  { id: "basic", label: "Basic (gratis)" },
-  { id: "pro_planner", label: "Pro Planner" },
-  { id: "hybrid_app", label: "Hybrid App" },
-  { id: "autopilot", label: "Autopilot" },
-];
+const DEFAULT_COPY_EN: NonNullable<EmployerSignupFormProps["copy"]> = {
+  labelProduct: "Product",
+  productBasic: "Basic (free)",
+  productProPlanner: "Pro Planner",
+  productHybridApp: "Hybrid App",
+  productAutopilot: "Autopilot",
+  labelCompanyName: "Company name",
+  labelFirstName: "First name",
+  labelLastName: "Last name",
+  labelEmail: "Email",
+  labelVat: "VAT / company number",
+  labelPhone: "Phone",
+  labelAddress: "Address",
+  labelPostalCode: "Postal code",
+  labelCity: "City",
+  labelCountry: "Country",
+  placeholderSelectCountry: "Select country",
+  labelEmployeeCount: "Number of employees",
+  labelCardholderName: "Cardholder name",
+  labelCardNumber: "Card number",
+  labelCardExpiry: "Expiry (MM/YY)",
+  labelCardCvc: "CVC",
+  placeholderCompanyName: "e.g. Sunrise Cafe Ltd.",
+  placeholderFirstName: "First name",
+  placeholderLastName: "Last name",
+  placeholderEmail: "name@company.com",
+  placeholderCardholderName: "Name on card",
+  placeholderCardNumber: "1234 5678 9012 3456",
+  placeholderCardExpiry: "MM/YY",
+  placeholderCardCvc: "123",
+  marketingConsentText:
+    "By placing an order, you accept that ShiftBob may send marketing emails. You can unsubscribe at any time.",
+  buttonBack: "Back",
+  buttonNext: "Next",
+  buttonDownloadExcel: "Download Excel schedule",
+  buttonCreateCompany: "Create company",
+  buttonStartAccountTemplate: "Start {productName} {price} & create account",
+  buttonSending: "Sending...",
+  errorRequiredFieldsStep1: "Please fill in all required fields.",
+  errorRequiredFieldsStep2: "Please fill in all fields in step 2.",
+  errorConsentRequired: "You must accept marketing emails to continue.",
+  errorSubmitFailed: "Could not create the request right now. Please try again in a moment.",
+  errorNetwork: "Network error. Check your connection and try again.",
+  successBasicTemplate:
+    "Thanks! We created your request ({ticketId}). The download step will be connected soon.",
+  successOtherTemplate:
+    "Thanks! We received your signup ({ticketId}). We will contact you as soon as possible.",
+};
+
+const DEFAULT_COPY_DA: NonNullable<EmployerSignupFormProps["copy"]> = {
+  labelProduct: "Produkt",
+  productBasic: "Basic (gratis)",
+  productProPlanner: "Pro Planner",
+  productHybridApp: "Hybrid App",
+  productAutopilot: "Autopilot",
+  labelCompanyName: "Virksomhedsnavn",
+  labelFirstName: "Fornavn",
+  labelLastName: "Efternavn",
+  labelEmail: "E-mail",
+  labelVat: "CVR / VAT",
+  labelPhone: "Telefon",
+  labelAddress: "Adresse",
+  labelPostalCode: "Postnr.",
+  labelCity: "By",
+  labelCountry: "Land",
+  placeholderSelectCountry: "Vælg land",
+  labelEmployeeCount: "Antal ansatte",
+  labelCardholderName: "Kortholders navn",
+  labelCardNumber: "Kortnummer",
+  labelCardExpiry: "Udløb (MM/AA)",
+  labelCardCvc: "CVC",
+  placeholderCompanyName: "Fx Cafe Solsiden ApS",
+  placeholderFirstName: "Fornavn",
+  placeholderLastName: "Efternavn",
+  placeholderEmail: "navn@virksomhed.dk",
+  placeholderCardholderName: "Navn på kort",
+  placeholderCardNumber: "1234 5678 9012 3456",
+  placeholderCardExpiry: "MM/AA",
+  placeholderCardCvc: "123",
+  marketingConsentText:
+    "Ved at bestille, så accepterer du at ShiftBob må sende markedsføringsmail. Det kan til enhver tid afmeldes.",
+  buttonBack: "Tilbage",
+  buttonNext: "Videre",
+  buttonDownloadExcel: "Hent Excel vagtplan",
+  buttonCreateCompany: "Opret virksomhed",
+  buttonStartAccountTemplate: "Start {productName} {price} & opret konto",
+  buttonSending: "Sender...",
+  errorRequiredFieldsStep1: "Udfyld venligst alle obligatoriske felter.",
+  errorRequiredFieldsStep2: "Udfyld venligst alle felter i trin 2.",
+  errorConsentRequired: "Du skal acceptere markedsføringsmail for at fortsætte.",
+  errorSubmitFailed: "Kunne ikke oprette forespørgslen lige nu. Prøv igen om et øjeblik.",
+  errorNetwork: "Netværksfejl. Tjek forbindelsen og prøv igen.",
+  successBasicTemplate:
+    "Tak! Vi har oprettet din anmodning ({ticketId}). Download-trinnet kobles på snart.",
+  successOtherTemplate:
+    "Tak! Vi har modtaget din oprettelse ({ticketId}). Vi kontakter dig hurtigst muligt.",
+};
+
+function resolveFallbackCopy(
+  languageCode?: string
+): NonNullable<EmployerSignupFormProps["copy"]> {
+  const code = (languageCode ?? "da").toLowerCase();
+  if (code.startsWith("da")) return DEFAULT_COPY_DA;
+  return DEFAULT_COPY_EN;
+}
 
 const COUNTRY_OPTIONS: Array<{ code: string; nativeName: string }> = [
   { code: "AT", nativeName: "Österreich" },
@@ -53,11 +198,33 @@ const COUNTRY_OPTIONS: Array<{ code: string; nativeName: string }> = [
 ];
 
 function submitLabelFor(product: ProductId): string {
-  if (product === "basic") return "Hent Excel vagtplan";
-  return "Opret virksomhed";
+  if (product === "basic") return "download_excel";
+  return "create_company";
 }
 
-export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) {
+function priceForProduct(product: ProductId): string {
+  if (product === "pro_planner") return "49 EUR";
+  if (product === "hybrid_app") return "29 EUR";
+  if (product === "autopilot") return "59 EUR";
+  return "0 EUR";
+}
+
+export function EmployerSignupForm({
+  initialProduct,
+  languageCode = "da",
+  copy: copyProp,
+}: EmployerSignupFormProps) {
+  const copy = copyProp ?? resolveFallbackCopy(languageCode);
+  const productOptions: Array<{ id: ProductId; label: string }> = useMemo(
+    () => [
+      { id: "basic", label: copy.productBasic },
+      { id: "pro_planner", label: copy.productProPlanner },
+      { id: "hybrid_app", label: copy.productHybridApp },
+      { id: "autopilot", label: copy.productAutopilot },
+    ],
+    [copy]
+  );
+
   const [step, setStep] = useState<1 | 2>(1);
   const [product, setProduct] = useState<ProductId>(initialProduct);
   const [companyName, setCompanyName] = useState("");
@@ -79,11 +246,25 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<MessageState>(null);
 
-  const submitLabel = useMemo(() => submitLabelFor(product), [product]);
-  const productLabel = useMemo(
-    () => PRODUCT_OPTIONS.find((p) => p.id === product)?.label ?? "Basic",
-    [product]
+  const submitLabel = useMemo(
+    () =>
+      submitLabelFor(product) === "download_excel"
+        ? copy.buttonDownloadExcel
+        : copy.buttonCreateCompany,
+    [copy.buttonCreateCompany, copy.buttonDownloadExcel, product]
   );
+  const productLabel = useMemo(
+    () => productOptions.find((p) => p.id === product)?.label ?? copy.productBasic,
+    [copy.productBasic, product, productOptions]
+  );
+  const startAccountLabel = useMemo(() => {
+    const price = priceForProduct(product);
+    const template =
+      copy.buttonStartAccountTemplate ?? DEFAULT_COPY_EN.buttonStartAccountTemplate;
+    return template
+      .replace("{productName}", productLabel)
+      .replace("{price}", price);
+  }, [copy.buttonStartAccountTemplate, product, productLabel]);
 
   useEffect(() => {
     setProduct(initialProduct);
@@ -132,7 +313,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        languageCode: "da",
+        languageCode,
         subject: `Employer signup: ${productLabel}`,
         message: `Ny oprettelsesforesporgsel fra arbejdsgiver:\n\n${details}`,
         name: `${params.trimmedFirstName} ${params.trimmedLastName}`.trim(),
@@ -156,7 +337,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
     if (!trimmedCompanyName || !trimmedFirstName || !trimmedLastName || !trimmedEmail) {
       setMessage({
         kind: "error",
-        text: "Udfyld venligst alle obligatoriske felter.",
+        text: copy.errorRequiredFieldsStep1,
       });
       return;
     }
@@ -164,7 +345,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
     if (!marketingConsent) {
       setMessage({
         kind: "error",
-        text: "Du skal acceptere markedsforingsmail for at fortsaette.",
+        text: copy.errorConsentRequired,
       });
       return;
     }
@@ -200,7 +381,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
       ) {
         setMessage({
           kind: "error",
-          text: "Udfyld venligst alle felter i trin 2.",
+          text: copy.errorRequiredFieldsStep2,
         });
         return;
       }
@@ -218,8 +399,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
       if (!data.ok) {
         setMessage({
           kind: "error",
-          text:
-            "Kunne ikke oprette foresporgslen lige nu. Prov igen om et ojeblik.",
+          text: copy.errorSubmitFailed,
         });
         return;
       }
@@ -228,13 +408,13 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
         kind: "success",
         text:
           product === "basic"
-            ? `Tak! Vi har oprettet din anmodning (${data.ticketId}). Download-trinnet kobles paa snart.`
-            : `Tak! Vi har modtaget din oprettelse (${data.ticketId}). Vi kontakter dig hurtigst muligt.`,
+            ? copy.successBasicTemplate.replace("{ticketId}", data.ticketId)
+            : copy.successOtherTemplate.replace("{ticketId}", data.ticketId),
       });
     } catch {
       setMessage({
         kind: "error",
-        text: "Netvaerksfejl. Tjek forbindelsen og prov igen.",
+        text: copy.errorNetwork,
       });
     } finally {
       setSubmitting(false);
@@ -248,7 +428,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
     >
       <div>
         <label className="mb-1 block text-sm font-medium text-zinc-700">
-          Produkt <span className="text-red-600">*</span>
+          {copy.labelProduct} <span className="text-red-600">*</span>
         </label>
         <select
           required
@@ -256,7 +436,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
           onChange={(e) => setProduct(e.target.value as ProductId)}
           className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
         >
-          {PRODUCT_OPTIONS.map((option) => (
+          {productOptions.map((option) => (
             <option key={option.id} value={option.id}>
               {option.label}
             </option>
@@ -267,46 +447,46 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <label className="mb-1 block text-sm font-medium text-zinc-700">
-            Virksomhedsnavn <span className="text-red-600">*</span>
+            {copy.labelCompanyName} <span className="text-red-600">*</span>
           </label>
           <input
             required
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
             className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
-            placeholder="Fx Cafe Solsiden ApS"
+            placeholder={copy.placeholderCompanyName}
           />
         </div>
 
         <div>
           <label className="mb-1 block text-sm font-medium text-zinc-700">
-            Fornavn <span className="text-red-600">*</span>
+            {copy.labelFirstName} <span className="text-red-600">*</span>
           </label>
           <input
             required
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
-            placeholder="Fornavn"
+            placeholder={copy.placeholderFirstName}
           />
         </div>
 
         <div>
           <label className="mb-1 block text-sm font-medium text-zinc-700">
-            Efternavn <span className="text-red-600">*</span>
+            {copy.labelLastName} <span className="text-red-600">*</span>
           </label>
           <input
             required
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
-            placeholder="Efternavn"
+            placeholder={copy.placeholderLastName}
           />
         </div>
 
         <div>
           <label className="mb-1 block text-sm font-medium text-zinc-700">
-            E-mail <span className="text-red-600">*</span>
+            {copy.labelEmail} <span className="text-red-600">*</span>
           </label>
           <input
             type="email"
@@ -314,7 +494,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
-            placeholder="navn@virksomhed.dk"
+            placeholder={copy.placeholderEmail}
           />
         </div>
 
@@ -322,7 +502,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
           <>
             <div>
               <label className="mb-1 block text-sm font-medium text-zinc-700">
-                CVR / VAT <span className="text-red-600">*</span>
+                {copy.labelVat} <span className="text-red-600">*</span>
               </label>
               <input
                 required
@@ -334,7 +514,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
 
             <div>
               <label className="mb-1 block text-sm font-medium text-zinc-700">
-                Telefon <span className="text-red-600">*</span>
+                {copy.labelPhone} <span className="text-red-600">*</span>
               </label>
               <input
                 type="tel"
@@ -347,7 +527,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
 
             <div>
               <label className="mb-1 block text-sm font-medium text-zinc-700">
-                Adresse <span className="text-red-600">*</span>
+                {copy.labelAddress} <span className="text-red-600">*</span>
               </label>
               <input
                 required
@@ -359,7 +539,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
 
             <div>
               <label className="mb-1 block text-sm font-medium text-zinc-700">
-                Postnr. <span className="text-red-600">*</span>
+                {copy.labelPostalCode} <span className="text-red-600">*</span>
               </label>
               <input
                 required
@@ -371,7 +551,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
 
             <div>
               <label className="mb-1 block text-sm font-medium text-zinc-700">
-                By <span className="text-red-600">*</span>
+                {copy.labelCity} <span className="text-red-600">*</span>
               </label>
               <input
                 required
@@ -386,7 +566,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
         {step === 2 ? (
           <div>
             <label className="mb-1 block text-sm font-medium text-zinc-700">
-              Land <span className="text-red-600">*</span>
+              {copy.labelCountry} <span className="text-red-600">*</span>
             </label>
             <select
               required
@@ -395,7 +575,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
               className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
             >
               <option value="" disabled>
-                Vælg land
+                {copy.placeholderSelectCountry}
               </option>
               {COUNTRY_OPTIONS.map((option) => (
                 <option key={option.code} value={option.code}>
@@ -407,7 +587,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
         ) : null}
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-zinc-700">Antal ansatte</label>
+          <label className="mb-1 block text-sm font-medium text-zinc-700">{copy.labelEmployeeCount}</label>
           <select
             value={employeeCount}
             onChange={(e) => setEmployeeCount(e.target.value)}
@@ -422,58 +602,60 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
         </div>
 
         {step === 2 ? (
-          <>
-            <div className="sm:col-span-2">
-              <label className="mb-1 block text-sm font-medium text-zinc-700">
-                Kortholders navn <span className="text-red-600">*</span>
-              </label>
-              <input
-                required
-                value={cardholderName}
-                onChange={(e) => setCardholderName(e.target.value)}
-                className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
-                placeholder="Navn paa kort"
-              />
+          <div className="sm:col-span-2 rounded-xl border border-[#4A90E2]/25 bg-[#4A90E2]/8 p-4 sm:p-5">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <label className="mb-1 block text-sm font-medium text-zinc-700">
+                  {copy.labelCardholderName} <span className="text-red-600">*</span>
+                </label>
+                <input
+                  required
+                  value={cardholderName}
+                  onChange={(e) => setCardholderName(e.target.value)}
+                  className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
+                  placeholder={copy.placeholderCardholderName}
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="mb-1 block text-sm font-medium text-zinc-700">
+                  {copy.labelCardNumber} <span className="text-red-600">*</span>
+                </label>
+                <input
+                  required
+                  value={cardNumber}
+                  onChange={(e) => setCardNumber(e.target.value)}
+                  className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
+                  inputMode="numeric"
+                  placeholder={copy.placeholderCardNumber}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-zinc-700">
+                  {copy.labelCardExpiry} <span className="text-red-600">*</span>
+                </label>
+                <input
+                  required
+                  value={cardExpiry}
+                  onChange={(e) => setCardExpiry(e.target.value)}
+                  className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
+                  placeholder={copy.placeholderCardExpiry}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-zinc-700">
+                  {copy.labelCardCvc} <span className="text-red-600">*</span>
+                </label>
+                <input
+                  required
+                  value={cardCvc}
+                  onChange={(e) => setCardCvc(e.target.value)}
+                  className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
+                  inputMode="numeric"
+                  placeholder={copy.placeholderCardCvc}
+                />
+              </div>
             </div>
-            <div className="sm:col-span-2">
-              <label className="mb-1 block text-sm font-medium text-zinc-700">
-                Kortnummer <span className="text-red-600">*</span>
-              </label>
-              <input
-                required
-                value={cardNumber}
-                onChange={(e) => setCardNumber(e.target.value)}
-                className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
-                inputMode="numeric"
-                placeholder="1234 5678 9012 3456"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-zinc-700">
-                Udlob (MM/AA) <span className="text-red-600">*</span>
-              </label>
-              <input
-                required
-                value={cardExpiry}
-                onChange={(e) => setCardExpiry(e.target.value)}
-                className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
-                placeholder="MM/AA"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-zinc-700">
-                CVC <span className="text-red-600">*</span>
-              </label>
-              <input
-                required
-                value={cardCvc}
-                onChange={(e) => setCardCvc(e.target.value)}
-                className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
-                inputMode="numeric"
-                placeholder="123"
-              />
-            </div>
-          </>
+          </div>
         ) : null}
       </div>
 
@@ -486,8 +668,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
           className="mt-0.5 h-4 w-4 rounded border-zinc-300 text-[#4A90E2] focus:ring-[#4A90E2]"
         />
         <span className="text-sm text-zinc-700">
-          Ved at bestille, så accepterer du at ShiftBob må sende
-          markedsføringsmail. Det kan til enhver tid afmeldes.
+          {copy.marketingConsentText}
         </span>
       </label>
 
@@ -510,7 +691,7 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
             onClick={() => setStep(1)}
             className="inline-flex min-h-11 items-center justify-center rounded-lg border border-zinc-300 px-4 py-2.5 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-50"
           >
-            Tilbage
+            {copy.buttonBack}
           </button>
         ) : null}
         <button
@@ -519,12 +700,14 @@ export function EmployerSignupForm({ initialProduct }: EmployerSignupFormProps) 
           className="inline-flex min-h-11 flex-1 items-center justify-center rounded-lg bg-[#4A90E2] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#3A7FD1] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {submitting
-            ? "Sender..."
+            ? copy.buttonSending
             : step === 1
               ? product === "basic"
                 ? submitLabel
-                : "Videre"
-              : submitLabel}
+                : copy.buttonNext
+              : product === "basic"
+                ? submitLabel
+                : startAccountLabel}
         </button>
       </div>
     </form>

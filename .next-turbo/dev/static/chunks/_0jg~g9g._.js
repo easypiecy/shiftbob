@@ -840,24 +840,101 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 var _s = __turbopack_context__.k.signature();
 "use client";
 ;
-const PRODUCT_OPTIONS = [
-    {
-        id: "basic",
-        label: "Basic (gratis)"
-    },
-    {
-        id: "pro_planner",
-        label: "Pro Planner"
-    },
-    {
-        id: "hybrid_app",
-        label: "Hybrid App"
-    },
-    {
-        id: "autopilot",
-        label: "Autopilot"
-    }
-];
+const DEFAULT_COPY_EN = {
+    labelProduct: "Product",
+    productBasic: "Basic (free)",
+    productProPlanner: "Pro Planner",
+    productHybridApp: "Hybrid App",
+    productAutopilot: "Autopilot",
+    labelCompanyName: "Company name",
+    labelFirstName: "First name",
+    labelLastName: "Last name",
+    labelEmail: "Email",
+    labelVat: "VAT / company number",
+    labelPhone: "Phone",
+    labelAddress: "Address",
+    labelPostalCode: "Postal code",
+    labelCity: "City",
+    labelCountry: "Country",
+    placeholderSelectCountry: "Select country",
+    labelEmployeeCount: "Number of employees",
+    labelCardholderName: "Cardholder name",
+    labelCardNumber: "Card number",
+    labelCardExpiry: "Expiry (MM/YY)",
+    labelCardCvc: "CVC",
+    placeholderCompanyName: "e.g. Sunrise Cafe Ltd.",
+    placeholderFirstName: "First name",
+    placeholderLastName: "Last name",
+    placeholderEmail: "name@company.com",
+    placeholderCardholderName: "Name on card",
+    placeholderCardNumber: "1234 5678 9012 3456",
+    placeholderCardExpiry: "MM/YY",
+    placeholderCardCvc: "123",
+    marketingConsentText: "By placing an order, you accept that ShiftBob may send marketing emails. You can unsubscribe at any time.",
+    buttonBack: "Back",
+    buttonNext: "Next",
+    buttonDownloadExcel: "Download Excel schedule",
+    buttonCreateCompany: "Create company",
+    buttonStartAccountTemplate: "Start {productName} {price} & create account",
+    buttonSending: "Sending...",
+    errorRequiredFieldsStep1: "Please fill in all required fields.",
+    errorRequiredFieldsStep2: "Please fill in all fields in step 2.",
+    errorConsentRequired: "You must accept marketing emails to continue.",
+    errorSubmitFailed: "Could not create the request right now. Please try again in a moment.",
+    errorNetwork: "Network error. Check your connection and try again.",
+    successBasicTemplate: "Thanks! We created your request ({ticketId}). The download step will be connected soon.",
+    successOtherTemplate: "Thanks! We received your signup ({ticketId}). We will contact you as soon as possible."
+};
+const DEFAULT_COPY_DA = {
+    labelProduct: "Produkt",
+    productBasic: "Basic (gratis)",
+    productProPlanner: "Pro Planner",
+    productHybridApp: "Hybrid App",
+    productAutopilot: "Autopilot",
+    labelCompanyName: "Virksomhedsnavn",
+    labelFirstName: "Fornavn",
+    labelLastName: "Efternavn",
+    labelEmail: "E-mail",
+    labelVat: "CVR / VAT",
+    labelPhone: "Telefon",
+    labelAddress: "Adresse",
+    labelPostalCode: "Postnr.",
+    labelCity: "By",
+    labelCountry: "Land",
+    placeholderSelectCountry: "Vælg land",
+    labelEmployeeCount: "Antal ansatte",
+    labelCardholderName: "Kortholders navn",
+    labelCardNumber: "Kortnummer",
+    labelCardExpiry: "Udløb (MM/AA)",
+    labelCardCvc: "CVC",
+    placeholderCompanyName: "Fx Cafe Solsiden ApS",
+    placeholderFirstName: "Fornavn",
+    placeholderLastName: "Efternavn",
+    placeholderEmail: "navn@virksomhed.dk",
+    placeholderCardholderName: "Navn på kort",
+    placeholderCardNumber: "1234 5678 9012 3456",
+    placeholderCardExpiry: "MM/AA",
+    placeholderCardCvc: "123",
+    marketingConsentText: "Ved at bestille, så accepterer du at ShiftBob må sende markedsføringsmail. Det kan til enhver tid afmeldes.",
+    buttonBack: "Tilbage",
+    buttonNext: "Videre",
+    buttonDownloadExcel: "Hent Excel vagtplan",
+    buttonCreateCompany: "Opret virksomhed",
+    buttonStartAccountTemplate: "Start {productName} {price} & opret konto",
+    buttonSending: "Sender...",
+    errorRequiredFieldsStep1: "Udfyld venligst alle obligatoriske felter.",
+    errorRequiredFieldsStep2: "Udfyld venligst alle felter i trin 2.",
+    errorConsentRequired: "Du skal acceptere markedsføringsmail for at fortsætte.",
+    errorSubmitFailed: "Kunne ikke oprette forespørgslen lige nu. Prøv igen om et øjeblik.",
+    errorNetwork: "Netværksfejl. Tjek forbindelsen og prøv igen.",
+    successBasicTemplate: "Tak! Vi har oprettet din anmodning ({ticketId}). Download-trinnet kobles på snart.",
+    successOtherTemplate: "Tak! Vi har modtaget din oprettelse ({ticketId}). Vi kontakter dig hurtigst muligt."
+};
+function resolveFallbackCopy(languageCode) {
+    const code = (languageCode ?? "da").toLowerCase();
+    if (code.startsWith("da")) return DEFAULT_COPY_DA;
+    return DEFAULT_COPY_EN;
+}
 const COUNTRY_OPTIONS = [
     {
         code: "AT",
@@ -989,11 +1066,40 @@ const COUNTRY_OPTIONS = [
     }
 ];
 function submitLabelFor(product) {
-    if (product === "basic") return "Hent Excel vagtplan";
-    return "Opret virksomhed";
+    if (product === "basic") return "download_excel";
+    return "create_company";
 }
-function EmployerSignupForm({ initialProduct }) {
+function priceForProduct(product) {
+    if (product === "pro_planner") return "49 EUR";
+    if (product === "hybrid_app") return "29 EUR";
+    if (product === "autopilot") return "59 EUR";
+    return "0 EUR";
+}
+function EmployerSignupForm({ initialProduct, languageCode = "da", copy: copyProp }) {
     _s();
+    const copy = copyProp ?? resolveFallbackCopy(languageCode);
+    const productOptions = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
+        "EmployerSignupForm.useMemo[productOptions]": ()=>[
+                {
+                    id: "basic",
+                    label: copy.productBasic
+                },
+                {
+                    id: "pro_planner",
+                    label: copy.productProPlanner
+                },
+                {
+                    id: "hybrid_app",
+                    label: copy.productHybridApp
+                },
+                {
+                    id: "autopilot",
+                    label: copy.productAutopilot
+                }
+            ]
+    }["EmployerSignupForm.useMemo[productOptions]"], [
+        copy
+    ]);
     const [step, setStep] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(1);
     const [product, setProduct] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(initialProduct);
     const [companyName, setCompanyName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
@@ -1015,16 +1121,31 @@ function EmployerSignupForm({ initialProduct }) {
     const [submitting, setSubmitting] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [message, setMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const submitLabel = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
-        "EmployerSignupForm.useMemo[submitLabel]": ()=>submitLabelFor(product)
+        "EmployerSignupForm.useMemo[submitLabel]": ()=>submitLabelFor(product) === "download_excel" ? copy.buttonDownloadExcel : copy.buttonCreateCompany
     }["EmployerSignupForm.useMemo[submitLabel]"], [
+        copy.buttonCreateCompany,
+        copy.buttonDownloadExcel,
         product
     ]);
     const productLabel = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
-        "EmployerSignupForm.useMemo[productLabel]": ()=>PRODUCT_OPTIONS.find({
+        "EmployerSignupForm.useMemo[productLabel]": ()=>productOptions.find({
                 "EmployerSignupForm.useMemo[productLabel]": (p)=>p.id === product
-            }["EmployerSignupForm.useMemo[productLabel]"])?.label ?? "Basic"
+            }["EmployerSignupForm.useMemo[productLabel]"])?.label ?? copy.productBasic
     }["EmployerSignupForm.useMemo[productLabel]"], [
-        product
+        copy.productBasic,
+        product,
+        productOptions
+    ]);
+    const startAccountLabel = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
+        "EmployerSignupForm.useMemo[startAccountLabel]": ()=>{
+            const price = priceForProduct(product);
+            const template = copy.buttonStartAccountTemplate ?? DEFAULT_COPY_EN.buttonStartAccountTemplate;
+            return template.replace("{productName}", productLabel).replace("{price}", price);
+        }
+    }["EmployerSignupForm.useMemo[startAccountLabel]"], [
+        copy.buttonStartAccountTemplate,
+        product,
+        productLabel
     ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "EmployerSignupForm.useEffect": ()=>{
@@ -1071,7 +1192,7 @@ function EmployerSignupForm({ initialProduct }) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                languageCode: "da",
+                languageCode,
                 subject: `Employer signup: ${productLabel}`,
                 message: `Ny oprettelsesforesporgsel fra arbejdsgiver:\n\n${details}`,
                 name: `${params.trimmedFirstName} ${params.trimmedLastName}`.trim(),
@@ -1090,14 +1211,14 @@ function EmployerSignupForm({ initialProduct }) {
         if (!trimmedCompanyName || !trimmedFirstName || !trimmedLastName || !trimmedEmail) {
             setMessage({
                 kind: "error",
-                text: "Udfyld venligst alle obligatoriske felter."
+                text: copy.errorRequiredFieldsStep1
             });
             return;
         }
         if (!marketingConsent) {
             setMessage({
                 kind: "error",
-                text: "Du skal acceptere markedsforingsmail for at fortsaette."
+                text: copy.errorConsentRequired
             });
             return;
         }
@@ -1119,7 +1240,7 @@ function EmployerSignupForm({ initialProduct }) {
             if (!trimmedVat || !trimmedPhone || !trimmedAddress || !trimmedPostalCode || !trimmedCity || !trimmedCountry || !trimmedCardholder || !trimmedCardNumber || !trimmedCardExpiry || !trimmedCardCvc) {
                 setMessage({
                     kind: "error",
-                    text: "Udfyld venligst alle felter i trin 2."
+                    text: copy.errorRequiredFieldsStep2
                 });
                 return;
             }
@@ -1135,18 +1256,18 @@ function EmployerSignupForm({ initialProduct }) {
             if (!data.ok) {
                 setMessage({
                     kind: "error",
-                    text: "Kunne ikke oprette foresporgslen lige nu. Prov igen om et ojeblik."
+                    text: copy.errorSubmitFailed
                 });
                 return;
             }
             setMessage({
                 kind: "success",
-                text: product === "basic" ? `Tak! Vi har oprettet din anmodning (${data.ticketId}). Download-trinnet kobles paa snart.` : `Tak! Vi har modtaget din oprettelse (${data.ticketId}). Vi kontakter dig hurtigst muligt.`
+                text: product === "basic" ? copy.successBasicTemplate.replace("{ticketId}", data.ticketId) : copy.successOtherTemplate.replace("{ticketId}", data.ticketId)
             });
         } catch  {
             setMessage({
                 kind: "error",
-                text: "Netvaerksfejl. Tjek forbindelsen og prov igen."
+                text: copy.errorNetwork
             });
         } finally{
             setSubmitting(false);
@@ -1161,19 +1282,20 @@ function EmployerSignupForm({ initialProduct }) {
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                         className: "mb-1 block text-sm font-medium text-zinc-700",
                         children: [
-                            "Produkt ",
+                            copy.labelProduct,
+                            " ",
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                 className: "text-red-600",
                                 children: "*"
                             }, void 0, false, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 251,
-                                columnNumber: 19
+                                lineNumber: 431,
+                                columnNumber: 31
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                        lineNumber: 250,
+                        lineNumber: 430,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1181,23 +1303,23 @@ function EmployerSignupForm({ initialProduct }) {
                         value: product,
                         onChange: (e)=>setProduct(e.target.value),
                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900",
-                        children: PRODUCT_OPTIONS.map((option)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                        children: productOptions.map((option)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                 value: option.id,
                                 children: option.label
                             }, option.id, false, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 260,
+                                lineNumber: 440,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                        lineNumber: 253,
+                        lineNumber: 433,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                lineNumber: 249,
+                lineNumber: 429,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1209,19 +1331,20 @@ function EmployerSignupForm({ initialProduct }) {
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                 className: "mb-1 block text-sm font-medium text-zinc-700",
                                 children: [
-                                    "Virksomhedsnavn ",
+                                    copy.labelCompanyName,
+                                    " ",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: "text-red-600",
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 270,
-                                        columnNumber: 29
+                                        lineNumber: 450,
+                                        columnNumber: 37
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 269,
+                                lineNumber: 449,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1229,16 +1352,16 @@ function EmployerSignupForm({ initialProduct }) {
                                 value: companyName,
                                 onChange: (e)=>setCompanyName(e.target.value),
                                 className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900",
-                                placeholder: "Fx Cafe Solsiden ApS"
+                                placeholder: copy.placeholderCompanyName
                             }, void 0, false, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 272,
+                                lineNumber: 452,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                        lineNumber: 268,
+                        lineNumber: 448,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1246,19 +1369,20 @@ function EmployerSignupForm({ initialProduct }) {
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                 className: "mb-1 block text-sm font-medium text-zinc-700",
                                 children: [
-                                    "Fornavn ",
+                                    copy.labelFirstName,
+                                    " ",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: "text-red-600",
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 283,
-                                        columnNumber: 21
+                                        lineNumber: 463,
+                                        columnNumber: 35
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 282,
+                                lineNumber: 462,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1266,16 +1390,16 @@ function EmployerSignupForm({ initialProduct }) {
                                 value: firstName,
                                 onChange: (e)=>setFirstName(e.target.value),
                                 className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900",
-                                placeholder: "Fornavn"
+                                placeholder: copy.placeholderFirstName
                             }, void 0, false, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 285,
+                                lineNumber: 465,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                        lineNumber: 281,
+                        lineNumber: 461,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1283,19 +1407,20 @@ function EmployerSignupForm({ initialProduct }) {
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                 className: "mb-1 block text-sm font-medium text-zinc-700",
                                 children: [
-                                    "Efternavn ",
+                                    copy.labelLastName,
+                                    " ",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: "text-red-600",
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 296,
-                                        columnNumber: 23
+                                        lineNumber: 476,
+                                        columnNumber: 34
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 295,
+                                lineNumber: 475,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1303,16 +1428,16 @@ function EmployerSignupForm({ initialProduct }) {
                                 value: lastName,
                                 onChange: (e)=>setLastName(e.target.value),
                                 className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900",
-                                placeholder: "Efternavn"
+                                placeholder: copy.placeholderLastName
                             }, void 0, false, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 298,
+                                lineNumber: 478,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                        lineNumber: 294,
+                        lineNumber: 474,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1320,19 +1445,20 @@ function EmployerSignupForm({ initialProduct }) {
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                 className: "mb-1 block text-sm font-medium text-zinc-700",
                                 children: [
-                                    "E-mail ",
+                                    copy.labelEmail,
+                                    " ",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: "text-red-600",
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 309,
-                                        columnNumber: 20
+                                        lineNumber: 489,
+                                        columnNumber: 31
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 308,
+                                lineNumber: 488,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1341,16 +1467,16 @@ function EmployerSignupForm({ initialProduct }) {
                                 value: email,
                                 onChange: (e)=>setEmail(e.target.value),
                                 className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900",
-                                placeholder: "navn@virksomhed.dk"
+                                placeholder: copy.placeholderEmail
                             }, void 0, false, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 311,
+                                lineNumber: 491,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                        lineNumber: 307,
+                        lineNumber: 487,
                         columnNumber: 9
                     }, this),
                     step === 2 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -1360,19 +1486,20 @@ function EmployerSignupForm({ initialProduct }) {
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                         className: "mb-1 block text-sm font-medium text-zinc-700",
                                         children: [
-                                            "CVR / VAT ",
+                                            copy.labelVat,
+                                            " ",
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 className: "text-red-600",
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                                lineNumber: 325,
-                                                columnNumber: 27
+                                                lineNumber: 505,
+                                                columnNumber: 33
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 324,
+                                        lineNumber: 504,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1382,13 +1509,13 @@ function EmployerSignupForm({ initialProduct }) {
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 327,
+                                        lineNumber: 507,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 323,
+                                lineNumber: 503,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1396,19 +1523,20 @@ function EmployerSignupForm({ initialProduct }) {
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                         className: "mb-1 block text-sm font-medium text-zinc-700",
                                         children: [
-                                            "Telefon ",
+                                            copy.labelPhone,
+                                            " ",
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 className: "text-red-600",
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                                lineNumber: 337,
-                                                columnNumber: 25
+                                                lineNumber: 517,
+                                                columnNumber: 35
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 336,
+                                        lineNumber: 516,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1419,13 +1547,13 @@ function EmployerSignupForm({ initialProduct }) {
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 339,
+                                        lineNumber: 519,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 335,
+                                lineNumber: 515,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1433,19 +1561,20 @@ function EmployerSignupForm({ initialProduct }) {
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                         className: "mb-1 block text-sm font-medium text-zinc-700",
                                         children: [
-                                            "Adresse ",
+                                            copy.labelAddress,
+                                            " ",
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 className: "text-red-600",
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                                lineNumber: 350,
-                                                columnNumber: 25
+                                                lineNumber: 530,
+                                                columnNumber: 37
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 349,
+                                        lineNumber: 529,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1455,13 +1584,13 @@ function EmployerSignupForm({ initialProduct }) {
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 352,
+                                        lineNumber: 532,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 348,
+                                lineNumber: 528,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1469,19 +1598,20 @@ function EmployerSignupForm({ initialProduct }) {
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                         className: "mb-1 block text-sm font-medium text-zinc-700",
                                         children: [
-                                            "Postnr. ",
+                                            copy.labelPostalCode,
+                                            " ",
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 className: "text-red-600",
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                                lineNumber: 362,
-                                                columnNumber: 25
+                                                lineNumber: 542,
+                                                columnNumber: 40
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 361,
+                                        lineNumber: 541,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1491,13 +1621,13 @@ function EmployerSignupForm({ initialProduct }) {
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 364,
+                                        lineNumber: 544,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 360,
+                                lineNumber: 540,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1505,19 +1635,20 @@ function EmployerSignupForm({ initialProduct }) {
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                         className: "mb-1 block text-sm font-medium text-zinc-700",
                                         children: [
-                                            "By ",
+                                            copy.labelCity,
+                                            " ",
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 className: "text-red-600",
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                                lineNumber: 374,
-                                                columnNumber: 20
+                                                lineNumber: 554,
+                                                columnNumber: 34
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 373,
+                                        lineNumber: 553,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1527,13 +1658,13 @@ function EmployerSignupForm({ initialProduct }) {
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 376,
+                                        lineNumber: 556,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 372,
+                                lineNumber: 552,
                                 columnNumber: 13
                             }, this)
                         ]
@@ -1543,19 +1674,20 @@ function EmployerSignupForm({ initialProduct }) {
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                 className: "mb-1 block text-sm font-medium text-zinc-700",
                                 children: [
-                                    "Land ",
+                                    copy.labelCountry,
+                                    " ",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: "text-red-600",
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 389,
-                                        columnNumber: 20
+                                        lineNumber: 569,
+                                        columnNumber: 35
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 388,
+                                lineNumber: 568,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1567,10 +1699,10 @@ function EmployerSignupForm({ initialProduct }) {
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                         value: "",
                                         disabled: true,
-                                        children: "Vælg land"
+                                        children: copy.placeholderSelectCountry
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 397,
+                                        lineNumber: 577,
                                         columnNumber: 15
                                     }, this),
                                     COUNTRY_OPTIONS.map((option)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1578,29 +1710,29 @@ function EmployerSignupForm({ initialProduct }) {
                                             children: option.nativeName
                                         }, option.code, false, {
                                             fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                            lineNumber: 401,
+                                            lineNumber: 581,
                                             columnNumber: 17
                                         }, this))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 391,
+                                lineNumber: 571,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                        lineNumber: 387,
+                        lineNumber: 567,
                         columnNumber: 11
                     }, this) : null,
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                 className: "mb-1 block text-sm font-medium text-zinc-700",
-                                children: "Antal ansatte"
+                                children: copy.labelEmployeeCount
                             }, void 0, false, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 410,
+                                lineNumber: 590,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1613,7 +1745,7 @@ function EmployerSignupForm({ initialProduct }) {
                                         children: "1-4"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 416,
+                                        lineNumber: 596,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1621,7 +1753,7 @@ function EmployerSignupForm({ initialProduct }) {
                                         children: "5-20"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 417,
+                                        lineNumber: 597,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1629,7 +1761,7 @@ function EmployerSignupForm({ initialProduct }) {
                                         children: "21-50"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 418,
+                                        lineNumber: 598,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1637,7 +1769,7 @@ function EmployerSignupForm({ initialProduct }) {
                                         children: "51-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 419,
+                                        lineNumber: 599,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1645,181 +1777,197 @@ function EmployerSignupForm({ initialProduct }) {
                                         children: "100+"
                                     }, void 0, false, {
                                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 420,
+                                        lineNumber: 600,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 411,
+                                lineNumber: 591,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                        lineNumber: 409,
+                        lineNumber: 589,
                         columnNumber: 9
                     }, this),
-                    step === 2 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "sm:col-span-2",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        className: "mb-1 block text-sm font-medium text-zinc-700",
-                                        children: [
-                                            "Kortholders navn ",
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "text-red-600",
-                                                children: "*"
-                                            }, void 0, false, {
-                                                fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                                lineNumber: 428,
-                                                columnNumber: 34
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 427,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        required: true,
-                                        value: cardholderName,
-                                        onChange: (e)=>setCardholderName(e.target.value),
-                                        className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900",
-                                        placeholder: "Navn paa kort"
-                                    }, void 0, false, {
-                                        fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 430,
-                                        columnNumber: 15
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 426,
-                                columnNumber: 13
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "sm:col-span-2",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        className: "mb-1 block text-sm font-medium text-zinc-700",
-                                        children: [
-                                            "Kortnummer ",
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "text-red-600",
-                                                children: "*"
-                                            }, void 0, false, {
-                                                fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                                lineNumber: 440,
-                                                columnNumber: 28
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 439,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        required: true,
-                                        value: cardNumber,
-                                        onChange: (e)=>setCardNumber(e.target.value),
-                                        className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900",
-                                        inputMode: "numeric",
-                                        placeholder: "1234 5678 9012 3456"
-                                    }, void 0, false, {
-                                        fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 442,
-                                        columnNumber: 15
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 438,
-                                columnNumber: 13
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        className: "mb-1 block text-sm font-medium text-zinc-700",
-                                        children: [
-                                            "Udlob (MM/AA) ",
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "text-red-600",
-                                                children: "*"
-                                            }, void 0, false, {
-                                                fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                                lineNumber: 453,
-                                                columnNumber: 31
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 452,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        required: true,
-                                        value: cardExpiry,
-                                        onChange: (e)=>setCardExpiry(e.target.value),
-                                        className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900",
-                                        placeholder: "MM/AA"
-                                    }, void 0, false, {
-                                        fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 455,
-                                        columnNumber: 15
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 451,
-                                columnNumber: 13
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        className: "mb-1 block text-sm font-medium text-zinc-700",
-                                        children: [
-                                            "CVC ",
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "text-red-600",
-                                                children: "*"
-                                            }, void 0, false, {
-                                                fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                                lineNumber: 465,
-                                                columnNumber: 21
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 464,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        required: true,
-                                        value: cardCvc,
-                                        onChange: (e)=>setCardCvc(e.target.value),
-                                        className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900",
-                                        inputMode: "numeric",
-                                        placeholder: "123"
-                                    }, void 0, false, {
-                                        fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                        lineNumber: 467,
-                                        columnNumber: 15
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                                lineNumber: 463,
-                                columnNumber: 13
-                            }, this)
-                        ]
-                    }, void 0, true) : null
+                    step === 2 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "sm:col-span-2 rounded-xl border border-[#4A90E2]/25 bg-[#4A90E2]/8 p-4 sm:p-5",
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "grid gap-4 sm:grid-cols-2",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "sm:col-span-2",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "mb-1 block text-sm font-medium text-zinc-700",
+                                            children: [
+                                                copy.labelCardholderName,
+                                                " ",
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-red-600",
+                                                    children: "*"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                                    lineNumber: 609,
+                                                    columnNumber: 46
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                            lineNumber: 608,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                            required: true,
+                                            value: cardholderName,
+                                            onChange: (e)=>setCardholderName(e.target.value),
+                                            className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900",
+                                            placeholder: copy.placeholderCardholderName
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                            lineNumber: 611,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                    lineNumber: 607,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "sm:col-span-2",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "mb-1 block text-sm font-medium text-zinc-700",
+                                            children: [
+                                                copy.labelCardNumber,
+                                                " ",
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-red-600",
+                                                    children: "*"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                                    lineNumber: 621,
+                                                    columnNumber: 42
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                            lineNumber: 620,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                            required: true,
+                                            value: cardNumber,
+                                            onChange: (e)=>setCardNumber(e.target.value),
+                                            className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900",
+                                            inputMode: "numeric",
+                                            placeholder: copy.placeholderCardNumber
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                            lineNumber: 623,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                    lineNumber: 619,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "mb-1 block text-sm font-medium text-zinc-700",
+                                            children: [
+                                                copy.labelCardExpiry,
+                                                " ",
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-red-600",
+                                                    children: "*"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                                    lineNumber: 634,
+                                                    columnNumber: 42
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                            lineNumber: 633,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                            required: true,
+                                            value: cardExpiry,
+                                            onChange: (e)=>setCardExpiry(e.target.value),
+                                            className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900",
+                                            placeholder: copy.placeholderCardExpiry
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                            lineNumber: 636,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                    lineNumber: 632,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "mb-1 block text-sm font-medium text-zinc-700",
+                                            children: [
+                                                copy.labelCardCvc,
+                                                " ",
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-red-600",
+                                                    children: "*"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                                    lineNumber: 646,
+                                                    columnNumber: 39
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                            lineNumber: 645,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                            required: true,
+                                            value: cardCvc,
+                                            onChange: (e)=>setCardCvc(e.target.value),
+                                            className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900",
+                                            inputMode: "numeric",
+                                            placeholder: copy.placeholderCardCvc
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                            lineNumber: 648,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                                    lineNumber: 644,
+                                    columnNumber: 15
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                            lineNumber: 606,
+                            columnNumber: 13
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
+                        lineNumber: 605,
+                        columnNumber: 11
+                    }, this) : null
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                lineNumber: 267,
+                lineNumber: 447,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -1833,21 +1981,21 @@ function EmployerSignupForm({ initialProduct }) {
                         className: "mt-0.5 h-4 w-4 rounded border-zinc-300 text-[#4A90E2] focus:ring-[#4A90E2]"
                     }, void 0, false, {
                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                        lineNumber: 481,
+                        lineNumber: 663,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                         className: "text-sm text-zinc-700",
-                        children: "Ved at bestille, så accepterer du at ShiftBob må sende markedsføringsmail. Det kan til enhver tid afmeldes."
+                        children: copy.marketingConsentText
                     }, void 0, false, {
                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                        lineNumber: 488,
+                        lineNumber: 670,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                lineNumber: 480,
+                lineNumber: 662,
                 columnNumber: 7
             }, this),
             message ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1855,7 +2003,7 @@ function EmployerSignupForm({ initialProduct }) {
                 children: message.text
             }, void 0, false, {
                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                lineNumber: 495,
+                lineNumber: 676,
                 columnNumber: 9
             }, this) : null,
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1865,36 +2013,36 @@ function EmployerSignupForm({ initialProduct }) {
                         type: "button",
                         onClick: ()=>setStep(1),
                         className: "inline-flex min-h-11 items-center justify-center rounded-lg border border-zinc-300 px-4 py-2.5 text-sm font-semibold text-zinc-800 transition hover:bg-zinc-50",
-                        children: "Tilbage"
+                        children: copy.buttonBack
                     }, void 0, false, {
                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                        lineNumber: 508,
+                        lineNumber: 689,
                         columnNumber: 11
                     }, this) : null,
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         type: "submit",
                         disabled: submitting || !marketingConsent,
                         className: "inline-flex min-h-11 flex-1 items-center justify-center rounded-lg bg-[#4A90E2] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#3A7FD1] disabled:cursor-not-allowed disabled:opacity-60",
-                        children: submitting ? "Sender..." : step === 1 ? product === "basic" ? submitLabel : "Videre" : submitLabel
+                        children: submitting ? copy.buttonSending : step === 1 ? product === "basic" ? submitLabel : copy.buttonNext : product === "basic" ? submitLabel : startAccountLabel
                     }, void 0, false, {
                         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                        lineNumber: 516,
+                        lineNumber: 697,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-                lineNumber: 506,
+                lineNumber: 687,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/employer-signup/employer-signup-form.tsx",
-        lineNumber: 245,
+        lineNumber: 425,
         columnNumber: 5
     }, this);
 }
-_s(EmployerSignupForm, "yWozlHnblhJHGQCn4WrGP/YfuOM=");
+_s(EmployerSignupForm, "fUJoQAA+AinBvYLMfjPZHZRY/rI=");
 _c = EmployerSignupForm;
 var _c;
 __turbopack_context__.k.register(_c, "EmployerSignupForm");

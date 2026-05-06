@@ -6,17 +6,39 @@ import { ACTIVE_ROLE_COOKIE } from "@/src/lib/roles";
 import { getActiveWorkplaceIdFromCookie } from "@/src/lib/workplaces";
 import type { Role } from "@/src/types/roles";
 import { isRole } from "@/src/types/roles";
+import { getWorkplaceById } from "@/src/app/super-admin/workplaces/actions";
 import AdminCalendar from "./admin-calendar";
 
 export default function DashboardPage() {
   const [role, setRole] = useState<Role | null>(null);
   const [workplaceId, setWorkplaceId] = useState<string | null>(null);
+  const [workplaceName, setWorkplaceName] = useState<string | null>(null);
 
   useEffect(() => {
     const raw = Cookies.get(ACTIVE_ROLE_COOKIE);
     if (raw && isRole(raw)) setRole(raw);
     setWorkplaceId(getActiveWorkplaceIdFromCookie());
   }, []);
+
+  useEffect(() => {
+    if (!workplaceId) {
+      setWorkplaceName(null);
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      const direct = await getWorkplaceById(workplaceId);
+      if (cancelled) return;
+      if (!direct.ok) {
+        setWorkplaceName(null);
+        return;
+      }
+      setWorkplaceName(direct.data.company_name?.trim() || direct.data.name?.trim() || null);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [workplaceId]);
 
   const canViewCalendar =
     role === "ADMIN" ||
@@ -34,7 +56,7 @@ export default function DashboardPage() {
         }
       >
         {canViewCalendar && workplaceId ? (
-          <AdminCalendar workplaceId={workplaceId} />
+          <AdminCalendar workplaceId={workplaceId} workplaceName={workplaceName} />
         ) : canViewCalendar && !workplaceId ? (
           <p className="text-center text-sm text-zinc-600 dark:text-zinc-400">
             Vælg en arbejdsplads for at se kalenderen.

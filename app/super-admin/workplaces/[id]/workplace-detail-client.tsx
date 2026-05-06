@@ -13,9 +13,13 @@ import {
   Building2,
   CalendarClock,
   CreditCard,
+  FileSpreadsheet,
   KeyRound,
   Layers3,
   Loader2,
+  Palette,
+  Scale,
+  ShieldCheck,
   Trash2,
 } from "lucide-react";
 import {
@@ -42,10 +46,13 @@ import {
 } from "@/src/app/super-admin/workplaces/actions";
 import { useTranslations } from "@/src/contexts/translations-context";
 import { EMPLOYEE_COUNT_BANDS } from "@/src/types/workplace";
+import type { UiThemeId } from "@/src/lib/ui-theme";
 import {
   localizeStandardEmployeeTypeLabel,
   localizeStandardShiftTypeLabel,
 } from "@/src/lib/type-label-i18n";
+import { LayoutThemeSidebar } from "@/src/components/layout-theme-sidebar";
+import { AdminDocumentUploadPanel } from "@/src/components/admin-document-upload-panel";
 import { EmployeePermissions } from "@/src/components/settings/employee-permissions";
 
 /** Tom liste = ingen filter = alle typer på aksen. Fuld liste = samme som ingen filter → normalisér til []. */
@@ -73,6 +80,7 @@ type Props = {
   standardShiftTemplates: TypeTemplateRow[];
   countryOptions?: EuCountryOptionRow[];
   catalogError?: string | null;
+  initialLayoutTheme?: UiThemeId;
   /** Super Admin: tilbage til brugere; arbejdsplads-admin: typisk Kalender */
   navUi?: {
     backHref: string;
@@ -97,6 +105,7 @@ export default function WorkplaceDetailClient({
   standardShiftTemplates,
   countryOptions = [],
   catalogError,
+  initialLayoutTheme,
   navUi,
   children,
 }: Props) {
@@ -116,7 +125,15 @@ export default function WorkplaceDetailClient({
   const [bootstrapNotice, setBootstrapNotice] = useState<string | null>(null);
   const dashboardTabsEnabled = navUi?.showStandardCatalogEditLink === false;
   const [activeSettingsTab, setActiveSettingsTab] = useState<
-    "company" | "planning" | "types" | "api" | "billing"
+    | "company"
+    | "planning"
+    | "types"
+    | "api"
+    | "appearance"
+    | "rules"
+    | "dataExport"
+    | "compliance"
+    | "billing"
   >("company");
   const [empList, setEmpList] = useState(employeeTypes);
   const [shiftList, setShiftList] = useState(shiftTypes);
@@ -506,6 +523,10 @@ export default function WorkplaceDetailClient({
               { id: "company", label: "Firma", icon: Building2 },
               { id: "planning", label: "Planlægning", icon: CalendarClock },
               { id: "types", label: "Typer", icon: Layers3 },
+              { id: "appearance", label: "Farver", icon: Palette },
+              { id: "rules", label: "Regler", icon: Scale },
+              { id: "dataExport", label: "Data eksport", icon: FileSpreadsheet },
+              { id: "compliance", label: "Compliance", icon: ShieldCheck },
               { id: "api", label: "API", icon: KeyRound },
               { id: "billing", label: "Billing", icon: CreditCard },
             ].map((tab) => {
@@ -521,6 +542,10 @@ export default function WorkplaceDetailClient({
                         | "company"
                         | "planning"
                         | "types"
+                        | "appearance"
+                        | "rules"
+                        | "dataExport"
+                        | "compliance"
                         | "api"
                         | "billing"
                     )
@@ -1526,6 +1551,137 @@ export default function WorkplaceDetailClient({
             </>
           )}
         </div>
+      </section>
+      ) : null}
+
+      {dashboardTabsEnabled && activeSettingsTab === "appearance" ? (
+      <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          Farver og layout
+        </h2>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          Vælg farvetema for dashboard-menuen.
+        </p>
+        {initialLayoutTheme ? (
+          <LayoutThemeSidebar initialTheme={initialLayoutTheme} />
+        ) : (
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            Tema er midlertidigt utilgængeligt.
+          </p>
+        )}
+      </section>
+      ) : null}
+
+      {dashboardTabsEnabled && activeSettingsTab === "rules" ? (
+      <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          {tr("rules.page.title")}
+        </h2>
+        <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+          {tr("rules.page.intro")}
+        </p>
+        <ul className="list-inside list-disc space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
+          <li>{tr("rules.page.bullet1")}</li>
+          <li>{tr("rules.page.bullet2")}</li>
+          <li>{tr("rules.page.bullet3")}</li>
+        </ul>
+        <AdminDocumentUploadPanel
+          accept=".pdf,.doc,.docx,application/pdf"
+          fileInputLabel={tr("rules.upload.label")}
+          hint={tr("rules.upload.hint")}
+        />
+      </section>
+      ) : null}
+
+      {dashboardTabsEnabled && activeSettingsTab === "dataExport" ? (
+      <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          {tr("data_export.page.title")}
+        </h2>
+        <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+          {tr("data_export.page.intro")}
+        </p>
+        <ul className="list-inside list-disc space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
+          <li>{tr("data_export.page.bullet1")}</li>
+          <li>{tr("data_export.page.bullet2")}</li>
+          <li>{tr("data_export.page.bullet3")}</li>
+        </ul>
+        <div className="space-y-6">
+          <section>
+            <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+              {tr("data_export.section.csv_title")}
+            </h3>
+            <AdminDocumentUploadPanel
+              accept=".csv,text/csv"
+              fileInputLabel={tr("data_export.upload.csv_label")}
+              hint={tr("data_export.upload.csv_hint")}
+              showBetaNotice={false}
+            />
+          </section>
+          <section>
+            <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+              {tr("data_export.section.docs_title")}
+            </h3>
+            <AdminDocumentUploadPanel
+              accept=".pdf,.doc,.docx,.csv,.txt,text/plain"
+              fileInputLabel={tr("data_export.upload.docs_label")}
+              hint={tr("data_export.upload.docs_hint")}
+              showBetaNotice={false}
+            />
+          </section>
+        </div>
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-950 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-100">
+          {tr("data_export.beta_notice")}
+        </p>
+      </section>
+      ) : null}
+
+      {dashboardTabsEnabled && activeSettingsTab === "compliance" ? (
+      <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          {tr("compliance.page.title")}
+        </h2>
+        <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+          {tr("compliance.page.intro")}
+        </p>
+        <section className="mt-2">
+          <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+            {tr("compliance.section.system_title")}
+          </h3>
+          <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            {tr("compliance.section.system_body")}
+          </p>
+        </section>
+        <section className="mt-2">
+          <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+            {tr("compliance.section.ai_title")}
+          </h3>
+          <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            {tr("compliance.section.ai_body")}
+          </p>
+        </section>
+        <section className="mt-2">
+          <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+            {tr("compliance.section.gdpr_title")}
+          </h3>
+          <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            {tr("compliance.section.gdpr_body")}
+          </p>
+        </section>
+        <section className="mt-2">
+          <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+            {tr("compliance.section.tenant_title")}
+          </h3>
+          <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            {tr("compliance.section.tenant_body").replace(
+              "{workplace}",
+              d.company_name?.trim() || d.name
+            )}
+          </p>
+        </section>
+        <p className="rounded-lg border border-zinc-200 bg-zinc-100/80 px-3 py-2.5 text-xs leading-relaxed text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400">
+          {tr("compliance.footer.rolling")}
+        </p>
       </section>
       ) : null}
 

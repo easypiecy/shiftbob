@@ -1,0 +1,917 @@
+"use server";
+
+import { randomUUID } from "node:crypto";
+import { revalidatePath } from "next/cache";
+import * as XLSX from "xlsx";
+import { assertWorkplaceAdminOrSuperAdmin } from "@/src/lib/workplace-admin-server";
+import { getAdminClient } from "@/src/utils/supabase/admin";
+import { createServerSupabase } from "@/src/utils/supabase/server";
+
+type Matrix = Array<Array<string | number | boolean | null>>;
+
+export type ExtractedEmployee = {
+  employee_id: number;
+  first_name: string;
+  last_name: string;
+  full_name: string;
+  email: string;
+  mobile_phone: string;
+  street_name: string;
+  street_number: string;
+  postal_code: string;
+  city: string;
+  country: string;
+  note: string;
+  contract_hours_per_week: string;
+  max_hours_per_week: string;
+  start_date: string;
+  job_title: string;
+  department: string;
+  type: string;
+  status: string;
+};
+
+export type ExtractedShiftType = {
+  shift_code: string;
+  start_time: string;
+  end_time: string;
+};
+
+export type ExtractedShift = {
+  employee_id: number;
+  date: string;
+  shift_code: string;
+  start_time: string;
+  end_time: string;
+};
+
+export type EuRuleViolation = {
+  employee_name: string;
+  date: string;
+  time_range: string;
+  rule: string;
+};
+
+type ShiftTypeLookup = Record<
+  string,
+  {
+    shift_code: string;
+    start_time: string;
+    end_time: string;
+  }
+>;
+
+export type SpreadsheetExtractResult =
+  | {
+      ok: true;
+      extractedEmployees: ExtractedEmployee[];
+      extractedShiftTypes: ExtractedShiftType[];
+      extractedShifts: ExtractedShift[];
+      euViolations: EuRuleViolation[];
+      warnings: string[];
+      matchedSheet: string;
+    }
+  | {
+      ok: false;
+      error: string;
+    };
+
+export type ApproveSpreadsheetPlanResult =
+  | {
+      ok: true;
+      createdDepartments: number;
+      createdEmployees: number;
+      insertedShifts: number;
+    }
+  | { ok: false; error: string };
+
+function asMatrix(sheet: XLSX.WorkSheet): Matrix {
+  return XLSX.utils.sheet_to_json(sheet, {
+    header: 1,
+    defval: "",
+    blankrows: false,
+    raw: true,
+  }) as Matrix;
+}
+
+function normalizeHeader(value: unknown): string {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[_\s]+/g, " ")
+    .replace(/[^\w\s#]/g, "");
+}
+
+function normalizeName(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+}
+
+function normalizeShiftCode(value: string): string {
+  return value.trim().toUpperCase();
+}
+
+function normalizeKey(value: string): string {
+  return value.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function pad2(n: number): string {
+  return String(n).padStart(2, "0");
+}
+
+function toIsoDate(year: number, month: number, day: number): string {
+  return `${year}-${pad2(month)}-${pad2(day)}`;
+}
+
+function shiftStartDateTime(shift: ExtractedShift): Date {
+  return new Date(`${shift.date}T${shift.start_time}:00`);
+}
+
+function shiftEndDateTime(shift: ExtractedShift): Date {
+  const start = shiftStartDateTime(shift);
+  const end = new Date(`${shift.date}T${shift.end_time}:00`);
+  if (end.getTime() <= start.getTime()) {
+    end.setDate(end.getDate() + 1);
+  }
+  return end;
+}
+
+function buildPlaceholderEmail(companyId: string, localEmployeeId: number): string {
+  const c = companyId.replace(/[^a-zA-Z0-9]/g, "").toLowerCase().slice(0, 20);
+  return `import+${c}.${localEmployeeId}@shiftbob.local`;
+}
+
+function readCellString(row: Array<string | number | boolean | null>, idx: number): string {
+  if (idx < 0) return "";
+  return String(row[idx] ?? "").trim();
+}
+
+function findHeaderIndex(headers: string[], ...candidates: string[]): number {
+  for (const candidate of candidates) {
+    const idx = headers.indexOf(candidate);
+    if (idx >= 0) return idx;
+  }
+  return -1;
+}
+
+function excelTimeToHHMM(value: unknown): string | null {
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    const m = /^(\d{1,2}):(\d{2})$/.exec(trimmed);
+    if (!m) return null;
+    const hh = Number(m[1]);
+    const mm = Number(m[2]);
+    if (!Number.isFinite(hh) || !Number.isFinite(mm) || hh < 0 || hh > 23 || mm < 0 || mm > 59) {
+      return null;
+    }
+    return `${pad2(hh)}:${pad2(mm)}`;
+  }
+  if (typeof value === "number" && Number.isFinite(value)) {
+    const minutes = Math.round(value * 24 * 60);
+    const hh = Math.floor(minutes / 60) % 24;
+    const mm = minutes % 60;
+    return `${pad2(hh)}:${pad2(mm)}`;
+  }
+  return null;
+}
+
+function findSheetByExactName(
+  workbook: XLSX.WorkBook,
+  wantedName: string
+): XLSX.WorkSheet | null {
+  const name = workbook.SheetNames.find(
+    (n) => n.trim().toLowerCase() === wantedName.trim().toLowerCase()
+  );
+  return name ? workbook.Sheets[name] : null;
+}
+
+function parseEmployees(workbook: XLSX.WorkBook): {
+  employees: ExtractedEmployee[];
+  byName: Map<string, ExtractedEmployee>;
+} {
+  const sheet = findSheetByExactName(workbook, "Employees");
+  if (!sheet) {
+    throw new Error("Missing required sheet: Employees");
+  }
+  const matrix = asMatrix(sheet);
+  if (matrix.length === 0) return { employees: [], byName: new Map() };
+
+  const headerRowIndex = matrix.findIndex((row) => {
+    const headers = row.map(normalizeHeader);
+    return headers.includes("#") && headers.includes("first name") && headers.includes("last name");
+  });
+  if (headerRowIndex < 0) {
+    throw new Error("Employees sheet is missing the expected header row");
+  }
+
+  const header = matrix[headerRowIndex].map(normalizeHeader);
+  const col = {
+    id: header.indexOf("#"),
+    firstName: header.indexOf("first name"),
+    lastName: header.indexOf("last name"),
+    email: findHeaderIndex(header, "email", "e-mail", "mail"),
+    mobilePhone: findHeaderIndex(header, "mobile phone", "mobile", "phone", "telefon"),
+    streetName: findHeaderIndex(header, "street name", "street", "adresse", "address"),
+    streetNumber: findHeaderIndex(header, "street number", "house number", "nr", "number"),
+    postalCode: findHeaderIndex(header, "postal code", "zip", "zip code", "postnummer"),
+    city: findHeaderIndex(header, "city", "by"),
+    country: findHeaderIndex(header, "country", "land"),
+    note: findHeaderIndex(header, "note", "notes", "kommentar"),
+    contractHoursPerWeek: findHeaderIndex(header, "contract hrswk", "contrac hrswk", "contract hours"),
+    maxHoursPerWeek: findHeaderIndex(header, "max hrswk", "max hours"),
+    startDate: findHeaderIndex(header, "start date", "start date yyyymmdd"),
+    jobTitle: header.indexOf("job title"),
+    department: header.indexOf("department"),
+    type: header.indexOf("type"),
+    status: header.indexOf("status"),
+  };
+
+  const employees: ExtractedEmployee[] = [];
+  const byName = new Map<string, ExtractedEmployee>();
+
+  for (let r = headerRowIndex + 1; r < matrix.length; r++) {
+    const row = matrix[r] ?? [];
+    const rawId = row[col.id];
+    const localId = Number(rawId);
+    if (!Number.isFinite(localId)) continue;
+    const employee_id = Math.trunc(localId);
+    const first_name = readCellString(row, col.firstName);
+    const last_name = readCellString(row, col.lastName);
+    const full_name = `${first_name} ${last_name}`.trim();
+    if (!full_name) continue;
+    const email = readCellString(row, col.email).toLowerCase();
+
+    const employee: ExtractedEmployee = {
+      employee_id,
+      first_name,
+      last_name,
+      full_name,
+      email,
+      mobile_phone: readCellString(row, col.mobilePhone),
+      street_name: readCellString(row, col.streetName),
+      street_number: readCellString(row, col.streetNumber),
+      postal_code: readCellString(row, col.postalCode),
+      city: readCellString(row, col.city),
+      country: readCellString(row, col.country),
+      note: readCellString(row, col.note),
+      contract_hours_per_week: readCellString(row, col.contractHoursPerWeek),
+      max_hours_per_week: readCellString(row, col.maxHoursPerWeek),
+      start_date: readCellString(row, col.startDate),
+      job_title: readCellString(row, col.jobTitle),
+      department: readCellString(row, col.department),
+      type: readCellString(row, col.type),
+      status: readCellString(row, col.status),
+    };
+    employees.push(employee);
+
+    byName.set(normalizeName(full_name), employee);
+    if (first_name && last_name) {
+      byName.set(normalizeName(`${last_name}, ${first_name}`), employee);
+    }
+  }
+  return { employees, byName };
+}
+
+function parseShiftTypes(workbook: XLSX.WorkBook): {
+  shiftTypes: ExtractedShiftType[];
+  lookup: ShiftTypeLookup;
+} {
+  const sheet = findSheetByExactName(workbook, "Shift_Types");
+  if (!sheet) {
+    throw new Error("Missing required sheet: Shift_Types");
+  }
+  const matrix = asMatrix(sheet);
+  if (matrix.length === 0) return { shiftTypes: [], lookup: {} };
+
+  const headerRowIndex = matrix.findIndex((row) => {
+    const headers = row.map(normalizeHeader);
+    return (
+      (headers.includes("shift code") || headers.includes("code")) &&
+      headers.includes("start time") &&
+      headers.includes("end time")
+    );
+  });
+  if (headerRowIndex < 0) {
+    throw new Error("Shift_Types sheet is missing the expected header row");
+  }
+
+  const header = matrix[headerRowIndex].map(normalizeHeader);
+  const codeIdx = Math.max(header.indexOf("shift code"), header.indexOf("code"));
+  const startIdx = header.indexOf("start time");
+  const endIdx = header.indexOf("end time");
+
+  const shiftTypes: ExtractedShiftType[] = [];
+  const lookup: ShiftTypeLookup = {};
+
+  for (let r = headerRowIndex + 1; r < matrix.length; r++) {
+    const row = matrix[r] ?? [];
+    const shift_code = normalizeShiftCode(String(row[codeIdx] ?? ""));
+    if (!shift_code) continue;
+    const start_time = excelTimeToHHMM(row[startIdx]);
+    const end_time = excelTimeToHHMM(row[endIdx]);
+    if (!start_time || !end_time) continue;
+    const item: ExtractedShiftType = {
+      shift_code,
+      start_time,
+      end_time,
+    };
+    shiftTypes.push(item);
+    lookup[shift_code] = item;
+  }
+  return { shiftTypes, lookup };
+}
+
+function monthNamesEnUpper(month: number): string {
+  const dt = new Date(Date.UTC(2000, month - 1, 1));
+  return dt.toLocaleString("en-US", { month: "long" }).toUpperCase();
+}
+
+function findMonthlyScheduleSheet(workbook: XLSX.WorkBook, month: number, year: number): {
+  sheetName: string;
+  sheet: XLSX.WorkSheet;
+} {
+  const monthWord = monthNamesEnUpper(month);
+  const exactByName = workbook.SheetNames.find((name) => {
+    const upper = name.trim().toUpperCase();
+    return upper.includes(monthWord) && upper.includes(String(year));
+  });
+  if (exactByName) {
+    return { sheetName: exactByName, sheet: workbook.Sheets[exactByName] };
+  }
+
+  for (const name of workbook.SheetNames) {
+    const sheet = workbook.Sheets[name];
+    const a1 = sheet?.A1?.v;
+    const upper = String(a1 ?? "").trim().toUpperCase();
+    if (upper.includes(monthWord) && upper.includes(String(year))) {
+      return { sheetName: name, sheet };
+    }
+  }
+
+  const fallback = findSheetByExactName(workbook, "Monthly Schedule");
+  if (fallback) {
+    return { sheetName: "Monthly Schedule", sheet: fallback };
+  }
+  throw new Error("Could not locate the monthly schedule sheet for selected month/year");
+}
+
+function resolveDateHeaderRow(matrix: Matrix): { rowIndex: number; dateCols: Array<{ col: number; day: number }> } {
+  let best: { rowIndex: number; dateCols: Array<{ col: number; day: number }> } = {
+    rowIndex: -1,
+    dateCols: [],
+  };
+  const scanLimit = Math.min(matrix.length, 40);
+
+  for (let r = 0; r < scanLimit; r++) {
+    const row = matrix[r] ?? [];
+    const dateCols: Array<{ col: number; day: number }> = [];
+    for (let c = 1; c < row.length; c++) {
+      const value = row[c];
+      const day = Number(value);
+      if (Number.isInteger(day) && day >= 1 && day <= 31) {
+        dateCols.push({ col: c, day });
+      }
+    }
+    if (dateCols.length > best.dateCols.length) {
+      best = { rowIndex: r, dateCols };
+    }
+  }
+
+  if (best.rowIndex < 0 || best.dateCols.length === 0) {
+    throw new Error("Could not detect date header row in schedule sheet");
+  }
+  return best;
+}
+
+function parseMonthlySchedule(params: {
+  workbook: XLSX.WorkBook;
+  month: number;
+  year: number;
+  employeesByName: Map<string, ExtractedEmployee>;
+  shiftLookup: ShiftTypeLookup;
+}): {
+  shifts: ExtractedShift[];
+  warnings: string[];
+  matchedSheet: string;
+} {
+  const { workbook, month, year, employeesByName, shiftLookup } = params;
+  const { sheetName, sheet } = findMonthlyScheduleSheet(workbook, month, year);
+  const matrix = asMatrix(sheet);
+  const { rowIndex, dateCols } = resolveDateHeaderRow(matrix);
+  const warnings: string[] = [];
+  const shifts: ExtractedShift[] = [];
+
+  let blankEmployeeRows = 0;
+  for (let r = rowIndex + 1; r < matrix.length; r++) {
+    const row = matrix[r] ?? [];
+    const employeeName = String(row[0] ?? "").trim();
+    if (!employeeName) {
+      blankEmployeeRows += 1;
+      if (blankEmployeeRows >= 8) break;
+      continue;
+    }
+    blankEmployeeRows = 0;
+
+    const employee = employeesByName.get(normalizeName(employeeName));
+    if (!employee) {
+      warnings.push(`Employee '${employeeName}' was not found in Employees sheet`);
+      continue;
+    }
+
+    for (const { col, day } of dateCols) {
+      const rawCell = row[col];
+      const code = normalizeShiftCode(String(rawCell ?? ""));
+      if (!code) continue;
+      const shiftType = shiftLookup[code];
+      if (!shiftType) {
+        warnings.push(
+          `Unknown shift code '${code}' for employee '${employee.full_name}' on day ${day}`
+        );
+        continue;
+      }
+      shifts.push({
+        employee_id: employee.employee_id,
+        date: toIsoDate(year, month, day),
+        shift_code: shiftType.shift_code,
+        start_time: shiftType.start_time,
+        end_time: shiftType.end_time,
+      });
+    }
+  }
+
+  return { shifts, warnings, matchedSheet: sheetName };
+}
+
+function detectEuRuleViolations(params: {
+  employees: ExtractedEmployee[];
+  shifts: ExtractedShift[];
+}): EuRuleViolation[] {
+  const { employees, shifts } = params;
+  const nameById = new Map<number, string>(
+    employees.map((employee) => [employee.employee_id, employee.full_name])
+  );
+  const byEmployee = new Map<number, ExtractedShift[]>();
+  for (const shift of shifts) {
+    const list = byEmployee.get(shift.employee_id) ?? [];
+    list.push(shift);
+    byEmployee.set(shift.employee_id, list);
+  }
+
+  const violations: EuRuleViolation[] = [];
+  for (const [employeeId, employeeShifts] of byEmployee.entries()) {
+    const sorted = [...employeeShifts].sort(
+      (a, b) => shiftStartDateTime(a).getTime() - shiftStartDateTime(b).getTime()
+    );
+    for (let i = 1; i < sorted.length; i++) {
+      const prev = sorted[i - 1];
+      const curr = sorted[i];
+      const prevEnd = shiftEndDateTime(prev).getTime();
+      const currStart = shiftStartDateTime(curr).getTime();
+      const employee_name = nameById.get(employeeId) ?? `#${employeeId}`;
+
+      if (currStart < prevEnd) {
+        violations.push({
+          employee_name,
+          date: curr.date,
+          time_range: `${curr.start_time} - ${curr.end_time}`,
+          rule: "Overlap mellem vagter",
+        });
+        continue;
+      }
+
+      const restHours = (currStart - prevEnd) / (1000 * 60 * 60);
+      if (restHours < 11) {
+        violations.push({
+          employee_name,
+          date: curr.date,
+          time_range: `${curr.start_time} - ${curr.end_time}`,
+          rule: `11-timers hviletid overskredet (${restHours.toFixed(1)} t)`,
+        });
+      }
+    }
+  }
+  return violations;
+}
+
+export async function runSpreadsheetImportAction(
+  input: FormData
+): Promise<SpreadsheetExtractResult> {
+  try {
+    const supabase = await createServerSupabase();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return { ok: false, error: "Ikke logget ind." };
+
+    const file = input.get("file");
+    const companyId = String(input.get("companyId") ?? "").trim();
+    const selectedMonth = Number(input.get("selectedMonth"));
+    const selectedYear = Number(input.get("selectedYear"));
+    const runEuComplianceCheck = String(input.get("runEuComplianceCheck") ?? "true") === "true";
+
+    if (!(file instanceof File)) {
+      return { ok: false, error: "Manglende fil." };
+    }
+    if (!companyId) {
+      return { ok: false, error: "Manglende virksomheds-id." };
+    }
+    if (!Number.isInteger(selectedMonth) || selectedMonth < 1 || selectedMonth > 12) {
+      return { ok: false, error: "Ugyldig måned." };
+    }
+    if (!Number.isInteger(selectedYear) || selectedYear < 2000 || selectedYear > 3000) {
+      return { ok: false, error: "Ugyldigt år." };
+    }
+
+    const buffer = await file.arrayBuffer();
+    const workbook = XLSX.read(buffer, { type: "array" });
+
+    const { employees, byName } = parseEmployees(workbook);
+    const { shiftTypes, lookup } = parseShiftTypes(workbook);
+    const { shifts, warnings, matchedSheet } = parseMonthlySchedule({
+      workbook,
+      month: selectedMonth,
+      year: selectedYear,
+      employeesByName: byName,
+      shiftLookup: lookup,
+    });
+    const euViolations = runEuComplianceCheck
+      ? detectEuRuleViolations({ employees, shifts })
+      : [];
+
+    return {
+      ok: true,
+      extractedEmployees: employees,
+      extractedShiftTypes: shiftTypes,
+      extractedShifts: shifts,
+      euViolations,
+      warnings,
+      matchedSheet,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Importen fejlede uventet.",
+    };
+  }
+}
+
+type AuthUserLite = {
+  id: string;
+  email: string;
+  user_metadata: Record<string, unknown> | null;
+};
+
+async function listAllAuthUsers(
+  admin: ReturnType<typeof getAdminClient>
+): Promise<AuthUserLite[]> {
+  const users: AuthUserLite[] = [];
+  let page = 1;
+  const perPage = 1000;
+  for (;;) {
+    const res = await admin.auth.admin.listUsers({ page, perPage });
+    if (res.error) {
+      throw new Error(res.error.message);
+    }
+    const current = res.data.users ?? [];
+    for (const user of current) {
+      users.push({
+        id: user.id,
+        email: String(user.email ?? "").trim().toLowerCase(),
+        user_metadata: (user.user_metadata as Record<string, unknown> | null) ?? null,
+      });
+    }
+    if (current.length < perPage) break;
+    page += 1;
+    if (page > 100) break;
+  }
+  return users;
+}
+
+type ApproveInput = {
+  companyId: string;
+  selectedMonth: number;
+  selectedYear: number;
+  extractedEmployees: ExtractedEmployee[];
+  extractedShifts: ExtractedShift[];
+};
+
+export async function approveSpreadsheetPlanAction(
+  input: ApproveInput
+): Promise<ApproveSpreadsheetPlanResult> {
+  try {
+    const supabase = await createServerSupabase();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return { ok: false, error: "Ikke logget ind." };
+
+    const companyId = String(input.companyId ?? "").trim();
+    if (!companyId) return { ok: false, error: "Manglende virksomheds-id." };
+    await assertWorkplaceAdminOrSuperAdmin(companyId);
+
+    const selectedMonth = Number(input.selectedMonth);
+    const selectedYear = Number(input.selectedYear);
+    if (!Number.isInteger(selectedMonth) || selectedMonth < 1 || selectedMonth > 12) {
+      return { ok: false, error: "Ugyldig måned." };
+    }
+    if (!Number.isInteger(selectedYear) || selectedYear < 2000 || selectedYear > 3000) {
+      return { ok: false, error: "Ugyldigt år." };
+    }
+
+    const extractedEmployees = Array.isArray(input.extractedEmployees)
+      ? input.extractedEmployees
+      : [];
+    const extractedShifts = Array.isArray(input.extractedShifts) ? input.extractedShifts : [];
+
+    const admin = getAdminClient();
+
+    const [departmentRes, shiftTypeRes, memberRes] = await Promise.all([
+      admin
+        .from("workplace_departments")
+        .select("id, name")
+        .eq("workplace_id", companyId),
+      admin
+        .from("workplace_shift_types")
+        .select("id, label, sort_order")
+        .eq("workplace_id", companyId),
+      admin
+        .from("workplace_members")
+        .select("user_id")
+        .eq("workplace_id", companyId),
+    ]);
+
+    if (departmentRes.error) return { ok: false, error: departmentRes.error.message };
+    if (shiftTypeRes.error) return { ok: false, error: shiftTypeRes.error.message };
+    if (memberRes.error) return { ok: false, error: memberRes.error.message };
+
+    const departmentIdByName = new Map<string, string>();
+    for (const row of departmentRes.data ?? []) {
+      const name = String(row.name ?? "");
+      const id = String(row.id ?? "");
+      if (!name || !id) continue;
+      departmentIdByName.set(normalizeKey(name), id);
+    }
+
+    let createdDepartments = 0;
+    async function ensureDepartmentId(rawDepartmentName: string): Promise<string | null> {
+      const name = rawDepartmentName.trim();
+      if (!name) return null;
+      const key = normalizeKey(name);
+      const existing = departmentIdByName.get(key);
+      if (existing) return existing;
+      const ins = await admin
+        .from("workplace_departments")
+        .insert({ workplace_id: companyId, name })
+        .select("id, name")
+        .single();
+      if (ins.error) {
+        throw new Error(ins.error.message);
+      }
+      const id = String(ins.data.id);
+      departmentIdByName.set(key, id);
+      createdDepartments += 1;
+      return id;
+    }
+
+    const shiftTypeIdByCode = new Map<string, string>();
+    let maxShiftSortOrder = 0;
+    for (const row of shiftTypeRes.data ?? []) {
+      const label = normalizeShiftCode(String(row.label ?? ""));
+      const id = String(row.id ?? "");
+      if (!label || !id) continue;
+      shiftTypeIdByCode.set(label, id);
+      const sort = Number(row.sort_order ?? 0);
+      if (Number.isFinite(sort)) maxShiftSortOrder = Math.max(maxShiftSortOrder, sort);
+    }
+
+    async function ensureShiftTypeId(shiftCode: string): Promise<string> {
+      const normalized = normalizeShiftCode(shiftCode);
+      const existing = shiftTypeIdByCode.get(normalized);
+      if (existing) return existing;
+      maxShiftSortOrder += 10;
+      const ins = await admin
+        .from("workplace_shift_types")
+        .insert({
+          workplace_id: companyId,
+          template_id: null,
+          label: normalized,
+          sort_order: maxShiftSortOrder,
+          calendar_color: "#94a3b8",
+        })
+        .select("id, label")
+        .single();
+      if (ins.error) throw new Error(ins.error.message);
+      const id = String(ins.data.id);
+      shiftTypeIdByCode.set(normalized, id);
+      return id;
+    }
+
+    const membershipUserIds = new Set((memberRes.data ?? []).map((row) => String(row.user_id)));
+    const allAuthUsers = await listAllAuthUsers(admin);
+    const userIdByEmail = new Map<string, string>();
+    const metadataByUserId = new Map<string, Record<string, unknown> | null>();
+    for (const u of allAuthUsers) {
+      metadataByUserId.set(u.id, u.user_metadata);
+      const email = u.email;
+      if (!email) continue;
+      userIdByEmail.set(email, u.id);
+    }
+
+    const memberUserIdByLocalEmployeeId = new Map<number, string>();
+    for (const userId of membershipUserIds) {
+      const metadata = metadataByUserId.get(userId);
+      if (!metadata) continue;
+      const importedCompanyId = String(metadata.import_company_id ?? "").trim();
+      const importedLocalId = Number(metadata.import_local_employee_id);
+      if (importedCompanyId !== companyId || !Number.isInteger(importedLocalId)) continue;
+      memberUserIdByLocalEmployeeId.set(importedLocalId, userId);
+    }
+
+    let createdEmployees = 0;
+    const employeeRefByLocalId = new Map<number, { userId: string; departmentId: string | null }>();
+    for (const employee of extractedEmployees) {
+      const localId = Number(employee.employee_id);
+      if (!Number.isInteger(localId)) continue;
+      const hasImportedEmail = Boolean(employee.email) && employee.email.includes("@");
+      const preferredEmail = hasImportedEmail
+        ? employee.email.toLowerCase()
+        : buildPlaceholderEmail(companyId, localId);
+
+      let userId =
+        memberUserIdByLocalEmployeeId.get(localId) ??
+        userIdByEmail.get(preferredEmail) ??
+        null;
+      if (!userId) {
+        const created = await admin.auth.admin.createUser({
+          email: preferredEmail,
+          password: randomUUID(),
+          email_confirm: true,
+          user_metadata: {
+            first_name: employee.first_name,
+            last_name: employee.last_name,
+            full_name: employee.full_name,
+            import_company_id: companyId,
+            import_local_employee_id: localId,
+            import_job_title: employee.job_title || null,
+            import_employee_type: employee.type || null,
+            import_employee_status: employee.status || null,
+            import_contract_hours_per_week: employee.contract_hours_per_week || null,
+            import_max_hours_per_week: employee.max_hours_per_week || null,
+            import_start_date: employee.start_date || null,
+          },
+        });
+        if (created.error || !created.data.user) {
+          throw new Error(created.error?.message ?? `Kunne ikke oprette medarbejder ${employee.full_name}`);
+        }
+        userId = created.data.user.id;
+        userIdByEmail.set(preferredEmail, userId);
+        metadataByUserId.set(userId, {
+          first_name: employee.first_name,
+          last_name: employee.last_name,
+          full_name: employee.full_name,
+          import_company_id: companyId,
+          import_local_employee_id: localId,
+          import_job_title: employee.job_title || null,
+          import_employee_type: employee.type || null,
+          import_employee_status: employee.status || null,
+          import_contract_hours_per_week: employee.contract_hours_per_week || null,
+          import_max_hours_per_week: employee.max_hours_per_week || null,
+          import_start_date: employee.start_date || null,
+        });
+        createdEmployees += 1;
+      } else {
+        const metadata = metadataByUserId.get(userId) ?? {};
+        const updateUser = await admin.auth.admin.updateUserById(userId, {
+          user_metadata: {
+            ...metadata,
+            first_name: employee.first_name,
+            last_name: employee.last_name,
+            full_name: employee.full_name,
+            import_company_id: companyId,
+            import_local_employee_id: localId,
+            import_job_title: employee.job_title || null,
+            import_employee_type: employee.type || null,
+            import_employee_status: employee.status || null,
+            import_contract_hours_per_week: employee.contract_hours_per_week || null,
+            import_max_hours_per_week: employee.max_hours_per_week || null,
+            import_start_date: employee.start_date || null,
+          },
+        });
+        if (updateUser.error) {
+          throw new Error(updateUser.error.message);
+        }
+      }
+
+      if (!membershipUserIds.has(userId)) {
+        const upsertMember = await admin.from("workplace_members").upsert(
+          {
+            workplace_id: companyId,
+            user_id: userId,
+            role: "EMPLOYEE",
+          },
+          { onConflict: "user_id,workplace_id" }
+        );
+        if (upsertMember.error) throw new Error(upsertMember.error.message);
+        membershipUserIds.add(userId);
+      }
+      memberUserIdByLocalEmployeeId.set(localId, userId);
+
+      const upsertProfile = await admin.from("user_profiles").upsert(
+        {
+          user_id: userId,
+          first_name: employee.first_name,
+          last_name: employee.last_name,
+          mobile_phone: employee.mobile_phone || null,
+          street_name: employee.street_name || null,
+          street_number: employee.street_number || null,
+          postal_code: employee.postal_code || null,
+          city: employee.city || null,
+          country: employee.country || null,
+          note: employee.note || null,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id" }
+      );
+      if (upsertProfile.error) throw new Error(upsertProfile.error.message);
+
+      const departmentId = await ensureDepartmentId(employee.department);
+      if (departmentId) {
+        const upsertDepartmentMembership = await admin.from("workplace_department_members").upsert(
+          {
+            workplace_id: companyId,
+            user_id: userId,
+            department_id: departmentId,
+          },
+          { onConflict: "user_id,department_id" }
+        );
+        if (upsertDepartmentMembership.error) {
+          throw new Error(upsertDepartmentMembership.error.message);
+        }
+      }
+
+      employeeRefByLocalId.set(localId, { userId, departmentId });
+    }
+
+    const shiftRows: Array<{
+      workplace_id: string;
+      department_id: string | null;
+      user_id: string;
+      shift_type_id: string | null;
+      starts_at: string;
+      ends_at: string;
+    }> = [];
+
+    for (const shift of extractedShifts) {
+      const dateParts = String(shift.date).split("-");
+      if (dateParts.length !== 3) continue;
+      const y = Number(dateParts[0]);
+      const m = Number(dateParts[1]);
+      if (y !== selectedYear || m !== selectedMonth) continue;
+
+      const employeeRef = employeeRefByLocalId.get(Number(shift.employee_id));
+      if (!employeeRef) continue;
+
+      const shiftTypeId = await ensureShiftTypeId(shift.shift_code);
+      const startsAt = new Date(`${shift.date}T${shift.start_time}:00`);
+      const endsAt = new Date(`${shift.date}T${shift.end_time}:00`);
+      if (Number.isNaN(startsAt.getTime()) || Number.isNaN(endsAt.getTime())) continue;
+      if (endsAt.getTime() <= startsAt.getTime()) endsAt.setDate(endsAt.getDate() + 1);
+
+      shiftRows.push({
+        workplace_id: companyId,
+        department_id: employeeRef.departmentId,
+        user_id: employeeRef.userId,
+        shift_type_id: shiftTypeId,
+        starts_at: startsAt.toISOString(),
+        ends_at: endsAt.toISOString(),
+      });
+    }
+
+    let insertedShifts = 0;
+    const chunkSize = 200;
+    for (let i = 0; i < shiftRows.length; i += chunkSize) {
+      const chunk = shiftRows.slice(i, i + chunkSize);
+      if (chunk.length === 0) continue;
+      const ins = await admin.from("workplace_shifts").insert(chunk);
+      if (ins.error) throw new Error(ins.error.message);
+      insertedShifts += chunk.length;
+    }
+
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/import-regneark");
+
+    return {
+      ok: true,
+      createdDepartments,
+      createdEmployees,
+      insertedShifts,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Godkendelse fejlede.",
+    };
+  }
+}

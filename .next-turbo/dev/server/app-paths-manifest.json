@@ -1,6 +1,7 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/employer-signup/page": "app/employer-signup/page.js",
-  "/landing/page": "app/landing/page.js",
+  "/dashboard/import-regneark/page": "app/dashboard/import-regneark/page.js",
+  "/dashboard/indstillinger/page": "app/dashboard/indstillinger/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
   "/manifest.webmanifest/route": "app/manifest.webmanifest/route.js"
 }

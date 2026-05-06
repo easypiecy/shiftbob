@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
      * ved hver Turbopack-session.
      */
     turbopackFileSystemCacheForDev: false,
+    serverActions: {
+      bodySizeLimit: "12mb",
+    },
   },
   images: {
     remotePatterns: [

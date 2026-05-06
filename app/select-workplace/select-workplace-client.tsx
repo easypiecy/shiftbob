@@ -94,6 +94,27 @@ export default function SelectWorkplaceClient() {
       }
 
       if (!cancelled) setNoMembership(null);
+      if (!superAdmin && list.length === 1) {
+        const only = list[0];
+        setActiveWorkplaceCookie(only.id);
+        const pickResult = await routeRolesForActiveWorkplace(
+          supabase,
+          router,
+          only.id
+        );
+        if (cancelled) return;
+        if (pickResult === "no_roles") {
+          setPickError("Ingen roller for denne arbejdsplads. Kontakt administrator.");
+          setLoading(false);
+          return;
+        }
+        if (pickResult === "fetch_error") {
+          setPickError("Kunne ikke hente roller. Prøv igen.");
+          setLoading(false);
+          return;
+        }
+        return;
+      }
       setLoading(false);
     }
 

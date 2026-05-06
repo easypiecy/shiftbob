@@ -78,12 +78,12 @@ export default async function LandingPage() {
             <div />
             <div
               data-hero-version="v3"
-              className="justify-self-end rounded-3xl border border-white/70 bg-white/80 p-8 text-center shadow-xl backdrop-blur-sm"
+              className="justify-self-end rounded-3xl border border-white/25 bg-black/70 p-8 text-center shadow-xl backdrop-blur-sm"
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4A90E2]">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/85">
                 {t("landing.hero.eyebrow", "Shift Scheduling")}
               </p>
-              <h1 className="mt-3 max-w-xl text-3xl font-black uppercase leading-[1.05] text-zinc-900 sm:text-4xl lg:text-5xl">
+              <h1 className="mt-3 max-w-xl text-3xl font-black uppercase leading-[1.05] text-white sm:text-4xl lg:text-5xl">
                 {t(
                   "landing.hero.title",
                   "Give Your Excel Shift Plan Extra Power 💥"

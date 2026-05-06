@@ -194,6 +194,64 @@ function shiftSlotKey(userId: string, day: Date, hour: number): string {
   return `${userId}|${dayKeyLocal(day)}|${hour}`;
 }
 
+function shiftIdentityKey(shift: WorkplaceShiftRow): string {
+  return `${shift.user_id}|${shift.starts_at}|${shift.ends_at}|${shift.shift_type_id ?? ""}`;
+}
+
+function buildEuViolationRuleMap(
+  shifts: WorkplaceShiftRow[],
+  memberByUserId: Map<string, WorkplaceMemberDepartmentsRow>
+): Map<string, string> {
+  const byUser = new Map<string, WorkplaceShiftRow[]>();
+  for (const shift of shifts) {
+    const list = byUser.get(shift.user_id) ?? [];
+    list.push(shift);
+    byUser.set(shift.user_id, list);
+  }
+
+  const violationsByShiftId = new Map<string, string>();
+  const violationsByIdentity = new Map<string, string>();
+  for (const [userId, rows] of byUser.entries()) {
+    const sorted = [...rows].sort(
+      (a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime()
+    );
+    const name = memberByUserId.get(userId)?.display_name ?? "Ukendt medarbejder";
+
+    for (let i = 1; i < sorted.length; i++) {
+      const prev = sorted[i - 1];
+      const curr = sorted[i];
+      const prevEnd = new Date(prev.ends_at).getTime();
+      const currStart = new Date(curr.starts_at).getTime();
+      if (!Number.isFinite(prevEnd) || !Number.isFinite(currStart)) continue;
+
+      if (currStart < prevEnd) {
+        const rule = `Overlap mellem vagter for ${name}`;
+        if (curr.id) violationsByShiftId.set(curr.id, rule);
+        violationsByIdentity.set(shiftIdentityKey(curr), rule);
+        continue;
+      }
+
+      const restHours = (currStart - prevEnd) / (1000 * 60 * 60);
+      if (restHours < 11) {
+        const rule = `11-timers hviletid overskredet (${restHours.toFixed(1)} t) for ${name}`;
+        if (curr.id) violationsByShiftId.set(curr.id, rule);
+        violationsByIdentity.set(shiftIdentityKey(curr), rule);
+      }
+    }
+  }
+
+  const out = new Map<string, string>();
+  for (const shift of shifts) {
+    const rule =
+      (shift.id ? violationsByShiftId.get(shift.id) : undefined) ??
+      violationsByIdentity.get(shiftIdentityKey(shift));
+    if (!rule) continue;
+    if (shift.id) out.set(shift.id, rule);
+    out.set(shiftIdentityKey(shift), rule);
+  }
+  return out;
+}
+
 function fallbackPatternByUserId(userId: string): string {
   const list = ["stripes", "dots", "grid", "diagonal"] as const;
   let n = 0;
@@ -240,6 +298,7 @@ function distinctEmployeesOnShiftForDay(
 
 type Props = {
   workplaceId: string;
+  workplaceName?: string | null;
 };
 
 type ShiftDragMode = "move" | "resize_start" | "resize_end";
@@ -358,6 +417,7 @@ type ShiftGridCellProps = {
   renderedCellStyle: ReturnType<typeof shiftCalendarCellStyle> | undefined;
   styleToken: string;
   hoverDetails?: string;
+  violationRule?: string;
   onCellPointerDown: (
     e: {
       pointerType?: string;
@@ -400,6 +460,7 @@ const ShiftGridCell = memo(function ShiftGridCell({
   shiftLabel,
   renderedCellStyle,
   hoverDetails,
+  violationRule,
   onCellPointerDown,
   onCellPointerUp,
   onCellClick,
@@ -411,6 +472,27 @@ const ShiftGridCell = memo(function ShiftGridCell({
       : dayAmbient === "weekend"
         ? "bg-zinc-200/25 dark:bg-zinc-800/50"
         : "bg-zinc-50/50 dark:bg-zinc-950/50";
+  const titleWithViolation =
+    has && violationRule
+      ? hoverDetails?.includes("EU-regel")
+        ? hoverDetails
+        : [hoverDetails, `EU-regel: ${violationRule}`].filter(Boolean).join("\n")
+      : hoverDetails;
+  const showCenteredViolationIcon = (() => {
+    if (!has || !violationRule || !shift) return false;
+    const slotStart = new Date(day);
+    slotStart.setHours(hour, 0, 0, 0);
+    const slotStartMs = slotStart.getTime();
+    const slotEnd = slotStartMs + 60 * 60 * 1000;
+    const shiftStart = new Date(shift.starts_at).getTime();
+    const shiftEnd = new Date(shift.ends_at).getTime();
+    if (!Number.isFinite(shiftStart) || !Number.isFinite(shiftEnd) || shiftEnd <= shiftStart) {
+      return false;
+    }
+    const midpoint = shiftStart + (shiftEnd - shiftStart) / 2;
+    return midpoint >= slotStartMs && midpoint < slotEnd;
+  })();
+  const violationHoverText = violationRule ? `EU-regel: ${violationRule}` : undefined;
   return (
     <td
       key={cellKey}
@@ -420,7 +502,7 @@ const ShiftGridCell = memo(function ShiftGridCell({
           : `border-b border-l border-zinc-100 px-0 py-2 dark:border-zinc-800 ${emptySurface}`
       }
       style={renderedCellStyle}
-      title={hoverDetails}
+      title={titleWithViolation}
       onPointerDown={(e) => onCellPointerDown(e, shift)}
       onPointerUp={onCellPointerUp}
       onPointerCancel={onCellPointerUp}
@@ -431,6 +513,15 @@ const ShiftGridCell = memo(function ShiftGridCell({
       data-day-key={dayKey}
       data-hour={hour}
     >
+      {showCenteredViolationIcon ? (
+        <span
+          className="absolute left-1/2 top-1/2 z-0 inline-flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-[30px] leading-none text-red-500 [text-shadow:0_0_3px_rgba(255,255,255,1),0_0_8px_rgba(255,255,255,0.95),0_0_14px_rgba(255,232,0,1),0_0_22px_rgba(255,232,0,0.95)] dark:bg-white/80 dark:text-red-500"
+          title={violationHoverText}
+          aria-label={violationHoverText}
+        >
+          ⚠
+        </span>
+      ) : null}
       {has && startsHere && shiftLabel.trim().length > 0 ? (
         <span className="pointer-events-none block w-full truncate pl-2 pr-0.5 text-left text-[12px] font-bold text-black [text-shadow:0_0_2px_rgba(255,255,255,0.95),0_0_6px_rgba(255,255,255,0.9)]">
           {shiftLabel}
@@ -487,10 +578,11 @@ const ShiftGridCell = memo(function ShiftGridCell({
   prev.styleToken === next.styleToken &&
   prev.dayAmbient === next.dayAmbient &&
   prev.hoverDetails === next.hoverDetails &&
+  prev.violationRule === next.violationRule &&
   prev.day.getTime() === next.day.getTime()
 );
 
-export default function AdminCalendar({ workplaceId }: Props) {
+export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   const { t } = useTranslations();
   const uiLanguage = useUiLanguage();
   const isDevBuild = process.env.NODE_ENV !== "production";
@@ -919,6 +1011,11 @@ export default function AdminCalendar({ workplaceId }: Props) {
     }
     return map;
   }, [members]);
+
+  const euViolationRuleMap = useMemo(() => {
+    const combined = [...rollingShiftsFiltered, ...monthShiftsFiltered];
+    return buildEuViolationRuleMap(combined, memberByUserId);
+  }, [rollingShiftsFiltered, monthShiftsFiltered, memberByUserId]);
 
   const canManageShifts = calendarAdminNameView;
 
@@ -1945,6 +2042,13 @@ export default function AdminCalendar({ workplaceId }: Props) {
   const shellClass = viewMode === "rolling" ? "w-full" : "mx-auto w-full max-w-[1600px]";
   const calendarOuterClass =
     viewMode === "rolling" ? shellClass : "mx-auto w-full max-w-[1600px]";
+  const headerTitle =
+    workplaceName?.trim()
+      ? t("calendar.page.plan_for", "Vagtplan for {workplace}").replace(
+          "{workplace}",
+          workplaceName.trim()
+        )
+      : "Vagtplan";
 
   return (
     <div className="relative flex flex-col gap-4">
@@ -1953,7 +2057,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
       >
         <div className="pl-12">
           <h1 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-            {t("calendar.page.title", "Kalender")}
+            {headerTitle}
           </h1>
           <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
             {t("calendar.time_now_label", "Tid nu:")}{" "}
@@ -2275,7 +2379,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                               ref={rowVirtualizer.measureElement}
                               data-index={virtualRow.index}
                             >
-                              <td className="sticky left-0 z-20 w-[200px] min-w-[200px] max-w-[200px] border-b border-r border-zinc-200 bg-zinc-100/90 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800/90 dark:text-zinc-200">
+                              <td className="sticky left-0 z-40 w-[200px] min-w-[200px] max-w-[200px] border-b border-r border-zinc-200 bg-zinc-100/90 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800/90 dark:text-zinc-200">
                                 <div className="flex items-center gap-2">
                                   <span>{row.name}</span>
                                   {row.deptId && loadingDeptIds.includes(row.deptId) ? (
@@ -2299,7 +2403,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                             data-index={virtualRow.index}
                             className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40"
                           >
-                            <td className="sticky left-0 z-10 w-[200px] min-w-[200px] max-w-[200px] border-b border-r border-zinc-100 bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900">
+                            <td className="sticky left-0 z-50 w-[200px] min-w-[200px] max-w-[200px] border-b border-r border-zinc-100 bg-white px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900">
                               <EmployeeCalendarNameCell
                                 emp={emp}
                                 viewerUserId={viewerUserId}
@@ -2377,8 +2481,27 @@ export default function AdminCalendar({ workplaceId }: Props) {
                                     `${t("calendar.shift_hover.employee_type", "Medarbejdertype")}: ${employeeTypeLabel}`,
                                     `${t("calendar.shift_hover.shift_type", "Vagttype")}: ${shiftLabel}`,
                                     `${t("calendar.shift_hover.time", "Tid")}: ${formatShiftRange(shift!.starts_at, shift!.ends_at, uiLanguage)}`,
+                                    ...(shift
+                                      ? (() => {
+                                          const violationRule =
+                                            (shift.id
+                                              ? euViolationRuleMap.get(shift.id)
+                                              : undefined) ??
+                                            euViolationRuleMap.get(shiftIdentityKey(shift));
+                                          return violationRule
+                                            ? [
+                                                `${t("calendar.shift_hover.eu_rule", "EU-regel")}: ${violationRule}`,
+                                              ]
+                                            : [];
+                                        })()
+                                      : []),
                                   ].join("\n")
                                 : undefined;
+                              const violationRule =
+                                shift
+                                  ? (shift.id ? euViolationRuleMap.get(shift.id) : undefined) ??
+                                    euViolationRuleMap.get(shiftIdentityKey(shift))
+                                  : undefined;
                               const styleToken = `${shiftColor}|${showPattern ? empPattern : "none"}|${has ? "1" : "0"}|${dayAmbient}`;
                               return (
                                 <ShiftGridCell
@@ -2398,6 +2521,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                                   renderedCellStyle={cellStyle}
                                   styleToken={styleToken}
                                   hoverDetails={hoverDetails}
+                                  violationRule={violationRule}
                                   onCellPointerDown={handleCellPointerDown}
                                   onCellPointerUp={handleCellPointerUp}
                                   onCellClick={handleGridCellClick}
@@ -2423,7 +2547,7 @@ export default function AdminCalendar({ workplaceId }: Props) {
                     </>
                   )}
                   <tr>
-                    <td className="sticky left-0 z-20 w-[200px] min-w-[200px] max-w-[200px] border-b border-r border-zinc-200 bg-zinc-50 px-3 py-3 dark:border-zinc-700 dark:bg-zinc-900">
+                    <td className="sticky left-0 z-40 w-[200px] min-w-[200px] max-w-[200px] border-b border-r border-zinc-200 bg-zinc-50 px-3 py-3 dark:border-zinc-700 dark:bg-zinc-900">
                       <button
                         type="button"
                         onClick={() => openCreateMemberEditor()}

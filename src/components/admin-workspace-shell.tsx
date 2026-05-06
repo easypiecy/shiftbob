@@ -2,36 +2,27 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ArrowLeftRight,
-  Bell,
   CalendarClock,
   ChevronLeft,
   ChevronRight,
   FileSpreadsheet,
   LayoutDashboard,
-  Lock,
   LogOut,
-  Scale,
   Settings,
-  ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { signOutAndRedirectToLogin } from "@/src/lib/auth-client";
 import type { UiThemeId } from "@/src/lib/ui-theme";
-import { getActiveWorkplaceIdFromCookie } from "@/src/lib/workplaces";
 import { useTranslations } from "@/src/contexts/translations-context";
-import { LayoutThemeSidebar } from "@/src/components/layout-theme-sidebar";
-import type { SubscriptionFeature } from "@/src/config/subscriptions";
-import { useSubscription } from "@/src/hooks/use-subscription";
-import { createClient } from "@/src/utils/supabase/client";
 
 type Props = {
   showAdminNav: boolean;
   children: React.ReactNode;
-  /** Aktivt layout-tema (tre cirkler ved siden af Log ud i bunden af sidemenuen). */
+  /** Aktivt layout-tema (bruges i fanebladet Farver under Indstillinger). */
   initialLayoutTheme?: UiThemeId;
   /** Navn på valgt arbejdsplads (under logo); hentes i layout via cookie + DB. */
   activeWorkplaceName?: string | null;
@@ -46,143 +37,37 @@ type AdminNavLink = {
   navKey: string;
   labelDa: string;
   icon: LucideIcon;
-  requiredFeature?: SubscriptionFeature;
 };
 
 const ADMIN_NAV_LINKS: AdminNavLink[] = [
-  { href: "/dashboard", navKey: "admin.nav.calendar", labelDa: "Kalender", icon: LayoutDashboard },
+  { href: "/dashboard", navKey: "admin.nav.calendar", labelDa: "Vagtplan", icon: LayoutDashboard },
   {
     href: "/dashboard/fremtiden",
     navKey: "admin.nav.future",
-    labelDa: "Fremtiden",
+    labelDa: "Automatisk udrulning",
     icon: CalendarClock,
-    requiredFeature: "canUseWebBuilder",
   },
-  { href: "/dashboard/notifikationer", navKey: "admin.nav.notifications", labelDa: "Notifikationer", icon: Bell },
-  { href: "/dashboard/regler", navKey: "admin.nav.rules", labelDa: "Regler", icon: Scale },
-  { href: "/dashboard/data-eksport", navKey: "admin.nav.data_export", labelDa: "Data eksport", icon: FileSpreadsheet },
-  { href: "/dashboard/compliance", navKey: "admin.nav.compliance", labelDa: "Compliance", icon: ShieldCheck },
   {
     href: "/dashboard/indstillinger",
     navKey: "admin.nav.settings",
     labelDa: "Indstillinger",
     icon: Settings,
-    requiredFeature: "canAccessOnlineSettings",
   },
 ];
-
-/** Klient-fallback hvis layout ikke når at få navn (cookie/session timing). */
-function SidebarWorkplaceTitle({
-  serverName,
-  fallback,
-}: {
-  serverName: string | null;
-  fallback: string;
-}) {
-  const [label, setLabel] = useState(serverName);
-
-  useEffect(() => {
-    setLabel(serverName);
-  }, [serverName]);
-
-  useEffect(() => {
-    if (serverName?.trim()) return;
-    const wpId = getActiveWorkplaceIdFromCookie();
-    if (!wpId) return;
-    const supabase = createClient();
-    let cancelled = false;
-    void (async () => {
-      const direct = await supabase
-        .from("workplaces")
-        .select("name, company_name")
-        .eq("id", wpId)
-        .maybeSingle();
-      if (cancelled) return;
-      if (direct.data) {
-        const row = direct.data as {
-          name?: string | null;
-          company_name?: string | null;
-        };
-        const c =
-          typeof row.company_name === "string" ? row.company_name.trim() : "";
-        const n = typeof row.name === "string" ? row.name.trim() : "";
-        const d = c.length > 0 ? c : n;
-        if (d.length > 0) setLabel(d);
-        return;
-      }
-      const { data: rpcRows } = await supabase.rpc("get_my_workplaces");
-      if (cancelled || !Array.isArray(rpcRows)) return;
-      const row = (
-        rpcRows as { id: string; name: string }[]
-      ).find((r) => r.id === wpId);
-      const n = row?.name?.trim();
-      if (n) setLabel(n);
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [serverName]);
-
-  const text = label?.trim() ? label.trim() : fallback;
-  return (
-    <p
-      className="min-w-0 flex-1 break-words text-center text-xs font-semibold leading-snug text-zinc-600 dark:text-zinc-400"
-      title={text !== fallback ? text : undefined}
-    >
-      {text}
-    </p>
-  );
-}
 
 export function AdminWorkspaceShell({
   showAdminNav,
   children,
   initialLayoutTheme,
-  activeWorkplaceName = null,
 }: Props) {
   const { t } = useTranslations();
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(
     typeof window !== "undefined" ? window.innerWidth >= 768 : true
   );
   const [signingOut, setSigningOut] = useState(false);
-  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
-  const { hasFeature } = useSubscription();
-
-  useEffect(() => {
-    let cancelled = false;
-    const wpId = getActiveWorkplaceIdFromCookie();
-    if (!wpId) {
-      setTimeout(() => {
-        if (!cancelled) setUnreadNotificationsCount(0);
-      }, 0);
-      return;
-    }
-    const supabase = createClient();
-    void (async () => {
-      const [{ count: joinCount, error: joinErr }, { count: deliveryCount }] = await Promise.all([
-        supabase
-          .from("workplace_join_requests")
-          .select("id", { count: "exact", head: true })
-          .eq("workplace_id", wpId)
-          .eq("status", "pending"),
-        supabase
-          .from("super_admin_notification_deliveries")
-          .select("id", { count: "exact", head: true })
-          .eq("workplace_id", wpId)
-          .eq("status", "queued"),
-      ]);
-      if (cancelled) return;
-      if (joinErr) {
-        setUnreadNotificationsCount(deliveryCount ?? 0);
-        return;
-      }
-      setUnreadNotificationsCount((joinCount ?? 0) + (deliveryCount ?? 0));
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [pathname]);
+  const [settingsNavigationPending, setSettingsNavigationPending] = useState(false);
 
   if (!showAdminNav) {
     return <>{children}</>;
@@ -197,6 +82,13 @@ export function AdminWorkspaceShell({
 
   /** Dark: mørkt cirkel-logo. Light + unicorn: lyst cirkel-logo (unicorn bruger også `dark` på `<html>`). */
   const showDarkCircleLogo = initialLayoutTheme === "dark";
+  const showSettingsLoaderOverlay =
+    settingsNavigationPending && pathname !== "/dashboard/indstillinger";
+
+  function openSpreadsheetImportPage() {
+    router.push("/dashboard/import-regneark");
+    setSidebarOpen(false);
+  }
 
   return (
     <div className="relative flex min-h-screen flex-1 bg-zinc-100 dark:bg-zinc-950">
@@ -216,7 +108,7 @@ export function AdminWorkspaceShell({
             : "hidden"
         }
       >
-        <div className="relative shrink-0 border-b border-zinc-200 px-3 pb-3 pt-1 dark:border-zinc-800">
+        <div className="relative shrink-0 px-3 pb-3 pt-1">
           <button
             type="button"
             onClick={() => setSidebarOpen(false)}
@@ -237,7 +129,7 @@ export function AdminWorkspaceShell({
                   alt={t("common.brand_name", "ShiftBob")}
                   width={1024}
                   height={1024}
-                  className={`h-[5.5rem] w-[5.5rem] object-contain object-center sm:h-[6.5rem] sm:w-[6.5rem] ${
+                  className={`h-[6.5rem] w-[6.5rem] object-contain object-center sm:h-[7.25rem] sm:w-[7.25rem] ${
                     showDarkCircleLogo ? "hidden" : "block"
                   }`}
                   priority
@@ -247,39 +139,37 @@ export function AdminWorkspaceShell({
                   alt={t("common.brand_name", "ShiftBob")}
                   width={1024}
                   height={1024}
-                  className={`h-[5.5rem] w-[5.5rem] object-contain object-center sm:h-[6.5rem] sm:w-[6.5rem] ${
+                  className={`h-[6.5rem] w-[6.5rem] object-contain object-center sm:h-[7.25rem] sm:w-[7.25rem] ${
                     showDarkCircleLogo ? "block" : "hidden"
                   }`}
                   priority
                 />
               </span>
             </Link>
-            <div className="mt-2.5 flex w-full max-w-[15rem] items-center justify-center gap-2">
-              <SidebarWorkplaceTitle
-                serverName={activeWorkplaceName}
-                fallback={t("admin.sidebar.workplace_name_missing", "—")}
-              />
-              <Link
-                href="/select-workplace"
-                className="-m-1 shrink-0 rounded-lg p-1.5 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
-                title={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
-                aria-label={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
-              >
-                <ArrowLeftRight className="h-4 w-4" strokeWidth={2} aria-hidden />
-              </Link>
-            </div>
           </div>
         </div>
         <div className="flex min-h-0 flex-1 flex-col px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-0">
           <nav className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden py-2">
             <div className="flex flex-col gap-0.5">
-              {ADMIN_NAV_LINKS.map(({ href, navKey, labelDa, icon: Icon, requiredFeature }) => {
+              {ADMIN_NAV_LINKS.map(({ href, navKey, labelDa, icon: Icon }) => {
                 const active = isActive(href);
-                const locked = requiredFeature ? !hasFeature(requiredFeature) : false;
                 return (
                   <Link
                     key={href}
                     href={href}
+                    onClick={(e) => {
+                      if (href !== "/dashboard/indstillinger") {
+                        setSettingsNavigationPending(false);
+                        return;
+                      }
+                      if (active) {
+                        setSettingsNavigationPending(false);
+                        return;
+                      }
+                      e.preventDefault();
+                      setSettingsNavigationPending(true);
+                      router.push(href);
+                    }}
                     className={
                       active
                         ? "flex items-center gap-2 rounded-lg bg-zinc-200 px-3 py-2.5 text-sm font-semibold text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50"
@@ -287,28 +177,23 @@ export function AdminWorkspaceShell({
                     }
                   >
                     <Icon className="h-4 w-4 shrink-0 text-zinc-500" aria-hidden />
-                    <span className="relative inline-flex items-center">
-                      {t(navKey, labelDa)}
-                      {locked ? (
-                        <span className="ml-2 inline-flex items-center gap-1 rounded-md border border-zinc-300 bg-zinc-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-600 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
-                          <Lock className="h-2.5 w-2.5" />
-                          Pro
-                        </span>
-                      ) : null}
-                      {href === "/dashboard/notifikationer" &&
-                      unreadNotificationsCount > 0 ? (
-                        <span className="ml-2 inline-flex h-2.5 w-2.5">
-                          <span className="absolute inline-flex h-2.5 w-2.5 animate-ping rounded-full bg-red-500 opacity-75" />
-                          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-600" />
-                        </span>
-                      ) : null}
-                    </span>
+                    <span className="inline-flex items-center">{t(navKey, labelDa)}</span>
                   </Link>
                 );
               })}
             </div>
           </nav>
-          <div className="sidebar-menu-footer shrink-0 border-t border-zinc-200 pt-2 dark:border-zinc-800">
+          <div className="shrink-0 px-2 pb-2">
+            <button
+              type="button"
+              onClick={openSpreadsheetImportPage}
+              className="flex w-full items-center gap-2 rounded-xl bg-emerald-600 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+            >
+              <FileSpreadsheet className="h-4 w-4 shrink-0" aria-hidden />
+              <span>{t("admin.nav.import_spreadsheet", "Hent regneark")}</span>
+            </button>
+          </div>
+          <div className="sidebar-menu-footer shrink-0 pt-2">
             <div className="flex items-center gap-2 px-2 pb-2">
               <button
                 type="button"
@@ -328,9 +213,14 @@ export function AdminWorkspaceShell({
                     : t("common.logout", "Log ud")}
                 </span>
               </button>
-              {initialLayoutTheme ? (
-                <LayoutThemeSidebar initialTheme={initialLayoutTheme} />
-              ) : null}
+              <Link
+                href="/select-workplace"
+                className="shrink-0 rounded-lg p-2.5 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                title={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
+                aria-label={t("admin.sidebar.switch_workplace", "Skift arbejdsplads")}
+              >
+                <ArrowLeftRight className="h-4 w-4" strokeWidth={2} aria-hidden />
+              </Link>
             </div>
           </div>
         </div>
@@ -355,6 +245,21 @@ export function AdminWorkspaceShell({
             : "min-w-0 flex-1 overflow-auto pt-14 md:pt-0"
         }
       >
+        {showSettingsLoaderOverlay ? (
+          <div className="fixed inset-0 z-[120] flex items-center justify-center bg-zinc-100/85 dark:bg-zinc-950/85">
+            <section
+              className="bob-loader-shell"
+              aria-label={t("common.loading_page", "Siden loader")}
+              role="status"
+            >
+              <div className="bob-loader-row" aria-hidden="true">
+                <span className="bob-orb bob-orb-1">B</span>
+                <span className="bob-orb bob-orb-2">O</span>
+                <span className="bob-orb bob-orb-3">B</span>
+              </div>
+            </section>
+          </div>
+        ) : null}
         {children}
       </main>
     </div>
