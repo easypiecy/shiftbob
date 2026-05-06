@@ -510,7 +510,7 @@ async function incrementWorkplaceManualShiftsCreatedCount(companyId, delta = 1, 
 "[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
-/* __next_internal_action_entry_do_not_use__ [{"001a343955998fab1566a737e9a80dd3f7a04883ac":{"name":"getWorkplaces"},"400a744797871fabd6c8784f613823629e129c71af":{"name":"exportWorkplaceCsv"},"401c7d7dedb936715b4809394f214f715255e98962":{"name":"getWorkplaceTypes"},"403c25bb288df6145565a07ef821a88f917fd8aa37":{"name":"deleteShiftTypeTemplate"},"405584b5b956900dcea57e862bf8c0d1f30748f610":{"name":"createWorkplace"},"406d0f16e62da4fb8cc47dd7c46b3ba8ad86af6195":{"name":"deleteEmployeeTypeTemplate"},"406fbd9aa1d285b94472b18cf4a8fca836fff886aa":{"name":"createEmployeeTypeTemplate"},"4081521e0bfa388bf7a7929f4f2a842eab2dafc240":{"name":"listShiftTypeTemplates"},"408408ad6ff6c256b8db582905f9e1452a1fa028da":{"name":"listEmployeeTypeTemplates"},"4088bec09bfeaab68a8d7d8b96a3ce0bcd05c7234c":{"name":"copyWorkplaceTemplatesFromStandards"},"4097036f0e59aec84357e924d87bd58f69de126491":{"name":"getWorkplaceById"},"409d40d4c9e5171aa8f4cd4b34f29bb76ffbb6d088":{"name":"listEuCountriesForWorkplace"},"40c53e89d9d480416ba6f89b020f40cc7573f76181":{"name":"listWorkplaceApiKeys"},"40ef1c0b01fab1f0416afe02837b7a410958e48107":{"name":"createWorkplaceLegacy"},"40f1c7b8028aa137282da3b9e76520d4d5b7ea6363":{"name":"createShiftTypeTemplate"},"60125dff8ce82f2d68a31a95364d935c9aedccf43e":{"name":"createWorkplaceShiftType"},"602dab343e190bf3f645a3238a81e825b66e2b7d64":{"name":"createWorkplaceEmployeeType"},"60354e8506f41b7d6f61a0a265f5541909b514c912":{"name":"updateWorkplace"},"60370148a97e128bd87fbe4539c141ebeb200f9016":{"name":"importWorkplaceMembersFromCsv"},"603eaf18b83e2c3f89decbaed94cc37f20965ac7db":{"name":"getWorkplaceDepartmentsOverview"},"60505118d199d20c1ace7c160e0ae7d58fea467f9b":{"name":"updateEmployeeTypeTemplate"},"606dff1ed694fdbe20b6d05870630e8ee1e66ab746":{"name":"deleteWorkplaceDepartment"},"60867009d54b73dd5400ed4e2d6b333ac9b15eb9b9":{"name":"updateShiftTypeTemplate"},"608e44b4ed4db0e39782730959fd4e2e9d523abfb8":{"name":"registerWorkplaceImportUpload"},"609c49c12dd94a2cc4c44d8c6b1f57edcb90be1098":{"name":"revokeWorkplaceApiKey"},"60e4e4a6c2350ba5eeabef29cca8fc80773e95725a":{"name":"createWorkplaceDepartment"},"60ee8d875180a268c31e6c884cc538d0c6b03ed7d3":{"name":"generateWorkplaceApiKey"},"60fa005521543123673f61050ebfde5ce49de26a60":{"name":"saveWorkplaceDepartmentMemberships"}},"src/app/super-admin/workplaces/actions.ts",""] */ __turbopack_context__.s([
+/* __next_internal_action_entry_do_not_use__ [{"001a343955998fab1566a737e9a80dd3f7a04883ac":{"name":"getWorkplaces"},"400a744797871fabd6c8784f613823629e129c71af":{"name":"exportWorkplaceCsv"},"401c7d7dedb936715b4809394f214f715255e98962":{"name":"getWorkplaceTypes"},"403c25bb288df6145565a07ef821a88f917fd8aa37":{"name":"deleteShiftTypeTemplate"},"4042f4768ba26f598e3f918aaa1c497d68fdf50b7f":{"name":"resetWorkplaceCalendarData"},"405584b5b956900dcea57e862bf8c0d1f30748f610":{"name":"createWorkplace"},"406d0f16e62da4fb8cc47dd7c46b3ba8ad86af6195":{"name":"deleteEmployeeTypeTemplate"},"406fbd9aa1d285b94472b18cf4a8fca836fff886aa":{"name":"createEmployeeTypeTemplate"},"4081521e0bfa388bf7a7929f4f2a842eab2dafc240":{"name":"listShiftTypeTemplates"},"408408ad6ff6c256b8db582905f9e1452a1fa028da":{"name":"listEmployeeTypeTemplates"},"4088bec09bfeaab68a8d7d8b96a3ce0bcd05c7234c":{"name":"copyWorkplaceTemplatesFromStandards"},"4097036f0e59aec84357e924d87bd58f69de126491":{"name":"getWorkplaceById"},"409d40d4c9e5171aa8f4cd4b34f29bb76ffbb6d088":{"name":"listEuCountriesForWorkplace"},"40c53e89d9d480416ba6f89b020f40cc7573f76181":{"name":"listWorkplaceApiKeys"},"40ef1c0b01fab1f0416afe02837b7a410958e48107":{"name":"createWorkplaceLegacy"},"40f1c7b8028aa137282da3b9e76520d4d5b7ea6363":{"name":"createShiftTypeTemplate"},"60125dff8ce82f2d68a31a95364d935c9aedccf43e":{"name":"createWorkplaceShiftType"},"602dab343e190bf3f645a3238a81e825b66e2b7d64":{"name":"createWorkplaceEmployeeType"},"60354e8506f41b7d6f61a0a265f5541909b514c912":{"name":"updateWorkplace"},"60370148a97e128bd87fbe4539c141ebeb200f9016":{"name":"importWorkplaceMembersFromCsv"},"603eaf18b83e2c3f89decbaed94cc37f20965ac7db":{"name":"getWorkplaceDepartmentsOverview"},"60505118d199d20c1ace7c160e0ae7d58fea467f9b":{"name":"updateEmployeeTypeTemplate"},"606dff1ed694fdbe20b6d05870630e8ee1e66ab746":{"name":"deleteWorkplaceDepartment"},"60867009d54b73dd5400ed4e2d6b333ac9b15eb9b9":{"name":"updateShiftTypeTemplate"},"608e44b4ed4db0e39782730959fd4e2e9d523abfb8":{"name":"registerWorkplaceImportUpload"},"609c49c12dd94a2cc4c44d8c6b1f57edcb90be1098":{"name":"revokeWorkplaceApiKey"},"60e4e4a6c2350ba5eeabef29cca8fc80773e95725a":{"name":"createWorkplaceDepartment"},"60ee8d875180a268c31e6c884cc538d0c6b03ed7d3":{"name":"generateWorkplaceApiKey"},"60fa005521543123673f61050ebfde5ce49de26a60":{"name":"saveWorkplaceDepartmentMemberships"}},"src/app/super-admin/workplaces/actions.ts",""] */ __turbopack_context__.s([
     "copyWorkplaceTemplatesFromStandards",
     ()=>copyWorkplaceTemplatesFromStandards,
     "createEmployeeTypeTemplate",
@@ -557,6 +557,8 @@ async function incrementWorkplaceManualShiftsCreatedCount(companyId, delta = 1, 
     ()=>listWorkplaceApiKeys,
     "registerWorkplaceImportUpload",
     ()=>registerWorkplaceImportUpload,
+    "resetWorkplaceCalendarData",
+    ()=>resetWorkplaceCalendarData,
     "revokeWorkplaceApiKey",
     ()=>revokeWorkplaceApiKey,
     "saveWorkplaceDepartmentMemberships",
@@ -2699,6 +2701,93 @@ async function deleteWorkplaceDepartment(workplaceId, departmentId) {
         };
     }
 }
+async function resetWorkplaceCalendarData(workplaceId) {
+    try {
+        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$workplace$2d$admin$2d$server$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["assertWorkplaceAdminOrSuperAdmin"])(workplaceId);
+        const admin = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$supabase$2f$admin$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getAdminClient"])();
+        const { data: employeeRows, error: employeeRowsErr } = await admin.from("workplace_members").select("user_id").eq("workplace_id", workplaceId).eq("role", "EMPLOYEE");
+        if (employeeRowsErr) {
+            return {
+                ok: false,
+                error: employeeRowsErr.message
+            };
+        }
+        const employeeUserIds = (employeeRows ?? []).map((row)=>String(row.user_id));
+        let deletedShifts = 0;
+        const shiftsRes = await admin.from("workplace_shifts").delete().eq("workplace_id", workplaceId).select("id");
+        if (shiftsRes.error) {
+            if (!isMissingSchemaError(shiftsRes.error.message)) {
+                return {
+                    ok: false,
+                    error: shiftsRes.error.message
+                };
+            }
+        } else {
+            deletedShifts = (shiftsRes.data ?? []).length;
+        }
+        if (employeeUserIds.length > 0) {
+            const deptMembersRes = await admin.from("workplace_department_members").delete().eq("workplace_id", workplaceId).in("user_id", employeeUserIds).select("user_id");
+            if (deptMembersRes.error && !isMissingSchemaError(deptMembersRes.error.message)) {
+                return {
+                    ok: false,
+                    error: deptMembersRes.error.message
+                };
+            }
+            const prefRes = await admin.from("workplace_member_preferences").delete().eq("workplace_id", workplaceId).in("user_id", employeeUserIds).select("user_id");
+            if (prefRes.error && !isMissingSchemaError(prefRes.error.message)) {
+                return {
+                    ok: false,
+                    error: prefRes.error.message
+                };
+            }
+            const profileRes = await admin.from("workplace_member_calendar_profiles").delete().eq("workplace_id", workplaceId).in("user_id", employeeUserIds).select("user_id");
+            if (profileRes.error && !isMissingSchemaError(profileRes.error.message)) {
+                return {
+                    ok: false,
+                    error: profileRes.error.message
+                };
+            }
+        }
+        let deletedEmployees = 0;
+        const membersRes = await admin.from("workplace_members").delete().eq("workplace_id", workplaceId).eq("role", "EMPLOYEE").select("user_id");
+        if (membersRes.error) {
+            return {
+                ok: false,
+                error: membersRes.error.message
+            };
+        }
+        deletedEmployees = (membersRes.data ?? []).length;
+        const deptRes = await admin.from("workplace_departments").delete().eq("workplace_id", workplaceId).select("id");
+        if (deptRes.error) {
+            if (!isMissingSchemaError(deptRes.error.message)) {
+                return {
+                    ok: false,
+                    error: deptRes.error.message
+                };
+            }
+            return {
+                ok: true,
+                deletedShifts,
+                deletedEmployees,
+                deletedDepartments: 0
+            };
+        }
+        const deletedDepartments = (deptRes.data ?? []).length;
+        revalidateWorkplaceDetailPages(workplaceId);
+        return {
+            ok: true,
+            deletedShifts,
+            deletedEmployees,
+            deletedDepartments
+        };
+    } catch (e) {
+        const msg = e instanceof Error ? e.message : "Ukendt fejl";
+        return {
+            ok: false,
+            error: msg
+        };
+    }
+}
 async function saveWorkplaceDepartmentMemberships(workplaceId, assignments) {
     try {
         await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$workplace$2d$admin$2d$server$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["assertWorkplaceAdminOrSuperAdmin"])(workplaceId);
@@ -3193,6 +3282,7 @@ async function exportWorkplaceCsv(workplaceId) {
     getWorkplaceDepartmentsOverview,
     createWorkplaceDepartment,
     deleteWorkplaceDepartment,
+    resetWorkplaceCalendarData,
     saveWorkplaceDepartmentMemberships,
     revokeWorkplaceApiKey,
     importWorkplaceMembersFromCsv,
@@ -3222,6 +3312,7 @@ async function exportWorkplaceCsv(workplaceId) {
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(getWorkplaceDepartmentsOverview, "603eaf18b83e2c3f89decbaed94cc37f20965ac7db", null);
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(createWorkplaceDepartment, "60e4e4a6c2350ba5eeabef29cca8fc80773e95725a", null);
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(deleteWorkplaceDepartment, "606dff1ed694fdbe20b6d05870630e8ee1e66ab746", null);
+(0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(resetWorkplaceCalendarData, "4042f4768ba26f598e3f918aaa1c497d68fdf50b7f", null);
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(saveWorkplaceDepartmentMemberships, "60fa005521543123673f61050ebfde5ce49de26a60", null);
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(revokeWorkplaceApiKey, "609c49c12dd94a2cc4c44d8c6b1f57edcb90be1098", null);
 (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$server$2d$reference$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerServerReference"])(importWorkplaceMembersFromCsv, "60370148a97e128bd87fbe4539c141ebeb200f9016", null);

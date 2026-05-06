@@ -33,6 +33,8 @@ type Props = {
   supportSuccessTemplate: string;
   supportNeedIdentityMessage: string;
   resetLabel: string;
+  dismissLabel?: string;
+  dismissStorageKey?: string;
 };
 
 type SessionState = {
@@ -61,9 +63,19 @@ export function SalesBotWidget({
   supportSuccessTemplate,
   supportNeedIdentityMessage,
   resetLabel,
+  dismissLabel,
+  dismissStorageKey,
 }: Props) {
   const headerLogoSrc = logoUrl?.trim() || "/ShiftBob-circle-logo-dark-1024.png";
   const [open, setOpen] = useState(false);
+  const [dismissed, setDismissed] = useState<boolean>(() => {
+    if (!dismissStorageKey || typeof window === "undefined") return false;
+    try {
+      return window.localStorage.getItem(dismissStorageKey) === "1";
+    } catch {
+      return false;
+    }
+  });
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -223,28 +235,60 @@ export function SalesBotWidget({
     }
   }
 
+  function dismissWidget() {
+    setOpen(false);
+    setDismissed(true);
+    if (!dismissStorageKey) return;
+    try {
+      window.localStorage.setItem(dismissStorageKey, "1");
+    } catch {
+      // Ignore private mode / quota errors.
+    }
+  }
+
+  if (dismissed) {
+    return null;
+  }
+
   return (
     <>
-      <button
-        type="button"
-        onClick={async () => {
-          setOpen((value) => !value);
-          if (!open) {
-            await initializeChat();
-          }
-        }}
-        className="fixed bottom-5 right-5 z-[70] inline-flex items-center justify-center p-0 transition hover:scale-105"
-        aria-label={buttonLabel}
-        title={buttonLabel}
-      >
-        <Image
-          src={iconUrl}
-          alt=""
-          width={84}
-          height={84}
-          className="h-20 w-20 object-contain [filter:drop-shadow(0_0_12px_rgba(255,255,255,0.98))]"
-        />
-      </button>
+      <div className="fixed bottom-5 right-5 z-[70]">
+        <button
+          type="button"
+          onClick={async () => {
+            setOpen((value) => !value);
+            if (!open) {
+              await initializeChat();
+            }
+          }}
+          className="inline-flex items-center justify-center p-0 transition hover:scale-105"
+          aria-label={buttonLabel}
+          title={buttonLabel}
+        >
+          <Image
+            src={iconUrl}
+            alt=""
+            width={84}
+            height={84}
+            className="h-20 w-20 object-contain [filter:drop-shadow(0_0_12px_rgba(255,255,255,0.98))]"
+          />
+        </button>
+        {dismissLabel ? (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              dismissWidget();
+            }}
+            className="absolute bottom-0 right-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-zinc-900/85 text-[11px] font-semibold text-white hover:bg-zinc-900"
+            aria-label={dismissLabel}
+            title={dismissLabel}
+          >
+            ×
+          </button>
+        ) : null}
+      </div>
 
       {open ? (
         <section className="fixed bottom-24 right-6 z-[70] flex h-[540px] w-[min(92vw,390px)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl">

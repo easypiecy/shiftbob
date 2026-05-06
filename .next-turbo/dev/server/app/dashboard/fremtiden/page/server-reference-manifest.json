@@ -48,6 +48,18 @@
       "exportedName": "deleteShiftTypeTemplate",
       "filename": "src/app/super-admin/workplaces/actions.ts"
     },
+    "4042f4768ba26f598e3f918aaa1c497d68fdf50b7f": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "resetWorkplaceCalendarData",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "exportedName": "resetWorkplaceCalendarData",
+      "filename": "src/app/super-admin/workplaces/actions.ts"
+    },
     "405584b5b956900dcea57e862bf8c0d1f30748f610": {
       "workers": {
         "app/dashboard/fremtiden/page": {

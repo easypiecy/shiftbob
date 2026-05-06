@@ -2662,6 +2662,16 @@
     background-color: var(--color-zinc-900);
   }
 
+  .bg-zinc-900\/85 {
+    background-color: #18181bd9;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-zinc-900\/85 {
+      background-color: color-mix(in oklab, var(--color-zinc-900) 85%, transparent);
+    }
+  }
+
   .bg-zinc-950 {
     background-color: var(--color-zinc-950);
   }
@@ -3794,6 +3804,12 @@
   }
 
   @media (hover: hover) {
+    .hover\:bg-red-100:hover {
+      background-color: var(--color-red-100);
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:bg-red-500:hover {
       background-color: var(--color-red-500);
     }
@@ -3886,6 +3902,12 @@
   @media (hover: hover) {
     .hover\:bg-zinc-800:hover {
       background-color: var(--color-zinc-800);
+    }
+  }
+
+  @media (hover: hover) {
+    .hover\:bg-zinc-900:hover {
+      background-color: var(--color-zinc-900);
     }
   }
 

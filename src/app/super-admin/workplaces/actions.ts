@@ -2051,6 +2051,110 @@ export async function deleteWorkplaceDepartment(
   }
 }
 
+export async function resetWorkplaceCalendarData(
+  workplaceId: string
+): Promise<
+  | {
+      ok: true;
+      deletedShifts: number;
+      deletedEmployees: number;
+      deletedDepartments: number;
+    }
+  | { ok: false; error: string }
+> {
+  try {
+    await assertWorkplaceAdminOrSuperAdmin(workplaceId);
+    const admin = getAdminClient();
+
+    const { data: employeeRows, error: employeeRowsErr } = await admin
+      .from("workplace_members")
+      .select("user_id")
+      .eq("workplace_id", workplaceId)
+      .eq("role", "EMPLOYEE");
+    if (employeeRowsErr) {
+      return { ok: false, error: employeeRowsErr.message };
+    }
+    const employeeUserIds = (employeeRows ?? []).map((row) => String(row.user_id));
+
+    let deletedShifts = 0;
+    const shiftsRes = await admin
+      .from("workplace_shifts")
+      .delete()
+      .eq("workplace_id", workplaceId)
+      .select("id");
+    if (shiftsRes.error) {
+      if (!isMissingSchemaError(shiftsRes.error.message)) {
+        return { ok: false, error: shiftsRes.error.message };
+      }
+    } else {
+      deletedShifts = (shiftsRes.data ?? []).length;
+    }
+
+    if (employeeUserIds.length > 0) {
+      const deptMembersRes = await admin
+        .from("workplace_department_members")
+        .delete()
+        .eq("workplace_id", workplaceId)
+        .in("user_id", employeeUserIds)
+        .select("user_id");
+      if (deptMembersRes.error && !isMissingSchemaError(deptMembersRes.error.message)) {
+        return { ok: false, error: deptMembersRes.error.message };
+      }
+
+      const prefRes = await admin
+        .from("workplace_member_preferences")
+        .delete()
+        .eq("workplace_id", workplaceId)
+        .in("user_id", employeeUserIds)
+        .select("user_id");
+      if (prefRes.error && !isMissingSchemaError(prefRes.error.message)) {
+        return { ok: false, error: prefRes.error.message };
+      }
+
+      const profileRes = await admin
+        .from("workplace_member_calendar_profiles")
+        .delete()
+        .eq("workplace_id", workplaceId)
+        .in("user_id", employeeUserIds)
+        .select("user_id");
+      if (profileRes.error && !isMissingSchemaError(profileRes.error.message)) {
+        return { ok: false, error: profileRes.error.message };
+      }
+    }
+
+    let deletedEmployees = 0;
+    const membersRes = await admin
+      .from("workplace_members")
+      .delete()
+      .eq("workplace_id", workplaceId)
+      .eq("role", "EMPLOYEE")
+      .select("user_id");
+    if (membersRes.error) {
+      return { ok: false, error: membersRes.error.message };
+    }
+    deletedEmployees = (membersRes.data ?? []).length;
+
+    const deptRes = await admin
+      .from("workplace_departments")
+      .delete()
+      .eq("workplace_id", workplaceId)
+      .select("id");
+    if (deptRes.error) {
+      if (!isMissingSchemaError(deptRes.error.message)) {
+        return { ok: false, error: deptRes.error.message };
+      }
+      return { ok: true, deletedShifts, deletedEmployees, deletedDepartments: 0 };
+    }
+    const deletedDepartments = (deptRes.data ?? []).length;
+
+    revalidateWorkplaceDetailPages(workplaceId);
+    return { ok: true, deletedShifts, deletedEmployees, deletedDepartments };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Ukendt fejl";
+    return { ok: false, error: msg };
+  }
+}
+
 /**
  * Erstatter afdelingstilknytninger for de angivne brugere. Alle department_ids valideres mod
  * `workplace_departments` for `workplaceId`; brugere skal være i `workplace_members`.

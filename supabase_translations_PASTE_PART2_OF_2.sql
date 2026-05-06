@@ -201,6 +201,8 @@ insert into public.ui_translations (translation_key, language_code, text_value, 
 ('settings.employee_permissions.level3.description', 'da', 'Appen fungerer udelukkende som en læse-kalender. Medarbejdere kan ikke bytte vagter eller sætte vagter til salg.', 'Kortbeskrivelse.'),
 ('settings.tabs.eu_rules', 'en-US', 'EU rules', 'Settings tab label for EU rule setup and uploads.'),
 ('settings.tabs.eu_rules', 'da', 'EU regler', 'Indstillinger-fane: EU-regler.'),
+('settings.eu_rules.reset_default', 'en-US', 'Reset to standard', 'Button in EU rules tab: reset editable parameters to default values.'),
+('settings.eu_rules.reset_default', 'da', 'Reset til standard', 'Knap i EU regler-fanen: nulstil redigerbare parametre til standardværdier.'),
 
 -- Weekdays (Monday = 0 … Sunday = 6), labels for season grid
 ('calendar.weekday.0', 'en-US', 'Monday', 'Weekday column; planning grid.'),
@@ -514,4 +516,11 @@ set
   text_value = '',
   context_description = coalesce(context_description, 'Pending translation')
 where translation_key in ('settings.tabs.eu_rules')
+  and language_code not in ('da', 'en-US');
+
+update public.ui_translations
+set
+  text_value = '',
+  context_description = coalesce(context_description, 'Pending translation')
+where translation_key in ('settings.eu_rules.reset_default')
   and language_code not in ('da', 'en-US');

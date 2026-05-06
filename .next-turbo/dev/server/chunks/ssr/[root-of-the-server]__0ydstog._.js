@@ -165,6 +165,184 @@ function findSheetByExactName(workbook, wantedName) {
     const name = workbook.SheetNames.find((n)=>n.trim().toLowerCase() === wantedName.trim().toLowerCase());
     return name ? workbook.Sheets[name] : null;
 }
+function emptyCompanySettings() {
+    return {
+        display_name: null,
+        company_name: null,
+        cvr_vat_number: null,
+        no_of_employees: null,
+        street: null,
+        street_no: null,
+        city: null,
+        additional_suite: null,
+        email: null,
+        timezone: null,
+        postal_code: null,
+        country_iso2: null,
+        phone: null
+    };
+}
+function normalizeSettingsKey(value) {
+    return value.trim().toLowerCase().replace(/\s+/g, " ").replace(/[().,:/\\-]+/g, " ").replace(/\s+/g, " ").trim();
+}
+function isBlankDbValue(value) {
+    return value == null || typeof value === "string" && value.trim() === "";
+}
+function parseCompanySettings(workbook) {
+    const sheet = findSheetByExactName(workbook, "Settings");
+    if (!sheet) return {
+        companySettings: emptyCompanySettings(),
+        warnings: []
+    };
+    const matrix = asMatrix(sheet);
+    if (matrix.length === 0) return {
+        companySettings: emptyCompanySettings(),
+        warnings: []
+    };
+    const companySettings = emptyCompanySettings();
+    const warnings = [];
+    const keyMap = new Map([
+        [
+            "display name",
+            "display_name"
+        ],
+        [
+            "company name",
+            "company_name"
+        ],
+        [
+            "cvr vat number",
+            "cvr_vat_number"
+        ],
+        [
+            "no of employees",
+            "no_of_employees"
+        ],
+        [
+            "street",
+            "street"
+        ],
+        [
+            "street no",
+            "street_no"
+        ],
+        [
+            "city",
+            "city"
+        ],
+        [
+            "additional suite",
+            "additional_suite"
+        ],
+        [
+            "email",
+            "email"
+        ],
+        [
+            "timezone",
+            "timezone"
+        ],
+        [
+            "postal code",
+            "postal_code"
+        ],
+        [
+            "country iso 2",
+            "country_iso2"
+        ],
+        [
+            "phone",
+            "phone"
+        ]
+    ]);
+    let sectionStart = 0;
+    const sectionIdx = matrix.findIndex((row)=>normalizeSettingsKey(String(row[0] ?? "")).includes("company address"));
+    if (sectionIdx >= 0) sectionStart = sectionIdx + 1;
+    for(let r = sectionStart; r < matrix.length; r++){
+        const row = matrix[r] ?? [];
+        const keyRaw = String(row[0] ?? "").trim();
+        if (!keyRaw) continue;
+        const key = normalizeSettingsKey(keyRaw);
+        const mapped = keyMap.get(key);
+        if (!mapped) continue;
+        const value = String(row[1] ?? "").trim();
+        if (!value) continue;
+        companySettings[mapped] = value;
+    }
+    if (companySettings.country_iso2 && companySettings.country_iso2.length !== 2) {
+        warnings.push(`Country (ISO-2) value '${companySettings.country_iso2}' is not 2 characters`);
+    }
+    return {
+        companySettings,
+        warnings
+    };
+}
+async function syncCompanySettingsIfEmpty(companyId, companySettings) {
+    const warnings = [];
+    const allowedEmployeeBands = new Set([
+        "0-4",
+        "5-20",
+        "21-50",
+        "51-100",
+        "101-200",
+        "201-500",
+        "500+"
+    ]);
+    const admin = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$supabase$2f$admin$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getAdminClient"])();
+    const { data: workplace, error } = await admin.from("workplaces").select("id, name, company_name, vat_number, employee_count_band, street_name, street_number, city, address_extra, contact_email, postal_code, country_code, phone").eq("id", companyId).maybeSingle();
+    if (error) {
+        warnings.push(`Could not read workplace settings: ${error.message}`);
+        return warnings;
+    }
+    if (!workplace) {
+        warnings.push("Workplace not found for company settings sync.");
+        return warnings;
+    }
+    const patch = {};
+    if (isBlankDbValue(workplace.name) && companySettings.display_name) patch.name = companySettings.display_name;
+    if (isBlankDbValue(workplace.company_name) && companySettings.company_name) {
+        patch.company_name = companySettings.company_name;
+    }
+    if (isBlankDbValue(workplace.vat_number) && companySettings.cvr_vat_number) {
+        patch.vat_number = companySettings.cvr_vat_number;
+    }
+    if (isBlankDbValue(workplace.employee_count_band) && companySettings.no_of_employees) {
+        const band = companySettings.no_of_employees.trim();
+        if (allowedEmployeeBands.has(band)) {
+            patch.employee_count_band = band;
+        } else {
+            warnings.push(`No. of Employees value '${companySettings.no_of_employees}' does not match allowed bands and was skipped`);
+        }
+    }
+    if (isBlankDbValue(workplace.street_name) && companySettings.street) patch.street_name = companySettings.street;
+    if (isBlankDbValue(workplace.street_number) && companySettings.street_no) {
+        patch.street_number = companySettings.street_no;
+    }
+    if (isBlankDbValue(workplace.city) && companySettings.city) patch.city = companySettings.city;
+    if (isBlankDbValue(workplace.address_extra) && companySettings.additional_suite) {
+        patch.address_extra = companySettings.additional_suite;
+    }
+    if (isBlankDbValue(workplace.contact_email) && companySettings.email) {
+        patch.contact_email = companySettings.email;
+    }
+    if (isBlankDbValue(workplace.postal_code) && companySettings.postal_code) {
+        patch.postal_code = companySettings.postal_code;
+    }
+    if (isBlankDbValue(workplace.country_code) && companySettings.country_iso2) {
+        patch.country_code = companySettings.country_iso2.toUpperCase();
+    }
+    if (isBlankDbValue(workplace.phone) && companySettings.phone) patch.phone = companySettings.phone;
+    if (companySettings.timezone) {
+        warnings.push("Timezone extracted from Settings sheet but not mapped to a workplace column.");
+    }
+    if (Object.keys(patch).length > 0) {
+        const updateRes = await admin.from("workplaces").update(patch).eq("id", companyId);
+        if (updateRes.error) {
+            warnings.push(`Could not update workplace settings from spreadsheet: ${updateRes.error.message}`);
+        }
+    }
+    return warnings;
+}
 function parseDepartments(workbook) {
     const sheet = findSheetByExactName(workbook, "Departments");
     if (!sheet) {
@@ -533,6 +711,7 @@ async function runSpreadsheetImportAction(input) {
                 error: "Manglende virksomheds-id."
             };
         }
+        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$workplace$2d$admin$2d$server$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["assertWorkplaceAdminOrSuperAdmin"])(companyId);
         if (!Number.isInteger(selectedMonth) || selectedMonth < 1 || selectedMonth > 12) {
             return {
                 ok: false,
@@ -549,6 +728,8 @@ async function runSpreadsheetImportAction(input) {
         const workbook = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$xlsx$2f$xlsx$2e$mjs__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["read"](buffer, {
             type: "array"
         });
+        const { companySettings, warnings: companySettingsWarnings } = parseCompanySettings(workbook);
+        const companySyncWarnings = await syncCompanySettingsIfEmpty(companyId, companySettings);
         const { departments, departmentIdByName } = parseDepartments(workbook);
         const { employees, byName, warnings: employeeWarnings } = parseEmployees({
             workbook,
@@ -568,12 +749,15 @@ async function runSpreadsheetImportAction(input) {
         }) : [];
         return {
             ok: true,
+            extractedCompanySettings: companySettings,
             extractedDepartments: departments,
             extractedEmployees: employees,
             extractedShiftTypes: shiftTypes,
             extractedShifts: shifts,
             euViolations,
             warnings: [
+                ...companySettingsWarnings,
+                ...companySyncWarnings,
                 ...employeeWarnings,
                 ...warnings
             ],

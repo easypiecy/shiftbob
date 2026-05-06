@@ -29,6 +29,7 @@ import {
   deleteWorkplaceDepartment,
   generateWorkplaceApiKey,
   listWorkplaceApiKeys,
+  resetWorkplaceCalendarData,
   revokeWorkplaceApiKey,
   saveWorkplaceDepartmentMemberships,
   importWorkplaceMembersFromCsv,
@@ -51,7 +52,6 @@ import {
   localizeStandardShiftTypeLabel,
 } from "@/src/lib/type-label-i18n";
 import { LayoutThemeSidebar } from "@/src/components/layout-theme-sidebar";
-import { AdminDocumentUploadPanel } from "@/src/components/admin-document-upload-panel";
 import { EmployeePermissions } from "@/src/components/settings/employee-permissions";
 
 /** Tom liste = ingen filter = alle typer på aksen. Fuld liste = samme som ingen filter → normalisér til []. */
@@ -67,6 +67,48 @@ function normalizePushIncludeFilter(ids: string[], allIds: string[]): string[] {
   }
   return picked;
 }
+
+type EuRuleRow = {
+  parameter: string;
+  value: string;
+  notes: string;
+};
+
+type EuPolicyRow = {
+  category: string;
+  rule: string;
+  details: string;
+  notes: string;
+};
+
+const DEFAULT_EU_DIRECTIVE_RULES: EuRuleRow[] = [
+  { parameter: "Standard working week", value: "40 hours/week", notes: "Set per employee contract (EU max is 48h)" },
+  { parameter: "EU maximum working week", value: "48 hours/week", notes: "Averaged over 17-week reference period (Art. 6)" },
+  { parameter: "Max hours per day", value: "10 hours/day", notes: "Recommended maximum" },
+  { parameter: "Minimum daily rest", value: "11 hours", notes: "Hours between shifts (EU mandatory, Art. 3)" },
+  { parameter: "Minimum weekly rest", value: "24 consecutive hours/week", notes: "EU mandatory (Art. 5) - in practice 35h incl. daily rest" },
+  { parameter: "Max consecutive working days", value: "6 days", notes: "7th day should be rest (best practice)" },
+  { parameter: "Break: shift >= 6 hours", value: "30 minutes", notes: "Minimum break" },
+  { parameter: "Break: shift >= 9 hours", value: "45 minutes", notes: "Minimum break" },
+  { parameter: "Night shift definition", value: "22:00-06:00", notes: "Any shift with >= 3 hours in this window" },
+  { parameter: "Max night hours/week", value: "8 hours average", notes: "Average over 17-week period (EU)" },
+];
+
+const DEFAULT_YOUNG_WORKER_RULES: EuRuleRow[] = [
+  { parameter: "Young workers rest", value: "12 hours consecutive rest", notes: "Under 18" },
+];
+
+const DEFAULT_EU_POLICY_ROWS: EuPolicyRow[] = [
+  { category: "Pay", rule: "Evening/weekend premium", details: "Shifts after 18:00 and weekends", notes: "+25% above base rate (configurable)" },
+  { category: "Pay", rule: "Night premium", details: "Shifts classified as night work", notes: "+40% above base rate (configurable)" },
+  { category: "Pay", rule: "Public holiday", details: "Work on public holidays", notes: "+100% (double pay, configurable)" },
+  { category: "Shift Types", rule: "Code", details: "Short code used for ShiftBob import", notes: "MORNING, DAY, AFTERNOON ..." },
+  { category: "Shift Types", rule: "Full Name", details: "Display name shown in calendar cells", notes: "Morning, Day, Afternoon ..." },
+  { category: "Shift Types", rule: "Start / End", details: "Shift start and end times", notes: "06:00 / 14:00" },
+  { category: "Shift Types", rule: "Break (min)", details: "Mandatory break deducted from net hours", notes: "30 min for 8h shifts" },
+  { category: "Shift Types", rule: "Net Hours", details: "Paid hours after break deduction", notes: "7.5 for standard 8h shift" },
+  { category: "Shift Types", rule: "Pay Category", details: "Pay multiplier category", notes: "Standard / Evening +25% / Night +40%" },
+];
 
 type Props = {
   initial: WorkplaceDetail;
@@ -150,11 +192,21 @@ export default function WorkplaceDetailClient({
     alreadyMember: number;
     errors: number;
   } | null>(null);
+  const [resetBusy, setResetBusy] = useState(false);
   const [membershipMap, setMembershipMap] = useState<Record<string, string[]>>(
     () =>
       Object.fromEntries(
         membersWithDepartments.map((m) => [m.user_id, [...m.department_ids]])
       )
+  );
+  const [euDirectiveRules, setEuDirectiveRules] = useState<EuRuleRow[]>(
+    () => DEFAULT_EU_DIRECTIVE_RULES.map((row) => ({ ...row }))
+  );
+  const [youngWorkerRules, setYoungWorkerRules] = useState<EuRuleRow[]>(
+    () => DEFAULT_YOUNG_WORKER_RULES.map((row) => ({ ...row }))
+  );
+  const [euPolicyRows, setEuPolicyRows] = useState<EuPolicyRow[]>(
+    () => DEFAULT_EU_POLICY_ROWS.map((row) => ({ ...row }))
   );
   const countryOptionsWithCurrent = useMemo(() => {
     const existing = [...countryOptions];
@@ -484,20 +536,50 @@ export default function WorkplaceDetailClient({
     }
   }
 
+  async function handleResetCalendarData() {
+    const ok = window.confirm(
+      "Nulstil kalender? Dette sletter alle aftaler, alle medarbejdere (EMPLOYEE) og alle afdelinger for arbejdspladsen."
+    );
+    if (!ok) return;
+    setResetBusy(true);
+    setMsg(null);
+    try {
+      const res = await resetWorkplaceCalendarData(d.id);
+      if (!res.ok) {
+        setMsg(res.error);
+        return;
+      }
+      setMsg(
+        `Kalender nulstillet: ${res.deletedShifts} aftaler, ${res.deletedEmployees} medarbejdere og ${res.deletedDepartments} afdelinger slettet.`
+      );
+      router.refresh();
+    } finally {
+      setResetBusy(false);
+    }
+  }
+
+  function resetEuRulesToDefault() {
+    setEuDirectiveRules(DEFAULT_EU_DIRECTIVE_RULES.map((row) => ({ ...row })));
+    setYoungWorkerRules(DEFAULT_YOUNG_WORKER_RULES.map((row) => ({ ...row })));
+    setEuPolicyRows(DEFAULT_EU_POLICY_ROWS.map((row) => ({ ...row })));
+  }
+
   return (
     <div className="mx-auto max-w-5xl space-y-10">
-      <div>
-        <Link
-          href={backHref}
-          className="text-sm font-medium text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-        >
-          {backLabel}
-        </Link>
-        <h1 className="mt-4 text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-          {d.company_name ?? d.name}
-        </h1>
-        <p className="mt-1 font-mono text-xs text-zinc-500">{d.id}</p>
-      </div>
+      {!dashboardTabsEnabled ? (
+        <div>
+          <Link
+            href={backHref}
+            className="text-sm font-medium text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+          >
+            {backLabel}
+          </Link>
+          <h1 className="mt-4 text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+            {d.company_name ?? d.name}
+          </h1>
+          <p className="mt-1 font-mono text-xs text-zinc-500">{d.id}</p>
+        </div>
+      ) : null}
 
       {bootstrapNotice && (
         <div
@@ -1574,17 +1656,21 @@ export default function WorkplaceDetailClient({
 
       {dashboardTabsEnabled && activeSettingsTab === "rules" ? (
       <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-          {tr("rules.page.title")}
-        </h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+            {tr("rules.page.title")}
+          </h2>
+          <button
+            type="button"
+            onClick={resetEuRulesToDefault}
+            className="rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+          >
+            {tr("settings.eu_rules.reset_default", "Reset til standard")}
+          </button>
+        </div>
         <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-          {tr("rules.page.intro")}
+          Justér parametrene manuelt direkte i felterne nedenfor.
         </p>
-        <ul className="list-inside list-disc space-y-1.5 text-sm text-zinc-600 dark:text-zinc-400">
-          <li>{tr("rules.page.bullet1")}</li>
-          <li>{tr("rules.page.bullet2")}</li>
-          <li>{tr("rules.page.bullet3")}</li>
-        </ul>
 
         <div className="space-y-6 rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-700 dark:bg-zinc-950/40">
           <section className="space-y-2">
@@ -1601,56 +1687,49 @@ export default function WorkplaceDetailClient({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
-                  <tr>
-                    <td className="px-3 py-2">Standard working week</td>
-                    <td className="px-3 py-2">40 hours/week</td>
-                    <td className="px-3 py-2">Set per employee contract (EU max is 48h)</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">EU maximum working week</td>
-                    <td className="px-3 py-2">48 hours/week</td>
-                    <td className="px-3 py-2">Averaged over 17-week reference period (Art. 6)</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Max hours per day</td>
-                    <td className="px-3 py-2">10 hours/day</td>
-                    <td className="px-3 py-2">Recommended maximum</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Minimum daily rest</td>
-                    <td className="px-3 py-2">11 hours</td>
-                    <td className="px-3 py-2">Hours between shifts (EU mandatory, Art. 3)</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Minimum weekly rest</td>
-                    <td className="px-3 py-2">24 consecutive hours/week</td>
-                    <td className="px-3 py-2">EU mandatory (Art. 5) - in practice 35h incl. daily rest</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Max consecutive working days</td>
-                    <td className="px-3 py-2">6 days</td>
-                    <td className="px-3 py-2">7th day should be rest (best practice)</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Break: shift &gt;= 6 hours</td>
-                    <td className="px-3 py-2">30 minutes</td>
-                    <td className="px-3 py-2">Minimum break</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Break: shift &gt;= 9 hours</td>
-                    <td className="px-3 py-2">45 minutes</td>
-                    <td className="px-3 py-2">Minimum break</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Night shift definition</td>
-                    <td className="px-3 py-2">22:00-06:00</td>
-                    <td className="px-3 py-2">Any shift with &gt;= 3 hours in this window</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Max night hours/week</td>
-                    <td className="px-3 py-2">8 hours average</td>
-                    <td className="px-3 py-2">Average over 17-week period (EU)</td>
-                  </tr>
+                  {euDirectiveRules.map((row, idx) => (
+                    <tr key={`eu-directive-${idx}`}>
+                      <td className="px-3 py-2">
+                        <input
+                          value={row.parameter}
+                          onChange={(e) =>
+                            setEuDirectiveRules((prev) =>
+                              prev.map((item, i) =>
+                                i === idx ? { ...item, parameter: e.target.value } : item
+                              )
+                            )
+                          }
+                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                        />
+                      </td>
+                      <td className="px-3 py-2">
+                        <input
+                          value={row.value}
+                          onChange={(e) =>
+                            setEuDirectiveRules((prev) =>
+                              prev.map((item, i) =>
+                                i === idx ? { ...item, value: e.target.value } : item
+                              )
+                            )
+                          }
+                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                        />
+                      </td>
+                      <td className="px-3 py-2">
+                        <input
+                          value={row.notes}
+                          onChange={(e) =>
+                            setEuDirectiveRules((prev) =>
+                              prev.map((item, i) =>
+                                i === idx ? { ...item, notes: e.target.value } : item
+                              )
+                            )
+                          }
+                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                        />
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -1670,11 +1749,49 @@ export default function WorkplaceDetailClient({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
-                  <tr>
-                    <td className="px-3 py-2">Young workers rest</td>
-                    <td className="px-3 py-2">12 hours consecutive rest</td>
-                    <td className="px-3 py-2">Under 18</td>
-                  </tr>
+                  {youngWorkerRules.map((row, idx) => (
+                    <tr key={`young-worker-${idx}`}>
+                      <td className="px-3 py-2">
+                        <input
+                          value={row.parameter}
+                          onChange={(e) =>
+                            setYoungWorkerRules((prev) =>
+                              prev.map((item, i) =>
+                                i === idx ? { ...item, parameter: e.target.value } : item
+                              )
+                            )
+                          }
+                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                        />
+                      </td>
+                      <td className="px-3 py-2">
+                        <input
+                          value={row.value}
+                          onChange={(e) =>
+                            setYoungWorkerRules((prev) =>
+                              prev.map((item, i) =>
+                                i === idx ? { ...item, value: e.target.value } : item
+                              )
+                            )
+                          }
+                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                        />
+                      </td>
+                      <td className="px-3 py-2">
+                        <input
+                          value={row.notes}
+                          onChange={(e) =>
+                            setYoungWorkerRules((prev) =>
+                              prev.map((item, i) =>
+                                i === idx ? { ...item, notes: e.target.value } : item
+                              )
+                            )
+                          }
+                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                        />
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -1695,71 +1812,67 @@ export default function WorkplaceDetailClient({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
-                  <tr>
-                    <td className="px-3 py-2">Pay</td>
-                    <td className="px-3 py-2">Evening/weekend premium</td>
-                    <td className="px-3 py-2">Shifts after 18:00 and weekends</td>
-                    <td className="px-3 py-2">+25% above base rate (configurable)</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Pay</td>
-                    <td className="px-3 py-2">Night premium</td>
-                    <td className="px-3 py-2">Shifts classified as night work</td>
-                    <td className="px-3 py-2">+40% above base rate (configurable)</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Pay</td>
-                    <td className="px-3 py-2">Public holiday</td>
-                    <td className="px-3 py-2">Work on public holidays</td>
-                    <td className="px-3 py-2">+100% (double pay, configurable)</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Shift Types</td>
-                    <td className="px-3 py-2">Code</td>
-                    <td className="px-3 py-2">Short code used for ShiftBob import</td>
-                    <td className="px-3 py-2">MORNING, DAY, AFTERNOON ...</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Shift Types</td>
-                    <td className="px-3 py-2">Full Name</td>
-                    <td className="px-3 py-2">Display name shown in calendar cells</td>
-                    <td className="px-3 py-2">Morning, Day, Afternoon ...</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Shift Types</td>
-                    <td className="px-3 py-2">Start / End</td>
-                    <td className="px-3 py-2">Shift start and end times</td>
-                    <td className="px-3 py-2">06:00 / 14:00</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Shift Types</td>
-                    <td className="px-3 py-2">Break (min)</td>
-                    <td className="px-3 py-2">Mandatory break deducted from net hours</td>
-                    <td className="px-3 py-2">30 min for 8h shifts</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Shift Types</td>
-                    <td className="px-3 py-2">Net Hours</td>
-                    <td className="px-3 py-2">Paid hours after break deduction</td>
-                    <td className="px-3 py-2">7.5 for standard 8h shift</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Shift Types</td>
-                    <td className="px-3 py-2">Pay Category</td>
-                    <td className="px-3 py-2">Pay multiplier category</td>
-                    <td className="px-3 py-2">Standard / Evening +25% / Night +40%</td>
-                  </tr>
+                  {euPolicyRows.map((row, idx) => (
+                    <tr key={`eu-policy-${idx}`}>
+                      <td className="px-3 py-2">
+                        <input
+                          value={row.category}
+                          onChange={(e) =>
+                            setEuPolicyRows((prev) =>
+                              prev.map((item, i) =>
+                                i === idx ? { ...item, category: e.target.value } : item
+                              )
+                            )
+                          }
+                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                        />
+                      </td>
+                      <td className="px-3 py-2">
+                        <input
+                          value={row.rule}
+                          onChange={(e) =>
+                            setEuPolicyRows((prev) =>
+                              prev.map((item, i) =>
+                                i === idx ? { ...item, rule: e.target.value } : item
+                              )
+                            )
+                          }
+                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                        />
+                      </td>
+                      <td className="px-3 py-2">
+                        <input
+                          value={row.details}
+                          onChange={(e) =>
+                            setEuPolicyRows((prev) =>
+                              prev.map((item, i) =>
+                                i === idx ? { ...item, details: e.target.value } : item
+                              )
+                            )
+                          }
+                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                        />
+                      </td>
+                      <td className="px-3 py-2">
+                        <input
+                          value={row.notes}
+                          onChange={(e) =>
+                            setEuPolicyRows((prev) =>
+                              prev.map((item, i) =>
+                                i === idx ? { ...item, notes: e.target.value } : item
+                              )
+                            )
+                          }
+                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                        />
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
           </section>
         </div>
-
-        <AdminDocumentUploadPanel
-          accept=".pdf,.doc,.docx,application/pdf"
-          fileInputLabel={tr("rules.upload.label")}
-          hint={tr("rules.upload.hint")}
-        />
       </section>
       ) : null}
 
@@ -1900,6 +2013,17 @@ export default function WorkplaceDetailClient({
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           Gem ændringer
         </button>
+        {dashboardTabsEnabled ? (
+          <button
+            type="button"
+            onClick={() => void handleResetCalendarData()}
+            disabled={resetBusy}
+            className="inline-flex items-center gap-2 rounded-lg border border-red-300 bg-red-50 px-5 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-100 disabled:opacity-50 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300 dark:hover:bg-red-950/50"
+          >
+            {resetBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            Nulstil kalender
+          </button>
+        ) : null}
       </div>
 
       <div

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { SalesBotWidget } from "@/app/landing/sales-bot-widget";
 import {
   ArrowLeftRight,
   CalendarClock,
@@ -262,6 +263,41 @@ export function AdminWorkspaceShell({
         ) : null}
         {children}
       </main>
+      <SalesBotWidget
+        languageCode="da"
+        iconUrl="https://pwooqmqdershicxpnfuo.supabase.co/storage/v1/object/public/website_assets/chat.png"
+        logoUrl="/ShiftBob-circle-logo-dark-1024.png"
+        buttonLabel={t("landing.salesbot.button_aria", "Sporg shiftBOB")}
+        panelTitle="shiftBOB"
+        initialAssistantMessage={t(
+          "landing.salesbot.initial_message",
+          "Sporg mig om ShiftBob, vagtplaner eller regler."
+        )}
+        inputPlaceholder={t(
+          "landing.salesbot.input_placeholder",
+          "Skriv dit sporgsmal..."
+        )}
+        sendLabel={t("landing.salesbot.send", "Send")}
+        closeLabel={t("landing.salesbot.close", "Luk chat")}
+        supportButtonLabel={t("landing.salesbot.support_button", "Support ticket")}
+        supportPanelTitle={t("landing.salesbot.support_panel_title", "Opret support ticket")}
+        supportSubjectLabel={t("landing.salesbot.support_subject", "Emne")}
+        supportMessageLabel={t("landing.salesbot.support_message", "Beskriv dit problem")}
+        supportNameLabel={t("landing.salesbot.support_name", "Dit navn")}
+        supportEmailLabel={t("landing.salesbot.support_email", "Din e-mail")}
+        supportSubmitLabel={t("landing.salesbot.support_submit", "Send ticket")}
+        supportSuccessTemplate={t(
+          "landing.salesbot.support_success",
+          "Tak! Din support ticket er oprettet: {ticketId}"
+        )}
+        supportNeedIdentityMessage={t(
+          "landing.salesbot.support_need_identity",
+          "For at oprette en support ticket skal du angive navn og e-mail."
+        )}
+        resetLabel={t("landing.salesbot.reset", "Nulstil chat")}
+        dismissLabel={t("common.chat.dismiss_widget", "Skjul widget")}
+        dismissStorageKey="shiftbob.chat.dismiss.admin"
+      />
     </div>
   );
 }

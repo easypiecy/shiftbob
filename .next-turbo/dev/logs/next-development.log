@@ -641,3 +641,53 @@
 {"timestamp":"00:43:03.590","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=11748"}
 {"timestamp":"00:45:24.476","source":"Server","level":"LOG","message":"✓ Compiled in 64ms"}
 {"timestamp":"00:48:59.322","source":"Server","level":"LOG","message":"✓ Compiled in 125ms"}
+{"timestamp":"00:54:41.392","source":"Server","level":"LOG","message":"✓ Compiled in 187ms"}
+{"timestamp":"00:54:41.644","source":"Browser","level":"ERROR","message":"uncaughtError: ReferenceError: AdminDocumentUploadPanel is not defined"}
+{"timestamp":"00:54:41.693","source":"Server","level":"ERROR","message":"[browser] \"Uncaught ReferenceError: AdminDocumentUploadPanel is not defined\\n    at WorkplaceDetailClient (app/super-admin/workplaces/[id]/workplace-detail-client.tsx:1799:10)\\n    at WorkplaceSettingsPage (app/dashboard/indstillinger/page.tsx:71:7)\\n  1797 |         </div>\\n  1798 |\\n> 1799 |         <AdminDocumentUploadPanel\\n       |          ^\\n  1800 |           accept=\\\".pdf,.doc,.docx,application/pdf\\\"\\n  1801 |           fileInputLabel={tr(\\\"rules.upload.label\\\")}\\n  1802 |           hint={tr(\\\"rules.upload.hint\\\")}\""}
+{"timestamp":"00:54:41.693","source":"Browser","level":"ERROR","message":"Uncaught ReferenceError: AdminDocumentUploadPanel is not defined\n    at WorkplaceDetailClient (app/super-admin/workplaces/[id]/workplace-detail-client.tsx:1799:10)\n    at WorkplaceSettingsPage (app/dashboard/indstillinger/page.tsx:71:7)\n  1797 |         </div>\n  1798 |\n> 1799 |         <AdminDocumentUploadPanel\n       |          ^\n  1800 |           accept=\".pdf,.doc,.docx,application/pdf\"\n  1801 |           fileInputLabel={tr(\"rules.upload.label\")}\n  1802 |           hint={tr(\"rules.upload.hint\")}"}
+{"timestamp":"00:54:42.495","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1018"}
+{"timestamp":"00:54:42.563","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1013"}
+{"timestamp":"00:54:42.634","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1239"}
+{"timestamp":"00:54:48.876","source":"Server","level":"WARN","message":"⚠ Fast Refresh had to perform a full reload due to a runtime error."}
+{"timestamp":"00:54:48.877","source":"Server","level":"LOG","message":"✓ Compiled in 89ms"}
+{"timestamp":"00:54:50.113","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:54:56.111","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=7122"}
+{"timestamp":"00:55:33.038","source":"Server","level":"LOG","message":"✓ Compiled in 71ms"}
+{"timestamp":"00:56:48.068","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:57:00.840","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=16323"}
+{"timestamp":"01:01:43.789","source":"Server","level":"LOG","message":"✓ Compiled in 117ms"}
+{"timestamp":"01:01:55.564","source":"Server","level":"LOG","message":"✓ Compiled in 143ms"}
+{"timestamp":"01:02:01.348","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"01:02:02.286","source":"Browser","level":"WARN","message":"Image with src \"https://pwooqmqdershicxpnfuo.supabase.co/storage/v1/object/public/website_assets/chat.png\" was detected as the Largest Contentful Paint (LCP). Please add the `loading=\"eager\"` property if this image is above the fold.\nRead more: https://nextjs.org/docs/app/api-reference/components/image#loading"}
+{"timestamp":"01:02:02.296","source":"Server","level":"WARN","message":"[browser] \"Image with src \\\"https://pwooqmqdershicxpnfuo.supabase.co/storage/v1/object/public/website_assets/chat.png\\\" was detected as the Largest Contentful Paint (LCP). Please add the `loading=\\\"eager\\\"` property if this image is above the fold.\\nRead more: https://nextjs.org/docs/app/api-reference/components/image#loading\""}
+{"timestamp":"01:02:02.297","source":"Browser","level":"WARN","message":"Image with src \"https://pwooqmqdershicxpnfuo.supabase.co/storage/v1/object/public/website_assets/chat.png\" was detected as the Largest Contentful Paint (LCP). Please add the `loading=\"eager\"` property if this image is above the fold.\nRead more: https://nextjs.org/docs/app/api-reference/components/image#loading"}
+{"timestamp":"01:02:02.391","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1177"}
+{"timestamp":"01:02:04.732","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=9049"}
+{"timestamp":"01:02:30.949","source":"Server","level":"LOG","message":"✓ Compiled in 74ms"}
+{"timestamp":"01:03:00.351","source":"Server","level":"LOG","message":"✓ Compiled in 66ms"}
+{"timestamp":"01:03:09.374","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=6840"}
+{"timestamp":"01:15:19.915","source":"Server","level":"LOG","message":"✓ Compiled in 139ms"}
+{"timestamp":"01:15:20.698","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=662"}
+{"timestamp":"01:15:20.774","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=853"}
+{"timestamp":"01:15:35.426","source":"Server","level":"LOG","message":"✓ Compiled in 81ms"}
+{"timestamp":"01:15:37.071","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1464"}
+{"timestamp":"01:15:37.147","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1716"}
+{"timestamp":"01:15:37.219","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1681"}
+{"timestamp":"01:15:41.526","source":"Server","level":"LOG","message":"✓ Compiled in 84ms"}
+{"timestamp":"01:15:43.097","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1476"}
+{"timestamp":"01:15:43.439","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1911"}
+{"timestamp":"01:15:43.519","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1805"}
+{"timestamp":"01:15:49.092","source":"Server","level":"LOG","message":"✓ Compiled in 75ms"}
+{"timestamp":"01:15:50.271","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=982"}
+{"timestamp":"01:15:50.359","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1168"}
+{"timestamp":"01:15:50.431","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1337"}
+{"timestamp":"01:16:46.589","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1162"}
+{"timestamp":"01:16:46.722","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=918"}
+{"timestamp":"01:16:46.794","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1076"}
+{"timestamp":"01:16:46.911","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1345"}
+{"timestamp":"01:16:46.984","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1340"}
+{"timestamp":"01:16:47.189","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=1314"}
+{"timestamp":"01:16:49.610","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=505"}
+{"timestamp":"01:16:53.818","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=312"}
+{"timestamp":"01:16:53.893","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=293"}
+{"timestamp":"01:16:54.122","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceDepartmentsOverview wp=67bdce3c-1e39-452b-8f97-176339f05e66 ms=426"}
