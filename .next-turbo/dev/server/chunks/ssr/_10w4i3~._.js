@@ -161,6 +161,7 @@ function ImportSpreadsheetClient() {
     function handleApproveSchedule() {
         const run = violationsModalRun;
         if (!run) return;
+        if (run.approvedAt) return;
         const companyId = activeWorkplaceId;
         if (!companyId) {
             setError("Ingen aktiv arbejdsplads valgt.");
@@ -178,6 +179,14 @@ function ImportSpreadsheetClient() {
             });
             setApproveSummary(res);
             if (res.ok) {
+                setImportRuns((prev)=>prev.map((item)=>item.id === run.id ? {
+                            ...item,
+                            approvedAt: new Date().toISOString()
+                        } : item));
+                setViolationsModalRun((prev)=>prev && prev.id === run.id ? {
+                        ...prev,
+                        approvedAt: new Date().toISOString()
+                    } : prev);
                 setViolationsModalRun(null);
             } else {
                 setError(res.error);
@@ -198,7 +207,7 @@ function ImportSpreadsheetClient() {
                                 children: "Hent regneark"
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 168,
+                                lineNumber: 182,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -206,13 +215,13 @@ function ImportSpreadsheetClient() {
                                 children: "Vælg fil med knappen herunder, vælg måned/år, og kør importmotoren. Importhistorik vises nederst med fortryd."
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 171,
+                                lineNumber: 185,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                        lineNumber: 167,
+                        lineNumber: 181,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -231,13 +240,13 @@ function ImportSpreadsheetClient() {
                                         children: "Fortryd"
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 182,
+                                        lineNumber: 196,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 179,
+                                lineNumber: 193,
                                 columnNumber: 13
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 type: "button",
@@ -249,14 +258,14 @@ function ImportSpreadsheetClient() {
                                         "aria-hidden": true
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 196,
+                                        lineNumber: 210,
                                         columnNumber: 15
                                     }, this),
                                     "Hent Shiftbob Excel fil"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 191,
+                                lineNumber: 205,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -267,7 +276,7 @@ function ImportSpreadsheetClient() {
                                 className: "sr-only"
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 200,
+                                lineNumber: 214,
                                 columnNumber: 11
                             }, this),
                             !file ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -275,13 +284,13 @@ function ImportSpreadsheetClient() {
                                 children: "Ingen fil valgt endnu."
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 208,
+                                lineNumber: 222,
                                 columnNumber: 13
                             }, this) : null
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                        lineNumber: 177,
+                        lineNumber: 191,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -295,14 +304,14 @@ function ImportSpreadsheetClient() {
                                         "aria-hidden": true
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 214,
+                                        lineNumber: 228,
                                         columnNumber: 13
                                     }, this),
                                     "Måned og år"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 213,
+                                lineNumber: 227,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -316,7 +325,7 @@ function ImportSpreadsheetClient() {
                                                 children: "Måned"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                lineNumber: 219,
+                                                lineNumber: 233,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -328,18 +337,18 @@ function ImportSpreadsheetClient() {
                                                         children: month.label
                                                     }, month.value, false, {
                                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                        lineNumber: 228,
+                                                        lineNumber: 242,
                                                         columnNumber: 19
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                lineNumber: 222,
+                                                lineNumber: 236,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 218,
+                                        lineNumber: 232,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -350,7 +359,7 @@ function ImportSpreadsheetClient() {
                                                 children: "År"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                lineNumber: 235,
+                                                lineNumber: 249,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -362,30 +371,30 @@ function ImportSpreadsheetClient() {
                                                         children: year
                                                     }, year, false, {
                                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                        lineNumber: 244,
+                                                        lineNumber: 258,
                                                         columnNumber: 19
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                lineNumber: 238,
+                                                lineNumber: 252,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 234,
+                                        lineNumber: 248,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 217,
+                                lineNumber: 231,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                        lineNumber: 212,
+                        lineNumber: 226,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -396,7 +405,7 @@ function ImportSpreadsheetClient() {
                                 children: "Importhandlinger"
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 254,
+                                lineNumber: 268,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -412,20 +421,20 @@ function ImportSpreadsheetClient() {
                                                 className: "mt-0.5 rounded border-zinc-300"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                lineNumber: 259,
+                                                lineNumber: 273,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Importer medarbejdere, som ikke allerede findes"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                lineNumber: 265,
+                                                lineNumber: 279,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 258,
+                                        lineNumber: 272,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -438,20 +447,20 @@ function ImportSpreadsheetClient() {
                                                 className: "mt-0.5 rounded border-zinc-300"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                lineNumber: 268,
+                                                lineNumber: 282,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Indsæt vagter i kalenderen for den valgte periode"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                lineNumber: 274,
+                                                lineNumber: 288,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 267,
+                                        lineNumber: 281,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -464,7 +473,7 @@ function ImportSpreadsheetClient() {
                                                 className: "mt-0.5 rounded border-zinc-300"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                lineNumber: 277,
+                                                lineNumber: 291,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -475,32 +484,32 @@ function ImportSpreadsheetClient() {
                                                         "aria-hidden": true
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                        lineNumber: 284,
+                                                        lineNumber: 298,
                                                         columnNumber: 17
                                                     }, this),
                                                     "Kør EU-regelcheck (fx hviletid / overlap)"
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                lineNumber: 283,
+                                                lineNumber: 297,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 276,
+                                        lineNumber: 290,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 257,
+                                lineNumber: 271,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                        lineNumber: 253,
+                        lineNumber: 267,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -518,19 +527,19 @@ function ImportSpreadsheetClient() {
                                             className: "h-4 w-4 animate-spin"
                                         }, void 0, false, {
                                             fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                            lineNumber: 300,
+                                            lineNumber: 314,
                                             columnNumber: 17
                                         }, this),
                                         "Kører import…"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                    lineNumber: 299,
+                                    lineNumber: 313,
                                     columnNumber: 15
                                 }, this) : "Start import"
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 292,
+                                lineNumber: 306,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -540,13 +549,13 @@ function ImportSpreadsheetClient() {
                                 children: "Til kalender"
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 307,
+                                lineNumber: 321,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                        lineNumber: 291,
+                        lineNumber: 305,
                         columnNumber: 9
                     }, this),
                     error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -554,7 +563,7 @@ function ImportSpreadsheetClient() {
                         children: error
                     }, void 0, false, {
                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                        lineNumber: 317,
+                        lineNumber: 331,
                         columnNumber: 11
                     }, this) : null,
                     latestResult ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -568,7 +577,7 @@ function ImportSpreadsheetClient() {
                                         "aria-hidden": true
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 325,
+                                        lineNumber: 339,
                                         columnNumber: 15
                                     }, this),
                                     "Import gennemført fra fanen: ",
@@ -576,7 +585,7 @@ function ImportSpreadsheetClient() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 324,
+                                lineNumber: 338,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -589,7 +598,7 @@ function ImportSpreadsheetClient() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 329,
+                                        lineNumber: 343,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
@@ -599,7 +608,7 @@ function ImportSpreadsheetClient() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 330,
+                                        lineNumber: 344,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
@@ -609,7 +618,7 @@ function ImportSpreadsheetClient() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 331,
+                                        lineNumber: 345,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
@@ -619,7 +628,7 @@ function ImportSpreadsheetClient() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 332,
+                                        lineNumber: 346,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
@@ -629,19 +638,19 @@ function ImportSpreadsheetClient() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 333,
+                                        lineNumber: 347,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 328,
+                                lineNumber: 342,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                        lineNumber: 323,
+                        lineNumber: 337,
                         columnNumber: 11
                     }, this) : null,
                     approveSummary?.ok ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -652,7 +661,7 @@ function ImportSpreadsheetClient() {
                                 children: "Vagtplan godkendt og indsat i systemet."
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 340,
+                                lineNumber: 354,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -665,7 +674,7 @@ function ImportSpreadsheetClient() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 342,
+                                        lineNumber: 356,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
@@ -675,7 +684,7 @@ function ImportSpreadsheetClient() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 343,
+                                        lineNumber: 357,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
@@ -685,19 +694,19 @@ function ImportSpreadsheetClient() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 344,
+                                        lineNumber: 358,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 341,
+                                lineNumber: 355,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                        lineNumber: 339,
+                        lineNumber: 353,
                         columnNumber: 11
                     }, this) : null,
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -708,7 +717,7 @@ function ImportSpreadsheetClient() {
                                 children: "Importhistorik"
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 350,
+                                lineNumber: 364,
                                 columnNumber: 11
                             }, this),
                             importRuns.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -716,7 +725,7 @@ function ImportSpreadsheetClient() {
                                 children: "Ingen importer endnu."
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 354,
+                                lineNumber: 368,
                                 columnNumber: 13
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
                                 className: "mt-3 space-y-2",
@@ -731,7 +740,7 @@ function ImportSpreadsheetClient() {
                                                         children: run.fileName
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                        lineNumber: 365,
+                                                        lineNumber: 379,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -750,13 +759,20 @@ function ImportSpreadsheetClient() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                        lineNumber: 368,
+                                                        lineNumber: 382,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                         className: "mt-1 text-xs text-zinc-500 dark:text-zinc-400",
                                                         children: [
                                                             new Date(run.createdAt).toLocaleString("da-DK"),
+                                                            run.approvedAt ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
+                                                                children: [
+                                                                    " · ",
+                                                                    "Godkendt ",
+                                                                    new Date(run.approvedAt).toLocaleString("da-DK")
+                                                                ]
+                                                            }, void 0, true) : null,
                                                             run.result.euViolations.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
                                                                 children: [
                                                                     " · ",
@@ -767,7 +783,7 @@ function ImportSpreadsheetClient() {
                                                                         children: "Se EU-overtrædelser igen"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                                        lineNumber: 378,
+                                                                        lineNumber: 395,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 ]
@@ -775,13 +791,13 @@ function ImportSpreadsheetClient() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                        lineNumber: 373,
+                                                        lineNumber: 387,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                lineNumber: 364,
+                                                lineNumber: 378,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -791,30 +807,30 @@ function ImportSpreadsheetClient() {
                                                 children: "Fortryd"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                lineNumber: 389,
+                                                lineNumber: 406,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, run.id, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 360,
+                                        lineNumber: 374,
                                         columnNumber: 17
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 358,
+                                lineNumber: 372,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                        lineNumber: 349,
+                        lineNumber: 363,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                lineNumber: 166,
+                lineNumber: 180,
                 columnNumber: 7
             }, this),
             violationsModalRun && violationsModalRun.result.euViolations.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -827,7 +843,7 @@ function ImportSpreadsheetClient() {
                             children: "EU-regeloverskridelser fundet"
                         }, void 0, false, {
                             fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                            lineNumber: 405,
+                            lineNumber: 422,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -835,7 +851,7 @@ function ImportSpreadsheetClient() {
                             children: "Følgende vagter overskrider regler:"
                         }, void 0, false, {
                             fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                            lineNumber: 408,
+                            lineNumber: 425,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -852,7 +868,7 @@ function ImportSpreadsheetClient() {
                                                     children: "Navn"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                    lineNumber: 415,
+                                                    lineNumber: 432,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -860,7 +876,7 @@ function ImportSpreadsheetClient() {
                                                     children: "Dato"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                    lineNumber: 416,
+                                                    lineNumber: 433,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -868,7 +884,7 @@ function ImportSpreadsheetClient() {
                                                     children: "Tidspunkt"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                    lineNumber: 417,
+                                                    lineNumber: 434,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -876,18 +892,18 @@ function ImportSpreadsheetClient() {
                                                     children: "Regel overskredet"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                    lineNumber: 418,
+                                                    lineNumber: 435,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                            lineNumber: 414,
+                                            lineNumber: 431,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 413,
+                                        lineNumber: 430,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -899,7 +915,7 @@ function ImportSpreadsheetClient() {
                                                         children: v.employee_name
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                        lineNumber: 424,
+                                                        lineNumber: 441,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -907,7 +923,7 @@ function ImportSpreadsheetClient() {
                                                         children: v.date
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                        lineNumber: 425,
+                                                        lineNumber: 442,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -915,7 +931,7 @@ function ImportSpreadsheetClient() {
                                                         children: v.time_range
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                        lineNumber: 426,
+                                                        lineNumber: 443,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -923,29 +939,29 @@ function ImportSpreadsheetClient() {
                                                         children: v.rule
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                        lineNumber: 427,
+                                                        lineNumber: 444,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, `${v.employee_name}-${v.date}-${idx}`, true, {
                                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                lineNumber: 423,
+                                                lineNumber: 440,
                                                 columnNumber: 21
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 421,
+                                        lineNumber: 438,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                lineNumber: 412,
+                                lineNumber: 429,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                            lineNumber: 411,
+                            lineNumber: 428,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -954,28 +970,28 @@ function ImportSpreadsheetClient() {
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                     type: "button",
                                     onClick: handleApproveSchedule,
-                                    disabled: approving,
+                                    disabled: approving || Boolean(violationsModalRun.approvedAt),
                                     className: "rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60",
-                                    children: approving ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                    children: violationsModalRun.approvedAt ? "Allerede godkendt" : approving ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: "inline-flex items-center gap-2",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
                                                 className: "h-4 w-4 animate-spin"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                                lineNumber: 442,
+                                                lineNumber: 461,
                                                 columnNumber: 21
                                             }, this),
                                             "Godkender…"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                        lineNumber: 441,
+                                        lineNumber: 460,
                                         columnNumber: 19
                                     }, this) : "Godkend vagtplan"
                                 }, void 0, false, {
                                     fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                    lineNumber: 434,
+                                    lineNumber: 451,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -985,7 +1001,7 @@ function ImportSpreadsheetClient() {
                                     children: "Ret automatisk"
                                 }, void 0, false, {
                                     fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                    lineNumber: 449,
+                                    lineNumber: 468,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -995,7 +1011,7 @@ function ImportSpreadsheetClient() {
                                     children: "Gå til vagtplan kalenderen"
                                 }, void 0, false, {
                                     fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                    lineNumber: 456,
+                                    lineNumber: 475,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1005,30 +1021,30 @@ function ImportSpreadsheetClient() {
                                     children: "Luk"
                                 }, void 0, false, {
                                     fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                                    lineNumber: 463,
+                                    lineNumber: 482,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                            lineNumber: 433,
+                            lineNumber: 450,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                    lineNumber: 404,
+                    lineNumber: 421,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-                lineNumber: 403,
+                lineNumber: 420,
                 columnNumber: 9
             }, this) : null
         ]
     }, void 0, true, {
         fileName: "[project]/app/dashboard/import-regneark/import-spreadsheet-client.tsx",
-        lineNumber: 165,
+        lineNumber: 179,
         columnNumber: 5
     }, this);
 }

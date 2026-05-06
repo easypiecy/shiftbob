@@ -68,14 +68,7 @@ export function SalesBotWidget({
 }: Props) {
   const headerLogoSrc = logoUrl?.trim() || "/ShiftBob-circle-logo-dark-1024.png";
   const [open, setOpen] = useState(false);
-  const [dismissed, setDismissed] = useState<boolean>(() => {
-    if (!dismissStorageKey || typeof window === "undefined") return false;
-    try {
-      return window.localStorage.getItem(dismissStorageKey) === "1";
-    } catch {
-      return false;
-    }
-  });
+  const [dismissed, setDismissed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -101,6 +94,18 @@ export function SalesBotWidget({
     // Language switch means a fresh conversation context.
     resetChat();
   }, [languageCode]);
+
+  useEffect(() => {
+    if (!dismissStorageKey) {
+      setDismissed(false);
+      return;
+    }
+    try {
+      setDismissed(window.localStorage.getItem(dismissStorageKey) === "1");
+    } catch {
+      setDismissed(false);
+    }
+  }, [dismissStorageKey]);
 
   function addAssistantMessage(text: string) {
     setMessages((prev) => [

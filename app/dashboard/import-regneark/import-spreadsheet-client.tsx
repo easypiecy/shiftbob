@@ -17,6 +17,7 @@ type ImportRun = {
   fileName: string;
   selectedMonth: number;
   selectedYear: number;
+  approvedAt?: string | null;
   result: Extract<SpreadsheetExtractResult, { ok: true }>;
 };
 
@@ -137,6 +138,7 @@ export function ImportSpreadsheetClient() {
   function handleApproveSchedule() {
     const run = violationsModalRun;
     if (!run) return;
+    if (run.approvedAt) return;
     const companyId = activeWorkplaceId;
     if (!companyId) {
       setError("Ingen aktiv arbejdsplads valgt.");
@@ -154,6 +156,18 @@ export function ImportSpreadsheetClient() {
       });
       setApproveSummary(res);
       if (res.ok) {
+        setImportRuns((prev) =>
+          prev.map((item) =>
+            item.id === run.id
+              ? { ...item, approvedAt: new Date().toISOString() }
+              : item
+          )
+        );
+        setViolationsModalRun((prev) =>
+          prev && prev.id === run.id
+            ? { ...prev, approvedAt: new Date().toISOString() }
+            : prev
+        );
         setViolationsModalRun(null);
       } else {
         setError(res.error);
@@ -372,6 +386,9 @@ export function ImportSpreadsheetClient() {
                     </p>
                     <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
                       {new Date(run.createdAt).toLocaleString("da-DK")}
+                      {run.approvedAt ? (
+                        <>{" · "}Godkendt {new Date(run.approvedAt).toLocaleString("da-DK")}</>
+                      ) : null}
                       {run.result.euViolations.length > 0 ? (
                         <>
                           {" · "}
@@ -434,10 +451,12 @@ export function ImportSpreadsheetClient() {
               <button
                 type="button"
                 onClick={handleApproveSchedule}
-                disabled={approving}
+                disabled={approving || Boolean(violationsModalRun.approvedAt)}
                 className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {approving ? (
+                {violationsModalRun.approvedAt ? (
+                  "Allerede godkendt"
+                ) : approving ? (
                   <span className="inline-flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Godkender…
