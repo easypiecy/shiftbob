@@ -38,13 +38,40 @@ export async function translateWithAI(
       "Bevar altid præcis 'Google Play' med samme stavning og store bogstaver. " +
       "Returner KUN den oversatte tekst, intet andet.";
 
-    const response = await ai.models.generateContent({
-      model: GEMINI_TEXT_MODEL,
-      config: {
-        systemInstruction: systemPrompt,
-      },
-      contents: text,
-    });
+    const runGenerate = async () =>
+      ai.models.generateContent({
+        model: GEMINI_TEXT_MODEL,
+        config: {
+          systemInstruction: systemPrompt,
+        },
+        contents: text,
+      });
+
+    const withTimeout = async (attempt: number) => {
+      const TIMEOUT_MS = 30000;
+      return Promise.race([
+        runGenerate(),
+        new Promise<never>((_, reject) =>
+          setTimeout(
+            () =>
+              reject(
+                new Error(
+                  `Gemini-timeout efter ${Math.round(TIMEOUT_MS / 1000)}s (forsøg ${attempt})`
+                )
+              ),
+            TIMEOUT_MS
+          )
+        ),
+      ]);
+    };
+
+    // En enkelt retry gør batch-kørslen mere robust ved kortvarige netværksfejl.
+    let response;
+    try {
+      response = await withTimeout(1);
+    } catch {
+      response = await withTimeout(2);
+    }
 
     const out = response.text?.trim();
     if (!out) {
