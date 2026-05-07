@@ -231,6 +231,7 @@ export async function generateAiPlanPreview(
 
     const byUserDay = new Map<string, WorkplaceShiftRow[]>();
     for (const s of shifts) {
+      if (!s.user_id) continue;
       const d = shiftLocalStartDate(s);
       const key = `${s.user_id}|${d}`;
       const arr = byUserDay.get(key) ?? [];

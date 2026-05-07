@@ -36,7 +36,8 @@ export type WorkplaceShiftRow = {
   id: string;
   workplace_id: string;
   department_id: string | null;
-  user_id: string;
+  user_id: string | null;
+  required_employee_type_id: string | null;
   shift_type_id: string | null;
   starts_at: string;
   ends_at: string;
@@ -73,7 +74,9 @@ export async function getWorkplaceShiftsInRange(
     const admin = getAdminClient();
     let q = admin
       .from("workplace_shifts")
-      .select("id, workplace_id, department_id, user_id, shift_type_id, starts_at, ends_at")
+      .select(
+        "id, workplace_id, department_id, user_id, required_employee_type_id, shift_type_id, starts_at, ends_at"
+      )
       .eq("workplace_id", workplaceId)
       .lt("starts_at", rangeEndIso)
       .gt("ends_at", rangeStartIso);
@@ -194,6 +197,9 @@ export async function swapWorkplaceShifts(
     const source = rows.find((r) => r.id === sourceShiftId);
     const target = rows.find((r) => r.id === targetShiftId);
     if (!source || !target) return { ok: false, error: "Kunne ikke finde begge vagter." };
+    if (!source.user_id || !target.user_id) {
+      return { ok: false, error: "Ledige vagter kan ikke byttes med denne handling." };
+    }
 
     const { error: e1 } = await admin
       .from("workplace_shifts")
@@ -253,8 +259,9 @@ export async function updateWorkplaceShiftTiming(
 export async function createWorkplaceShift(
   workplaceId: string,
   input: {
-    userId: string;
+    userId: string | null;
     departmentId: string | null;
+    requiredEmployeeTypeId: string | null;
     shiftTypeId: string | null;
     startsAtIso: string;
     endsAtIso: string;
@@ -274,15 +281,21 @@ export async function createWorkplaceShift(
 
     const admin = getAdminClient();
 
-    const { data: member, error: memberErr } = await admin
-      .from("workplace_members")
-      .select("user_id")
-      .eq("workplace_id", workplaceId)
-      .eq("user_id", input.userId)
-      .maybeSingle();
-    if (memberErr) return { ok: false, error: memberErr.message };
-    if (!member) {
-      return { ok: false, error: "Medarbejderen er ikke medlem af arbejdspladsen." };
+    if (!input.userId && !input.departmentId) {
+      return { ok: false, error: "Ledige vagter skal have en afdeling." };
+    }
+
+    if (input.userId) {
+      const { data: member, error: memberErr } = await admin
+        .from("workplace_members")
+        .select("user_id")
+        .eq("workplace_id", workplaceId)
+        .eq("user_id", input.userId)
+        .maybeSingle();
+      if (memberErr) return { ok: false, error: memberErr.message };
+      if (!member) {
+        return { ok: false, error: "Medarbejderen er ikke medlem af arbejdspladsen." };
+      }
     }
 
     const { data, error } = await admin
@@ -291,11 +304,14 @@ export async function createWorkplaceShift(
         workplace_id: workplaceId,
         department_id: input.departmentId,
         user_id: input.userId,
+        required_employee_type_id: input.requiredEmployeeTypeId,
         shift_type_id: input.shiftTypeId,
         starts_at: new Date(s).toISOString(),
         ends_at: new Date(e).toISOString(),
       })
-      .select("id, workplace_id, department_id, user_id, shift_type_id, starts_at, ends_at")
+      .select(
+        "id, workplace_id, department_id, user_id, required_employee_type_id, shift_type_id, starts_at, ends_at"
+      )
       .single();
     if (error) return { ok: false, error: error.message };
 

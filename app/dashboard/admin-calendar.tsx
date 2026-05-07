@@ -218,12 +218,12 @@ function truncateTowardZero(value: number): number {
   return value < 0 ? Math.ceil(value) : Math.floor(value);
 }
 
-function shiftSlotKey(userId: string, day: Date, hour: number): string {
-  return `${userId}|${dayKeyLocal(day)}|${hour}`;
+function shiftSlotKey(rowKey: string, day: Date, hour: number): string {
+  return `${rowKey}|${dayKeyLocal(day)}|${hour}`;
 }
 
 function shiftIdentityKey(shift: WorkplaceShiftRow): string {
-  return `${shift.user_id}|${shift.starts_at}|${shift.ends_at}|${shift.shift_type_id ?? ""}`;
+  return `${shift.user_id ?? "open"}|${shift.department_id ?? "none"}|${shift.required_employee_type_id ?? "any"}|${shift.starts_at}|${shift.ends_at}|${shift.shift_type_id ?? ""}`;
 }
 
 function buildEuViolationRuleMap(
@@ -232,6 +232,7 @@ function buildEuViolationRuleMap(
 ): Map<string, string> {
   const byUser = new Map<string, WorkplaceShiftRow[]>();
   for (const shift of shifts) {
+    if (!shift.user_id) continue;
     const list = byUser.get(shift.user_id) ?? [];
     list.push(shift);
     byUser.set(shift.user_id, list);
@@ -316,6 +317,7 @@ function distinctEmployeesOnShiftForDay(
   const de = addDays(startOfDay(day), 1).getTime();
   const set = new Set<string>();
   for (const s of shifts) {
+    if (!s.user_id) continue;
     const a = new Date(s.starts_at).getTime();
     const b = new Date(s.ends_at).getTime();
     if (a < de && b > ds) set.add(s.user_id);
@@ -346,8 +348,9 @@ type ActiveShiftDrag = {
 };
 
 type CreateShiftDraft = {
-  userId: string;
+  userId: string | null;
   departmentId: string | null;
+  requiredEmployeeTypeId: string | null;
   startIso: string;
   endIso: string;
   shiftTypeId: string | null;
@@ -413,8 +416,16 @@ type CalendarRow =
   | {
       kind: "employee";
       key: string;
+      rowShiftKey: string;
       emp: WorkplaceMemberDepartmentsRow;
       groupDeptId: string | null;
+    }
+  | {
+      kind: "open";
+      key: string;
+      rowShiftKey: string;
+      groupDeptId: string;
+      groupName: string;
     };
 
 const BASE_HOUR_COL = 34;
@@ -465,8 +476,9 @@ type ShiftGridCellProps = {
   dayKey: string;
   dayAmbient: DayGridAmbient;
   hour: number;
-  userId: string;
+  userId: string | null;
   groupDeptId: string | null;
+  requiredEmployeeTypeId: string | null;
   shift: WorkplaceShiftRow | null;
   startsHere: boolean;
   endsHere: boolean;
@@ -485,8 +497,9 @@ type ShiftGridCellProps = {
   onCellPointerUp: () => void;
   onCellClick: (
     shift: WorkplaceShiftRow | null,
-    userId: string,
+    userId: string | null,
     departmentId: string | null,
+    requiredEmployeeTypeId: string | null,
     day: Date,
     hour: number
   ) => void;
@@ -511,6 +524,7 @@ const ShiftGridCell = memo(function ShiftGridCell({
   hour,
   userId,
   groupDeptId,
+  requiredEmployeeTypeId,
   shift,
   startsHere,
   endsHere,
@@ -565,9 +579,11 @@ const ShiftGridCell = memo(function ShiftGridCell({
       onPointerUp={onCellPointerUp}
       onPointerCancel={onCellPointerUp}
       onPointerLeave={onCellPointerUp}
-      onClick={() => onCellClick(shift, userId, groupDeptId, day, hour)}
+      onClick={() =>
+        onCellClick(shift, userId, groupDeptId, requiredEmployeeTypeId, day, hour)
+      }
       data-shift-id={shift?.id ?? ""}
-      data-user-id={userId}
+      data-user-id={userId ?? ""}
       data-day-key={dayKey}
       data-hour={hour}
     >
@@ -921,6 +937,10 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     return m;
   }, [departments]);
 
+  const openRowShiftKey = useCallback((departmentId: string | null) => {
+    return `open:${departmentId ?? "none"}`;
+  }, []);
+
   const visibleEmployees = useMemo(() => {
     let list = departmentFiltered;
     if (filterEmployeeTypeId) {
@@ -988,9 +1008,12 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
 
       const firstHour = new Date(startMs);
       firstHour.setMinutes(0, 0, 0);
+      const rowShiftKey = shift.user_id
+        ? `user:${shift.user_id}`
+        : openRowShiftKey(shift.department_id ?? null);
       for (let t = firstHour.getTime(); t < endMs; t += 60 * 60 * 1000) {
         const d = new Date(t);
-        const key = shiftSlotKey(shift.user_id, d, d.getHours());
+        const key = shiftSlotKey(rowShiftKey, d, d.getHours());
         const existing = map.get(key);
         if (!existing) {
           map.set(key, shift);
@@ -1003,13 +1026,13 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       }
 
       const s = new Date(startMs);
-      starts.add(shiftSlotKey(shift.user_id, s, s.getHours()));
+      starts.add(shiftSlotKey(rowShiftKey, s, s.getHours()));
       const e = new Date(endMs - 1);
-      ends.add(shiftSlotKey(shift.user_id, e, e.getHours()));
+      ends.add(shiftSlotKey(rowShiftKey, e, e.getHours()));
     }
 
     return { map, starts, ends };
-  }, [rollingShiftsFiltered]);
+  }, [rollingShiftsFiltered, openRowShiftKey]);
 
   const monthShiftsFiltered = useMemo(() => {
     if (!filterShiftTypeId) return monthShifts;
@@ -1520,19 +1543,27 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
 
   const replacementCandidates = useMemo(() => {
     if (!selectedShift) return [];
+    const requiredTypeId = selectedShift.required_employee_type_id;
+    const matchesType = (m: WorkplaceMemberDepartmentsRow) =>
+      !requiredTypeId || m.employee_type_id === requiredTypeId;
     if (!selectedShift.department_id) {
-      return members.filter((m) => m.user_id !== selectedShift.user_id);
+      return members.filter(
+        (m) => m.user_id !== selectedShift.user_id && matchesType(m)
+      );
     }
     return members.filter(
       (m) =>
         m.user_id !== selectedShift.user_id &&
-        m.department_ids.includes(selectedShift.department_id as string)
+        m.department_ids.includes(selectedShift.department_id as string) &&
+        matchesType(m)
     );
   }, [selectedShift, members]);
 
   const swapCandidates = useMemo(() => {
-    if (!selectedShift) return [];
-    return rollingShiftsFiltered.filter((s) => s.id !== selectedShift.id);
+    if (!selectedShift || !selectedShift.user_id) return [];
+    return rollingShiftsFiltered.filter(
+      (s) => s.id !== selectedShift.id && Boolean(s.user_id)
+    );
   }, [selectedShift, rollingShiftsFiltered]);
 
   useEffect(() => {
@@ -1612,8 +1643,9 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   }
 
   const openCreateShiftFromCell = useCallback((
-    userId: string,
+    userId: string | null,
     departmentId: string | null,
+    requiredEmployeeTypeId: string | null,
     day: Date,
     hour: number
   ) => {
@@ -1623,6 +1655,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     setCreateShiftDraft({
       userId,
       departmentId,
+      requiredEmployeeTypeId,
       startIso: startsAt.toISOString(),
       endIso: endsAt.toISOString(),
       shiftTypeId: shiftTypes[0]?.id ?? null,
@@ -1632,12 +1665,17 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
 
   async function handleCreateShiftSave() {
     if (!createShiftDraft) return;
+    if (!createShiftDraft.userId && !createShiftDraft.departmentId) {
+      setCreateShiftMsg("Ledige vagter skal have en afdeling.");
+      return;
+    }
     setCreateShiftBusy(true);
     setCreateShiftMsg(null);
     try {
       const res = await createWorkplaceShift(workplaceId, {
         userId: createShiftDraft.userId,
         departmentId: createShiftDraft.departmentId,
+        requiredEmployeeTypeId: createShiftDraft.requiredEmployeeTypeId,
         shiftTypeId: createShiftDraft.shiftTypeId,
         startsAtIso: createShiftDraft.startIso,
         endsAtIso: createShiftDraft.endIso,
@@ -1756,9 +1794,11 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
         )
       );
       setShiftActionMsg(
-        source === "sick"
-          ? "Sygemelding registreret og vagt overdraget."
-          : "Erstatningsmedarbejder er sat på vagten."
+        !selectedShift.user_id
+          ? "Medarbejder er sat på den ledige vagt."
+          : source === "sick"
+            ? "Sygemelding registreret og vagt overdraget."
+            : "Erstatningsmedarbejder er sat på vagten."
       );
     } finally {
       setShiftActionBusy(false);
@@ -1766,7 +1806,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   }
 
   async function handleSwapSelectedShift() {
-    if (!selectedShift || !swapTargetShiftId) return;
+    if (!selectedShift || !selectedShift.user_id || !swapTargetShiftId) return;
     setShiftActionBusy(true);
     setShiftActionMsg(null);
     try {
@@ -1785,7 +1825,15 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
         return;
       }
       const sourceUser = selectedShift.user_id;
+      if (!sourceUser) {
+        setShiftActionMsg("Ledige vagter kan ikke bruges til vagtbyt.");
+        return;
+      }
       const targetUser = target.user_id;
+      if (!targetUser) {
+        setShiftActionMsg("Ledige vagter kan ikke bruges til vagtbyt.");
+        return;
+      }
       setRollingShifts((list) =>
         list.map((s) => {
           if (s.id === selectedShift.id) return { ...s, user_id: targetUser };
@@ -2082,25 +2130,57 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   const totalHourCols = rollingDays.length * 24;
   const calendarRows = useMemo<CalendarRow[]>(() => {
     const out: CalendarRow[] = [];
+    const existingGroupDeptIds = new Set<string>();
     for (const group of groupedEmployees) {
       const groupDeptId = departments.find((d) => d.name === group.name)?.id ?? null;
+      if (groupDeptId) existingGroupDeptIds.add(groupDeptId);
       out.push({
         kind: "group",
         key: `dept-${group.name}`,
         name: group.name,
         deptId: groupDeptId,
       });
+      if (groupDeptId) {
+        out.push({
+          kind: "open",
+          key: `open-${groupDeptId}`,
+          rowShiftKey: openRowShiftKey(groupDeptId),
+          groupDeptId,
+          groupName: group.name,
+        });
+      }
       for (const emp of group.employees) {
         out.push({
           kind: "employee",
           key: emp.user_id,
+          rowShiftKey: `user:${emp.user_id}`,
           emp,
           groupDeptId,
         });
       }
     }
+    for (const dept of departments) {
+      if (existingGroupDeptIds.has(dept.id)) continue;
+      const hasOpenShift = rollingShiftsFiltered.some(
+        (shift) => !shift.user_id && shift.department_id === dept.id
+      );
+      if (!hasOpenShift) continue;
+      out.push({
+        kind: "group",
+        key: `dept-${dept.id}-open-only`,
+        name: dept.name,
+        deptId: dept.id,
+      });
+      out.push({
+        kind: "open",
+        key: `open-${dept.id}`,
+        rowShiftKey: openRowShiftKey(dept.id),
+        groupDeptId: dept.id,
+        groupName: dept.name,
+      });
+    }
     return out;
-  }, [groupedEmployees, departments]);
+  }, [groupedEmployees, departments, openRowShiftKey, rollingShiftsFiltered]);
 
   const rowVirtualizer = useVirtualizer({
     count: calendarRows.length,
@@ -2208,8 +2288,9 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   const handleGridCellClick = useCallback(
     (
       shift: WorkplaceShiftRow | null,
-      userId: string,
+      userId: string | null,
       departmentId: string | null,
+      requiredEmployeeTypeId: string | null,
       day: Date,
       hour: number
     ) => {
@@ -2217,7 +2298,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
         handleCellClick(shift);
         return;
       }
-      openCreateShiftFromCell(userId, departmentId, day, hour);
+      openCreateShiftFromCell(userId, departmentId, requiredEmployeeTypeId, day, hour);
     },
     [handleCellClick, openCreateShiftFromCell]
   );
@@ -2671,6 +2752,123 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                           );
                         }
 
+                        if (row.kind === "open") {
+                          return (
+                            <tr
+                              key={row.key}
+                              ref={rowVirtualizer.measureElement}
+                              data-index={virtualRow.index}
+                              className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40"
+                            >
+                              <td className="sticky left-0 z-50 w-[200px] min-w-[200px] max-w-[200px] border-b border-r border-zinc-100 bg-white px-3 py-2 font-semibold text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200">
+                                -
+                              </td>
+
+                              {leftPadCols > 0 ? (
+                                <td
+                                  colSpan={leftPadCols}
+                                  className="border-b border-l border-zinc-100 bg-zinc-50/50 px-0 py-2 dark:border-zinc-800 dark:bg-zinc-950/50"
+                                />
+                              ) : null}
+
+                              {visibleHourIndexes.map((hourIndex) => {
+                                const meta = hourMetaByIndex(hourIndex);
+                                if (!meta) return null;
+                                const slotKey = shiftSlotKey(row.rowShiftKey, meta.day, meta.hour);
+                                const shift = rollingSlotShiftMap.map.get(slotKey) ?? null;
+                                const startsHere = Boolean(
+                                  shift && rollingSlotShiftMap.starts.has(slotKey)
+                                );
+                                const endsHere = Boolean(
+                                  shift && rollingSlotShiftMap.ends.has(slotKey)
+                                );
+                                const has = Boolean(shift);
+                                const shiftColor = shift?.shift_type_id
+                                  ? shiftColorById.get(shift.shift_type_id) ?? "#94a3b8"
+                                  : "#94a3b8";
+                                const requiredPattern = shift?.required_employee_type_id
+                                  ? employeePatternById.get(shift.required_employee_type_id) ?? "none"
+                                  : "none";
+                                const showPattern = Boolean(shift && endsHere);
+                                const dayAmbient = dayGridAmbient(
+                                  meta.dayKey,
+                                  rollingHolidayNamesByDay,
+                                  isWeekendLocal(meta.day)
+                                );
+                                const cellStyle = has
+                                  ? shiftCalendarCellStyle({
+                                      shiftTypeColor: shiftColor,
+                                      employeePattern: showPattern ? requiredPattern : "none",
+                                      ambient: dayAmbient === "none" ? null : dayAmbient,
+                                    })
+                                  : undefined;
+                                const shiftLabel = shift?.shift_type_id
+                                  ? shiftTypeLabelById.get(shift.shift_type_id) ?? "Vagt"
+                                  : "Vagt";
+                                const renderedShiftLabel =
+                                  shiftLabel.trim().toLocaleLowerCase("da") === "normal"
+                                    ? ""
+                                    : shiftLabel;
+                                const requiredTypeLabel = shift?.required_employee_type_id
+                                  ? employeeTypeLabelById.get(shift.required_employee_type_id) ??
+                                    "Valgt type"
+                                  : "Alle medarbejdertyper";
+                                const departmentName = shift?.department_id
+                                  ? departmentById.get(shift.department_id)?.name ?? row.groupName
+                                  : row.groupName;
+                                const hoverDetails = has
+                                  ? [
+                                      `${t("calendar.shift_hover.employee", "Medarbejder")}: -`,
+                                      `${t("calendar.shift_hover.department", "Afdeling")}: ${departmentName}`,
+                                      `${t("calendar.shift_hover.employee_type", "Medarbejdertype")}: ${requiredTypeLabel}`,
+                                      `${t("calendar.shift_hover.shift_type", "Vagttype")}: ${shiftLabel}`,
+                                      `${t("calendar.shift_hover.time", "Tid")}: ${formatShiftRange(shift!.starts_at, shift!.ends_at, uiLanguage)}`,
+                                    ].join("\n")
+                                  : undefined;
+                                const violationRule =
+                                  shift
+                                    ? (shift.id ? euViolationRuleMap.get(shift.id) : undefined) ??
+                                      euViolationRuleMap.get(shiftIdentityKey(shift))
+                                    : undefined;
+                                const styleToken = `${shiftColor}|${showPattern ? requiredPattern : "none"}|${has ? "1" : "0"}|${dayAmbient}`;
+                                return (
+                                  <ShiftGridCell
+                                    key={`${row.key}-${meta.dayKey}-${meta.hour}`}
+                                    cellKey={`${row.key}-${meta.dayKey}-${meta.hour}`}
+                                    day={meta.day}
+                                    dayKey={meta.dayKey}
+                                    dayAmbient={dayAmbient}
+                                    hour={meta.hour}
+                                    userId={null}
+                                    groupDeptId={row.groupDeptId}
+                                    requiredEmployeeTypeId={shift?.required_employee_type_id ?? null}
+                                    shift={shift}
+                                    startsHere={startsHere}
+                                    endsHere={endsHere}
+                                    has={has}
+                                    shiftLabel={renderedShiftLabel}
+                                    renderedCellStyle={cellStyle}
+                                    styleToken={styleToken}
+                                    hoverDetails={hoverDetails}
+                                    violationRule={violationRule}
+                                    onCellPointerDown={handleCellPointerDown}
+                                    onCellPointerUp={handleCellPointerUp}
+                                    onCellClick={handleGridCellClick}
+                                    onStartShiftDrag={startShiftDrag}
+                                  />
+                                );
+                              })}
+
+                              {rightPadCols > 0 ? (
+                                <td
+                                  colSpan={rightPadCols}
+                                  className="border-b border-l border-zinc-100 bg-zinc-50/50 px-0 py-2 dark:border-zinc-800 dark:bg-zinc-950/50"
+                                />
+                              ) : null}
+                            </tr>
+                          );
+                        }
+
                         const emp = row.emp;
                         return (
                           <tr
@@ -2705,7 +2903,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                             {visibleHourIndexes.map((hourIndex) => {
                               const meta = hourMetaByIndex(hourIndex);
                               if (!meta) return null;
-                              const slotKey = shiftSlotKey(emp.user_id, meta.day, meta.hour);
+                              const slotKey = shiftSlotKey(row.rowShiftKey, meta.day, meta.hour);
                               const shift = rollingSlotShiftMap.map.get(slotKey) ?? null;
                               const startsHere = Boolean(
                                 shift && rollingSlotShiftMap.starts.has(slotKey)
@@ -2741,7 +2939,8 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                 shiftLabel.trim().toLocaleLowerCase("da") === "normal"
                                   ? ""
                                   : shiftLabel;
-                              const member = shift ? memberByUserId.get(shift.user_id) ?? null : null;
+                              const member =
+                                shift?.user_id ? memberByUserId.get(shift.user_id) ?? null : null;
                               const employeeName = member?.display_name ?? "Ukendt";
                               const departmentName = shift?.department_id
                                 ? departmentById.get(shift.department_id)?.name ?? "Uden afdeling"
@@ -2789,6 +2988,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                   hour={meta.hour}
                                   userId={emp.user_id}
                                   groupDeptId={row.groupDeptId}
+                                  requiredEmployeeTypeId={null}
                                   shift={shift}
                                   startsHere={startsHere}
                                   endsHere={endsHere}
@@ -3424,7 +3624,9 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
             <div className="rounded-xl border border-zinc-200 bg-zinc-50/80 p-3 text-sm dark:border-zinc-700 dark:bg-zinc-950/60">
               <p>
                 <strong>Medarbejder:</strong>{" "}
-                {memberByUserId.get(selectedShift.user_id)?.display_name ?? "Ukendt"}
+                {selectedShift.user_id
+                  ? memberByUserId.get(selectedShift.user_id)?.display_name ?? "Ukendt"
+                  : "-"}
               </p>
               <p>
                 <strong>Afdeling:</strong>{" "}
@@ -3435,12 +3637,16 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
               <p>
                 <strong>Medarbejdertype:</strong>{" "}
                 {(() => {
+                  if (selectedShift.required_employee_type_id) {
+                    return (
+                      employeeTypeLabelById.get(selectedShift.required_employee_type_id) ??
+                      "Valgt type"
+                    );
+                  }
+                  if (!selectedShift.user_id) return "Alle medarbejdertyper";
                   const m = memberByUserId.get(selectedShift.user_id);
                   if (!m?.employee_type_id) return fallbackEmployeeTypeLabel;
-                  return (
-                    employeeTypeLabelById.get(m.employee_type_id) ??
-                    fallbackEmployeeTypeLabel
-                  );
+                  return employeeTypeLabelById.get(m.employee_type_id) ?? fallbackEmployeeTypeLabel;
                 })()}
               </p>
               <p>
@@ -3462,7 +3668,9 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl border border-zinc-200 p-3 dark:border-zinc-700">
                 <h3 className="mb-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                  Klik: sygemeld + find erstatning
+                  {selectedShift.user_id
+                    ? "Klik: sygemeld + find erstatning"
+                    : "Tildel medarbejder til ledig vagt"}
                 </h3>
                 <select
                   value={replacementUserId}
@@ -3479,21 +3687,23 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                   ))}
                 </select>
                 <div className="mt-2 flex gap-2">
-                  <button
-                    type="button"
-                    disabled={shiftActionBusy || !replacementUserId}
-                    onClick={() => void handleReassignSelectedShift("sick")}
-                    className="rounded-lg bg-amber-600 px-3 py-2 text-xs font-semibold text-white hover:bg-amber-500 disabled:opacity-50"
-                  >
-                    Sygemeld + overdrag
-                  </button>
+                  {selectedShift.user_id ? (
+                    <button
+                      type="button"
+                      disabled={shiftActionBusy || !replacementUserId}
+                      onClick={() => void handleReassignSelectedShift("sick")}
+                      className="rounded-lg bg-amber-600 px-3 py-2 text-xs font-semibold text-white hover:bg-amber-500 disabled:opacity-50"
+                    >
+                      Sygemeld + overdrag
+                    </button>
+                  ) : null}
                   <button
                     type="button"
                     disabled={shiftActionBusy || !replacementUserId}
                     onClick={() => void handleReassignSelectedShift("replace")}
                     className="rounded-lg border border-zinc-300 px-3 py-2 text-xs font-semibold text-zinc-800 hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-600 dark:text-zinc-100 dark:hover:bg-zinc-800"
                   >
-                    Find erstatning
+                    {selectedShift.user_id ? "Find erstatning" : "Tildel medarbejder"}
                   </button>
                 </div>
               </div>
@@ -3511,7 +3721,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                     <option value="">Ingen vagter at bytte med</option>
                   ) : null}
                   {swapCandidates.map((s) => {
-                    const m = memberByUserId.get(s.user_id);
+                    const m = s.user_id ? memberByUserId.get(s.user_id) : null;
                     return (
                       <option key={s.id} value={s.id}>
                         {(m?.display_name ?? "Ukendt")} -{" "}
@@ -3522,7 +3732,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                 </select>
                 <button
                   type="button"
-                  disabled={shiftActionBusy || !swapTargetShiftId}
+                  disabled={shiftActionBusy || !swapTargetShiftId || !selectedShift.user_id}
                   onClick={() => void handleSwapSelectedShift()}
                   className="mt-2 rounded-lg bg-zinc-900 px-3 py-2 text-xs font-semibold text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
                 >
@@ -3585,6 +3795,45 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                 <X className="h-5 w-5" />
               </button>
             </div>
+
+            <div className="rounded-xl border border-zinc-200 bg-zinc-50/80 p-3 text-sm dark:border-zinc-700 dark:bg-zinc-950/60">
+              <p>
+                <strong>Medarbejder:</strong>{" "}
+                {createShiftDraft.userId
+                  ? memberByUserId.get(createShiftDraft.userId)?.display_name ?? "Ukendt"
+                  : "-"}
+              </p>
+              <p>
+                <strong>Afdeling:</strong>{" "}
+                {createShiftDraft.departmentId
+                  ? departmentById.get(createShiftDraft.departmentId)?.name ?? "Uden afdeling"
+                  : "Uden afdeling"}
+              </p>
+            </div>
+
+            {!createShiftDraft.userId ? (
+              <label className="text-sm">
+                <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                  Begræns til medarbejdertype (valgfrit)
+                </span>
+                <select
+                  value={createShiftDraft.requiredEmployeeTypeId ?? ""}
+                  onChange={(e) =>
+                    setCreateShiftDraft((d) =>
+                      d ? { ...d, requiredEmployeeTypeId: e.target.value || null } : d
+                    )
+                  }
+                  className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                >
+                  <option value="">Alle medarbejdertyper</option>
+                  {employeeTypes.map((employeeType) => (
+                    <option key={employeeType.id} value={employeeType.id}>
+                      {localizeStandardEmployeeTypeLabel(employeeType.label, t)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
 
             <label className="text-sm">
               <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
