@@ -2,7 +2,7 @@
 OR-Tools CP-SAT: tildel vagter til medarbejdere (proof of concept).
 
 Kør lokalt:
-  echo '{"employees":["Alice","Bob","Carol"],"num_shifts":5}' | python3 api/solver.py --stdin
+  echo '{"employees":["Alice","Bob","Carol"],"num_shifts":5}' | python3 scripts/solver.py --stdin
 
 Next.js kalder samme entry via subprocess fra app/api/solver/route.ts.
 """
@@ -86,7 +86,7 @@ def solve_from_payload(data: dict) -> dict:
 
 
 class handler(BaseHTTPRequestHandler):
-    """Vercel Python Serverless (POST JSON). Bruges kun hvis denne fil deployes som /api/solver."""
+    """Vercel Python Serverless (POST JSON). Bruges kun hvis filen deployes som Python-function."""
 
     def do_POST(self) -> None:
         try:
@@ -128,7 +128,7 @@ if __name__ == "__main__":
             json.dumps(
                 {
                     "ok": False,
-                    "error": "Brug: python3 api/solver.py --stdin  (JSON på stdin)",
+                    "error": "Brug: python3 scripts/solver.py --stdin  (JSON på stdin)",
                 }
             ),
             file=sys.stderr,

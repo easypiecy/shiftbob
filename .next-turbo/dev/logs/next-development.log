@@ -864,3 +864,5 @@
 {"timestamp":"12:35:27.508","source":"Browser","level":"DEBUG","message":"[calendar-client] dept=0235ceec-6682-4cb5-baa9-79e70222d60b ok 421.6ms shifts=4 range=2026-05-11T22:00..2026-05-14T22:00"}
 {"timestamp":"12:35:27.917","source":"Server","level":"INFO","message":"[calendar-server] getWorkplaceShiftsInRange wp=67bdce3c-1e39-452b-8f97-176339f05e66 dept=7408448b-427f-45c5-9d76-b3f9a15a265e user=all rows=0 status=ok ms=401"}
 {"timestamp":"12:35:28.131","source":"Browser","level":"DEBUG","message":"[calendar-client] dept=7408448b-427f-45c5-9d76-b3f9a15a265e ok 626.8ms shifts=0 range=2026-05-11T22:00..2026-05-14T22:00"}
+{"timestamp":"12:39:23.758","source":"Server","level":"LOG","message":"✓ Compiled in 185ms"}
+{"timestamp":"12:39:31.275","source":"Server","level":"LOG","message":"✓ Compiled in 229ms"}

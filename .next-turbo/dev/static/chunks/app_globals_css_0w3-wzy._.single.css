@@ -638,6 +638,10 @@
     inset-block: calc(var(--spacing) * 0);
   }
 
+  .\!start {
+    inset-inline-start: var(--spacing) !important;
+  }
+
   .start {
     inset-inline-start: var(--spacing);
   }

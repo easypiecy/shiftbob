@@ -825,7 +825,19 @@ async function approveSpreadsheetPlanAction(input) {
             };
         }
         const extractedEmployees = Array.isArray(input.extractedEmployees) ? input.extractedEmployees : [];
+        const extractedShiftTypes = Array.isArray(input.extractedShiftTypes) ? input.extractedShiftTypes : [];
         const extractedShifts = Array.isArray(input.extractedShifts) ? input.extractedShifts : [];
+        const shiftTimeByCode = new Map();
+        for (const shiftType of extractedShiftTypes){
+            const code = normalizeShiftCode(String(shiftType.shift_code ?? ""));
+            const start = excelTimeToHHMM(shiftType.start_time);
+            const end = excelTimeToHHMM(shiftType.end_time);
+            if (!code || !start || !end) continue;
+            shiftTimeByCode.set(code, {
+                start_time: start,
+                end_time: end
+            });
+        }
         const admin = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$supabase$2f$admin$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getAdminClient"])();
         const [departmentRes, shiftTypeRes, memberRes] = await Promise.all([
             admin.from("workplace_departments").select("id, name").eq("workplace_id", companyId),
@@ -1040,8 +1052,14 @@ async function approveSpreadsheetPlanAction(input) {
             const employeeRef = employeeRefByLocalId.get(Number(shift.employee_id));
             if (!employeeRef) continue;
             const shiftTypeId = await ensureShiftTypeId(shift.shift_code);
-            const startsAt = new Date(`${shift.date}T${shift.start_time}:00`);
-            const endsAt = new Date(`${shift.date}T${shift.end_time}:00`);
+            const shiftCode = normalizeShiftCode(shift.shift_code);
+            // XLS Shift_Types er sandhed for tider pr. kode; matcher ikke "standard",
+            // så bruger vi tiderne fra fanebladet.
+            const xlsTime = shiftTimeByCode.get(shiftCode);
+            const startTime = xlsTime?.start_time ?? shift.start_time;
+            const endTime = xlsTime?.end_time ?? shift.end_time;
+            const startsAt = new Date(`${shift.date}T${startTime}:00`);
+            const endsAt = new Date(`${shift.date}T${endTime}:00`);
             if (Number.isNaN(startsAt.getTime()) || Number.isNaN(endsAt.getTime())) continue;
             if (endsAt.getTime() <= startsAt.getTime()) endsAt.setDate(endsAt.getDate() + 1);
             shiftRows.push({

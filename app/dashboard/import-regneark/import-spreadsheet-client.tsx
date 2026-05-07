@@ -152,6 +152,7 @@ export function ImportSpreadsheetClient() {
         selectedMonth: run.selectedMonth,
         selectedYear: run.selectedYear,
         extractedEmployees: run.result.extractedEmployees,
+        extractedShiftTypes: run.result.extractedShiftTypes,
         extractedShifts: run.result.extractedShifts,
       });
       setApproveSummary(res);

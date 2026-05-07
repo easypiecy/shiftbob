@@ -10,14 +10,15 @@ function resolvePython(): string {
 }
 
 /**
- * Kalder api/solver.py (OR-Tools) via subprocess. Kræver Python 3 + pip install -r api/requirements.txt lokalt.
+ * Kalder scripts/solver.py (OR-Tools) via subprocess.
+ * Kræver Python 3 + pip install -r scripts/solver-requirements.txt lokalt.
  * På Vercel Node-serverless findes Python/ortools typisk ikke — brug ekstern Python-tjeneste eller self-hosted.
  */
 export async function POST(req: Request) {
   const body = await req.text();
   const script = join(
     /* turbopackIgnore: true */ process.cwd(),
-    "api",
+    "scripts",
     "solver.py"
   );
   const python = resolvePython();
@@ -33,7 +34,7 @@ export async function POST(req: Request) {
     return Response.json(
       {
         ok: false,
-        error: `Kunne ikke starte Python: ${result.error.message}. Sæt PYTHON_PATH eller installer Python 3 og kør: pip install -r api/requirements.txt`,
+        error: `Kunne ikke starte Python: ${result.error.message}. Sæt PYTHON_PATH eller installer Python 3 og kør: pip install -r scripts/solver-requirements.txt`,
       },
       { status: 500 }
     );
