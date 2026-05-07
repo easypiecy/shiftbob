@@ -280,15 +280,6 @@ function buildEuViolationRuleMap(
   return out;
 }
 
-function fallbackPatternByUserId(userId: string): string {
-  const list = ["stripes", "dots", "grid", "diagonal"] as const;
-  let n = 0;
-  for (let i = 0; i < userId.length; i++) {
-    n = (n + userId.charCodeAt(i) * (i + 3)) % 997;
-  }
-  return list[n % list.length];
-}
-
 const DEFAULT_SHIFT_COLOR = "#94a3b8";
 
 function normalizeCalendarHex(color: string | null | undefined): string {
@@ -296,6 +287,14 @@ function normalizeCalendarHex(color: string | null | undefined): string {
   if (!c) return DEFAULT_SHIFT_COLOR;
   if (/^#[0-9a-fA-F]{6}$/.test(c)) return c;
   return DEFAULT_SHIFT_COLOR;
+}
+
+function normalizeEmployeeTypeKey(value: string): string {
+  return value
+    .trim()
+    .toLocaleLowerCase("da")
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ");
 }
 
 function firstDepartmentLabel(
@@ -1069,6 +1068,20 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       );
     }
     return map;
+  }, [employeeTypes, t]);
+  const fallbackEmployeeTypeLabel = useMemo(() => {
+    const preferred = employeeTypes.find((type) => {
+      const key = normalizeEmployeeTypeKey(type.label);
+      return (
+        key === "fuldtid" ||
+        key === "full time" ||
+        key === "fulltime" ||
+        key === "permanent"
+      );
+    });
+    const fallbackType = preferred ?? employeeTypes[0];
+    if (!fallbackType) return "Uden medarbejdertype";
+    return localizeStandardEmployeeTypeLabel(fallbackType.label, t);
   }, [employeeTypes, t]);
   const defaultEmployeeTypeId = employeeTypes[0]?.id ?? "";
 
@@ -2706,7 +2719,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                 : "#94a3b8";
                               const empPattern = emp.employee_type_id
                                 ? employeePatternById.get(emp.employee_type_id) ?? "none"
-                                : fallbackPatternByUserId(emp.user_id);
+                                : "none";
                               const showPattern = Boolean(shift && endsHere);
                               const dayAmbient = dayGridAmbient(
                                 meta.dayKey,
@@ -2736,7 +2749,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                               const employeeTypeLabel = member?.employee_type_id
                                 ? employeeTypeLabelById.get(member.employee_type_id) ??
                                   "Uden medarbejdertype"
-                                : "Uden medarbejdertype";
+                                : fallbackEmployeeTypeLabel;
                               const hoverDetails = has
                                 ? [
                                     `${t("calendar.shift_hover.employee", "Medarbejder")}: ${employeeName}`,
@@ -3423,10 +3436,10 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                 <strong>Medarbejdertype:</strong>{" "}
                 {(() => {
                   const m = memberByUserId.get(selectedShift.user_id);
-                  if (!m?.employee_type_id) return "Uden medarbejdertype";
+                  if (!m?.employee_type_id) return fallbackEmployeeTypeLabel;
                   return (
                     employeeTypeLabelById.get(m.employee_type_id) ??
-                    "Uden medarbejdertype"
+                    fallbackEmployeeTypeLabel
                   );
                 })()}
               </p>

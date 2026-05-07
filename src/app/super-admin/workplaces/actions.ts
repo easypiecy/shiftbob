@@ -1893,6 +1893,32 @@ export async function getWorkplaceDepartmentsOverview(
     );
 
     let members: WorkplaceMemberDepartmentsRow[] = [];
+    const employeeTypeIdByLabel = new Map<string, string>();
+    for (const type of employeeTypes) {
+      const labelKey = normalizeTemplateMatchKey(type.label);
+      if (labelKey) employeeTypeIdByLabel.set(labelKey, type.id);
+    }
+    const EMPLOYEE_TYPE_FALLBACKS = new Map<string, string>([
+      ["fuldtid", "fuldtid"],
+      ["full_time", "fuldtid"],
+      ["full time", "fuldtid"],
+      ["fulltime", "fuldtid"],
+      ["full-time", "fuldtid"],
+      ["permanent", "fuldtid"],
+      ["deltid", "deltid"],
+      ["part_time", "deltid"],
+      ["part time", "deltid"],
+      ["parttime", "deltid"],
+      ["part-time", "deltid"],
+      ["elev", "elev"],
+      ["trainee", "elev"],
+      ["vikar", "vikar"],
+      ["temp", "vikar"],
+      ["substitute", "vikar"],
+      ["ung", "ung (under 18)"],
+      ["youth", "ung (under 18)"],
+      ["youth_u18", "ung (under 18)"],
+    ]);
     for (const m of memberRows) {
       const uid = m.user_id as string;
       const userData = usersById.get(uid);
@@ -1901,6 +1927,17 @@ export async function getWorkplaceDepartmentsOverview(
       const override = overrideByUser.get(uid);
       const resolved = resolveMemberDisplayName(oauthName, override, email, uid);
       const empTypeRaw = m.employee_type_id;
+      let inferredEmployeeTypeId: string | null = null;
+      if (empTypeRaw == null) {
+        const importedType = userData?.userMetadata?.import_employee_type;
+        const importedKey = normalizeTemplateMatchKey(
+          typeof importedType === "string" ? importedType : ""
+        );
+        const fallbackKey = EMPLOYEE_TYPE_FALLBACKS.get(importedKey) ?? importedKey;
+        inferredEmployeeTypeId = fallbackKey
+          ? (employeeTypeIdByLabel.get(fallbackKey) ?? null)
+          : null;
+      }
       members.push({
         workplace_member_id: m.id,
         user_id: uid,
@@ -1908,7 +1945,9 @@ export async function getWorkplaceDepartmentsOverview(
         role: m.role as string,
         department_ids: deptByUser.get(uid) ?? [],
         employee_type_id:
-          empTypeRaw === undefined || empTypeRaw === null ? null : String(empTypeRaw),
+          empTypeRaw === undefined || empTypeRaw === null
+            ? inferredEmployeeTypeId
+            : String(empTypeRaw),
         display_name: resolved.display_name,
         oauth_display_name: resolved.oauth_display_name,
         display_name_override: resolved.display_name_override,

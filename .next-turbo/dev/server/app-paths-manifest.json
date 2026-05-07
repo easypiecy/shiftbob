@@ -1,6 +1,8 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/dashboard/indstillinger/page": "app/dashboard/indstillinger/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/manifest.webmanifest/route": "app/manifest.webmanifest/route.js"
+  "/manifest.webmanifest/route": "app/manifest.webmanifest/route.js",
+  "/select-workplace/page": "app/select-workplace/page.js",
+  "/super-admin/page": "app/super-admin/page.js",
+  "/super-admin/workplace-templates/page": "app/super-admin/workplace-templates/page.js"
 }
