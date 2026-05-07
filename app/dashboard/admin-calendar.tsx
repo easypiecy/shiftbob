@@ -10,7 +10,16 @@ import {
   useRef,
   useState,
 } from "react";
-import { ChevronLeft, ChevronRight, FileText, Loader2, Plus, Search, X } from "lucide-react";
+import {
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  FileText,
+  Loader2,
+  Plus,
+  Search,
+  X,
+} from "lucide-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   getWorkplaceDepartmentsOverview,
@@ -74,6 +83,16 @@ function dayKeyLocal(d: Date): string {
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
+}
+
+function parseDayKeyLocal(dayKey: string): Date | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dayKey);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (!year || month < 1 || month > 12 || day < 1 || day > 31) return null;
+  return new Date(year, month - 1, day);
 }
 
 function expandAround(center: Date, beforeAfter: number): Date[] {
@@ -596,6 +615,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
 
   const [viewMode, setViewMode] = useState<CalendarViewMode>("rolling");
   const [anchorDate, setAnchorDate] = useState(() => startOfDay(new Date()));
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [rollingDays, setRollingDays] = useState<Date[]>(() =>
     expandForward(startOfDay(new Date()), ROLLING_DAY_COUNT)
   );
@@ -1824,6 +1844,19 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     }
   }
 
+  function jumpToDate(dayKey: string) {
+    const parsed = parseDayKeyLocal(dayKey);
+    if (!parsed) return;
+    const day = startOfDay(parsed);
+    setAnchorDate(day);
+    if (viewMode === "rolling") {
+      setRollingDays(expandForward(day, ROLLING_DAY_COUNT));
+      requestAnimationFrame(() => {
+        scrollRef.current?.scrollTo({ left: 0, behavior: "smooth" });
+      });
+    }
+  }
+
   function openRollingForDay(d: Date) {
     const day = startOfDay(d);
     setAnchorDate(day);
@@ -2065,6 +2098,38 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowDatePicker((prev) => !prev)}
+              className="rounded-lg border border-zinc-200 bg-white p-2 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              aria-label={t(
+                "calendar.nav.date_picker_aria",
+                "Vælg dag i kalenderen"
+              )}
+            >
+              <CalendarDays className="h-4 w-4" aria-hidden />
+            </button>
+            {showDatePicker ? (
+              <div className="absolute left-0 top-full z-20 mt-2 min-w-[240px] rounded-lg border border-zinc-200 bg-white p-2 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+                <p className="mb-2 text-xs text-zinc-600 dark:text-zinc-300">
+                  {t(
+                    "calendar.nav.date_picker_label",
+                    "Vælg den dag du vil se på datovælger."
+                  )}
+                </p>
+                <input
+                  type="date"
+                  value={dayKeyLocal(anchorDate)}
+                  onChange={(e) => {
+                    jumpToDate(e.target.value);
+                    setShowDatePicker(false);
+                  }}
+                  className="w-full rounded border border-zinc-300 bg-white px-2 py-1.5 text-xs text-zinc-800 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                />
+              </div>
+            ) : null}
+          </div>
           <div className="inline-flex rounded-lg border border-zinc-200 bg-zinc-100 p-0.5 dark:border-zinc-700 dark:bg-zinc-800">
             <button
               type="button"
