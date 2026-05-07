@@ -47,6 +47,22 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
 }),
+"[project]/src/app/super-admin/workplaces/data:d9ed5f [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "saveWorkplaceDepartmentMemberships",
+    ()=>$$RSC_SERVER_ACTION_24
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$client$2d$wrapper$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/webpack/loaders/next-flight-loader/action-client-wrapper.js [app-client] (ecmascript)");
+/* __next_internal_action_entry_do_not_use__ [{"60fa005521543123673f61050ebfde5ce49de26a60":{"name":"saveWorkplaceDepartmentMemberships"}},"src/app/super-admin/workplaces/actions.ts",""] */ "use turbopack no side effects";
+;
+const $$RSC_SERVER_ACTION_24 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$client$2d$wrapper$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createServerReference"])("60fa005521543123673f61050ebfde5ce49de26a60", __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$client$2d$wrapper$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["callServer"], void 0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$webpack$2f$loaders$2f$next$2d$flight$2d$loader$2f$action$2d$client$2d$wrapper$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["findSourceMapURL"], "saveWorkplaceDepartmentMemberships");
+;
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
 "[project]/src/app/dashboard/data:a144a7 [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
 "use strict";
 
@@ -143,7 +159,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
 }),
-"[project]/src/app/dashboard/data:948c98 [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
+"[project]/src/app/dashboard/data:66c93a [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
 "use strict";
 
 __turbopack_context__.s([
@@ -159,7 +175,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
 }),
-"[project]/src/app/dashboard/data:bba40a [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
+"[project]/src/app/dashboard/data:7fb5b5 [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
 "use strict";
 
 __turbopack_context__.s([
@@ -175,7 +191,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
 }),
-"[project]/src/app/dashboard/data:8f9b59 [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
+"[project]/src/app/dashboard/data:9f6806 [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
 "use strict";
 
 __turbopack_context__.s([
@@ -191,7 +207,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
 }),
-"[project]/src/app/dashboard/data:b2656c [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
+"[project]/src/app/dashboard/data:1640be [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
 "use strict";
 
 __turbopack_context__.s([
@@ -207,7 +223,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
 }),
-"[project]/src/app/dashboard/data:dca7da [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
+"[project]/src/app/dashboard/data:e4890f [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
 "use strict";
 
 __turbopack_context__.s([
@@ -223,7 +239,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
 }),
-"[project]/src/app/dashboard/data:d373f2 [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
+"[project]/src/app/dashboard/data:33dc56 [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
 "use strict";
 
 __turbopack_context__.s([
@@ -239,7 +255,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
 }),
-"[project]/src/app/dashboard/data:64b1c4 [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
+"[project]/src/app/dashboard/data:87a3ca [app-client] (ecmascript) <text/javascript>", ((__turbopack_context__) => {
 "use strict";
 
 __turbopack_context__.s([
@@ -947,19 +963,20 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$tanstack$2f$react$2d$virtual$2f$dist$2f$esm$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@tanstack/react-virtual/dist/esm/index.js [app-client] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$super$2d$admin$2f$workplaces$2f$data$3a$6fc806__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/super-admin/workplaces/data:6fc806 [app-client] (ecmascript) <text/javascript>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$super$2d$admin$2f$workplaces$2f$data$3a$830850__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/super-admin/workplaces/data:830850 [app-client] (ecmascript) <text/javascript>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$super$2d$admin$2f$workplaces$2f$data$3a$d9ed5f__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/super-admin/workplaces/data:d9ed5f [app-client] (ecmascript) <text/javascript>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$a144a7__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:a144a7 [app-client] (ecmascript) <text/javascript>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$32470d__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:32470d [app-client] (ecmascript) <text/javascript>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$0cb5db__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:0cb5db [app-client] (ecmascript) <text/javascript>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$843df7__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:843df7 [app-client] (ecmascript) <text/javascript>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$6937f0__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:6937f0 [app-client] (ecmascript) <text/javascript>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$57dd8e__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:57dd8e [app-client] (ecmascript) <text/javascript>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$948c98__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:948c98 [app-client] (ecmascript) <text/javascript>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$bba40a__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:bba40a [app-client] (ecmascript) <text/javascript>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$8f9b59__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:8f9b59 [app-client] (ecmascript) <text/javascript>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$b2656c__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:b2656c [app-client] (ecmascript) <text/javascript>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$dca7da__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:dca7da [app-client] (ecmascript) <text/javascript>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$d373f2__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:d373f2 [app-client] (ecmascript) <text/javascript>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$64b1c4__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:64b1c4 [app-client] (ecmascript) <text/javascript>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$66c93a__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:66c93a [app-client] (ecmascript) <text/javascript>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$7fb5b5__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:7fb5b5 [app-client] (ecmascript) <text/javascript>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$9f6806__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:9f6806 [app-client] (ecmascript) <text/javascript>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$1640be__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:1640be [app-client] (ecmascript) <text/javascript>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$e4890f__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:e4890f [app-client] (ecmascript) <text/javascript>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$33dc56__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:33dc56 [app-client] (ecmascript) <text/javascript>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$87a3ca__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/dashboard/data:87a3ca [app-client] (ecmascript) <text/javascript>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$app$2f$dashboard$2f$employee$2d$calendar$2d$name$2d$cell$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/app/dashboard/employee-calendar-name-cell.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$translations$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/contexts/translations-context.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$calendar$2d$holidays$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/calendar-holidays.ts [app-client] (ecmascript)");
@@ -987,6 +1004,13 @@ function startOfDay(d) {
 function addDays(d, n) {
     const x = new Date(d);
     x.setDate(x.getDate() + n);
+    return x;
+}
+function startOfWeekMonday(d) {
+    const x = startOfDay(d);
+    const day = x.getDay();
+    const offset = day === 0 ? -6 : 1 - day;
+    x.setDate(x.getDate() + offset);
     return x;
 }
 /** Lokal kalenderdag som YYYY-MM-DD */ function dayKeyLocal(d) {
@@ -1192,6 +1216,11 @@ function blankMemberProfileDraft(defaultEmployeeTypeId) {
         postalCode: "",
         city: "",
         country: "",
+        jobTitle: "",
+        contractHoursPerWeek: "",
+        maxHoursPerWeek: "",
+        employmentDate: "",
+        birthday: "",
         employeeTypeId: defaultEmployeeTypeId,
         departmentIds: [],
         note: ""
@@ -1207,6 +1236,76 @@ function clampHourColWidth(px) {
     return Math.max(MIN_HOUR_COL, Math.min(MAX_HOUR_COL, px));
 }
 const NAME_COL_WIDTH = 200;
+const MEMBER_COUNTRY_OPTIONS = [
+    {
+        code: "DK",
+        label: "Denmark"
+    },
+    {
+        code: "SE",
+        label: "Sweden"
+    },
+    {
+        code: "NO",
+        label: "Norway"
+    },
+    {
+        code: "FI",
+        label: "Finland"
+    },
+    {
+        code: "DE",
+        label: "Germany"
+    },
+    {
+        code: "NL",
+        label: "Netherlands"
+    },
+    {
+        code: "BE",
+        label: "Belgium"
+    },
+    {
+        code: "FR",
+        label: "France"
+    },
+    {
+        code: "ES",
+        label: "Spain"
+    },
+    {
+        code: "IT",
+        label: "Italy"
+    },
+    {
+        code: "PL",
+        label: "Poland"
+    },
+    {
+        code: "AT",
+        label: "Austria"
+    },
+    {
+        code: "CH",
+        label: "Switzerland"
+    },
+    {
+        code: "IE",
+        label: "Ireland"
+    },
+    {
+        code: "PT",
+        label: "Portugal"
+    },
+    {
+        code: "GR",
+        label: "Greece"
+    },
+    {
+        code: "CZ",
+        label: "Czechia"
+    }
+];
 const ShiftGridCell = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["memo"])(function ShiftGridCell({ cellKey, day, dayKey, dayAmbient, hour, userId, groupDeptId, shift, startsHere, endsHere, has, shiftLabel, renderedCellStyle, hoverDetails, violationRule, onCellPointerDown, onCellPointerUp, onCellClick, onStartShiftDrag }) {
     const emptySurface = dayAmbient === "holiday" ? "bg-amber-50/80 dark:bg-amber-950/30" : dayAmbient === "weekend" ? "bg-zinc-200/25 dark:bg-zinc-800/50" : "bg-zinc-50/50 dark:bg-zinc-950/50";
     const titleWithViolation = has && violationRule ? hoverDetails?.includes("EU-regel") ? hoverDetails : [
@@ -1249,7 +1348,7 @@ const ShiftGridCell = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                 children: "⚠"
             }, void 0, false, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 539,
+                lineNumber: 576,
                 columnNumber: 9
             }, this) : null,
             has && startsHere && shiftLabel.trim().length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1257,7 +1356,7 @@ const ShiftGridCell = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                 children: shiftLabel
             }, void 0, false, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 548,
+                lineNumber: 585,
                 columnNumber: 9
             }, this) : null,
             has && endsHere ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1270,7 +1369,7 @@ const ShiftGridCell = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                 title: "Træk i mønster-området for at flytte vagt"
             }, void 0, false, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 553,
+                lineNumber: 590,
                 columnNumber: 9
             }, this) : null,
             has && startsHere ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1283,7 +1382,7 @@ const ShiftGridCell = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                 title: "Træk for at forkorte/forlænge start"
             }, void 0, false, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 564,
+                lineNumber: 601,
                 columnNumber: 9
             }, this) : null,
             has && endsHere ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1296,7 +1395,7 @@ const ShiftGridCell = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                 title: "Træk for at forkorte/forlænge slut"
             }, void 0, false, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 575,
+                lineNumber: 612,
                 columnNumber: 9
             }, this) : null,
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1309,13 +1408,13 @@ const ShiftGridCell = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$proje
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 585,
+                lineNumber: 622,
                 columnNumber: 7
             }, this)
         ]
     }, cellKey, true, {
         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-        lineNumber: 519,
+        lineNumber: 556,
         columnNumber: 5
     }, this);
 }, (prev, next)=>prev.cellKey === next.cellKey && prev.has === next.has && prev.startsHere === next.startsHere && prev.endsHere === next.endsHere && prev.shift?.id === next.shift?.id && prev.shift?.starts_at === next.shift?.starts_at && prev.shift?.ends_at === next.shift?.ends_at && prev.shiftLabel === next.shiftLabel && prev.styleToken === next.styleToken && prev.dayAmbient === next.dayAmbient && prev.hoverDetails === next.hoverDetails && prev.violationRule === next.violationRule && prev.day.getTime() === next.day.getTime());
@@ -1356,6 +1455,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
     const [memberEditorDraft, setMemberEditorDraft] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [memberEditorBusy, setMemberEditorBusy] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [memberEditorMessage, setMemberEditorMessage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [memberWarningsReady, setMemberWarningsReady] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [memberCvBusy, setMemberCvBusy] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [memberHasCv, setMemberHasCv] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [memberCvFile, setMemberCvFile] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
@@ -1428,9 +1528,12 @@ function AdminCalendar({ workplaceId, workplaceName }) {
         }
     }["AdminCalendar.useCallback[enqueueShiftLoad]"], []);
     const load = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
-        "AdminCalendar.useCallback[load]": async ()=>{
-            setLoading(true);
-            setError(null);
+        "AdminCalendar.useCallback[load]": async (options)=>{
+            const silent = options?.silent ?? false;
+            if (!silent) {
+                setLoading(true);
+                setError(null);
+            }
             const [overviewRes, typesRes] = await Promise.all([
                 (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$super$2d$admin$2f$workplaces$2f$data$3a$6fc806__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["getWorkplaceDepartmentsOverview"])(workplaceId, {
                     access: "calendar_member"
@@ -1438,8 +1541,10 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                 (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$super$2d$admin$2f$workplaces$2f$data$3a$830850__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["getWorkplaceTypes"])(workplaceId)
             ]);
             if (!overviewRes.ok) {
-                setError(overviewRes.error);
-                setLoading(false);
+                if (!silent) {
+                    setError(overviewRes.error);
+                    setLoading(false);
+                }
                 return;
             }
             setDepartments(overviewRes.departments);
@@ -1452,7 +1557,9 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                 setShiftTypes(overviewRes.shiftTypes);
                 setEmployeeTypes(overviewRes.employeeTypes);
             }
-            setLoading(false);
+            if (!silent) {
+                setLoading(false);
+            }
         }
     }["AdminCalendar.useCallback[load]"], [
         workplaceId
@@ -1859,6 +1966,78 @@ function AdminCalendar({ workplaceId, workplaceName }) {
         monthShiftsFiltered,
         memberByUserId
     ]);
+    const memberEditorWarnings = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
+        "AdminCalendar.useMemo[memberEditorWarnings]": ()=>{
+            if (!memberWarningsReady || !memberEditorDraft || !memberEditorUserId) {
+                return [];
+            }
+            const parsedContract = Number((memberEditorDraft.contractHoursPerWeek || "").replace(",", "."));
+            const parsedMax = Number((memberEditorDraft.maxHoursPerWeek || "").replace(",", "."));
+            const contractLimit = Number.isFinite(parsedContract) ? parsedContract : null;
+            const maxLimit = Number.isFinite(parsedMax) ? parsedMax : null;
+            const monthStart = new Date(anchorDate.getFullYear(), anchorDate.getMonth(), 1);
+            const monthEnd = new Date(anchorDate.getFullYear(), anchorDate.getMonth() + 1, 1);
+            const allShifts = [
+                ...rollingShiftsFiltered,
+                ...monthShiftsFiltered
+            ].filter({
+                "AdminCalendar.useMemo[memberEditorWarnings].allShifts": (shift)=>shift.user_id === memberEditorUserId
+            }["AdminCalendar.useMemo[memberEditorWarnings].allShifts"]);
+            const shiftsInMonth = allShifts.filter({
+                "AdminCalendar.useMemo[memberEditorWarnings].shiftsInMonth": (shift)=>{
+                    const s = new Date(shift.starts_at).getTime();
+                    const e = new Date(shift.ends_at).getTime();
+                    return s < monthEnd.getTime() && e > monthStart.getTime();
+                }
+            }["AdminCalendar.useMemo[memberEditorWarnings].shiftsInMonth"]);
+            const weekHours = new Map();
+            for (const shift of shiftsInMonth){
+                const startsAt = new Date(shift.starts_at);
+                const endsAt = new Date(shift.ends_at);
+                const hours = Math.max(0, (endsAt.getTime() - startsAt.getTime()) / (1000 * 60 * 60));
+                const weekStart = startOfWeekMonday(startsAt);
+                const key = dayKeyLocal(weekStart);
+                const current = weekHours.get(key) ?? {
+                    start: weekStart,
+                    end: addDays(weekStart, 6),
+                    hours: 0
+                };
+                current.hours += hours;
+                weekHours.set(key, current);
+            }
+            const warnings = [];
+            for (const row of [
+                ...weekHours.values()
+            ].sort({
+                "AdminCalendar.useMemo[memberEditorWarnings]": (a, b)=>a.start.getTime() - b.start.getTime()
+            }["AdminCalendar.useMemo[memberEditorWarnings]"])){
+                const weekLabel = `${dayKeyLocal(row.start)} - ${dayKeyLocal(row.end)}`;
+                if (contractLimit !== null && row.hours > contractLimit) {
+                    warnings.push(`Kontrakt overskredet i uge ${weekLabel}: ${row.hours.toFixed(1)}t > ${contractLimit.toFixed(1)}t`);
+                }
+                if (maxLimit !== null && row.hours > maxLimit) {
+                    warnings.push(`Max timer overskredet i uge ${weekLabel}: ${row.hours.toFixed(1)}t > ${maxLimit.toFixed(1)}t`);
+                }
+            }
+            const euWarnings = new Set();
+            for (const shift of shiftsInMonth){
+                const rule = (shift.id ? euViolationRuleMap.get(shift.id) : undefined) ?? euViolationRuleMap.get(shiftIdentityKey(shift));
+                if (rule) {
+                    euWarnings.add(`EU-regel brudt (${dayKeyLocal(new Date(shift.starts_at))}): ${rule}`);
+                }
+            }
+            warnings.push(...euWarnings);
+            return warnings;
+        }
+    }["AdminCalendar.useMemo[memberEditorWarnings]"], [
+        anchorDate,
+        euViolationRuleMap,
+        memberEditorDraft,
+        memberEditorUserId,
+        memberWarningsReady,
+        monthShiftsFiltered,
+        rollingShiftsFiltered
+    ]);
     const canManageShifts = calendarAdminNameView;
     const closeMemberEditor = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
         "AdminCalendar.useCallback[closeMemberEditor]": ()=>{
@@ -1866,6 +2045,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
             setMemberEditorUserId(null);
             setMemberEditorDraft(null);
             setMemberEditorMessage(null);
+            setMemberWarningsReady(false);
             setMemberCvBusy(false);
             setMemberCvFile(null);
             setMemberHasCv(false);
@@ -1880,6 +2060,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
             setMemberEditorMode("create");
             setMemberEditorUserId(null);
             setMemberEditorDraft(blankMemberProfileDraft(defaultEmployeeTypeId));
+            setMemberWarningsReady(false);
             setMemberEditorMessage(defaultEmployeeTypeId ? null : t("calendar.member_editor.need_employee_type", "Opret mindst én medarbejdertype først."));
             setMemberCvBusy(false);
             setMemberCvFile(null);
@@ -1899,6 +2080,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
             setMemberEditorMode("edit");
             setMemberEditorUserId(userId);
             setMemberEditorDraft(blankMemberProfileDraft(defaultEmployeeTypeId));
+            setMemberWarningsReady(false);
             setMemberEditorMessage(null);
             setMemberCvBusy(false);
             setMemberCvFile(null);
@@ -1906,8 +2088,8 @@ function AdminCalendar({ workplaceId, workplaceName }) {
             setMemberLoadingDetails(true);
             setMemberPreferences([]);
             const [profileRes, prefRes] = await Promise.all([
-                (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$b2656c__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["getWorkplaceMemberProfileDetails"])(workplaceId, userId),
-                (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$8f9b59__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["getWorkplaceMemberPreferences"])(workplaceId, userId)
+                (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$1640be__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["getWorkplaceMemberProfileDetails"])(workplaceId, userId),
+                (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$9f6806__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["getWorkplaceMemberPreferences"])(workplaceId, userId)
             ]);
             if (!profileRes.ok) {
                 setMemberEditorMessage(profileRes.error);
@@ -1924,12 +2106,26 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                 postalCode: profileRes.data.postalCode,
                 city: profileRes.data.city,
                 country: profileRes.data.country,
+                jobTitle: profileRes.data.jobTitle ?? "",
+                contractHoursPerWeek: profileRes.data.contractHoursPerWeek ?? "",
+                maxHoursPerWeek: profileRes.data.maxHoursPerWeek ?? "",
+                employmentDate: profileRes.data.employmentDate ?? "",
+                birthday: profileRes.data.birthday ?? "",
                 employeeTypeId: profileRes.data.employeeTypeId ?? defaultEmployeeTypeId,
                 departmentIds: members.find({
                     "AdminCalendar.useCallback[openEditMemberEditor]": (m)=>m.user_id === userId
                 }["AdminCalendar.useCallback[openEditMemberEditor]"])?.department_ids ?? [],
                 note: profileRes.data.note ?? ""
             });
+            // Sørg for at kalender-hover bruger den faktiske type med det samme.
+            setMembers({
+                "AdminCalendar.useCallback[openEditMemberEditor]": (prev)=>prev.map({
+                        "AdminCalendar.useCallback[openEditMemberEditor]": (m)=>m.user_id === userId ? {
+                                ...m,
+                                employee_type_id: profileRes.data.employeeTypeId ?? null
+                            } : m
+                    }["AdminCalendar.useCallback[openEditMemberEditor]"])
+            }["AdminCalendar.useCallback[openEditMemberEditor]"]);
             setMemberHasCv(profileRes.data.hasCv);
             if (prefRes.ok) {
                 setMemberPreferences(prefRes.rows.map({
@@ -1951,6 +2147,28 @@ function AdminCalendar({ workplaceId, workplaceName }) {
         defaultEmployeeTypeId,
         members,
         workplaceId
+    ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "AdminCalendar.useEffect": ()=>{
+            if (!memberEditorMode || memberLoadingDetails || !memberEditorDraft || !memberEditorUserId) {
+                setMemberWarningsReady(false);
+                return;
+            }
+            // Vis advarsler først når editor-data er stabilt indlæst, så vi undgår kortvarige falske advarsler.
+            const timer = setTimeout({
+                "AdminCalendar.useEffect.timer": ()=>{
+                    setMemberWarningsReady(true);
+                }
+            }["AdminCalendar.useEffect.timer"], 450);
+            return ({
+                "AdminCalendar.useEffect": ()=>clearTimeout(timer)
+            })["AdminCalendar.useEffect"];
+        }
+    }["AdminCalendar.useEffect"], [
+        memberEditorDraft,
+        memberEditorMode,
+        memberEditorUserId,
+        memberLoadingDetails
     ]);
     const onMemberDraftField = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
         "AdminCalendar.useCallback[onMemberDraftField]": (key, value)=>{
@@ -2029,7 +2247,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
         "AdminCalendar.useCallback[savePreferencesForUser]": async (userId)=>{
             setMemberPreferencesBusy(true);
             try {
-                const res = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$dca7da__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["saveWorkplaceMemberPreferences"])(workplaceId, userId, memberPreferences.map({
+                const res = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$e4890f__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["saveWorkplaceMemberPreferences"])(workplaceId, userId, memberPreferences.map({
                     "AdminCalendar.useCallback[savePreferencesForUser]": (row, idx)=>({
                             priority: Number.isFinite(row.priority) ? Math.max(1, Math.floor(row.priority)) : idx + 1,
                             preferenceText: row.preferenceText
@@ -2057,7 +2275,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
             setMemberEditorMessage(null);
             try {
                 if (memberEditorMode === "create") {
-                    const res = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$948c98__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["createWorkplaceMemberWithProfile"])(workplaceId, {
+                    const res = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$66c93a__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["createWorkplaceMemberWithProfile"])(workplaceId, {
                         firstName: memberEditorDraft.firstName,
                         lastName: memberEditorDraft.lastName,
                         email: memberEditorDraft.email,
@@ -2067,11 +2285,27 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                         postalCode: memberEditorDraft.postalCode,
                         city: memberEditorDraft.city,
                         country: memberEditorDraft.country,
+                        jobTitle: memberEditorDraft.jobTitle,
+                        contractHoursPerWeek: memberEditorDraft.contractHoursPerWeek,
+                        maxHoursPerWeek: memberEditorDraft.maxHoursPerWeek,
+                        employmentDate: memberEditorDraft.employmentDate,
+                        birthday: memberEditorDraft.birthday,
                         employeeTypeId: memberEditorDraft.employeeTypeId,
                         note: memberEditorDraft.note.trim() ? memberEditorDraft.note : null
                     });
                     if (!res.ok) {
                         setMemberEditorMessage(res.error);
+                        return;
+                    }
+                    const deptRes = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$super$2d$admin$2f$workplaces$2f$data$3a$d9ed5f__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["saveWorkplaceDepartmentMemberships"])(workplaceId, [
+                        {
+                            userId: res.userId,
+                            departmentIds: memberEditorDraft.departmentIds
+                        }
+                    ]);
+                    if (!deptRes.ok) {
+                        setMemberEditorMessage(deptRes.error);
+                        await load();
                         return;
                     }
                     const prefSaved = await savePreferencesForUser(res.userId);
@@ -2082,19 +2316,21 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                     if (memberCvFile) {
                         const fd = new FormData();
                         fd.append("file", memberCvFile);
-                        const uploadRes = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$64b1c4__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["uploadWorkplaceMemberCv"])(workplaceId, res.userId, fd);
+                        const uploadRes = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$87a3ca__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["uploadWorkplaceMemberCv"])(workplaceId, res.userId, fd);
                         if (!uploadRes.ok) {
                             setMemberEditorMessage(t("calendar.member_editor.create_cv_failed", "Medarbejder oprettet, men CV upload fejlede: {detail}").replace("{detail}", uploadRes.error));
                             await load();
                             return;
                         }
                     }
-                    await load();
                     closeMemberEditor();
+                    void load({
+                        silent: true
+                    });
                     return;
                 }
                 if (!memberEditorUserId) return;
-                const res = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$d373f2__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["updateWorkplaceMemberWithProfile"])(workplaceId, memberEditorUserId, {
+                const res = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$33dc56__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["updateWorkplaceMemberWithProfile"])(workplaceId, memberEditorUserId, {
                     firstName: memberEditorDraft.firstName,
                     lastName: memberEditorDraft.lastName,
                     email: memberEditorDraft.email,
@@ -2104,11 +2340,35 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                     postalCode: memberEditorDraft.postalCode,
                     city: memberEditorDraft.city,
                     country: memberEditorDraft.country,
+                    jobTitle: memberEditorDraft.jobTitle,
+                    contractHoursPerWeek: memberEditorDraft.contractHoursPerWeek,
+                    maxHoursPerWeek: memberEditorDraft.maxHoursPerWeek,
+                    employmentDate: memberEditorDraft.employmentDate,
+                    birthday: memberEditorDraft.birthday,
                     employeeTypeId: memberEditorDraft.employeeTypeId,
                     note: memberEditorDraft.note.trim() ? memberEditorDraft.note : null
                 });
                 if (!res.ok) {
                     setMemberEditorMessage(res.error);
+                    return;
+                }
+                setMembers({
+                    "AdminCalendar.useCallback[saveMemberEditor]": (prev)=>prev.map({
+                            "AdminCalendar.useCallback[saveMemberEditor]": (m)=>m.user_id === memberEditorUserId ? {
+                                    ...m,
+                                    employee_type_id: memberEditorDraft.employeeTypeId || null
+                                } : m
+                        }["AdminCalendar.useCallback[saveMemberEditor]"])
+                }["AdminCalendar.useCallback[saveMemberEditor]"]);
+                const deptRes = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$super$2d$admin$2f$workplaces$2f$data$3a$d9ed5f__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["saveWorkplaceDepartmentMemberships"])(workplaceId, [
+                    {
+                        userId: memberEditorUserId,
+                        departmentIds: memberEditorDraft.departmentIds
+                    }
+                ]);
+                if (!deptRes.ok) {
+                    setMemberEditorMessage(deptRes.error);
+                    await load();
                     return;
                 }
                 const prefSaved = await savePreferencesForUser(memberEditorUserId);
@@ -2119,15 +2379,17 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                 if (memberCvFile) {
                     const fd = new FormData();
                     fd.append("file", memberCvFile);
-                    const uploadRes = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$64b1c4__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["uploadWorkplaceMemberCv"])(workplaceId, memberEditorUserId, fd);
+                    const uploadRes = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$87a3ca__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["uploadWorkplaceMemberCv"])(workplaceId, memberEditorUserId, fd);
                     if (!uploadRes.ok) {
                         setMemberEditorMessage(t("calendar.member_editor.update_cv_failed", "Data gemt, men CV upload fejlede: {detail}").replace("{detail}", uploadRes.error));
                         await load();
                         return;
                     }
                 }
-                await load();
                 closeMemberEditor();
+                void load({
+                    silent: true
+                });
             } finally{
                 setMemberEditorBusy(false);
             }
@@ -2149,7 +2411,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
             setMemberCvBusy(true);
             setMemberEditorMessage(null);
             try {
-                const res = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$bba40a__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["getWorkplaceMemberCvSignedUrl"])(workplaceId, memberEditorUserId);
+                const res = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$data$3a$7fb5b5__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__["getWorkplaceMemberCvSignedUrl"])(workplaceId, memberEditorUserId);
                 if (!res.ok) {
                     setMemberEditorMessage(res.error);
                     return;
@@ -2989,7 +3251,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                             children: "B"
                         }, void 0, false, {
                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                            lineNumber: 2071,
+                            lineNumber: 2255,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2997,7 +3259,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                             children: "O"
                         }, void 0, false, {
                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                            lineNumber: 2072,
+                            lineNumber: 2256,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3005,23 +3267,23 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                             children: "B"
                         }, void 0, false, {
                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                            lineNumber: 2073,
+                            lineNumber: 2257,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                    lineNumber: 2070,
+                    lineNumber: 2254,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 2065,
+                lineNumber: 2249,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-            lineNumber: 2064,
+            lineNumber: 2248,
             columnNumber: 7
         }, this);
     }
@@ -3031,7 +3293,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
             children: error
         }, void 0, false, {
             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-            lineNumber: 2082,
+            lineNumber: 2266,
             columnNumber: 7
         }, this);
     }
@@ -3053,7 +3315,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                 children: headerTitle
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 2106,
+                                lineNumber: 2290,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3066,19 +3328,19 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: clock
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2111,
+                                        lineNumber: 2295,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 2109,
+                                lineNumber: 2293,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 2105,
+                        lineNumber: 2289,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3097,12 +3359,12 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                             "aria-hidden": true
                                         }, void 0, false, {
                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                            lineNumber: 2125,
+                                            lineNumber: 2309,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2116,
+                                        lineNumber: 2300,
                                         columnNumber: 13
                                     }, this),
                                     showDatePicker ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3113,7 +3375,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 children: t("calendar.nav.date_picker_label", "Vælg den dag du vil se på datovælger.")
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2129,
+                                                lineNumber: 2313,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3126,19 +3388,19 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 className: "w-full rounded border border-zinc-300 bg-white px-2 py-1.5 text-xs text-zinc-800 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2135,
+                                                lineNumber: 2319,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2128,
+                                        lineNumber: 2312,
                                         columnNumber: 15
                                     }, this) : null
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 2115,
+                                lineNumber: 2299,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3151,7 +3413,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: t("calendar.view.rolling", "Rullende")
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2148,
+                                        lineNumber: 2332,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3161,13 +3423,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: t("calendar.view.month30", "30 dage")
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2159,
+                                        lineNumber: 2343,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 2147,
+                                lineNumber: 2331,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3182,12 +3444,12 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                             className: "h-5 w-5"
                                         }, void 0, false, {
                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                            lineNumber: 2182,
+                                            lineNumber: 2366,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2172,
+                                        lineNumber: 2356,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3197,7 +3459,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: t("calendar.nav.go_today", "Gå til i dag")
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2184,
+                                        lineNumber: 2368,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3209,30 +3471,30 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                             className: "h-5 w-5"
                                         }, void 0, false, {
                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                            lineNumber: 2201,
+                                            lineNumber: 2385,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2191,
+                                        lineNumber: 2375,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 2171,
+                                lineNumber: 2355,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 2114,
+                        lineNumber: 2298,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 2102,
+                lineNumber: 2286,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3251,7 +3513,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                     children: t("calendar.filter.all_departments", "Alle afdelinger")
                                 }, void 0, false, {
                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                    lineNumber: 2216,
+                                    lineNumber: 2400,
                                     columnNumber: 15
                                 }, this),
                                 departments.map((d)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -3259,18 +3521,18 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: d.name
                                     }, d.id, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2220,
+                                        lineNumber: 2404,
                                         columnNumber: 17
                                     }, this))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                            lineNumber: 2210,
+                            lineNumber: 2394,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 2209,
+                        lineNumber: 2393,
                         columnNumber: 11
                     }, this) : null,
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -3282,7 +3544,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                     className: "pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400"
                                 }, void 0, false, {
                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                    lineNumber: 2230,
+                                    lineNumber: 2414,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3295,18 +3557,18 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                     autoComplete: "off"
                                 }, void 0, false, {
                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                    lineNumber: 2231,
+                                    lineNumber: 2415,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                            lineNumber: 2229,
+                            lineNumber: 2413,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 2228,
+                        lineNumber: 2412,
                         columnNumber: 9
                     }, this),
                     shiftTypes.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -3322,7 +3584,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                     children: t("calendar.filter.all_shift_types", "Alle vagttyper")
                                 }, void 0, false, {
                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                    lineNumber: 2257,
+                                    lineNumber: 2441,
                                     columnNumber: 15
                                 }, this),
                                 shiftTypes.map((shiftType)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -3330,18 +3592,18 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$type$2d$label$2d$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["localizeStandardShiftTypeLabel"])(shiftType.label, t)
                                     }, shiftType.id, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2261,
+                                        lineNumber: 2445,
                                         columnNumber: 17
                                     }, this))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                            lineNumber: 2251,
+                            lineNumber: 2435,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 2250,
+                        lineNumber: 2434,
                         columnNumber: 11
                     }, this) : null,
                     employeeTypes.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -3357,7 +3619,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                     children: t("calendar.employee.filter_all_types", "Alle medarbejdertyper")
                                 }, void 0, false, {
                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                    lineNumber: 2280,
+                                    lineNumber: 2464,
                                     columnNumber: 15
                                 }, this),
                                 employeeTypes.map((employeeType)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -3365,24 +3627,24 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$type$2d$label$2d$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["localizeStandardEmployeeTypeLabel"])(employeeType.label, t)
                                     }, employeeType.id, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2287,
+                                        lineNumber: 2471,
                                         columnNumber: 17
                                     }, this))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                            lineNumber: 2271,
+                            lineNumber: 2455,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 2270,
+                        lineNumber: 2454,
                         columnNumber: 11
                     }, this) : null
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 2207,
+                lineNumber: 2391,
                 columnNumber: 7
             }, this),
             viewMode === "month30" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3395,7 +3657,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                             children: t("calendar.month30.intro", "Antal forskellige medarbejdere med vagt pr. dag. Klik en dag for rullende visning.")
                         }, void 0, false, {
                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                            lineNumber: 2299,
+                            lineNumber: 2483,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3413,7 +3675,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                             children: formatDayHeader(d, uiLanguage)
                                         }, void 0, false, {
                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                            lineNumber: 2316,
+                                            lineNumber: 2500,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3421,7 +3683,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                             children: n
                                         }, void 0, false, {
                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                            lineNumber: 2319,
+                                            lineNumber: 2503,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3429,30 +3691,30 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                             children: t("calendar.month30.on_shift_label", "på vagt")
                                         }, void 0, false, {
                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                            lineNumber: 2322,
+                                            lineNumber: 2506,
                                             columnNumber: 21
                                         }, this)
                                     ]
                                 }, key, true, {
                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                    lineNumber: 2310,
+                                    lineNumber: 2494,
                                     columnNumber: 19
                                 }, this);
                             })
                         }, void 0, false, {
                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                            lineNumber: 2305,
+                            lineNumber: 2489,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                    lineNumber: 2298,
+                    lineNumber: 2482,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 2297,
+                lineNumber: 2481,
                 columnNumber: 9
             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: calendarOuterClass,
@@ -3494,7 +3756,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                     }
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                    lineNumber: 2359,
+                                                    lineNumber: 2543,
                                                     columnNumber: 19
                                                 }, this),
                                                 Array.from({
@@ -3505,13 +3767,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         }
                                                     }, i, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2361,
+                                                        lineNumber: 2545,
                                                         columnNumber: 21
                                                     }, this))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                            lineNumber: 2358,
+                                            lineNumber: 2542,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
@@ -3524,7 +3786,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                             className: "sticky left-0 z-30 w-[200px] min-w-[200px] max-w-[200px] border-0 bg-transparent p-0 dark:bg-transparent"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                            lineNumber: 2366,
+                                                            lineNumber: 2550,
                                                             columnNumber: 21
                                                         }, this),
                                                         rollingDays.map((d)=>{
@@ -3541,7 +3803,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                             children: formatDayHeader(d, uiLanguage)
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                            lineNumber: 2385,
+                                                                            lineNumber: 2569,
                                                                             columnNumber: 29
                                                                         }, this),
                                                                         holidayLine ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3550,25 +3812,25 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                             children: holidayLine
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                            lineNumber: 2387,
+                                                                            lineNumber: 2571,
                                                                             columnNumber: 31
                                                                         }, this) : null
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                    lineNumber: 2384,
+                                                                    lineNumber: 2568,
                                                                     columnNumber: 27
                                                                 }, this)
                                                             }, dk, false, {
                                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                lineNumber: 2379,
+                                                                lineNumber: 2563,
                                                                 columnNumber: 25
                                                             }, this);
                                                         })
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                    lineNumber: 2365,
+                                                    lineNumber: 2549,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -3578,7 +3840,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                             className: "border-b border-zinc-200 bg-zinc-100 px-0 py-2 dark:border-zinc-700 dark:bg-zinc-800/95"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                            lineNumber: 2401,
+                                                            lineNumber: 2585,
                                                             columnNumber: 23
                                                         }, this) : null,
                                                         visibleHourIndexes.map((hourIndex)=>{
@@ -3590,7 +3852,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                 children: meta.hour
                                                             }, `${meta.dayKey}-${meta.hour}`, false, {
                                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                lineNumber: 2415,
+                                                                lineNumber: 2599,
                                                                 columnNumber: 25
                                                             }, this);
                                                         }),
@@ -3599,19 +3861,19 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                             className: "border-b border-zinc-200 bg-zinc-100 px-0 py-2 dark:border-zinc-700 dark:bg-zinc-800/95"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                            lineNumber: 2424,
+                                                            lineNumber: 2608,
                                                             columnNumber: 23
                                                         }, this) : null
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                    lineNumber: 2399,
+                                                    lineNumber: 2583,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                            lineNumber: 2364,
+                                            lineNumber: 2548,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -3623,12 +3885,12 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: t("calendar.employee.empty_filter", "Ingen medarbejdere matcher filteret for den valgte afdeling.")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2434,
+                                                        lineNumber: 2618,
                                                         columnNumber: 23
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                    lineNumber: 2433,
+                                                    lineNumber: 2617,
                                                     columnNumber: 21
                                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                                                     children: [
@@ -3641,12 +3903,12 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                 }
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                lineNumber: 2448,
+                                                                lineNumber: 2632,
                                                                 columnNumber: 27
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                            lineNumber: 2447,
+                                                            lineNumber: 2631,
                                                             columnNumber: 25
                                                         }, this) : null,
                                                         virtualRows.map((virtualRow)=>{
@@ -3666,25 +3928,25 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                                         children: row.name
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                                        lineNumber: 2463,
+                                                                                        lineNumber: 2647,
                                                                                         columnNumber: 35
                                                                                     }, this),
                                                                                     row.deptId && loadingDeptIds.includes(row.deptId) ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                                         className: "inline-block h-3 w-3 animate-spin rounded-full border border-zinc-400 border-t-zinc-900 dark:border-zinc-500 dark:border-t-zinc-100"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                                        lineNumber: 2465,
+                                                                                        lineNumber: 2649,
                                                                                         columnNumber: 37
                                                                                     }, this) : null
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                                lineNumber: 2462,
+                                                                                lineNumber: 2646,
                                                                                 columnNumber: 33
                                                                             }, this)
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                            lineNumber: 2461,
+                                                                            lineNumber: 2645,
                                                                             columnNumber: 31
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3692,13 +3954,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                             className: "border-b border-l border-zinc-200 bg-zinc-100/60 px-0 py-2 dark:border-zinc-700 dark:bg-zinc-800/70"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                            lineNumber: 2469,
+                                                                            lineNumber: 2653,
                                                                             columnNumber: 31
                                                                         }, this)
                                                                     ]
                                                                 }, row.key, true, {
                                                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                    lineNumber: 2456,
+                                                                    lineNumber: 2640,
                                                                     columnNumber: 29
                                                                 }, this);
                                                             }
@@ -3719,12 +3981,12 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                             onOpenEdit: ()=>void openEditMemberEditor(emp.user_id)
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                            lineNumber: 2486,
+                                                                            lineNumber: 2670,
                                                                             columnNumber: 31
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                        lineNumber: 2485,
+                                                                        lineNumber: 2669,
                                                                         columnNumber: 29
                                                                     }, this),
                                                                     leftPadCols > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3732,7 +3994,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                         className: "border-b border-l border-zinc-100 bg-zinc-50/50 px-0 py-2 dark:border-zinc-800 dark:bg-zinc-950/50"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                        lineNumber: 2502,
+                                                                        lineNumber: 2686,
                                                                         columnNumber: 31
                                                                     }, this) : null,
                                                                     visibleHourIndexes.map((hourIndex)=>{
@@ -3796,7 +4058,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                             onStartShiftDrag: startShiftDrag
                                                                         }, `${emp.user_id}-${meta.dayKey}-${meta.hour}`, false, {
                                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                            lineNumber: 2586,
+                                                                            lineNumber: 2770,
                                                                             columnNumber: 33
                                                                         }, this);
                                                                     }),
@@ -3805,13 +4067,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                         className: "border-b border-l border-zinc-100 bg-zinc-50/50 px-0 py-2 dark:border-zinc-800 dark:bg-zinc-950/50"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                        lineNumber: 2613,
+                                                                        lineNumber: 2797,
                                                                         columnNumber: 31
                                                                     }, this) : null
                                                                 ]
                                                             }, row.key, true, {
                                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                lineNumber: 2479,
+                                                                lineNumber: 2663,
                                                                 columnNumber: 27
                                                             }, this);
                                                         }),
@@ -3824,12 +4086,12 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                 }
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                lineNumber: 2623,
+                                                                lineNumber: 2807,
                                                                 columnNumber: 27
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                            lineNumber: 2622,
+                                                            lineNumber: 2806,
                                                             columnNumber: 25
                                                         }, this) : null
                                                     ]
@@ -3848,19 +4110,19 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                         className: "h-4 w-4"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                        lineNumber: 2636,
+                                                                        lineNumber: 2820,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     t("calendar.employee.add_button", "Tilføj medarbejder")
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                lineNumber: 2630,
+                                                                lineNumber: 2814,
                                                                 columnNumber: 23
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                            lineNumber: 2629,
+                                                            lineNumber: 2813,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3868,25 +4130,25 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                             className: "border-b border-l border-zinc-100 bg-zinc-50/40 px-0 py-3 dark:border-zinc-800 dark:bg-zinc-950/40"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                            lineNumber: 2640,
+                                                            lineNumber: 2824,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                    lineNumber: 2628,
+                                                    lineNumber: 2812,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                            lineNumber: 2431,
+                                            lineNumber: 2615,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                    lineNumber: 2351,
+                                    lineNumber: 2535,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3896,33 +4158,33 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         className: "absolute hidden rounded-md border border-cyan-300 bg-cyan-400/35 shadow-[0_0_14px_rgba(34,211,238,0.55)]"
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2648,
+                                        lineNumber: 2832,
                                         columnNumber: 19
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                    lineNumber: 2647,
+                                    lineNumber: 2831,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                            lineNumber: 2350,
+                            lineNumber: 2534,
                             columnNumber: 15
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 2334,
+                        lineNumber: 2518,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                    lineNumber: 2333,
+                    lineNumber: 2517,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 2332,
+                lineNumber: 2516,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3930,7 +4192,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                 children: viewMode === "rolling" ? "Rul vandret for at se flere dage — vagter hentes automatisk for de dage, du scroller til." : "Klik en dag for at åbne rullende visning med timegitter for den dag."
             }, void 0, false, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 2659,
+                lineNumber: 2843,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3945,20 +4207,20 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                         className: "text-[11px] uppercase tracking-wide text-zinc-500 dark:text-zinc-400"
                     }, void 0, false, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 2670,
+                        lineNumber: 2854,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         ref: dragTimeOverlayRangeRef
                     }, void 0, false, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 2674,
+                        lineNumber: 2858,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 2665,
+                lineNumber: 2849,
                 columnNumber: 7
             }, this),
             memberEditorMode && canManageShifts ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3971,7 +4233,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                         onClick: closeMemberEditor
                     }, void 0, false, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 2679,
+                        lineNumber: 2863,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3989,7 +4251,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: memberEditorMode === "create" ? t("calendar.member_editor.title_create", "Tilføj medarbejder") : t("calendar.member_editor.title_edit", "Rediger medarbejder")
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2695,
+                                        lineNumber: 2879,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4001,20 +4263,34 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                             className: "h-5 w-5"
                                         }, void 0, false, {
                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                            lineNumber: 2706,
+                                            lineNumber: 2890,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2700,
+                                        lineNumber: 2884,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 2694,
+                                lineNumber: 2878,
                                 columnNumber: 13
                             }, this),
+                            memberEditorWarnings.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "space-y-1 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-100",
+                                children: memberEditorWarnings.map((warning, idx)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        children: warning
+                                    }, `member-warning-${idx}`, false, {
+                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                        lineNumber: 2897,
+                                        columnNumber: 19
+                                    }, this))
+                            }, void 0, false, {
+                                fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                lineNumber: 2895,
+                                columnNumber: 15
+                            }, this) : null,
                             memberLoadingDetails || !memberEditorDraft ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex items-center gap-2 py-6 text-sm text-zinc-600 dark:text-zinc-300",
                                 children: [
@@ -4022,14 +4298,14 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         className: "h-4 w-4 animate-spin"
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2712,
+                                        lineNumber: 2904,
                                         columnNumber: 17
                                     }, this),
                                     t("calendar.member_editor.loading", "Henter medarbejderdata…")
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 2711,
+                                lineNumber: 2903,
                                 columnNumber: 15
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                                 children: [
@@ -4044,7 +4320,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: t("calendar.member_editor.first_name", "Fornavn *")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2719,
+                                                        lineNumber: 2911,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4055,13 +4331,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         autoComplete: "given-name"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2722,
+                                                        lineNumber: 2914,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2718,
+                                                lineNumber: 2910,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -4072,7 +4348,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: t("calendar.member_editor.last_name", "Efternavn *")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2731,
+                                                        lineNumber: 2923,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4083,19 +4359,19 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         autoComplete: "family-name"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2734,
+                                                        lineNumber: 2926,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2730,
+                                                lineNumber: 2922,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2717,
+                                        lineNumber: 2909,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4109,7 +4385,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: t("calendar.member_editor.email", "Email *")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2746,
+                                                        lineNumber: 2938,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4121,13 +4397,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         autoComplete: "email"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2749,
+                                                        lineNumber: 2941,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2745,
+                                                lineNumber: 2937,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -4138,7 +4414,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: t("calendar.member_editor.mobile", "Mobilnummer *")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2759,
+                                                        lineNumber: 2951,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4149,19 +4425,19 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         autoComplete: "tel"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2762,
+                                                        lineNumber: 2954,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2758,
+                                                lineNumber: 2950,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2744,
+                                        lineNumber: 2936,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4175,7 +4451,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: t("calendar.member_editor.street", "Vejnavn *")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2774,
+                                                        lineNumber: 2966,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4185,13 +4461,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2777,
+                                                        lineNumber: 2969,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2773,
+                                                lineNumber: 2965,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -4202,7 +4478,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: t("calendar.member_editor.street_no", "Vej nr. *")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2785,
+                                                        lineNumber: 2977,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4212,19 +4488,19 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2788,
+                                                        lineNumber: 2980,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2784,
+                                                lineNumber: 2976,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2772,
+                                        lineNumber: 2964,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4238,7 +4514,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: t("calendar.member_editor.postal", "Postnummer *")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2799,
+                                                        lineNumber: 2991,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4248,13 +4524,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2802,
+                                                        lineNumber: 2994,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2798,
+                                                lineNumber: 2990,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -4265,7 +4541,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: t("calendar.member_editor.city", "By *")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2810,
+                                                        lineNumber: 3002,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4275,19 +4551,19 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2813,
+                                                        lineNumber: 3005,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2809,
+                                                lineNumber: 3001,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2797,
+                                        lineNumber: 2989,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4301,23 +4577,55 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: t("calendar.member_editor.country", "Land *")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2824,
+                                                        lineNumber: 3016,
                                                         columnNumber: 21
                                                     }, this),
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                                         required: true,
                                                         value: memberEditorDraft.country,
                                                         onChange: (e)=>onMemberDraftField("country", e.target.value),
-                                                        className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
-                                                    }, void 0, false, {
+                                                        className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100",
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                                value: "",
+                                                                disabled: true,
+                                                                children: t("calendar.member_editor.country_placeholder", "Vælg land")
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                                lineNumber: 3025,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            memberEditorDraft.country && !MEMBER_COUNTRY_OPTIONS.some((country)=>country.code === memberEditorDraft.country) ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                                value: memberEditorDraft.country,
+                                                                children: memberEditorDraft.country
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                                lineNumber: 3032,
+                                                                columnNumber: 25
+                                                            }, this) : null,
+                                                            MEMBER_COUNTRY_OPTIONS.map((country)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                                    value: country.code,
+                                                                    children: [
+                                                                        country.label,
+                                                                        " (",
+                                                                        country.code,
+                                                                        ")"
+                                                                    ]
+                                                                }, country.code, true, {
+                                                                    fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                                    lineNumber: 3037,
+                                                                    columnNumber: 25
+                                                                }, this))
+                                                        ]
+                                                    }, void 0, true, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2827,
+                                                        lineNumber: 3019,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2823,
+                                                lineNumber: 3015,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -4328,7 +4636,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: t("calendar.member_editor.employee_type", "Medarbejdertype *")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2835,
+                                                        lineNumber: 3044,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -4343,7 +4651,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                 children: t("calendar.member_editor.employee_type_placeholder", "Vælg medarbejdertype")
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                lineNumber: 2844,
+                                                                lineNumber: 3053,
                                                                 columnNumber: 23
                                                             }, this),
                                                             employeeTypes.map((type)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -4351,25 +4659,235 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                     children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$type$2d$label$2d$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["localizeStandardEmployeeTypeLabel"])(type.label, t)
                                                                 }, type.id, false, {
                                                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                    lineNumber: 2851,
+                                                                    lineNumber: 3060,
                                                                     columnNumber: 25
                                                                 }, this))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2838,
+                                                        lineNumber: 3047,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2834,
+                                                lineNumber: 3043,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2822,
+                                        lineNumber: 3014,
+                                        columnNumber: 17
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "grid gap-3 sm:grid-cols-3",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                className: "block text-sm",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                        className: "mb-1 block font-medium text-zinc-700 dark:text-zinc-300",
+                                                        children: t("calendar.member_editor.job_title", "Job titel")
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                        lineNumber: 3070,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                        value: memberEditorDraft.jobTitle,
+                                                        onChange: (e)=>onMemberDraftField("jobTitle", e.target.value),
+                                                        className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100",
+                                                        placeholder: t("calendar.member_editor.job_title_placeholder", "Valgfri")
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                        lineNumber: 3073,
+                                                        columnNumber: 21
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                lineNumber: 3069,
+                                                columnNumber: 19
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                className: "block text-sm",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                        className: "mb-1 block font-medium text-zinc-700 dark:text-zinc-300",
+                                                        children: t("calendar.member_editor.contract_hours", "Kontrakt (timer/uge)")
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                        lineNumber: 3084,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                        inputMode: "decimal",
+                                                        value: memberEditorDraft.contractHoursPerWeek,
+                                                        onChange: (e)=>onMemberDraftField("contractHoursPerWeek", e.target.value),
+                                                        className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                        lineNumber: 3087,
+                                                        columnNumber: 21
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                lineNumber: 3083,
+                                                columnNumber: 19
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                className: "block text-sm",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                        className: "mb-1 block font-medium text-zinc-700 dark:text-zinc-300",
+                                                        children: t("calendar.member_editor.max_hours", "Max timer/uge")
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                        lineNumber: 3097,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                        inputMode: "decimal",
+                                                        value: memberEditorDraft.maxHoursPerWeek,
+                                                        onChange: (e)=>onMemberDraftField("maxHoursPerWeek", e.target.value),
+                                                        className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                        lineNumber: 3100,
+                                                        columnNumber: 21
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                lineNumber: 3096,
+                                                columnNumber: 19
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                        lineNumber: 3068,
+                                        columnNumber: 17
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "grid gap-3 sm:grid-cols-2",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                className: "block text-sm",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                        className: "mb-1 block font-medium text-zinc-700 dark:text-zinc-300",
+                                                        children: t("calendar.member_editor.employment_date", "Ansættelsesdato")
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                        lineNumber: 3113,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                        type: "date",
+                                                        value: memberEditorDraft.employmentDate,
+                                                        onChange: (e)=>onMemberDraftField("employmentDate", e.target.value),
+                                                        className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                        lineNumber: 3116,
+                                                        columnNumber: 21
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                lineNumber: 3112,
+                                                columnNumber: 19
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                className: "block text-sm",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                        className: "mb-1 block font-medium text-zinc-700 dark:text-zinc-300",
+                                                        children: t("calendar.member_editor.birthday", "Fødselsdag")
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                        lineNumber: 3126,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                        type: "date",
+                                                        value: memberEditorDraft.birthday,
+                                                        onChange: (e)=>onMemberDraftField("birthday", e.target.value),
+                                                        className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                        lineNumber: 3129,
+                                                        columnNumber: 21
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                lineNumber: 3125,
+                                                columnNumber: 19
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                        lineNumber: 3111,
+                                        columnNumber: 17
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "rounded-xl border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-700 dark:bg-zinc-950/50",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "mb-2 text-sm font-medium text-zinc-800 dark:text-zinc-200",
+                                                children: t("calendar.member_editor.departments_title", "Afdelinger")
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                lineNumber: 3139,
+                                                columnNumber: 19
+                                            }, this),
+                                            departments.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "text-xs text-zinc-500 dark:text-zinc-400",
+                                                children: t("calendar.member_editor.departments_empty", "Ingen afdelinger oprettet endnu.")
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                lineNumber: 3143,
+                                                columnNumber: 21
+                                            }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "grid gap-2 sm:grid-cols-2",
+                                                children: departments.map((dep)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                        className: "flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900",
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                                type: "checkbox",
+                                                                className: "rounded border-zinc-300",
+                                                                checked: memberEditorDraft.departmentIds.includes(dep.id),
+                                                                onChange: ()=>toggleMemberDraftDepartment(dep.id)
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                                lineNumber: 3156,
+                                                                columnNumber: 27
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                children: dep.name
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                                lineNumber: 3162,
+                                                                columnNumber: 27
+                                                            }, this)
+                                                        ]
+                                                    }, dep.id, true, {
+                                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                        lineNumber: 3152,
+                                                        columnNumber: 25
+                                                    }, this))
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                                lineNumber: 3150,
+                                                columnNumber: 21
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/app/dashboard/admin-calendar.tsx",
+                                        lineNumber: 3138,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -4380,7 +4898,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 children: t("calendar.member_editor.note", "Note")
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2860,
+                                                lineNumber: 3170,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -4391,13 +4909,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 placeholder: t("calendar.member_editor.note_placeholder", "Valgfri intern note")
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2863,
+                                                lineNumber: 3173,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2859,
+                                        lineNumber: 3169,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4411,7 +4929,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: t("calendar.member_editor.preferences_title", "Præferencer")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2877,
+                                                        lineNumber: 3187,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4423,20 +4941,20 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                 className: "h-3.5 w-3.5"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                lineNumber: 2885,
+                                                                lineNumber: 3195,
                                                                 columnNumber: 23
                                                             }, this),
                                                             t("calendar.member_editor.preferences_add", "Tilføj")
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2880,
+                                                        lineNumber: 3190,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2876,
+                                                lineNumber: 3186,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4444,7 +4962,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 children: t("calendar.member_editor.preferences_hint", "Prioriteret rækkefølge. Eksempel: Ferie i uge 42, Ikke arbejde lørdage.")
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2889,
+                                                lineNumber: 3199,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4454,7 +4972,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                     children: t("calendar.member_editor.preferences_empty", "Ingen præferencer endnu.")
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                    lineNumber: 2897,
+                                                    lineNumber: 3207,
                                                     columnNumber: 23
                                                 }, this) : memberPreferences.map((pref)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         className: "grid grid-cols-[72px_1fr_auto] items-center gap-2",
@@ -4470,7 +4988,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                 "aria-label": t("calendar.member_editor.priority_aria", "Prioritet")
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                lineNumber: 2906,
+                                                                lineNumber: 3216,
                                                                 columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4483,7 +5001,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                 placeholder: t("calendar.member_editor.preference_placeholder", "Skriv præference…")
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                lineNumber: 2921,
+                                                                lineNumber: 3231,
                                                                 columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4493,24 +5011,24 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                 children: t("calendar.member_editor.remove", "Fjern")
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                lineNumber: 2935,
+                                                                lineNumber: 3245,
                                                                 columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, pref.id, true, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2905,
+                                                        lineNumber: 3215,
                                                         columnNumber: 25
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2895,
+                                                lineNumber: 3205,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2875,
+                                        lineNumber: 3185,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4521,7 +5039,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 children: t("calendar.member_editor.cv_title", "Upload CV (PDF)")
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2949,
+                                                lineNumber: 3259,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4535,7 +5053,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                 "aria-hidden": true
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                lineNumber: 2954,
+                                                                lineNumber: 3264,
                                                                 columnNumber: 23
                                                             }, this),
                                                             t("calendar.member_editor.cv_choose", "Vælg PDF"),
@@ -4551,13 +5069,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                                 }
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                                lineNumber: 2956,
+                                                                lineNumber: 3266,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2953,
+                                                        lineNumber: 3263,
                                                         columnNumber: 21
                                                     }, this),
                                                     memberCvFile ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4565,7 +5083,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: memberCvFile.name
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2969,
+                                                        lineNumber: 3279,
                                                         columnNumber: 23
                                                     }, this) : null,
                                                     memberEditorMode === "edit" && memberHasCv ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4576,26 +5094,26 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: t("calendar.member_editor.cv_view_existing", "Se nuværende CV")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2972,
+                                                        lineNumber: 3282,
                                                         columnNumber: 23
                                                     }, this) : null,
                                                     memberCvBusy ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
                                                         className: "h-4 w-4 animate-spin text-zinc-500"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 2984,
+                                                        lineNumber: 3294,
                                                         columnNumber: 37
                                                     }, this) : null
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2952,
+                                                lineNumber: 3262,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2948,
+                                        lineNumber: 3258,
                                         columnNumber: 17
                                     }, this),
                                     memberEditorMessage ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4603,7 +5121,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: memberEditorMessage
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2989,
+                                        lineNumber: 3299,
                                         columnNumber: 19
                                     }, this) : null,
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4617,7 +5135,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 children: t("calendar.member_editor.cancel", "Annuller")
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 2993,
+                                                lineNumber: 3303,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4629,18 +5147,18 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                     className: "h-4 w-4 animate-spin"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                    lineNumber: 3008,
+                                                    lineNumber: 3318,
                                                     columnNumber: 23
                                                 }, this) : memberEditorMode === "create" ? t("calendar.member_editor.submit_create", "Opret medarbejder") : t("calendar.member_editor.submit_save", "Gem ændringer")
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 3001,
+                                                lineNumber: 3311,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 2992,
+                                        lineNumber: 3302,
                                         columnNumber: 17
                                     }, this)
                                 ]
@@ -4648,13 +5166,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 2688,
+                        lineNumber: 2872,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 2678,
+                lineNumber: 2862,
                 columnNumber: 9
             }, this) : null,
             pendingDeleteShift && canManageShifts ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4667,7 +5185,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                         onClick: ()=>setPendingDeleteShift(null)
                     }, void 0, false, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 3024,
+                        lineNumber: 3334,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4682,7 +5200,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                 children: "Slet vagt?"
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3036,
+                                lineNumber: 3346,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4690,7 +5208,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                 children: "Du er ved at slette vagten permanent. Denne handling kan ikke fortrydes."
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3039,
+                                lineNumber: 3349,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4698,7 +5216,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                 children: formatShiftRange(pendingDeleteShift.starts_at, pendingDeleteShift.ends_at, uiLanguage)
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3042,
+                                lineNumber: 3352,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4711,7 +5229,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: "Fortryd"
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3050,
+                                        lineNumber: 3360,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4722,25 +5240,25 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: "Slet"
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3057,
+                                        lineNumber: 3367,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3049,
+                                lineNumber: 3359,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 3030,
+                        lineNumber: 3340,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 3023,
+                lineNumber: 3333,
                 columnNumber: 9
             }, this) : null,
             selectedShift && canManageShifts ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4753,7 +5271,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                         onClick: ()=>setSelectedShift(null)
                     }, void 0, false, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 3072,
+                        lineNumber: 3382,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4771,7 +5289,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: "Vagt handlinger"
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3085,
+                                        lineNumber: 3395,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4783,18 +5301,18 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                             className: "h-5 w-5"
                                         }, void 0, false, {
                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                            lineNumber: 3097,
+                                            lineNumber: 3407,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3091,
+                                        lineNumber: 3401,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3084,
+                                lineNumber: 3394,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4806,7 +5324,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 children: "Medarbejder:"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 3103,
+                                                lineNumber: 3413,
                                                 columnNumber: 17
                                             }, this),
                                             " ",
@@ -4814,7 +5332,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3102,
+                                        lineNumber: 3412,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4823,7 +5341,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 children: "Afdeling:"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 3107,
+                                                lineNumber: 3417,
                                                 columnNumber: 17
                                             }, this),
                                             " ",
@@ -4831,7 +5349,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3106,
+                                        lineNumber: 3416,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4840,7 +5358,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 children: "Medarbejdertype:"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 3113,
+                                                lineNumber: 3423,
                                                 columnNumber: 17
                                             }, this),
                                             " ",
@@ -4852,7 +5370,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3112,
+                                        lineNumber: 3422,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4861,7 +5379,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 children: "Vagttype:"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 3124,
+                                                lineNumber: 3434,
                                                 columnNumber: 17
                                             }, this),
                                             " ",
@@ -4869,7 +5387,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3123,
+                                        lineNumber: 3433,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4878,7 +5396,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 children: "Tid:"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 3130,
+                                                lineNumber: 3440,
                                                 columnNumber: 17
                                             }, this),
                                             " ",
@@ -4886,13 +5404,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3129,
+                                        lineNumber: 3439,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3101,
+                                lineNumber: 3411,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4906,7 +5424,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 children: "Klik: sygemeld + find erstatning"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 3141,
+                                                lineNumber: 3451,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -4919,7 +5437,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: "Ingen kandidater"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 3150,
+                                                        lineNumber: 3460,
                                                         columnNumber: 21
                                                     }, this) : null,
                                                     replacementCandidates.map((m)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -4927,13 +5445,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                             children: m.display_name
                                                         }, m.user_id, false, {
                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                            lineNumber: 3153,
+                                                            lineNumber: 3463,
                                                             columnNumber: 21
                                                         }, this))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 3144,
+                                                lineNumber: 3454,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4947,7 +5465,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: "Sygemeld + overdrag"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 3159,
+                                                        lineNumber: 3469,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4958,19 +5476,19 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: "Find erstatning"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 3167,
+                                                        lineNumber: 3477,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 3158,
+                                                lineNumber: 3468,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3140,
+                                        lineNumber: 3450,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4981,7 +5499,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 children: "Byt denne vagt med"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 3179,
+                                                lineNumber: 3489,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -4994,7 +5512,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                         children: "Ingen vagter at bytte med"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                        lineNumber: 3188,
+                                                        lineNumber: 3498,
                                                         columnNumber: 21
                                                     }, this) : null,
                                                     swapCandidates.map((s)=>{
@@ -5009,14 +5527,14 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                             ]
                                                         }, s.id, true, {
                                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                            lineNumber: 3193,
+                                                            lineNumber: 3503,
                                                             columnNumber: 23
                                                         }, this);
                                                     })
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 3182,
+                                                lineNumber: 3492,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5027,19 +5545,19 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 children: "Byt vagt"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 3200,
+                                                lineNumber: 3510,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3178,
+                                        lineNumber: 3488,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3139,
+                                lineNumber: 3449,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5052,12 +5570,12 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                     children: "Slet vagt"
                                 }, void 0, false, {
                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                    lineNumber: 3212,
+                                    lineNumber: 3522,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3211,
+                                lineNumber: 3521,
                                 columnNumber: 13
                             }, this),
                             shiftActionMsg ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5065,7 +5583,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                 children: shiftActionMsg
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3223,
+                                lineNumber: 3533,
                                 columnNumber: 15
                             }, this) : null,
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5073,19 +5591,19 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                 children: "Long press pa en vagtcelle aabner slet-advarsel."
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3228,
+                                lineNumber: 3538,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 3078,
+                        lineNumber: 3388,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 3071,
+                lineNumber: 3381,
                 columnNumber: 9
             }, this) : null,
             createShiftDraft ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5098,7 +5616,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                         onClick: ()=>setCreateShiftDraft(null)
                     }, void 0, false, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 3237,
+                        lineNumber: 3547,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5116,7 +5634,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: "Tilføj vagt"
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3250,
+                                        lineNumber: 3560,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5128,18 +5646,18 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                             className: "h-5 w-5"
                                         }, void 0, false, {
                                             fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                            lineNumber: 3262,
+                                            lineNumber: 3572,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3256,
+                                        lineNumber: 3566,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3249,
+                                lineNumber: 3559,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -5150,7 +5668,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: "Starttidspunkt"
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3267,
+                                        lineNumber: 3577,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -5163,13 +5681,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3270,
+                                        lineNumber: 3580,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3266,
+                                lineNumber: 3576,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -5180,7 +5698,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: "Sluttidspunkt"
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3288,
+                                        lineNumber: 3598,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -5193,13 +5711,13 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3291,
+                                        lineNumber: 3601,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3287,
+                                lineNumber: 3597,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -5210,7 +5728,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: "Vagttype"
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3309,
+                                        lineNumber: 3619,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -5226,7 +5744,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                 children: "Uden vagttype"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                lineNumber: 3321,
+                                                lineNumber: 3631,
                                                 columnNumber: 17
                                             }, this),
                                             shiftTypes.map((shiftType)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -5234,19 +5752,19 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                                     children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$type$2d$label$2d$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["localizeStandardShiftTypeLabel"])(shiftType.label, t)
                                                 }, shiftType.id, false, {
                                                     fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                                    lineNumber: 3323,
+                                                    lineNumber: 3633,
                                                     columnNumber: 19
                                                 }, this))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3312,
+                                        lineNumber: 3622,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3308,
+                                lineNumber: 3618,
                                 columnNumber: 13
                             }, this),
                             createShiftMsg ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5254,7 +5772,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                 children: createShiftMsg
                             }, void 0, false, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3331,
+                                lineNumber: 3641,
                                 columnNumber: 15
                             }, this) : null,
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5267,7 +5785,7 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: "Fortryd"
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3335,
+                                        lineNumber: 3645,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5278,35 +5796,35 @@ function AdminCalendar({ workplaceId, workplaceName }) {
                                         children: "Gem"
                                     }, void 0, false, {
                                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                        lineNumber: 3342,
+                                        lineNumber: 3652,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                                lineNumber: 3334,
+                                lineNumber: 3644,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                        lineNumber: 3243,
+                        lineNumber: 3553,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/dashboard/admin-calendar.tsx",
-                lineNumber: 3236,
+                lineNumber: 3546,
                 columnNumber: 9
             }, this) : null
         ]
     }, void 0, true, {
         fileName: "[project]/app/dashboard/admin-calendar.tsx",
-        lineNumber: 2101,
+        lineNumber: 2285,
         columnNumber: 5
     }, this);
 }
-_s(AdminCalendar, "x0mI3gdENs+jZ5peM9UH4d4Q170=", false, function() {
+_s(AdminCalendar, "vlYGWAVE5QxKcYUZk1HJhURVlew=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$translations$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useTranslations"],
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$translations$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useUiLanguage"],
@@ -5434,4 +5952,4 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 }),
 ]);
 
-//# sourceMappingURL=_0z6mq.j._.js.map
+//# sourceMappingURL=_0pa5cu3._.js.map

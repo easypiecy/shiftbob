@@ -24,6 +24,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   getWorkplaceDepartmentsOverview,
   getWorkplaceTypes,
+  saveWorkplaceDepartmentMemberships,
   type WorkplaceDepartmentRow,
   type WorkplaceEmployeeTypeRow,
   type WorkplaceMemberDepartmentsRow,
@@ -74,6 +75,14 @@ function startOfDay(d: Date): Date {
 function addDays(d: Date, n: number): Date {
   const x = new Date(d);
   x.setDate(x.getDate() + n);
+  return x;
+}
+
+function startOfWeekMonday(d: Date): Date {
+  const x = startOfDay(d);
+  const day = x.getDay();
+  const offset = day === 0 ? -6 : 1 - day;
+  x.setDate(x.getDate() + offset);
   return x;
 }
 
@@ -355,7 +364,13 @@ type MemberProfileDraft = {
   postalCode: string;
   city: string;
   country: string;
+  jobTitle: string;
+  contractHoursPerWeek: string;
+  maxHoursPerWeek: string;
+  employmentDate: string;
+  birthday: string;
   employeeTypeId: string;
+  departmentIds: string[];
   note: string;
 };
 
@@ -378,7 +393,13 @@ function blankMemberProfileDraft(defaultEmployeeTypeId: string): MemberProfileDr
     postalCode: "",
     city: "",
     country: "",
+    jobTitle: "",
+    contractHoursPerWeek: "",
+    maxHoursPerWeek: "",
+    employmentDate: "",
+    birthday: "",
     employeeTypeId: defaultEmployeeTypeId,
+    departmentIds: [],
     note: "",
   };
 }
@@ -412,6 +433,25 @@ function clampHourColWidth(px: number): number {
   return Math.max(MIN_HOUR_COL, Math.min(MAX_HOUR_COL, px));
 }
 const NAME_COL_WIDTH = 200;
+const MEMBER_COUNTRY_OPTIONS = [
+  { code: "DK", label: "Denmark" },
+  { code: "SE", label: "Sweden" },
+  { code: "NO", label: "Norway" },
+  { code: "FI", label: "Finland" },
+  { code: "DE", label: "Germany" },
+  { code: "NL", label: "Netherlands" },
+  { code: "BE", label: "Belgium" },
+  { code: "FR", label: "France" },
+  { code: "ES", label: "Spain" },
+  { code: "IT", label: "Italy" },
+  { code: "PL", label: "Poland" },
+  { code: "AT", label: "Austria" },
+  { code: "CH", label: "Switzerland" },
+  { code: "IE", label: "Ireland" },
+  { code: "PT", label: "Portugal" },
+  { code: "GR", label: "Greece" },
+  { code: "CZ", label: "Czechia" },
+];
 
 type ActivePinch = {
   startDistance: number;
@@ -635,6 +675,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   const [memberEditorDraft, setMemberEditorDraft] = useState<MemberProfileDraft | null>(null);
   const [memberEditorBusy, setMemberEditorBusy] = useState(false);
   const [memberEditorMessage, setMemberEditorMessage] = useState<string | null>(null);
+  const [memberWarningsReady, setMemberWarningsReady] = useState(false);
   const [memberCvBusy, setMemberCvBusy] = useState(false);
   const [memberHasCv, setMemberHasCv] = useState(false);
   const [memberCvFile, setMemberCvFile] = useState<File | null>(null);
@@ -698,16 +739,21 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     []
   );
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const load = useCallback(async (options?: { silent?: boolean }) => {
+    const silent = options?.silent ?? false;
+    if (!silent) {
+      setLoading(true);
+      setError(null);
+    }
     const [overviewRes, typesRes] = await Promise.all([
       getWorkplaceDepartmentsOverview(workplaceId, { access: "calendar_member" }),
       getWorkplaceTypes(workplaceId),
     ]);
     if (!overviewRes.ok) {
-      setError(overviewRes.error);
-      setLoading(false);
+      if (!silent) {
+        setError(overviewRes.error);
+        setLoading(false);
+      }
       return;
     }
     setDepartments(overviewRes.departments);
@@ -720,7 +766,9 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       setShiftTypes(overviewRes.shiftTypes);
       setEmployeeTypes(overviewRes.employeeTypes);
     }
-    setLoading(false);
+    if (!silent) {
+      setLoading(false);
+    }
   }, [workplaceId]);
 
   useEffect(() => {
@@ -1037,6 +1085,78 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     return buildEuViolationRuleMap(combined, memberByUserId);
   }, [rollingShiftsFiltered, monthShiftsFiltered, memberByUserId]);
 
+  const memberEditorWarnings = useMemo(() => {
+    if (!memberWarningsReady || !memberEditorDraft || !memberEditorUserId) {
+      return [] as string[];
+    }
+    const parsedContract = Number(
+      (memberEditorDraft.contractHoursPerWeek || "").replace(",", ".")
+    );
+    const parsedMax = Number(
+      (memberEditorDraft.maxHoursPerWeek || "").replace(",", ".")
+    );
+    const contractLimit = Number.isFinite(parsedContract) ? parsedContract : null;
+    const maxLimit = Number.isFinite(parsedMax) ? parsedMax : null;
+    const monthStart = new Date(anchorDate.getFullYear(), anchorDate.getMonth(), 1);
+    const monthEnd = new Date(anchorDate.getFullYear(), anchorDate.getMonth() + 1, 1);
+    const allShifts = [...rollingShiftsFiltered, ...monthShiftsFiltered].filter(
+      (shift) => shift.user_id === memberEditorUserId
+    );
+    const shiftsInMonth = allShifts.filter((shift) => {
+      const s = new Date(shift.starts_at).getTime();
+      const e = new Date(shift.ends_at).getTime();
+      return s < monthEnd.getTime() && e > monthStart.getTime();
+    });
+    const weekHours = new Map<string, { start: Date; end: Date; hours: number }>();
+    for (const shift of shiftsInMonth) {
+      const startsAt = new Date(shift.starts_at);
+      const endsAt = new Date(shift.ends_at);
+      const hours = Math.max(0, (endsAt.getTime() - startsAt.getTime()) / (1000 * 60 * 60));
+      const weekStart = startOfWeekMonday(startsAt);
+      const key = dayKeyLocal(weekStart);
+      const current = weekHours.get(key) ?? {
+        start: weekStart,
+        end: addDays(weekStart, 6),
+        hours: 0,
+      };
+      current.hours += hours;
+      weekHours.set(key, current);
+    }
+    const warnings: string[] = [];
+    for (const row of [...weekHours.values()].sort((a, b) => a.start.getTime() - b.start.getTime())) {
+      const weekLabel = `${dayKeyLocal(row.start)} - ${dayKeyLocal(row.end)}`;
+      if (contractLimit !== null && row.hours > contractLimit) {
+        warnings.push(
+          `Kontrakt overskredet i uge ${weekLabel}: ${row.hours.toFixed(1)}t > ${contractLimit.toFixed(1)}t`
+        );
+      }
+      if (maxLimit !== null && row.hours > maxLimit) {
+        warnings.push(
+          `Max timer overskredet i uge ${weekLabel}: ${row.hours.toFixed(1)}t > ${maxLimit.toFixed(1)}t`
+        );
+      }
+    }
+    const euWarnings = new Set<string>();
+    for (const shift of shiftsInMonth) {
+      const rule =
+        (shift.id ? euViolationRuleMap.get(shift.id) : undefined) ??
+        euViolationRuleMap.get(shiftIdentityKey(shift));
+      if (rule) {
+        euWarnings.add(`EU-regel brudt (${dayKeyLocal(new Date(shift.starts_at))}): ${rule}`);
+      }
+    }
+    warnings.push(...euWarnings);
+    return warnings;
+  }, [
+    anchorDate,
+    euViolationRuleMap,
+    memberEditorDraft,
+    memberEditorUserId,
+    memberWarningsReady,
+    monthShiftsFiltered,
+    rollingShiftsFiltered,
+  ]);
+
   const canManageShifts = calendarAdminNameView;
 
   const closeMemberEditor = useCallback(() => {
@@ -1044,6 +1164,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     setMemberEditorUserId(null);
     setMemberEditorDraft(null);
     setMemberEditorMessage(null);
+    setMemberWarningsReady(false);
     setMemberCvBusy(false);
     setMemberCvFile(null);
     setMemberHasCv(false);
@@ -1057,6 +1178,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     setMemberEditorMode("create");
     setMemberEditorUserId(null);
     setMemberEditorDraft(blankMemberProfileDraft(defaultEmployeeTypeId));
+    setMemberWarningsReady(false);
     setMemberEditorMessage(
       defaultEmployeeTypeId
         ? null
@@ -1079,6 +1201,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       setMemberEditorMode("edit");
       setMemberEditorUserId(userId);
       setMemberEditorDraft(blankMemberProfileDraft(defaultEmployeeTypeId));
+      setMemberWarningsReady(false);
       setMemberEditorMessage(null);
       setMemberCvBusy(false);
       setMemberCvFile(null);
@@ -1104,9 +1227,23 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
         postalCode: profileRes.data.postalCode,
         city: profileRes.data.city,
         country: profileRes.data.country,
+        jobTitle: profileRes.data.jobTitle ?? "",
+        contractHoursPerWeek: profileRes.data.contractHoursPerWeek ?? "",
+        maxHoursPerWeek: profileRes.data.maxHoursPerWeek ?? "",
+        employmentDate: profileRes.data.employmentDate ?? "",
+        birthday: profileRes.data.birthday ?? "",
         employeeTypeId: profileRes.data.employeeTypeId ?? defaultEmployeeTypeId,
+        departmentIds: members.find((m) => m.user_id === userId)?.department_ids ?? [],
         note: profileRes.data.note ?? "",
       });
+      // Sørg for at kalender-hover bruger den faktiske type med det samme.
+      setMembers((prev) =>
+        prev.map((m) =>
+          m.user_id === userId
+            ? { ...m, employee_type_id: profileRes.data.employeeTypeId ?? null }
+            : m
+        )
+      );
       setMemberHasCv(profileRes.data.hasCv);
       if (prefRes.ok) {
         setMemberPreferences(
@@ -1121,8 +1258,20 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       }
       setMemberLoadingDetails(false);
     },
-    [canManageShifts, defaultEmployeeTypeId, workplaceId]
+    [canManageShifts, defaultEmployeeTypeId, members, workplaceId]
   );
+
+  useEffect(() => {
+    if (!memberEditorMode || memberLoadingDetails || !memberEditorDraft || !memberEditorUserId) {
+      setMemberWarningsReady(false);
+      return;
+    }
+    // Vis advarsler først når editor-data er stabilt indlæst, så vi undgår kortvarige falske advarsler.
+    const timer = setTimeout(() => {
+      setMemberWarningsReady(true);
+    }, 450);
+    return () => clearTimeout(timer);
+  }, [memberEditorDraft, memberEditorMode, memberEditorUserId, memberLoadingDetails]);
 
   const onMemberDraftField = useCallback(
     (key: keyof MemberProfileDraft, value: string) => {
@@ -1133,6 +1282,16 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     },
     []
   );
+
+  const toggleMemberDraftDepartment = useCallback((departmentId: string) => {
+    setMemberEditorDraft((prev) => {
+      if (!prev) return prev;
+      const picked = new Set(prev.departmentIds ?? []);
+      if (picked.has(departmentId)) picked.delete(departmentId);
+      else picked.add(departmentId);
+      return { ...prev, departmentIds: [...picked] };
+    });
+  }, []);
 
   const addPreferenceRow = useCallback(() => {
     setMemberPreferences((prev) => [
@@ -1204,11 +1363,27 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
           postalCode: memberEditorDraft.postalCode,
           city: memberEditorDraft.city,
           country: memberEditorDraft.country,
+          jobTitle: memberEditorDraft.jobTitle,
+          contractHoursPerWeek: memberEditorDraft.contractHoursPerWeek,
+          maxHoursPerWeek: memberEditorDraft.maxHoursPerWeek,
+          employmentDate: memberEditorDraft.employmentDate,
+          birthday: memberEditorDraft.birthday,
           employeeTypeId: memberEditorDraft.employeeTypeId,
           note: memberEditorDraft.note.trim() ? memberEditorDraft.note : null,
         });
         if (!res.ok) {
           setMemberEditorMessage(res.error);
+          return;
+        }
+        const deptRes = await saveWorkplaceDepartmentMemberships(workplaceId, [
+          {
+            userId: res.userId,
+            departmentIds: memberEditorDraft.departmentIds,
+          },
+        ]);
+        if (!deptRes.ok) {
+          setMemberEditorMessage(deptRes.error);
+          await load();
           return;
         }
         const prefSaved = await savePreferencesForUser(res.userId);
@@ -1231,8 +1406,8 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
             return;
           }
         }
-        await load();
         closeMemberEditor();
+        void load({ silent: true });
         return;
       }
 
@@ -1247,11 +1422,34 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
         postalCode: memberEditorDraft.postalCode,
         city: memberEditorDraft.city,
         country: memberEditorDraft.country,
+        jobTitle: memberEditorDraft.jobTitle,
+        contractHoursPerWeek: memberEditorDraft.contractHoursPerWeek,
+        maxHoursPerWeek: memberEditorDraft.maxHoursPerWeek,
+        employmentDate: memberEditorDraft.employmentDate,
+        birthday: memberEditorDraft.birthday,
         employeeTypeId: memberEditorDraft.employeeTypeId,
         note: memberEditorDraft.note.trim() ? memberEditorDraft.note : null,
       });
       if (!res.ok) {
         setMemberEditorMessage(res.error);
+        return;
+      }
+      setMembers((prev) =>
+        prev.map((m) =>
+          m.user_id === memberEditorUserId
+            ? { ...m, employee_type_id: memberEditorDraft.employeeTypeId || null }
+            : m
+        )
+      );
+      const deptRes = await saveWorkplaceDepartmentMemberships(workplaceId, [
+        {
+          userId: memberEditorUserId,
+          departmentIds: memberEditorDraft.departmentIds,
+        },
+      ]);
+      if (!deptRes.ok) {
+        setMemberEditorMessage(deptRes.error);
+        await load();
         return;
       }
       const prefSaved = await savePreferencesForUser(memberEditorUserId);
@@ -1274,8 +1472,8 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
           return;
         }
       }
-      await load();
       closeMemberEditor();
+      void load({ silent: true });
     } finally {
       setMemberEditorBusy(false);
     }
@@ -2693,6 +2891,14 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
               </button>
             </div>
 
+            {memberEditorWarnings.length > 0 ? (
+              <div className="space-y-1 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-100">
+                {memberEditorWarnings.map((warning, idx) => (
+                  <p key={`member-warning-${idx}`}>{warning}</p>
+                ))}
+              </div>
+            ) : null}
+
             {memberLoadingDetails || !memberEditorDraft ? (
               <div className="flex items-center gap-2 py-6 text-sm text-zinc-600 dark:text-zinc-300">
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -2810,12 +3016,29 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                     <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
                       {t("calendar.member_editor.country", "Land *")}
                     </span>
-                    <input
+                    <select
                       required
                       value={memberEditorDraft.country}
                       onChange={(e) => onMemberDraftField("country", e.target.value)}
                       className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
-                    />
+                    >
+                      <option value="" disabled>
+                        {t("calendar.member_editor.country_placeholder", "Vælg land")}
+                      </option>
+                      {memberEditorDraft.country &&
+                      !MEMBER_COUNTRY_OPTIONS.some(
+                        (country) => country.code === memberEditorDraft.country
+                      ) ? (
+                        <option value={memberEditorDraft.country}>
+                          {memberEditorDraft.country}
+                        </option>
+                      ) : null}
+                      {MEMBER_COUNTRY_OPTIONS.map((country) => (
+                        <option key={country.code} value={country.code}>
+                          {country.label} ({country.code})
+                        </option>
+                      ))}
+                    </select>
                   </label>
                   <label className="block text-sm">
                     <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
@@ -2840,6 +3063,107 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                       ))}
                     </select>
                   </label>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      {t("calendar.member_editor.job_title", "Job titel")}
+                    </span>
+                    <input
+                      value={memberEditorDraft.jobTitle}
+                      onChange={(e) => onMemberDraftField("jobTitle", e.target.value)}
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                      placeholder={t(
+                        "calendar.member_editor.job_title_placeholder",
+                        "Valgfri"
+                      )}
+                    />
+                  </label>
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      {t("calendar.member_editor.contract_hours", "Kontrakt (timer/uge)")}
+                    </span>
+                    <input
+                      inputMode="decimal"
+                      value={memberEditorDraft.contractHoursPerWeek}
+                      onChange={(e) =>
+                        onMemberDraftField("contractHoursPerWeek", e.target.value)
+                      }
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    />
+                  </label>
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      {t("calendar.member_editor.max_hours", "Max timer/uge")}
+                    </span>
+                    <input
+                      inputMode="decimal"
+                      value={memberEditorDraft.maxHoursPerWeek}
+                      onChange={(e) =>
+                        onMemberDraftField("maxHoursPerWeek", e.target.value)
+                      }
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    />
+                  </label>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      {t("calendar.member_editor.employment_date", "Ansættelsesdato")}
+                    </span>
+                    <input
+                      type="date"
+                      value={memberEditorDraft.employmentDate}
+                      onChange={(e) =>
+                        onMemberDraftField("employmentDate", e.target.value)
+                      }
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    />
+                  </label>
+                  <label className="block text-sm">
+                    <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                      {t("calendar.member_editor.birthday", "Fødselsdag")}
+                    </span>
+                    <input
+                      type="date"
+                      value={memberEditorDraft.birthday}
+                      onChange={(e) => onMemberDraftField("birthday", e.target.value)}
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    />
+                  </label>
+                </div>
+
+                <div className="rounded-xl border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-700 dark:bg-zinc-950/50">
+                  <p className="mb-2 text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                    {t("calendar.member_editor.departments_title", "Afdelinger")}
+                  </p>
+                  {departments.length === 0 ? (
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                      {t(
+                        "calendar.member_editor.departments_empty",
+                        "Ingen afdelinger oprettet endnu."
+                      )}
+                    </p>
+                  ) : (
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {departments.map((dep) => (
+                        <label
+                          key={dep.id}
+                          className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+                        >
+                          <input
+                            type="checkbox"
+                            className="rounded border-zinc-300"
+                            checked={memberEditorDraft.departmentIds.includes(dep.id)}
+                            onChange={() => toggleMemberDraftDepartment(dep.id)}
+                          />
+                          <span>{dep.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <label className="block text-sm">

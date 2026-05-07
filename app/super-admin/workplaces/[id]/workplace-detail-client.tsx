@@ -538,7 +538,7 @@ export default function WorkplaceDetailClient({
 
   async function handleResetCalendarData() {
     const ok = window.confirm(
-      "Nulstil kalender? Dette sletter alle aftaler, alle medarbejdere (EMPLOYEE) og alle afdelinger for arbejdspladsen."
+      "Dette vil slette alle vagter, alle afdelinger og alle medarbejdere. Kun dine indstillinger forbliver som nu. Er du sikker på at du vil nulstille?"
     );
     if (!ok) return;
     setResetBusy(true);
@@ -796,34 +796,6 @@ export default function WorkplaceDetailClient({
       </section>
       ) : null}
 
-      {!dashboardTabsEnabled || activeSettingsTab === "company" ? (
-      <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-          Indstillinger
-        </h2>
-        <label className="block max-w-md">
-          <span className="mb-1 block text-sm font-medium">
-            Stripe Customer ID
-          </span>
-          <input
-            value={d.stripe_customer_id ?? ""}
-            onChange={(e) =>
-              setD((x) => ({
-                ...x,
-                stripe_customer_id: e.target.value || null,
-              }))
-            }
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 font-mono text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
-            placeholder="cus_…"
-          />
-          <span className="mt-1 block text-xs text-zinc-500">
-            Kort gemmes i Stripe; indsæt customer-id efter oprettelse i Stripe
-            Dashboard.
-          </span>
-        </label>
-      </section>
-      ) : null}
-
       {!dashboardTabsEnabled || activeSettingsTab === "planning" ? (
       <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
@@ -884,7 +856,7 @@ export default function WorkplaceDetailClient({
       </section>
       ) : null}
 
-      {!dashboardTabsEnabled || activeSettingsTab === "planning" ? (
+      {!dashboardTabsEnabled || activeSettingsTab === "company" ? (
       <section className="space-y-5 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
@@ -945,83 +917,6 @@ export default function WorkplaceDetailClient({
             ))}
           </ul>
         )}
-
-        {membersWithDepartments.length === 0 ? (
-          <p className="text-sm text-zinc-500">
-            Ingen medarbejdere på arbejdspladsen endnu — tilknyt brugere under
-            Super Admin-brugere først.
-          </p>
-        ) : deptList.length > 0 ? (
-          <div className="space-y-3">
-            <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
-              Medarbejdere og afdelinger
-            </p>
-            <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700">
-              <table className="min-w-full border-collapse text-left text-sm">
-                <thead>
-                  <tr className="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800/50">
-                    <th className="sticky left-0 z-10 bg-zinc-50 px-3 py-2 font-medium dark:bg-zinc-800/80">
-                      Medarbejder
-                    </th>
-                    <th className="px-3 py-2 font-medium">Rolle</th>
-                    {deptList.map((dep) => (
-                      <th
-                        key={dep.id}
-                        className="whitespace-nowrap px-2 py-2 text-center font-medium"
-                      >
-                        {dep.name}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-                  {membersWithDepartments.map((m) => {
-                    const picked = new Set(membershipMap[m.user_id] ?? []);
-                    return (
-                      <tr key={m.user_id}>
-                        <td className="sticky left-0 z-10 bg-white px-3 py-2 dark:bg-zinc-900">
-                          <div className="font-medium">{m.display_name}</div>
-                          <div className="text-xs text-zinc-600 dark:text-zinc-400">
-                            {m.email ?? "—"}
-                          </div>
-                          <div className="font-mono text-xs text-zinc-500">
-                            {m.user_id}
-                          </div>
-                        </td>
-                        <td className="px-3 py-2 text-zinc-600 dark:text-zinc-400">
-                          {m.role}
-                        </td>
-                        {deptList.map((dep) => (
-                          <td key={dep.id} className="px-2 py-2 text-center">
-                            <input
-                              type="checkbox"
-                              className="rounded border-zinc-300"
-                              checked={picked.has(dep.id)}
-                              onChange={() =>
-                                toggleDeptMembership(m.user_id, dep.id)
-                              }
-                              disabled={deptBusy}
-                              aria-label={`${m.display_name} — ${dep.name}`}
-                            />
-                          </td>
-                        ))}
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-            <button
-              type="button"
-              disabled={deptBusy}
-              onClick={() => void handleSaveDepartmentMemberships()}
-              className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
-            >
-              {deptBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              Gem afdelingstilknytninger
-            </button>
-          </div>
-        ) : null}
 
         <div className="space-y-3 rounded-xl border border-dashed border-zinc-300 bg-zinc-50/70 p-4 dark:border-zinc-700 dark:bg-zinc-950/40">
           <div>

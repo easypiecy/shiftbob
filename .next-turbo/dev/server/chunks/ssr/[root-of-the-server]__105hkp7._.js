@@ -3750,6 +3750,37 @@ function validateProfileInput(input) {
     if (!country.ok) return country;
     const employeeTypeId = normalizeRequired(input.employeeTypeId, "Medarbejdertype");
     if (!employeeTypeId.ok) return employeeTypeId;
+    const jobTitle = input.jobTitle.trim();
+    const contractHoursPerWeek = input.contractHoursPerWeek.trim();
+    const maxHoursPerWeek = input.maxHoursPerWeek.trim();
+    const employmentDate = input.employmentDate.trim();
+    const birthday = input.birthday.trim();
+    const isValidHours = (value)=>value === "" || /^(\d+([.,]\d{1,2})?)$/.test(value);
+    const isValidDate = (value)=>value === "" || /^\d{4}-\d{2}-\d{2}$/.test(value);
+    if (!isValidHours(contractHoursPerWeek)) {
+        return {
+            ok: false,
+            error: "Kontrakt (timer/uge) skal være et tal."
+        };
+    }
+    if (!isValidHours(maxHoursPerWeek)) {
+        return {
+            ok: false,
+            error: "Max timer (timer/uge) skal være et tal."
+        };
+    }
+    if (!isValidDate(employmentDate)) {
+        return {
+            ok: false,
+            error: "Ansættelsesdato skal være gyldig dato (YYYY-MM-DD)."
+        };
+    }
+    if (!isValidDate(birthday)) {
+        return {
+            ok: false,
+            error: "Fødselsdag skal være gyldig dato (YYYY-MM-DD)."
+        };
+    }
     return {
         ok: true,
         value: {
@@ -3763,6 +3794,11 @@ function validateProfileInput(input) {
             city: city.value,
             country: country.value,
             employeeTypeId: employeeTypeId.value,
+            jobTitle,
+            contractHoursPerWeek,
+            maxHoursPerWeek,
+            employmentDate,
+            birthday,
             note: input.note?.trim() ? input.note.trim() : null
         }
     };
@@ -3905,6 +3941,11 @@ async function getWorkplaceMemberProfileDetails(workplaceId, userId) {
             city: typeof profile?.city === "string" ? profile.city : "",
             country: typeof profile?.country === "string" ? profile.country : typeof meta.country === "string" ? meta.country : "",
             employeeTypeId: member?.employee_type_id ?? null,
+            jobTitle: typeof meta.import_job_title === "string" ? meta.import_job_title : "",
+            contractHoursPerWeek: typeof meta.import_contract_hours_per_week === "string" ? meta.import_contract_hours_per_week : "",
+            maxHoursPerWeek: typeof meta.import_max_hours_per_week === "string" ? meta.import_max_hours_per_week : "",
+            employmentDate: typeof meta.import_start_date === "string" ? meta.import_start_date : "",
+            birthday: typeof meta.import_birth_date === "string" ? meta.import_birth_date : typeof meta.birth_date === "string" ? meta.birth_date : "",
             note: typeof profile?.note === "string" ? profile.note : null,
             hasCv: typeof profile?.cv_storage_path === "string" && profile.cv_storage_path.length > 0
         };
@@ -3935,7 +3976,12 @@ async function createWorkplaceMemberWithProfile(workplaceId, input) {
                 first_name: profile.firstName,
                 last_name: profile.lastName,
                 full_name: `${profile.firstName} ${profile.lastName}`.trim(),
-                country: profile.country
+                country: profile.country,
+                import_job_title: profile.jobTitle || null,
+                import_contract_hours_per_week: profile.contractHoursPerWeek || null,
+                import_max_hours_per_week: profile.maxHoursPerWeek || null,
+                import_start_date: profile.employmentDate || null,
+                import_birth_date: profile.birthday || null
             }
         });
         if (createRes.error || !createRes.data.user) {
@@ -3998,7 +4044,12 @@ async function updateWorkplaceMemberWithProfile(workplaceId, userId, input) {
                 first_name: profile.firstName,
                 last_name: profile.lastName,
                 full_name: `${profile.firstName} ${profile.lastName}`.trim(),
-                country: profile.country
+                country: profile.country,
+                import_job_title: profile.jobTitle || null,
+                import_contract_hours_per_week: profile.contractHoursPerWeek || null,
+                import_max_hours_per_week: profile.maxHoursPerWeek || null,
+                import_start_date: profile.employmentDate || null,
+                import_birth_date: profile.birthday || null
             }
         });
         if (authErr) return {
@@ -4268,6 +4319,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$w
 ;
 ;
 ;
+;
 }),
 "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)", ((__turbopack_context__) => {
 "use strict";
@@ -4291,6 +4343,8 @@ __turbopack_context__.s([
     ()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$workplace$2d$member$2d$calendar$2d$actions$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getWorkplaceMemberCvSignedUrl"],
     "60e64b9a3c08dd75808add0d0cf5abd6c40b79aaff",
     ()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$workplace$2d$shifts$2d$actions$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["createWorkplaceShift"],
+    "60fa005521543123673f61050ebfde5ce49de26a60",
+    ()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$super$2d$admin$2f$workplaces$2f$actions$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["saveWorkplaceDepartmentMemberships"],
     "7079bf300e55699172b61a4d62a1de0c91e12f12da",
     ()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$dashboard$2f$workplace$2d$member$2d$calendar$2d$actions$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["saveWorkplaceMemberPreferences"],
     "707d56f2e308f0705ec21f11ce49379a1fd73689c7",

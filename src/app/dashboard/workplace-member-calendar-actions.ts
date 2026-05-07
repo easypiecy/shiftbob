@@ -32,6 +32,11 @@ export type WorkplaceMemberProfileInput = {
   city: string;
   country: string;
   employeeTypeId: string;
+  jobTitle: string;
+  contractHoursPerWeek: string;
+  maxHoursPerWeek: string;
+  employmentDate: string;
+  birthday: string;
   note: string | null;
 };
 
@@ -47,6 +52,11 @@ export type WorkplaceMemberProfileDetails = {
   city: string;
   country: string;
   employeeTypeId: string | null;
+  jobTitle: string;
+  contractHoursPerWeek: string;
+  maxHoursPerWeek: string;
+  employmentDate: string;
+  birthday: string;
   note: string | null;
   hasCv: boolean;
 };
@@ -130,6 +140,26 @@ function validateProfileInput(input: WorkplaceMemberProfileInput): { ok: true; v
   if (!country.ok) return country;
   const employeeTypeId = normalizeRequired(input.employeeTypeId, "Medarbejdertype");
   if (!employeeTypeId.ok) return employeeTypeId;
+  const jobTitle = input.jobTitle.trim();
+  const contractHoursPerWeek = input.contractHoursPerWeek.trim();
+  const maxHoursPerWeek = input.maxHoursPerWeek.trim();
+  const employmentDate = input.employmentDate.trim();
+  const birthday = input.birthday.trim();
+  const isValidHours = (value: string) => value === "" || /^(\d+([.,]\d{1,2})?)$/.test(value);
+  const isValidDate = (value: string) =>
+    value === "" || /^\d{4}-\d{2}-\d{2}$/.test(value);
+  if (!isValidHours(contractHoursPerWeek)) {
+    return { ok: false, error: "Kontrakt (timer/uge) skal være et tal." };
+  }
+  if (!isValidHours(maxHoursPerWeek)) {
+    return { ok: false, error: "Max timer (timer/uge) skal være et tal." };
+  }
+  if (!isValidDate(employmentDate)) {
+    return { ok: false, error: "Ansættelsesdato skal være gyldig dato (YYYY-MM-DD)." };
+  }
+  if (!isValidDate(birthday)) {
+    return { ok: false, error: "Fødselsdag skal være gyldig dato (YYYY-MM-DD)." };
+  }
 
   return {
     ok: true,
@@ -144,6 +174,11 @@ function validateProfileInput(input: WorkplaceMemberProfileInput): { ok: true; v
       city: city.value,
       country: country.value,
       employeeTypeId: employeeTypeId.value,
+      jobTitle,
+      contractHoursPerWeek,
+      maxHoursPerWeek,
+      employmentDate,
+      birthday,
       note: input.note?.trim() ? input.note.trim() : null,
     },
   };
@@ -302,6 +337,28 @@ export async function getWorkplaceMemberProfileDetails(
             ? meta.country
             : "",
       employeeTypeId: (member?.employee_type_id as string | null) ?? null,
+      jobTitle:
+        typeof meta.import_job_title === "string"
+          ? meta.import_job_title
+          : "",
+      contractHoursPerWeek:
+        typeof meta.import_contract_hours_per_week === "string"
+          ? meta.import_contract_hours_per_week
+          : "",
+      maxHoursPerWeek:
+        typeof meta.import_max_hours_per_week === "string"
+          ? meta.import_max_hours_per_week
+          : "",
+      employmentDate:
+        typeof meta.import_start_date === "string"
+          ? meta.import_start_date
+          : "",
+      birthday:
+        typeof meta.import_birth_date === "string"
+          ? meta.import_birth_date
+          : typeof meta.birth_date === "string"
+            ? meta.birth_date
+            : "",
       note: typeof profile?.note === "string" ? profile.note : null,
       hasCv: typeof profile?.cv_storage_path === "string" && profile.cv_storage_path.length > 0,
     };
@@ -332,6 +389,11 @@ export async function createWorkplaceMemberWithProfile(
         last_name: profile.lastName,
         full_name: `${profile.firstName} ${profile.lastName}`.trim(),
         country: profile.country,
+        import_job_title: profile.jobTitle || null,
+        import_contract_hours_per_week: profile.contractHoursPerWeek || null,
+        import_max_hours_per_week: profile.maxHoursPerWeek || null,
+        import_start_date: profile.employmentDate || null,
+        import_birth_date: profile.birthday || null,
       },
     });
     if (createRes.error || !createRes.data.user) {
@@ -391,6 +453,11 @@ export async function updateWorkplaceMemberWithProfile(
         last_name: profile.lastName,
         full_name: `${profile.firstName} ${profile.lastName}`.trim(),
         country: profile.country,
+        import_job_title: profile.jobTitle || null,
+        import_contract_hours_per_week: profile.contractHoursPerWeek || null,
+        import_max_hours_per_week: profile.maxHoursPerWeek || null,
+        import_start_date: profile.employmentDate || null,
+        import_birth_date: profile.birthday || null,
       },
     });
     if (authErr) return { ok: false, error: authErr.message };

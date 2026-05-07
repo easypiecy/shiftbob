@@ -36,6 +36,18 @@
       "exportedName": "getWorkplaceTypes",
       "filename": "src/app/super-admin/workplaces/actions.ts"
     },
+    "60fa005521543123673f61050ebfde5ce49de26a60": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "saveWorkplaceDepartmentMemberships",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "exportedName": "saveWorkplaceDepartmentMemberships",
+      "filename": "src/app/super-admin/workplaces/actions.ts"
+    },
     "60e64b9a3c08dd75808add0d0cf5abd6c40b79aaff": {
       "workers": {
         "app/dashboard/page": {
