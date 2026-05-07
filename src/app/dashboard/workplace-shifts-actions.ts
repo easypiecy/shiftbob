@@ -39,9 +39,15 @@ export type WorkplaceShiftRow = {
   user_id: string | null;
   required_employee_type_id: string | null;
   shift_type_id: string | null;
+  note: string | null;
   starts_at: string;
   ends_at: string;
 };
+
+const SHIFT_SELECT_WITH_REQUIRED_TYPE =
+  "id, workplace_id, department_id, user_id, required_employee_type_id, shift_type_id, note, starts_at, ends_at";
+const SHIFT_SELECT_LEGACY =
+  "id, workplace_id, department_id, user_id, shift_type_id, starts_at, ends_at";
 
 async function assertCalendarAdminForWorkplace(workplaceId: string): Promise<void> {
   await assertWorkplaceMember(workplaceId);
@@ -74,19 +80,47 @@ export async function getWorkplaceShiftsInRange(
     const admin = getAdminClient();
     let q = admin
       .from("workplace_shifts")
-      .select(
-        "id, workplace_id, department_id, user_id, required_employee_type_id, shift_type_id, starts_at, ends_at"
-      )
+      .select(SHIFT_SELECT_WITH_REQUIRED_TYPE)
       .eq("workplace_id", workplaceId)
       .lt("starts_at", rangeEndIso)
       .gt("ends_at", rangeStartIso);
     if (departmentId) {
-      q = q.eq("department_id", departmentId);
+      // Include legacy shifts without afdeling, so existing data doesn't disappear.
+      q = q.or(`department_id.eq.${departmentId},department_id.is.null`);
     }
     if (userId) {
       q = q.eq("user_id", userId);
     }
-    const { data, error } = await q.order("starts_at");
+    const primaryRes = await q.order("starts_at");
+    let data = (primaryRes.data ?? null) as WorkplaceShiftRow[] | null;
+    let error = primaryRes.error;
+    if (
+      error &&
+      /required_employee_type_id|note|column .* does not exist|schema cache/i.test(error.message)
+    ) {
+      let legacyQ = admin
+        .from("workplace_shifts")
+        .select(SHIFT_SELECT_LEGACY)
+        .eq("workplace_id", workplaceId)
+        .lt("starts_at", rangeEndIso)
+        .gt("ends_at", rangeStartIso);
+      if (departmentId) {
+        legacyQ = legacyQ.or(`department_id.eq.${departmentId},department_id.is.null`);
+      }
+      if (userId) {
+        legacyQ = legacyQ.eq("user_id", userId);
+      }
+      const legacyRes = await legacyQ.order("starts_at");
+      data = (legacyRes.data ?? null) as WorkplaceShiftRow[] | null;
+      error = legacyRes.error;
+      if (!error && data) {
+        data = data.map((row) => ({
+          ...row,
+          required_employee_type_id: null,
+          note: null,
+        }));
+      }
+    }
     if (error) {
       if (isMissingSchemaError(error.message)) {
         rowCount = 0;
@@ -263,6 +297,7 @@ export async function createWorkplaceShift(
     departmentId: string | null;
     requiredEmployeeTypeId: string | null;
     shiftTypeId: string | null;
+    note: string | null;
     startsAtIso: string;
     endsAtIso: string;
   }
@@ -298,7 +333,7 @@ export async function createWorkplaceShift(
       }
     }
 
-    const { data, error } = await admin
+    let { data, error } = await admin
       .from("workplace_shifts")
       .insert({
         workplace_id: workplaceId,
@@ -306,13 +341,34 @@ export async function createWorkplaceShift(
         user_id: input.userId,
         required_employee_type_id: input.requiredEmployeeTypeId,
         shift_type_id: input.shiftTypeId,
+        note: input.note,
         starts_at: new Date(s).toISOString(),
         ends_at: new Date(e).toISOString(),
       })
-      .select(
-        "id, workplace_id, department_id, user_id, required_employee_type_id, shift_type_id, starts_at, ends_at"
-      )
+      .select(SHIFT_SELECT_WITH_REQUIRED_TYPE)
       .single();
+    if (
+      error &&
+      /required_employee_type_id|note|column .* does not exist|schema cache/i.test(error.message)
+    ) {
+      const legacyInsert = await admin
+        .from("workplace_shifts")
+        .insert({
+          workplace_id: workplaceId,
+          department_id: input.departmentId,
+          user_id: input.userId,
+          shift_type_id: input.shiftTypeId,
+          note: input.note,
+          starts_at: new Date(s).toISOString(),
+          ends_at: new Date(e).toISOString(),
+        })
+        .select(SHIFT_SELECT_LEGACY)
+        .single();
+      data = legacyInsert.data
+        ? { ...legacyInsert.data, required_employee_type_id: null, note: input.note ?? null }
+        : legacyInsert.data;
+      error = legacyInsert.error;
+    }
     if (error) return { ok: false, error: error.message };
 
     await incrementWorkplaceManualShiftsCreatedCount(workplaceId, 1, {

@@ -8,6 +8,7 @@ create table if not exists public.workplace_shifts (
   user_id uuid references auth.users (id) on delete cascade,
   required_employee_type_id uuid references public.workplace_employee_types (id) on delete set null,
   shift_type_id uuid references public.workplace_shift_types (id) on delete set null,
+  note text,
   starts_at timestamptz not null,
   ends_at timestamptz not null,
   created_at timestamptz not null default now(),

@@ -354,6 +354,16 @@ type CreateShiftDraft = {
   startIso: string;
   endIso: string;
   shiftTypeId: string | null;
+  note: string;
+};
+
+type OpenShiftCreateDraft = {
+  departmentId: string;
+  requiredEmployeeTypeId: string;
+  shiftTypeId: string;
+  startIso: string;
+  endIso: string;
+  note: string;
 };
 
 type MemberProfileDraft = {
@@ -671,6 +681,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   const [viewMode, setViewMode] = useState<CalendarViewMode>("rolling");
   const [anchorDate, setAnchorDate] = useState(() => startOfDay(new Date()));
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showOpenShiftsPanel, setShowOpenShiftsPanel] = useState(false);
   const [rollingDays, setRollingDays] = useState<Date[]>(() =>
     expandForward(startOfDay(new Date()), ROLLING_DAY_COUNT)
   );
@@ -685,6 +696,19 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   const [createShiftDraft, setCreateShiftDraft] = useState<CreateShiftDraft | null>(null);
   const [createShiftBusy, setCreateShiftBusy] = useState(false);
   const [createShiftMsg, setCreateShiftMsg] = useState<string | null>(null);
+  const [openShiftFeed, setOpenShiftFeed] = useState<WorkplaceShiftRow[]>([]);
+  const [openShiftFeedLoading, setOpenShiftFeedLoading] = useState(false);
+  const [openShiftFeedError, setOpenShiftFeedError] = useState<string | null>(null);
+  const [openShiftCreateBusy, setOpenShiftCreateBusy] = useState(false);
+  const [openShiftCreateMsg, setOpenShiftCreateMsg] = useState<string | null>(null);
+  const [openShiftCreateDraft, setOpenShiftCreateDraft] = useState<OpenShiftCreateDraft>({
+    departmentId: "",
+    requiredEmployeeTypeId: "",
+    shiftTypeId: "",
+    startIso: new Date().toISOString(),
+    endIso: new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString(),
+    note: "",
+  });
   const [memberEditorMode, setMemberEditorMode] = useState<MemberEditorMode | null>(null);
   const [memberEditorUserId, setMemberEditorUserId] = useState<string | null>(null);
   const [memberEditorDraft, setMemberEditorDraft] = useState<MemberProfileDraft | null>(null);
@@ -937,8 +961,8 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     return m;
   }, [departments]);
 
-  const openRowShiftKey = useCallback((departmentId: string | null) => {
-    return `open:${departmentId ?? "none"}`;
+  const openRowShiftKey = useCallback((departmentId: string | null, lane: number) => {
+    return `open:${departmentId ?? "none"}:lane:${lane}`;
   }, []);
 
   const visibleEmployees = useMemo(() => {
@@ -996,6 +1020,71 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     return rollingShifts.filter((s) => s.shift_type_id === filterShiftTypeId);
   }, [rollingShifts, filterShiftTypeId]);
 
+  const upcomingOpenShifts = useMemo(() => {
+    const nowMs = Date.now();
+    const list = openShiftFeed.filter((shift) => {
+      if (shift.user_id) return false;
+      const endMs = new Date(shift.ends_at).getTime();
+      return Number.isFinite(endMs) && endMs >= nowMs;
+    });
+    list.sort((a, b) => {
+      const aStart = new Date(a.starts_at).getTime();
+      const bStart = new Date(b.starts_at).getTime();
+      const aEffective = Math.max(aStart, nowMs);
+      const bEffective = Math.max(bStart, nowMs);
+      if (aEffective !== bEffective) return aEffective - bEffective;
+      return aStart - bStart;
+    });
+    return list;
+  }, [openShiftFeed]);
+
+  const openShiftLaneInfo = useMemo(() => {
+    const laneByShiftId = new Map<string, number>();
+    const laneCountByDepartmentId = new Map<string, number>();
+    const byDepartment = new Map<string, WorkplaceShiftRow[]>();
+
+    for (const shift of rollingShiftsFiltered) {
+      if (shift.user_id || !shift.department_id) continue;
+      const list = byDepartment.get(shift.department_id) ?? [];
+      list.push(shift);
+      byDepartment.set(shift.department_id, list);
+    }
+
+    for (const [departmentId, shifts] of byDepartment) {
+      const sorted = [...shifts].sort((a, b) => {
+        const sa = new Date(a.starts_at).getTime();
+        const sb = new Date(b.starts_at).getTime();
+        if (sa !== sb) return sa - sb;
+        const ea = new Date(a.ends_at).getTime();
+        const eb = new Date(b.ends_at).getTime();
+        return ea - eb;
+      });
+
+      const laneEndByIdx: number[] = [];
+      for (const shift of sorted) {
+        const startMs = new Date(shift.starts_at).getTime();
+        const endMs = new Date(shift.ends_at).getTime();
+        if (!Number.isFinite(startMs) || !Number.isFinite(endMs) || endMs <= startMs) {
+          laneByShiftId.set(shift.id, 0);
+          continue;
+        }
+
+        let laneIdx = laneEndByIdx.findIndex((laneEnd) => laneEnd <= startMs);
+        if (laneIdx < 0) {
+          laneIdx = laneEndByIdx.length;
+          laneEndByIdx.push(endMs);
+        } else {
+          laneEndByIdx[laneIdx] = endMs;
+        }
+        laneByShiftId.set(shift.id, laneIdx);
+      }
+
+      laneCountByDepartmentId.set(departmentId, laneEndByIdx.length);
+    }
+
+    return { laneByShiftId, laneCountByDepartmentId };
+  }, [rollingShiftsFiltered]);
+
   const rollingSlotShiftMap = useMemo(() => {
     const map = new Map<string, WorkplaceShiftRow>();
     const starts = new Set<string>();
@@ -1010,7 +1099,10 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       firstHour.setMinutes(0, 0, 0);
       const rowShiftKey = shift.user_id
         ? `user:${shift.user_id}`
-        : openRowShiftKey(shift.department_id ?? null);
+        : openRowShiftKey(
+            shift.department_id ?? null,
+            openShiftLaneInfo.laneByShiftId.get(shift.id) ?? 0
+          );
       for (let t = firstHour.getTime(); t < endMs; t += 60 * 60 * 1000) {
         const d = new Date(t);
         const key = shiftSlotKey(rowShiftKey, d, d.getHours());
@@ -1032,7 +1124,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     }
 
     return { map, starts, ends };
-  }, [rollingShiftsFiltered, openRowShiftKey]);
+  }, [rollingShiftsFiltered, openRowShiftKey, openShiftLaneInfo.laneByShiftId]);
 
   const monthShiftsFiltered = useMemo(() => {
     if (!filterShiftTypeId) return monthShifts;
@@ -1194,6 +1286,36 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   ]);
 
   const canManageShifts = calendarAdminNameView;
+
+  const refreshOpenShiftFeed = useCallback(async () => {
+    setOpenShiftFeedLoading(true);
+    setOpenShiftFeedError(null);
+    try {
+      const startIso = new Date().toISOString();
+      const endIso = addDays(new Date(), 120).toISOString();
+      const res = await getWorkplaceShiftsInRange(workplaceId, null, startIso, endIso);
+      if (!res.ok) {
+        setOpenShiftFeedError(res.error);
+        return;
+      }
+      setOpenShiftFeed(res.shifts.filter((shift) => !shift.user_id));
+    } finally {
+      setOpenShiftFeedLoading(false);
+    }
+  }, [workplaceId]);
+
+  useEffect(() => {
+    if (!showOpenShiftsPanel) return;
+    void refreshOpenShiftFeed();
+  }, [showOpenShiftsPanel, refreshOpenShiftFeed]);
+
+  useEffect(() => {
+    if (!showOpenShiftsPanel) return;
+    setOpenShiftCreateDraft((prev) => {
+      if (prev.departmentId || !selectedDeptId) return prev;
+      return { ...prev, departmentId: selectedDeptId };
+    });
+  }, [showOpenShiftsPanel, selectedDeptId]);
 
   const closeMemberEditor = useCallback(() => {
     setMemberEditorMode(null);
@@ -1596,6 +1718,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       }
       setRollingShifts((list) => list.filter((s) => s.id !== shiftId));
       setMonthShifts((list) => list.filter((s) => s.id !== shiftId));
+      setOpenShiftFeed((list) => list.filter((s) => s.id !== shiftId));
       setSelectedShift((s) => (s?.id === shiftId ? null : s));
     } finally {
       setShiftActionBusy(false);
@@ -1659,6 +1782,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       startIso: startsAt.toISOString(),
       endIso: endsAt.toISOString(),
       shiftTypeId: shiftTypes[0]?.id ?? null,
+      note: "",
     });
     setCreateShiftMsg(null);
   }, [canManageShifts, shiftTypes]);
@@ -1677,6 +1801,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
         departmentId: createShiftDraft.departmentId,
         requiredEmployeeTypeId: createShiftDraft.requiredEmployeeTypeId,
         shiftTypeId: createShiftDraft.shiftTypeId,
+        note: createShiftDraft.note.trim() ? createShiftDraft.note.trim() : null,
         startsAtIso: createShiftDraft.startIso,
         endsAtIso: createShiftDraft.endIso,
       });
@@ -1687,8 +1812,43 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       setRollingShifts((list) => [...list, res.shift]);
       setMonthShifts((list) => [...list, res.shift]);
       setCreateShiftDraft(null);
+      if (!res.shift.user_id) {
+        setOpenShiftFeed((list) => [...list, res.shift]);
+      }
     } finally {
       setCreateShiftBusy(false);
+    }
+  }
+
+  async function handleCreateOpenShiftFromPanel() {
+    if (!canManageShifts) return;
+    if (!openShiftCreateDraft.departmentId) {
+      setOpenShiftCreateMsg("Vælg en afdeling for ledig vagt.");
+      return;
+    }
+    setOpenShiftCreateBusy(true);
+    setOpenShiftCreateMsg(null);
+    try {
+      const res = await createWorkplaceShift(workplaceId, {
+        userId: null,
+        departmentId: openShiftCreateDraft.departmentId,
+        requiredEmployeeTypeId: openShiftCreateDraft.requiredEmployeeTypeId || null,
+        shiftTypeId: openShiftCreateDraft.shiftTypeId || null,
+        note: openShiftCreateDraft.note.trim() ? openShiftCreateDraft.note.trim() : null,
+        startsAtIso: openShiftCreateDraft.startIso,
+        endsAtIso: openShiftCreateDraft.endIso,
+      });
+      if (!res.ok) {
+        setOpenShiftCreateMsg(res.error);
+        return;
+      }
+      setRollingShifts((list) => [...list, res.shift]);
+      setMonthShifts((list) => [...list, res.shift]);
+      setOpenShiftFeed((list) => [...list, res.shift]);
+      setOpenShiftCreateDraft((prev) => ({ ...prev, note: "" }));
+      setOpenShiftCreateMsg("Ledig vagt oprettet.");
+    } finally {
+      setOpenShiftCreateBusy(false);
     }
   }
 
@@ -1793,6 +1953,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
           s.id === selectedShift.id ? { ...s, user_id: replacementUserId } : s
         )
       );
+      setOpenShiftFeed((list) => list.filter((s) => s.id !== selectedShift.id));
       setShiftActionMsg(
         !selectedShift.user_id
           ? "Medarbejder er sat på den ledige vagt."
@@ -2141,13 +2302,16 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
         deptId: groupDeptId,
       });
       if (groupDeptId) {
-        out.push({
-          kind: "open",
-          key: `open-${groupDeptId}`,
-          rowShiftKey: openRowShiftKey(groupDeptId),
-          groupDeptId,
-          groupName: group.name,
-        });
+        const laneCount = openShiftLaneInfo.laneCountByDepartmentId.get(groupDeptId) ?? 0;
+        for (let lane = 0; lane < laneCount; lane++) {
+          out.push({
+            kind: "open",
+            key: `open-${groupDeptId}-${lane}`,
+            rowShiftKey: openRowShiftKey(groupDeptId, lane),
+            groupDeptId,
+            groupName: group.name,
+          });
+        }
       }
       for (const emp of group.employees) {
         out.push({
@@ -2161,26 +2325,31 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     }
     for (const dept of departments) {
       if (existingGroupDeptIds.has(dept.id)) continue;
-      const hasOpenShift = rollingShiftsFiltered.some(
-        (shift) => !shift.user_id && shift.department_id === dept.id
-      );
-      if (!hasOpenShift) continue;
+      const laneCount = openShiftLaneInfo.laneCountByDepartmentId.get(dept.id) ?? 0;
+      if (laneCount <= 0) continue;
       out.push({
         kind: "group",
         key: `dept-${dept.id}-open-only`,
         name: dept.name,
         deptId: dept.id,
       });
-      out.push({
-        kind: "open",
-        key: `open-${dept.id}`,
-        rowShiftKey: openRowShiftKey(dept.id),
-        groupDeptId: dept.id,
-        groupName: dept.name,
-      });
+      for (let lane = 0; lane < laneCount; lane++) {
+        out.push({
+          kind: "open",
+          key: `open-${dept.id}-${lane}`,
+          rowShiftKey: openRowShiftKey(dept.id, lane),
+          groupDeptId: dept.id,
+          groupName: dept.name,
+        });
+      }
     }
     return out;
-  }, [groupedEmployees, departments, openRowShiftKey, rollingShiftsFiltered]);
+  }, [
+    groupedEmployees,
+    departments,
+    openRowShiftKey,
+    openShiftLaneInfo.laneCountByDepartmentId,
+  ]);
 
   const rowVirtualizer = useVirtualizer({
     count: calendarRows.length,
@@ -2391,6 +2560,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
+            <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setShowDatePicker((prev) => !prev)}
@@ -2402,6 +2572,21 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
             >
               <CalendarDays className="h-4 w-4" aria-hidden />
             </button>
+              <button
+                type="button"
+                onClick={() => setShowOpenShiftsPanel((prev) => !prev)}
+                className="relative rounded-lg border border-zinc-200 bg-white p-2 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                aria-label="Ledige vagter"
+                title="Ledige vagter"
+              >
+                <FileText className="h-4 w-4" aria-hidden />
+                {upcomingOpenShifts.length > 0 ? (
+                  <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white">
+                    {Math.min(99, upcomingOpenShifts.length)}
+                  </span>
+                ) : null}
+              </button>
+            </div>
             {showDatePicker ? (
               <div className="absolute left-0 top-full z-20 mt-2 min-w-[240px] rounded-lg border border-zinc-200 bg-white p-2 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
                 <p className="mb-2 text-xs text-zinc-600 dark:text-zinc-300">
@@ -2419,6 +2604,165 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                   }}
                   className="w-full rounded border border-zinc-300 bg-white px-2 py-1.5 text-xs text-zinc-800 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                 />
+              </div>
+            ) : null}
+            {showOpenShiftsPanel ? (
+              <div className="absolute left-0 top-full z-30 mt-2 w-[360px] max-w-[calc(100vw-24px)] rounded-lg border border-zinc-200 bg-white p-3 shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
+                <div className="mb-2 flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    Ledige vagter
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setShowOpenShiftsPanel(false)}
+                    className="rounded p-1 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                    aria-label="Luk ledige vagter"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {canManageShifts ? (
+                  <div className="mb-3 space-y-2 rounded-lg border border-zinc-200 bg-zinc-50 p-2 dark:border-zinc-700 dark:bg-zinc-950/60">
+                    <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                      Tilføj ledig vagt
+                    </p>
+                    <select
+                      value={openShiftCreateDraft.departmentId}
+                      onChange={(e) =>
+                        setOpenShiftCreateDraft((prev) => ({
+                          ...prev,
+                          departmentId: e.target.value,
+                        }))
+                      }
+                      className="w-full rounded border border-zinc-300 bg-white px-2 py-1.5 text-xs dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    >
+                      <option value="">Vælg afdeling</option>
+                      {departments.map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {d.name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input
+                        type="datetime-local"
+                        value={toDateTimeLocalValue(openShiftCreateDraft.startIso)}
+                        onChange={(e) =>
+                          setOpenShiftCreateDraft((prev) => ({
+                            ...prev,
+                            startIso: localInputToIso(e.target.value, prev.startIso),
+                          }))
+                        }
+                        className="rounded border border-zinc-300 bg-white px-2 py-1.5 text-xs dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                      />
+                      <input
+                        type="datetime-local"
+                        value={toDateTimeLocalValue(openShiftCreateDraft.endIso)}
+                        onChange={(e) =>
+                          setOpenShiftCreateDraft((prev) => ({
+                            ...prev,
+                            endIso: localInputToIso(e.target.value, prev.endIso),
+                          }))
+                        }
+                        className="rounded border border-zinc-300 bg-white px-2 py-1.5 text-xs dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                      />
+                    </div>
+                    <select
+                      value={openShiftCreateDraft.shiftTypeId}
+                      onChange={(e) =>
+                        setOpenShiftCreateDraft((prev) => ({
+                          ...prev,
+                          shiftTypeId: e.target.value,
+                        }))
+                      }
+                      className="w-full rounded border border-zinc-300 bg-white px-2 py-1.5 text-xs dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    >
+                      <option value="">Uden vagttype</option>
+                      {shiftTypes.map((shiftType) => (
+                        <option key={shiftType.id} value={shiftType.id}>
+                          {localizeStandardShiftTypeLabel(shiftType.label, t)}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={openShiftCreateDraft.requiredEmployeeTypeId}
+                      onChange={(e) =>
+                        setOpenShiftCreateDraft((prev) => ({
+                          ...prev,
+                          requiredEmployeeTypeId: e.target.value,
+                        }))
+                      }
+                      className="w-full rounded border border-zinc-300 bg-white px-2 py-1.5 text-xs dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                    >
+                      <option value="">Alle medarbejdertyper</option>
+                      {employeeTypes.map((employeeType) => (
+                        <option key={employeeType.id} value={employeeType.id}>
+                          {localizeStandardEmployeeTypeLabel(employeeType.label, t)}
+                        </option>
+                      ))}
+                    </select>
+                    <textarea
+                      rows={2}
+                      value={openShiftCreateDraft.note}
+                      onChange={(e) =>
+                        setOpenShiftCreateDraft((prev) => ({ ...prev, note: e.target.value }))
+                      }
+                      className="w-full rounded border border-zinc-300 bg-white px-2 py-1.5 text-xs dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                      placeholder="Note til ledig vagt"
+                    />
+                    {openShiftCreateMsg ? (
+                      <p className="text-xs text-zinc-600 dark:text-zinc-300">{openShiftCreateMsg}</p>
+                    ) : null}
+                    <button
+                      type="button"
+                      disabled={openShiftCreateBusy}
+                      onClick={() => void handleCreateOpenShiftFromPanel()}
+                      className="rounded bg-zinc-900 px-2 py-1.5 text-xs font-semibold text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900"
+                    >
+                      {openShiftCreateBusy ? "Gemmer..." : "Tilføj ledig vagt"}
+                    </button>
+                  </div>
+                ) : null}
+
+                <div className="max-h-[360px] overflow-y-auto pr-1">
+                  {openShiftFeedLoading ? (
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">Henter ledige vagter...</p>
+                  ) : openShiftFeedError ? (
+                    <p className="text-xs text-red-600 dark:text-red-400">{openShiftFeedError}</p>
+                  ) : upcomingOpenShifts.length === 0 ? (
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                      Ingen kommende ledige vagter.
+                    </p>
+                  ) : (
+                    <ul className="space-y-2">
+                      {upcomingOpenShifts.map((shift) => {
+                        const departmentName = shift.department_id
+                          ? departmentById.get(shift.department_id)?.name ?? "Uden afdeling"
+                          : "Uden afdeling";
+                        const shiftTypeName = shift.shift_type_id
+                          ? shiftTypeLabelById.get(shift.shift_type_id) ?? "Vagt"
+                          : "Vagt";
+                        return (
+                          <li
+                            key={shift.id}
+                            className="rounded border border-zinc-200 px-2 py-1.5 text-xs dark:border-zinc-700"
+                          >
+                            <p className="font-semibold text-zinc-800 dark:text-zinc-100">
+                              {departmentName} - {shiftTypeName}
+                            </p>
+                            <p className="text-zinc-600 dark:text-zinc-300">
+                              {formatShiftRange(shift.starts_at, shift.ends_at, uiLanguage)}
+                            </p>
+                            {shift.note ? (
+                              <p className="mt-1 text-zinc-500 dark:text-zinc-400">{shift.note}</p>
+                            ) : null}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -2823,6 +3167,9 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                       `${t("calendar.shift_hover.employee_type", "Medarbejdertype")}: ${requiredTypeLabel}`,
                                       `${t("calendar.shift_hover.shift_type", "Vagttype")}: ${shiftLabel}`,
                                       `${t("calendar.shift_hover.time", "Tid")}: ${formatShiftRange(shift!.starts_at, shift!.ends_at, uiLanguage)}`,
+                                      ...(shift?.note
+                                        ? [`${t("calendar.shift_hover.note", "Note")}: ${shift.note}`]
+                                        : []),
                                     ].join("\n")
                                   : undefined;
                                 const violationRule =
@@ -2956,6 +3303,9 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                     `${t("calendar.shift_hover.employee_type", "Medarbejdertype")}: ${employeeTypeLabel}`,
                                     `${t("calendar.shift_hover.shift_type", "Vagttype")}: ${shiftLabel}`,
                                     `${t("calendar.shift_hover.time", "Tid")}: ${formatShiftRange(shift!.starts_at, shift!.ends_at, uiLanguage)}`,
+                                    ...(shift?.note
+                                      ? [`${t("calendar.shift_hover.note", "Note")}: ${shift.note}`]
+                                      : []),
                                     ...(shift
                                       ? (() => {
                                           const violationRule =
@@ -3663,6 +4013,11 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                   uiLanguage
                 )}
               </p>
+              {selectedShift.note ? (
+                <p>
+                  <strong>Note:</strong> {selectedShift.note}
+                </p>
+              ) : null}
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
@@ -3897,6 +4252,21 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                   </option>
                 ))}
               </select>
+            </label>
+
+            <label className="text-sm">
+              <span className="mb-1 block font-medium text-zinc-700 dark:text-zinc-300">
+                Note (valgfri)
+              </span>
+              <textarea
+                rows={2}
+                value={createShiftDraft.note}
+                onChange={(e) =>
+                  setCreateShiftDraft((d) => (d ? { ...d, note: e.target.value } : d))
+                }
+                className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
+                placeholder="Skriv note til vagten"
+              />
             </label>
 
             {createShiftMsg ? (
