@@ -2001,6 +2001,10 @@
     overflow: hidden;
   }
 
+  .overflow-visible {
+    overflow: visible;
+  }
+
   .overflow-x-auto {
     overflow-x: auto;
   }
@@ -3097,6 +3101,10 @@
     padding-bottom: max(.75rem, env(safe-area-inset-bottom));
   }
 
+  .pl-1 {
+    padding-left: calc(var(--spacing) * 1);
+  }
+
   .pl-2 {
     padding-left: calc(var(--spacing) * 2);
   }
@@ -3279,6 +3287,10 @@
 
   .break-all {
     word-break: break-all;
+  }
+
+  .text-ellipsis {
+    text-overflow: ellipsis;
   }
 
   .whitespace-nowrap {

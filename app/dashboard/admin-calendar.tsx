@@ -229,8 +229,8 @@ function truncateTowardZero(value: number): number {
   return value < 0 ? Math.ceil(value) : Math.floor(value);
 }
 
-function shiftSlotKey(rowKey: string, day: Date, hour: number): string {
-  return `${rowKey}|${dayKeyLocal(day)}|${hour}`;
+function shiftSlotKey(rowKey: string, day: Date, slotOfDay: number): string {
+  return `${rowKey}|${dayKeyLocal(day)}|${slotOfDay}`;
 }
 
 function shiftIdentityKey(shift: WorkplaceShiftRow): string {
@@ -376,6 +376,19 @@ function distinctEmployeesOnShiftForDay(
   return set.size;
 }
 
+function mergeShiftsById(
+  existing: WorkplaceShiftRow[],
+  incoming: WorkplaceShiftRow[]
+): WorkplaceShiftRow[] {
+  if (incoming.length === 0) return existing;
+  const byId = new Map<string, WorkplaceShiftRow>();
+  for (const shift of existing) byId.set(shift.id, shift);
+  for (const shift of incoming) byId.set(shift.id, shift);
+  return [...byId.values()].sort(
+    (a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime()
+  );
+}
+
 type Props = {
   workplaceId: string;
   workplaceName?: string | null;
@@ -387,7 +400,7 @@ type ActiveShiftDrag = {
   mode: ShiftDragMode;
   shift: WorkplaceShiftRow;
   pointerStartX: number;
-  pxPer5Min: number;
+  pxPerSnapStep: number;
   hourColWidth: number;
   timelineStartMs: number;
   previewTopPx: number;
@@ -494,6 +507,9 @@ const BASE_HOUR_COL = 34;
 const MIN_HOUR_COL = 26;
 /** Største timekolonne — hold zoom-ind under layout-kollaps. */
 const MAX_HOUR_COL = 40;
+const GRID_MINUTES = 15;
+const GRID_SLOTS_PER_HOUR = 60 / GRID_MINUTES;
+const GRID_SLOTS_PER_DAY = 24 * GRID_SLOTS_PER_HOUR;
 /** Rullende vindue i dage. 14 gør "kommende uge" + helligdage synlige uden ekstra klik. */
 const ROLLING_DAY_COUNT = 14;
 /** Maks. relativ ændring pr. ctrl+wheel-step (store deltaY fra trackpads). */
@@ -536,7 +552,8 @@ type ShiftGridCellProps = {
   day: Date;
   dayKey: string;
   dayAmbient: DayGridAmbient;
-  hour: number;
+  slotHour: number;
+  slotMinute: number;
   userId: string | null;
   groupDeptId: string | null;
   requiredEmployeeTypeId: string | null;
@@ -545,6 +562,7 @@ type ShiftGridCellProps = {
   endsHere: boolean;
   has: boolean;
   shiftLabel: string;
+  slotWidthPx: number;
   renderedCellStyle: ReturnType<typeof shiftCalendarCellStyle> | undefined;
   styleToken: string;
   hoverDetails?: string;
@@ -563,7 +581,8 @@ type ShiftGridCellProps = {
     departmentId: string | null,
     requiredEmployeeTypeId: string | null,
     day: Date,
-    hour: number
+    hour: number,
+    minute: number
   ) => void;
   onStartShiftDrag: (
     e: {
@@ -583,7 +602,8 @@ const ShiftGridCell = memo(function ShiftGridCell({
   day,
   dayKey,
   dayAmbient,
-  hour,
+  slotHour,
+  slotMinute,
   userId,
   groupDeptId,
   requiredEmployeeTypeId,
@@ -592,6 +612,7 @@ const ShiftGridCell = memo(function ShiftGridCell({
   endsHere,
   has,
   shiftLabel,
+  slotWidthPx,
   renderedCellStyle,
   hoverDetails,
   violationRule,
@@ -617,9 +638,9 @@ const ShiftGridCell = memo(function ShiftGridCell({
   const showCenteredViolationIcon = (() => {
     if (!has || !violationRule || !shift) return false;
     const slotStart = new Date(day);
-    slotStart.setHours(hour, 0, 0, 0);
+    slotStart.setHours(slotHour, slotMinute, 0, 0);
     const slotStartMs = slotStart.getTime();
-    const slotEnd = slotStartMs + 60 * 60 * 1000;
+    const slotEnd = slotStartMs + GRID_MINUTES * 60 * 1000;
     const shiftStart = new Date(shift.starts_at).getTime();
     const shiftEnd = new Date(shift.ends_at).getTime();
     if (!Number.isFinite(shiftStart) || !Number.isFinite(shiftEnd) || shiftEnd <= shiftStart) {
@@ -641,13 +662,22 @@ const ShiftGridCell = memo(function ShiftGridCell({
     violationSeverity === "WARNING"
       ? "border-[3px] border-amber-500/90 dark:border-amber-300/90"
       : "border-[3px] border-red-500/90 dark:border-red-400/90";
+  const shiftLabelWidthPx =
+    shift && shiftLabel.trim().length > 0
+      ? Math.max(
+          slotWidthPx,
+          ((new Date(shift.ends_at).getTime() - new Date(shift.starts_at).getTime()) /
+            (GRID_MINUTES * 60 * 1000)) *
+            slotWidthPx
+        )
+      : slotWidthPx;
   return (
     <td
       key={cellKey}
       className={
         has
-          ? `relative border-b border-l border-zinc-300/60 px-0 py-2 dark:border-zinc-600/50 ${violationAccentClass}`
-          : `border-b border-l border-zinc-100 px-0 py-2 dark:border-zinc-800 ${emptySurface}`
+          ? `relative overflow-visible border-b border-zinc-300/60 px-0 py-2 dark:border-zinc-600/50 ${violationAccentClass}`
+          : `relative overflow-visible border-b border-l border-zinc-100 px-0 py-2 dark:border-zinc-800 ${emptySurface}`
       }
       style={renderedCellStyle}
       title={titleWithViolation}
@@ -656,12 +686,21 @@ const ShiftGridCell = memo(function ShiftGridCell({
       onPointerCancel={onCellPointerUp}
       onPointerLeave={onCellPointerUp}
       onClick={() =>
-        onCellClick(shift, userId, groupDeptId, requiredEmployeeTypeId, day, hour)
+        onCellClick(
+          shift,
+          userId,
+          groupDeptId,
+          requiredEmployeeTypeId,
+          day,
+          slotHour,
+          slotMinute
+        )
       }
       data-shift-id={shift?.id ?? ""}
       data-user-id={userId ?? ""}
       data-day-key={dayKey}
-      data-hour={hour}
+      data-hour={slotHour}
+      data-minute={slotMinute}
     >
       {showCenteredViolationIcon ? (
         <span
@@ -673,11 +712,14 @@ const ShiftGridCell = memo(function ShiftGridCell({
         </span>
       ) : null}
       {has && startsHere && shiftLabel.trim().length > 0 ? (
-        <span className="pointer-events-none block w-full truncate pl-2 pr-0.5 text-left text-[12px] font-bold text-black [text-shadow:0_0_2px_rgba(255,255,255,0.95),0_0_6px_rgba(255,255,255,0.9)]">
+        <span
+          className="pointer-events-none absolute left-1 top-1/2 z-20 -translate-y-1/2 overflow-hidden text-ellipsis whitespace-nowrap pl-1 pr-1 text-left text-[12px] font-bold text-black [text-shadow:0_0_2px_rgba(255,255,255,0.95),0_0_6px_rgba(255,255,255,0.9)]"
+          style={{ width: `${shiftLabelWidthPx - 8}px` }}
+        >
           {shiftLabel}
         </span>
       ) : null}
-      {has && endsHere ? (
+      {has ? (
         <button
           type="button"
           className="absolute inset-0 cursor-grab bg-transparent active:cursor-grabbing"
@@ -685,7 +727,6 @@ const ShiftGridCell = memo(function ShiftGridCell({
             if (!shift) return;
             onStartShiftDrag(e, shift, "move");
           }}
-          title="Træk i mønster-området for at flytte vagt"
         />
       ) : null}
       {has && startsHere ? (
@@ -711,7 +752,8 @@ const ShiftGridCell = memo(function ShiftGridCell({
         />
       ) : null}
       <span className="sr-only">
-        {has ? "Vagt" : "Ledig"} {hour}:00
+        {has ? "Vagt" : "Ledig"} {String(slotHour).padStart(2, "0")}:
+        {String(slotMinute).padStart(2, "0")}
       </span>
     </td>
   );
@@ -825,6 +867,8 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   const suppressClickUntilRef = useRef(0);
   const shiftLoadQueueRef = useRef<Promise<void>>(Promise.resolve());
   const shiftLoadReqIdRef = useRef(0);
+  const loadedRollingRangeRef = useRef<{ startMs: number; endMs: number } | null>(null);
+  const didResetRollingScrollRef = useRef(false);
 
   useEffect(() => {
     rollingDaysRef.current = rollingDays;
@@ -917,6 +961,12 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       return null;
     });
   }, [departments]);
+
+  useEffect(() => {
+    // Invalidate rolling fetch coverage when data scope changes.
+    loadedRollingRangeRef.current = null;
+    didResetRollingScrollRef.current = false;
+  }, [workplaceId, selectedDeptId, viewMode]);
 
   const loadShiftsRangeDeptByDept = useCallback(
     async (
@@ -1182,17 +1232,21 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       const endMs = new Date(shift.ends_at).getTime();
       if (!Number.isFinite(startMs) || !Number.isFinite(endMs) || endMs <= startMs) continue;
 
-      const firstHour = new Date(startMs);
-      firstHour.setMinutes(0, 0, 0);
+      const firstSlot = new Date(startMs);
+      const flooredMinutes =
+        Math.floor(firstSlot.getMinutes() / GRID_MINUTES) * GRID_MINUTES;
+      firstSlot.setMinutes(flooredMinutes, 0, 0);
       const rowShiftKey = shift.user_id
         ? `user:${shift.user_id}`
         : openRowShiftKey(
             shift.department_id ?? null,
             openShiftLaneInfo.laneByShiftId.get(shift.id) ?? 0
           );
-      for (let t = firstHour.getTime(); t < endMs; t += 60 * 60 * 1000) {
+      for (let t = firstSlot.getTime(); t < endMs; t += GRID_MINUTES * 60 * 1000) {
         const d = new Date(t);
-        const key = shiftSlotKey(rowShiftKey, d, d.getHours());
+        const slotOfDay =
+          d.getHours() * GRID_SLOTS_PER_HOUR + Math.floor(d.getMinutes() / GRID_MINUTES);
+        const key = shiftSlotKey(rowShiftKey, d, slotOfDay);
         const existing = map.get(key);
         if (!existing) {
           map.set(key, shift);
@@ -1205,9 +1259,13 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       }
 
       const s = new Date(startMs);
-      starts.add(shiftSlotKey(rowShiftKey, s, s.getHours()));
+      const startSlot =
+        s.getHours() * GRID_SLOTS_PER_HOUR + Math.floor(s.getMinutes() / GRID_MINUTES);
+      starts.add(shiftSlotKey(rowShiftKey, s, startSlot));
       const e = new Date(endMs - 1);
-      ends.add(shiftSlotKey(rowShiftKey, e, e.getHours()));
+      const endSlot =
+        e.getHours() * GRID_SLOTS_PER_HOUR + Math.floor(e.getMinutes() / GRID_MINUTES);
+      ends.add(shiftSlotKey(rowShiftKey, e, endSlot));
     }
 
     return { map, starts, ends };
@@ -1954,11 +2012,12 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     departmentId: string | null,
     requiredEmployeeTypeId: string | null,
     day: Date,
-    hour: number
+    hour: number,
+    minute: number
   ) => {
     if (!canManageShifts) return;
-    const startsAt = localDateAt(day, hour);
-    const endsAt = localDateAt(day, Math.min(hour + 8, 23), 55);
+    const startsAt = localDateAt(day, hour, minute);
+    const endsAt = new Date(startsAt.getTime() + 8 * 60 * 60 * 1000);
     setCreateShiftDraft({
       userId,
       departmentId,
@@ -2084,6 +2143,26 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     }
   }
 
+  const zoomCalendarByFactor = useCallback(
+    (zoomFactor: number, centerXInViewport?: number) => {
+      const el = scrollRef.current;
+      if (!el) return;
+      const nextWidth = clampHourColWidth(hourColWidth * zoomFactor);
+      const viewportCenterX = centerXInViewport ?? el.clientWidth / 2;
+      const anchorContentX = el.scrollLeft + viewportCenterX;
+      const normalizedScale = nextWidth / hourColWidth;
+      const targetContentX = anchorContentX * normalizedScale;
+      const nextScrollLeft = Math.max(0, targetContentX - viewportCenterX);
+      setHourColWidth(nextWidth);
+      requestAnimationFrame(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollLeft = nextScrollLeft;
+        }
+      });
+    },
+    [hourColWidth]
+  );
+
   function onCalendarWheel(e: ReactWheelEvent<HTMLDivElement>) {
     if (!e.ctrlKey) return;
     const el = scrollRef.current;
@@ -2096,22 +2175,18 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       WHEEL_ZOOM_FACTOR_MAX,
       Math.max(WHEEL_ZOOM_FACTOR_MIN, rawFactor)
     );
-    const nextWidth = clampHourColWidth(hourColWidth * zoomFactor);
-
     const rect = el.getBoundingClientRect();
     const centerXInViewport = e.clientX - rect.left;
-    const anchorContentX = el.scrollLeft + centerXInViewport;
-    const normalizedScale = nextWidth / hourColWidth;
-    const targetContentX = anchorContentX * normalizedScale;
-    const nextScrollLeft = Math.max(0, targetContentX - centerXInViewport);
-
-    setHourColWidth(nextWidth);
-    requestAnimationFrame(() => {
-      if (scrollRef.current) {
-        scrollRef.current.scrollLeft = nextScrollLeft;
-      }
-    });
+    zoomCalendarByFactor(zoomFactor, centerXInViewport);
   }
+
+  const handleZoomOutClick = useCallback(() => {
+    zoomCalendarByFactor(WHEEL_ZOOM_FACTOR_MIN);
+  }, [zoomCalendarByFactor]);
+
+  const handleZoomInClick = useCallback(() => {
+    zoomCalendarByFactor(WHEEL_ZOOM_FACTOR_MAX);
+  }, [zoomCalendarByFactor]);
 
   async function handleReassignSelectedShift(source: "sick" | "replace") {
     if (!selectedShift || !replacementUserId) return;
@@ -2236,7 +2311,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       NAME_COL_WIDTH +
       ((drag.nextStartMs - drag.timelineStartMs) / (60 * 60 * 1000)) * drag.hourColWidth;
     const widthPx = Math.max(
-      drag.hourColWidth / 12,
+      drag.hourColWidth / GRID_SLOTS_PER_HOUR,
       ((drag.nextEndMs - drag.nextStartMs) / (60 * 60 * 1000)) * drag.hourColWidth
     );
     preview.style.display = "block";
@@ -2274,21 +2349,29 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     syncDragTimeOverlayPosition();
 
     const dx = e.clientX - drag.pointerStartX;
-    const rawSteps = dx / drag.pxPer5Min;
+    const rawSteps = dx / drag.pxPerSnapStep;
     const stepCount =
       drag.mode === "resize_end" ? truncateTowardZero(rawSteps) : Math.round(rawSteps);
-    const deltaMs = stepCount * 5 * 60 * 1000;
+    const deltaMs = stepCount * GRID_MINUTES * 60 * 1000;
     let nextStartMs = drag.originalStartMs;
     let nextEndMs = drag.originalEndMs;
     if (drag.mode === "move") {
       nextStartMs += deltaMs;
       nextEndMs += deltaMs;
     } else if (drag.mode === "resize_start") {
-      nextStartMs = Math.min(drag.originalStartMs + deltaMs, drag.originalEndMs - 5 * 60 * 1000);
+      nextStartMs = Math.min(
+        drag.originalStartMs + deltaMs,
+        drag.originalEndMs - GRID_MINUTES * 60 * 1000
+      );
     } else {
-      nextEndMs = Math.max(drag.originalEndMs + deltaMs, drag.originalStartMs + 5 * 60 * 1000);
+      nextEndMs = Math.max(
+        drag.originalEndMs + deltaMs,
+        drag.originalStartMs + GRID_MINUTES * 60 * 1000
+      );
     }
     if (nextStartMs === drag.nextStartMs && nextEndMs === drag.nextEndMs) return;
+    // Only suppress click-to-edit when the pointer has actually dragged/resized.
+    suppressClickUntilRef.current = Date.now() + 250;
     drag.nextStartMs = nextStartMs;
     drag.nextEndMs = nextEndMs;
     syncDragPreview(drag);
@@ -2341,24 +2424,21 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     mode: ShiftDragMode
   ) => {
     if (!canManageShifts) return;
-    e.preventDefault();
-    e.stopPropagation();
     clearLongPressTimer();
-    suppressClickUntilRef.current = Date.now() + 800;
     dragPointerRef.current = { x: e.clientX, y: e.clientY };
     const contentEl = dragContentRef.current;
     const rowEl = e.currentTarget.closest("tr");
     if (!contentEl || !rowEl) return;
     const contentRect = contentEl.getBoundingClientRect();
     const rowRect = rowEl.getBoundingClientRect();
-    const pxPer5Min = Math.max(1, hourColWidth / 12);
+    const pxPerSnapStep = Math.max(1, hourColWidth / GRID_SLOTS_PER_HOUR);
     const originalStartMs = new Date(shift.starts_at).getTime();
     const originalEndMs = new Date(shift.ends_at).getTime();
     const drag: ActiveShiftDrag = {
       mode,
       shift,
       pointerStartX: e.clientX,
-      pxPer5Min,
+      pxPerSnapStep,
       hourColWidth,
       timelineStartMs: startOfDay(rollingDaysRef.current[0] ?? new Date()).getTime(),
       previewTopPx: rowRect.top - contentRect.top,
@@ -2471,8 +2551,9 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     });
   }
 
-  const dayPx = 24 * hourColWidth;
-  const totalHourCols = rollingDays.length * 24;
+  const slotColWidth = hourColWidth / GRID_SLOTS_PER_HOUR;
+  const dayPx = GRID_SLOTS_PER_DAY * slotColWidth;
+  const totalHourCols = rollingDays.length * GRID_SLOTS_PER_DAY;
   const calendarRows = useMemo<CalendarRow[]>(() => {
     const out: CalendarRow[] = [];
     const existingGroupDeptIds = new Set<string>();
@@ -2546,9 +2627,14 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     horizontal: true,
     count: totalHourCols,
     getScrollElement: () => scrollRef.current,
-    estimateSize: () => hourColWidth,
+    estimateSize: () => slotColWidth,
     overscan: 24,
   });
+
+  useEffect(() => {
+    // Keep horizontal virtualization in sync when zoom changes slot width.
+    hourVirtualizer.measure();
+  }, [hourVirtualizer, slotColWidth, totalHourCols]);
 
   const virtualRows = rowVirtualizer.getVirtualItems();
   const virtualHourItems = hourVirtualizer.getVirtualItems();
@@ -2571,14 +2657,21 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   }, [firstHourIndex, lastHourIndex]);
 
   const hourMetaByIndex = useCallback(
-    (hourIndex: number): { day: Date; dayKey: string; hour: number } | null => {
-      const dayIndex = Math.floor(hourIndex / 24);
+    (
+      hourIndex: number
+    ): { day: Date; dayKey: string; hour: number; minute: number; slotOfDay: number } | null => {
+      const dayIndex = Math.floor(hourIndex / GRID_SLOTS_PER_DAY);
       const day = rollingDays[dayIndex];
       if (!day) return null;
+      const slotOfDay = hourIndex % GRID_SLOTS_PER_DAY;
+      const hour = Math.floor(slotOfDay / GRID_SLOTS_PER_HOUR);
+      const minute = (slotOfDay % GRID_SLOTS_PER_HOUR) * GRID_MINUTES;
       return {
         day,
         dayKey: dayKeyLocal(day),
-        hour: hourIndex % 24,
+        hour,
+        minute,
+        slotOfDay,
       };
     },
     [rollingDays]
@@ -2593,39 +2686,92 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   }, [rollingDays, publicHolidays]);
 
   const visibleStartDay =
-    rollingDays[Math.floor(Math.max(firstHourIndex, 0) / 24)] ?? rollingDays[0] ?? null;
+    rollingDays[Math.floor(Math.max(firstHourIndex, 0) / GRID_SLOTS_PER_DAY)] ??
+    rollingDays[0] ??
+    null;
   const visibleEndDay =
-    rollingDays[Math.floor(Math.max(lastHourIndex, 0) / 24)] ??
+    rollingDays[Math.floor(Math.max(lastHourIndex, 0) / GRID_SLOTS_PER_DAY)] ??
     rollingDays[rollingDays.length - 1] ??
     null;
   const rollingFetchStartIso = visibleStartDay
-    ? startOfDay(visibleStartDay).toISOString()
+    ? addDays(startOfDay(visibleStartDay), -1).toISOString()
     : null;
   const rollingFetchEndIso = visibleEndDay
-    ? addDays(startOfDay(visibleEndDay), 1).toISOString()
+    ? addDays(startOfDay(visibleEndDay), 2).toISOString()
     : null;
 
   useEffect(() => {
     if (loading) return;
     if (viewMode !== "rolling" || !rollingFetchStartIso || !rollingFetchEndIso) return;
+    const requestedStartMs = new Date(rollingFetchStartIso).getTime();
+    const requestedEndMs = new Date(rollingFetchEndIso).getTime();
+    if (!Number.isFinite(requestedStartMs) || !Number.isFinite(requestedEndMs)) {
+      return;
+    }
+    const loadedRange = loadedRollingRangeRef.current;
+    const missingSegments: Array<{ startIso: string; endIso: string }> = [];
+    if (!loadedRange) {
+      missingSegments.push({
+        startIso: new Date(requestedStartMs).toISOString(),
+        endIso: new Date(requestedEndMs).toISOString(),
+      });
+    } else {
+      if (requestedStartMs < loadedRange.startMs) {
+        missingSegments.push({
+          startIso: new Date(requestedStartMs).toISOString(),
+          endIso: new Date(loadedRange.startMs).toISOString(),
+        });
+      }
+      if (requestedEndMs > loadedRange.endMs) {
+        missingSegments.push({
+          startIso: new Date(loadedRange.endMs).toISOString(),
+          endIso: new Date(requestedEndMs).toISOString(),
+        });
+      }
+    }
+    if (missingSegments.length === 0) return;
     let cancelled = false;
-    setIsCurrentViewShiftsLoaded(false);
+    if (!loadedRange) {
+      setIsCurrentViewShiftsLoaded(false);
+    }
     setLoadingDeptIds([]);
     enqueueShiftLoad(async (isStale) => {
       if (cancelled || isStale()) return;
-      await loadShiftsRangeDeptByDept(
-        rollingFetchStartIso,
-        rollingFetchEndIso,
-        (rows) => {
-          if (!cancelled && !isStale()) setRollingShifts(rows);
-        },
-        (deptId) => {
-          if (!cancelled && !isStale()) {
-            setLoadingDeptIds(deptId ? [deptId] : []);
-          }
-        },
-        () => cancelled || isStale()
-      );
+      for (const segment of missingSegments) {
+        if (cancelled || isStale()) return;
+        await loadShiftsRangeDeptByDept(
+          segment.startIso,
+          segment.endIso,
+          (rows) => {
+            if (!cancelled && !isStale()) {
+              setRollingShifts((prev) => mergeShiftsById(prev, rows));
+            }
+          },
+          (deptId) => {
+            if (!cancelled && !isStale()) {
+              setLoadingDeptIds(deptId ? [deptId] : []);
+            }
+          },
+          () => cancelled || isStale()
+        );
+      }
+      if (
+        !cancelled &&
+        !isStale() &&
+        Number.isFinite(requestedStartMs) &&
+        Number.isFinite(requestedEndMs)
+      ) {
+        const previousRange = loadedRange ?? loadedRollingRangeRef.current;
+        loadedRollingRangeRef.current = previousRange
+          ? {
+              startMs: Math.min(previousRange.startMs, requestedStartMs),
+              endMs: Math.max(previousRange.endMs, requestedEndMs),
+            }
+          : {
+              startMs: requestedStartMs,
+              endMs: requestedEndMs,
+            };
+      }
       if (!cancelled && !isStale()) {
         setIsCurrentViewShiftsLoaded(true);
       }
@@ -2642,6 +2788,19 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     enqueueShiftLoad,
   ]);
 
+  useEffect(() => {
+    if (viewMode !== "rolling") return;
+    if (!isCurrentViewShiftsLoaded) return;
+    if (didResetRollingScrollRef.current) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    // After the 15-minute grid migration, stale horizontal scroll offsets
+    // can make the timeline appear shifted and only use part of the viewport.
+    // Reset to timeline start once when rolling view is entered.
+    el.scrollLeft = 0;
+    didResetRollingScrollRef.current = true;
+  }, [viewMode, isCurrentViewShiftsLoaded, rollingDays.length]);
+
   const handleGridCellClick = useCallback(
     (
       shift: WorkplaceShiftRow | null,
@@ -2649,13 +2808,21 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       departmentId: string | null,
       requiredEmployeeTypeId: string | null,
       day: Date,
-      hour: number
+      hour: number,
+      minute: number
     ) => {
       if (shift) {
         handleCellClick(shift);
         return;
       }
-      openCreateShiftFromCell(userId, departmentId, requiredEmployeeTypeId, day, hour);
+      openCreateShiftFromCell(
+        userId,
+        departmentId,
+        requiredEmployeeTypeId,
+        day,
+        hour,
+        minute
+      );
     },
     [handleCellClick, openCreateShiftFromCell]
   );
@@ -3101,6 +3268,26 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
               <ChevronRight className="h-5 w-5" />
             </button>
           </div>
+          <div className="ml-auto flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleZoomOutClick}
+              className="rounded-lg border border-zinc-200 bg-white px-2 py-1 text-sm font-semibold text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+              aria-label={t("calendar.zoom.out_aria", "Zoom ud")}
+              title={t("calendar.zoom.out_title", "Zoom ud")}
+            >
+              -
+            </button>
+            <button
+              type="button"
+              onClick={handleZoomInClick}
+              className="rounded-lg border border-zinc-200 bg-white px-2 py-1 text-sm font-semibold text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+              aria-label={t("calendar.zoom.in_aria", "Zoom ind")}
+              title={t("calendar.zoom.in_title", "Zoom ind")}
+            >
+              +
+            </button>
+          </div>
         </div>
       </div>
 
@@ -3251,14 +3438,14 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                 <table
                   className="admin-shift-calendar w-full min-w-[720px] table-fixed border-collapse"
                   style={{
-                    width: NAME_COL_WIDTH + totalHourCols * hourColWidth,
-                    minWidth: NAME_COL_WIDTH + totalHourCols * hourColWidth,
+                    width: NAME_COL_WIDTH + totalHourCols * slotColWidth,
+                    minWidth: NAME_COL_WIDTH + totalHourCols * slotColWidth,
                   }}
                 >
                 <colgroup>
                   <col style={{ width: NAME_COL_WIDTH }} />
                   {Array.from({ length: totalHourCols }).map((_, i) => (
-                    <col key={i} style={{ width: hourColWidth }} />
+                    <col key={i} style={{ width: slotColWidth }} />
                   ))}
                 </colgroup>
                 <thead className="sticky top-0 z-20">
@@ -3278,7 +3465,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                       return (
                         <th
                           key={dk}
-                          colSpan={24}
+                          colSpan={GRID_SLOTS_PER_DAY}
                           className={rollingDayHeaderThClass(dayAmbient)}
                         >
                           <div className="flex flex-col items-center gap-0.5 leading-tight">
@@ -3313,10 +3500,10 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                       );
                       return (
                         <th
-                          key={`${meta.dayKey}-${meta.hour}`}
+                          key={`${meta.dayKey}-${meta.slotOfDay}`}
                           className={rollingHourHeaderThClass(hourAmbient)}
                         >
-                          {meta.hour}
+                          {meta.minute === 0 ? String(meta.hour).padStart(2, "0") : ""}
                         </th>
                       );
                     })}
@@ -3396,7 +3583,11 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                               {visibleHourIndexes.map((hourIndex) => {
                                 const meta = hourMetaByIndex(hourIndex);
                                 if (!meta) return null;
-                                const slotKey = shiftSlotKey(row.rowShiftKey, meta.day, meta.hour);
+                                const slotKey = shiftSlotKey(
+                                  row.rowShiftKey,
+                                  meta.day,
+                                  meta.slotOfDay
+                                );
                                 const shift = rollingSlotShiftMap.map.get(slotKey) ?? null;
                                 const startsHere = Boolean(
                                   shift && rollingSlotShiftMap.starts.has(slotKey)
@@ -3411,7 +3602,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                 const requiredPattern = shift?.required_employee_type_id
                                   ? employeePatternById.get(shift.required_employee_type_id) ?? "none"
                                   : "none";
-                                const showPattern = Boolean(shift && endsHere);
+                                const showPattern = Boolean(shift);
                                 const dayAmbient = dayGridAmbient(
                                   meta.dayKey,
                                   rollingHolidayNamesByDay,
@@ -3462,12 +3653,13 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                 const styleToken = `${shiftColor}|${showPattern ? requiredPattern : "none"}|${has ? "1" : "0"}|${dayAmbient}`;
                                 return (
                                   <ShiftGridCell
-                                    key={`${row.key}-${meta.dayKey}-${meta.hour}`}
-                                    cellKey={`${row.key}-${meta.dayKey}-${meta.hour}`}
+                                    key={`${row.key}-${meta.dayKey}-${meta.slotOfDay}`}
+                                    cellKey={`${row.key}-${meta.dayKey}-${meta.slotOfDay}`}
                                     day={meta.day}
                                     dayKey={meta.dayKey}
                                     dayAmbient={dayAmbient}
-                                    hour={meta.hour}
+                                    slotHour={meta.hour}
+                                    slotMinute={meta.minute}
                                     userId={null}
                                     groupDeptId={row.groupDeptId}
                                     requiredEmployeeTypeId={shift?.required_employee_type_id ?? null}
@@ -3476,6 +3668,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                     endsHere={endsHere}
                                     has={has}
                                     shiftLabel={renderedShiftLabel}
+                                    slotWidthPx={slotColWidth}
                                     renderedCellStyle={cellStyle}
                                     styleToken={styleToken}
                                     hoverDetails={hoverDetails}
@@ -3533,7 +3726,11 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                             {visibleHourIndexes.map((hourIndex) => {
                               const meta = hourMetaByIndex(hourIndex);
                               if (!meta) return null;
-                              const slotKey = shiftSlotKey(row.rowShiftKey, meta.day, meta.hour);
+                              const slotKey = shiftSlotKey(
+                                row.rowShiftKey,
+                                meta.day,
+                                meta.slotOfDay
+                              );
                               const shift = rollingSlotShiftMap.map.get(slotKey) ?? null;
                               const startsHere = Boolean(
                                 shift && rollingSlotShiftMap.starts.has(slotKey)
@@ -3548,7 +3745,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                               const empPattern = emp.employee_type_id
                                 ? employeePatternById.get(emp.employee_type_id) ?? "none"
                                 : "none";
-                              const showPattern = Boolean(shift && endsHere);
+                              const showPattern = Boolean(shift);
                               const dayAmbient = dayGridAmbient(
                                 meta.dayKey,
                                 rollingHolidayNamesByDay,
@@ -3618,12 +3815,13 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                               const styleToken = `${shiftColor}|${showPattern ? empPattern : "none"}|${has ? "1" : "0"}|${dayAmbient}`;
                               return (
                                 <ShiftGridCell
-                                  key={`${emp.user_id}-${meta.dayKey}-${meta.hour}`}
-                                  cellKey={`${emp.user_id}-${meta.dayKey}-${meta.hour}`}
+                                  key={`${emp.user_id}-${meta.dayKey}-${meta.slotOfDay}`}
+                                  cellKey={`${emp.user_id}-${meta.dayKey}-${meta.slotOfDay}`}
                                   day={meta.day}
                                   dayKey={meta.dayKey}
                                   dayAmbient={dayAmbient}
-                                  hour={meta.hour}
+                                  slotHour={meta.hour}
+                                  slotMinute={meta.minute}
                                   userId={emp.user_id}
                                   groupDeptId={row.groupDeptId}
                                   requiredEmployeeTypeId={null}
@@ -3632,6 +3830,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                   endsHere={endsHere}
                                   has={has}
                                   shiftLabel={renderedShiftLabel}
+                                  slotWidthPx={slotColWidth}
                                   renderedCellStyle={cellStyle}
                                   styleToken={styleToken}
                                   hoverDetails={hoverDetails}
