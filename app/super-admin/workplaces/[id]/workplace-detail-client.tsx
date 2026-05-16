@@ -16,7 +16,6 @@ import {
   KeyRound,
   Layers3,
   Loader2,
-  Palette,
   Scale,
   ShieldCheck,
   Trash2,
@@ -175,7 +174,6 @@ export default function WorkplaceDetailClient({
     | "planning"
     | "types"
     | "api"
-    | "appearance"
     | "rules"
     | "compliance"
     | "billing"
@@ -788,7 +786,6 @@ export default function WorkplaceDetailClient({
               { id: "company", label: "Firma", icon: Building2 },
               { id: "planning", label: "Planlægning", icon: CalendarClock },
               { id: "types", label: "Typer", icon: Layers3 },
-              { id: "appearance", label: "Farver", icon: Palette },
               {
                 id: "rules",
                 label: tr("settings.tabs.eu_rules", "EU regler"),
@@ -810,7 +807,6 @@ export default function WorkplaceDetailClient({
                         | "company"
                         | "planning"
                         | "types"
-                        | "appearance"
                         | "rules"
                         | "compliance"
                         | "api"
@@ -1716,7 +1712,7 @@ export default function WorkplaceDetailClient({
       </section>
       ) : null}
 
-      {dashboardTabsEnabled && activeSettingsTab === "appearance" ? (
+      {!dashboardTabsEnabled || activeSettingsTab === "company" ? (
       <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
           Farver og layout

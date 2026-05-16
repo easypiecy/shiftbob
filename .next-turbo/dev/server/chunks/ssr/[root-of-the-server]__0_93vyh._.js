@@ -828,6 +828,10 @@ const COMPLIANCE_PROFILE_KEY_DEFAULT = "default";
     const m = message.toLowerCase();
     return m.includes("schema cache") || m.includes("could not find") || m.includes("does not exist") || m.includes("42p01") || m.includes("undefined table") || m.includes("relation") && m.includes("does not exist");
 }
+function extractMissingWorkplacesColumn(message) {
+    const match = /Could not find the '([^']+)' column of 'workplaces'/i.exec(message) ?? /column "([^"]+)" of relation "workplaces" does not exist/i.exec(message);
+    return match?.[1] ?? null;
+}
 async function readGlobalComplianceRules(admin) {
     const cfg = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$compliance$2f$rules$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getConfigDefaultComplianceRules"])();
     const { data, error } = await admin.from("compliance_rule_profiles").select("rules_json").eq("profile_key", COMPLIANCE_PROFILE_KEY_DEFAULT).maybeSingle();
@@ -1909,7 +1913,7 @@ async function saveGlobalComplianceRulesForSuperAdmin(rules) {
 }
 async function getWorkplaceComplianceRules(workplaceId) {
     try {
-        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$workplace$2d$admin$2d$server$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["assertWorkplaceAdminOrSuperAdmin"])(workplaceId);
+        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$workplace$2d$admin$2d$server$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["assertWorkplaceMember"])(workplaceId);
         const admin = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$supabase$2f$admin$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getAdminClient"])();
         const global = await readGlobalComplianceRules(admin);
         const { data: wp, error } = await admin.from("workplaces").select("compliance_rules_override_json").eq("id", workplaceId).maybeSingle();
@@ -2303,17 +2307,33 @@ async function updateWorkplace(id, patch) {
         if (patch.employee_swap_permission_level !== undefined) {
             row.employee_swap_permission_level = Math.trunc(Number(patch.employee_swap_permission_level));
         }
-        const { error } = await admin.from("workplaces").update(row).eq("id", id);
-        if (error) {
+        const updateRow = {
+            ...row
+        };
+        let lastErrorMessage = null;
+        for(let attempt = 0; attempt < 4; attempt++){
+            const { error } = await admin.from("workplaces").update(updateRow).eq("id", id);
+            if (!error) {
+                lastErrorMessage = null;
+                break;
+            }
+            lastErrorMessage = error.message;
+            const missingColumn = extractMissingWorkplacesColumn(error.message);
+            if (!missingColumn || !(missingColumn in updateRow)) {
+                break;
+            }
+            delete updateRow[missingColumn];
+        }
+        if (lastErrorMessage) {
             return {
                 ok: false,
-                error: error.message
+                error: lastErrorMessage
             };
         }
         await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$workplace$2d$lifecycle$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["updateLifecycleStage"])(id, {
             source: "workplace_updated",
             context: {
-                updated_fields: Object.keys(row)
+                updated_fields: Object.keys(updateRow)
             }
         });
         (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$cache$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["revalidatePath"])("/super-admin/users");

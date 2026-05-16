@@ -44,6 +44,11 @@ export type WorkplaceShiftRow = {
   ends_at: string;
 };
 
+export type WorkplaceComplianceHistoricalShiftRow = Pick<
+  WorkplaceShiftRow,
+  "id" | "user_id" | "shift_type_id" | "starts_at" | "ends_at"
+>;
+
 const SHIFT_SELECT_WITH_REQUIRED_TYPE =
   "id, workplace_id, department_id, user_id, required_employee_type_id, shift_type_id, note, starts_at, ends_at";
 const SHIFT_SELECT_LEGACY =
@@ -145,6 +150,46 @@ export async function getWorkplaceShiftsInRange(
         `[calendar-server] getWorkplaceShiftsInRange wp=${workplaceId} dept=${departmentId ?? "all"} user=${userId ?? "all"} rows=${rowCount} status=${status} ms=${elapsedMs}${suffix}`
       );
     }
+  }
+}
+
+export async function getWorkplaceHistoricalShiftsForCompliance(
+  workplaceId: string,
+  employeeUserIds: string[],
+  rangeStartIso: string,
+  rangeEndIso: string
+): Promise<
+  | { ok: true; shifts: WorkplaceComplianceHistoricalShiftRow[] }
+  | { ok: false; error: string }
+> {
+  try {
+    await assertWorkplaceMember(workplaceId);
+    const uniqueUserIds = [...new Set(employeeUserIds.map((id) => id.trim()).filter(Boolean))];
+    if (uniqueUserIds.length === 0) {
+      return { ok: true, shifts: [] };
+    }
+    const admin = getAdminClient();
+    const { data, error } = await admin
+      .from("workplace_shifts")
+      .select("id, user_id, shift_type_id, starts_at, ends_at")
+      .eq("workplace_id", workplaceId)
+      .in("user_id", uniqueUserIds)
+      .lt("starts_at", rangeEndIso)
+      .gt("ends_at", rangeStartIso)
+      .order("starts_at");
+    if (error) {
+      if (isMissingSchemaError(error.message)) {
+        return { ok: true, shifts: [] };
+      }
+      return { ok: false, error: error.message };
+    }
+    return {
+      ok: true,
+      shifts: (data ?? []) as WorkplaceComplianceHistoricalShiftRow[],
+    };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Ukendt fejl";
+    return { ok: false, error: msg };
   }
 }
 

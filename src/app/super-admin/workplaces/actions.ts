@@ -72,6 +72,13 @@ function isMissingSchemaError(message: string): boolean {
   );
 }
 
+function extractMissingWorkplacesColumn(message: string): string | null {
+  const match =
+    /Could not find the '([^']+)' column of 'workplaces'/i.exec(message) ??
+    /column "([^"]+)" of relation "workplaces" does not exist/i.exec(message);
+  return match?.[1] ?? null;
+}
+
 async function readGlobalComplianceRules(
   admin: ReturnType<typeof getAdminClient>
 ): Promise<{ rules: ComplianceRule[]; source: "global_default" | "config_default" }> {
@@ -927,7 +934,7 @@ export async function getWorkplaceComplianceRules(
   workplaceId: string
 ): Promise<{ ok: true; data: ComplianceRulesResolution } | { ok: false; error: string }> {
   try {
-    await assertWorkplaceAdminOrSuperAdmin(workplaceId);
+    await assertWorkplaceMember(workplaceId);
     const admin = getAdminClient();
     const global = await readGlobalComplianceRules(admin);
     const { data: wp, error } = await admin
@@ -1360,13 +1367,27 @@ export async function updateWorkplace(
       );
     }
 
-    const { error } = await admin.from("workplaces").update(row).eq("id", id);
-    if (error) {
-      return { ok: false, error: error.message };
+    const updateRow: Record<string, unknown> = { ...row };
+    let lastErrorMessage: string | null = null;
+    for (let attempt = 0; attempt < 4; attempt++) {
+      const { error } = await admin.from("workplaces").update(updateRow).eq("id", id);
+      if (!error) {
+        lastErrorMessage = null;
+        break;
+      }
+      lastErrorMessage = error.message;
+      const missingColumn = extractMissingWorkplacesColumn(error.message);
+      if (!missingColumn || !(missingColumn in updateRow)) {
+        break;
+      }
+      delete updateRow[missingColumn];
+    }
+    if (lastErrorMessage) {
+      return { ok: false, error: lastErrorMessage };
     }
     await updateLifecycleStage(id, {
       source: "workplace_updated",
-      context: { updated_fields: Object.keys(row) },
+      context: { updated_fields: Object.keys(updateRow) },
     });
     revalidatePath("/super-admin/users");
     revalidateWorkplaceDetailPages(id);

@@ -24,6 +24,18 @@
       "exportedName": "getWorkplaceDepartmentsOverview",
       "filename": "src/app/super-admin/workplaces/actions.ts"
     },
+    "405b80c55a09220e385b5d03a336e67eef01987d8b": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceComplianceRules",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "exportedName": "getWorkplaceComplianceRules",
+      "filename": "src/app/super-admin/workplaces/actions.ts"
+    },
     "401c7d7dedb936715b4809394f214f715255e98962": {
       "workers": {
         "app/dashboard/page": {
@@ -70,6 +82,18 @@
         }
       },
       "exportedName": "deleteWorkplaceShift",
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+    },
+    "78d271c29d671e3a24df5bd5771edb5efc68b0012b": {
+      "workers": {
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceHistoricalShiftsForCompliance",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "exportedName": "getWorkplaceHistoricalShiftsForCompliance",
       "filename": "src/app/dashboard/workplace-shifts-actions.ts"
     },
     "70bd646879dbd70a4cbf76c51070f6ad255f836681": {

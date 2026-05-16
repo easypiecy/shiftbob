@@ -11,6 +11,7 @@ import {
   useState,
 } from "react";
 import {
+  ShieldAlert,
   CalendarDays,
   ChevronLeft,
   ChevronRight,
@@ -23,6 +24,7 @@ import {
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   getWorkplaceDepartmentsOverview,
+  getWorkplaceComplianceRules,
   getWorkplaceTypes,
   saveWorkplaceDepartmentMemberships,
   type WorkplaceDepartmentRow,
@@ -34,12 +36,20 @@ import {
 import {
   createWorkplaceShift,
   deleteWorkplaceShift,
+  getWorkplaceHistoricalShiftsForCompliance,
   reassignWorkplaceShift,
   swapWorkplaceShifts,
   updateWorkplaceShiftTiming,
   getWorkplaceShiftsInRange,
+  type WorkplaceComplianceHistoricalShiftRow,
   type WorkplaceShiftRow,
 } from "@/src/app/dashboard/workplace-shifts-actions";
+import {
+  runComplianceEngine,
+  type ComplianceInputShift,
+  type EuViolation,
+} from "@/src/lib/compliance/engine";
+import type { ComplianceRule, Severity } from "@/src/lib/compliance/rules";
 import {
   createWorkplaceMemberWithProfile,
   getWorkplaceMemberCvSignedUrl,
@@ -226,59 +236,99 @@ function shiftIdentityKey(shift: WorkplaceShiftRow): string {
   return `${shift.user_id ?? "open"}|${shift.department_id ?? "none"}|${shift.required_employee_type_id ?? "any"}|${shift.starts_at}|${shift.ends_at}|${shift.shift_type_id ?? ""}`;
 }
 
-function buildEuViolationRuleMap(
+type ShiftViolation = {
+  rule_id: string;
+  date: string;
+  severity: Severity;
+  message: string;
+};
+
+function severityPriority(severity: Severity): number {
+  return severity === "ERROR" ? 2 : 1;
+}
+
+function shiftOverlapsViolationDay(shift: WorkplaceShiftRow, violationDate: string): boolean {
+  const shiftStart = new Date(shift.starts_at);
+  const shiftEnd = new Date(shift.ends_at);
+  if (Number.isNaN(shiftStart.getTime()) || Number.isNaN(shiftEnd.getTime())) return false;
+  const day = parseDayKeyLocal(violationDate);
+  if (!day) return false;
+  const dayStartMs = startOfDay(day).getTime();
+  const dayEndMs = addDays(startOfDay(day), 1).getTime();
+  const shiftStartMs = shiftStart.getTime();
+  const shiftEndMs = shiftEnd.getTime();
+  return shiftStartMs < dayEndMs && shiftEndMs > dayStartMs;
+}
+
+function pushUniqueShiftViolation(target: ShiftViolation[], violation: ShiftViolation): void {
+  const key = `${violation.rule_id}|${violation.date}|${violation.severity}|${violation.message}`;
+  if (
+    target.some(
+      (item) => `${item.rule_id}|${item.date}|${item.severity}|${item.message}` === key
+    )
+  ) {
+    return;
+  }
+  target.push(violation);
+}
+
+function buildComplianceViolationMap(
   shifts: WorkplaceShiftRow[],
-  memberByUserId: Map<string, WorkplaceMemberDepartmentsRow>
-): Map<string, string> {
-  const byUser = new Map<string, WorkplaceShiftRow[]>();
+  violations: EuViolation[]
+): Map<string, ShiftViolation[]> {
+  const violationByEmployeeDay = new Map<string, EuViolation[]>();
+  for (const violation of violations) {
+    const key = `${violation.employee_id}|${violation.date}`;
+    const list = violationByEmployeeDay.get(key) ?? [];
+    list.push(violation);
+    violationByEmployeeDay.set(key, list);
+  }
+  const out = new Map<string, ShiftViolation[]>();
   for (const shift of shifts) {
     if (!shift.user_id) continue;
-    const list = byUser.get(shift.user_id) ?? [];
-    list.push(shift);
-    byUser.set(shift.user_id, list);
-  }
-
-  const violationsByShiftId = new Map<string, string>();
-  const violationsByIdentity = new Map<string, string>();
-  for (const [userId, rows] of byUser.entries()) {
-    const sorted = [...rows].sort(
-      (a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime()
-    );
-    const name = memberByUserId.get(userId)?.display_name ?? "Ukendt medarbejder";
-
-    for (let i = 1; i < sorted.length; i++) {
-      const prev = sorted[i - 1];
-      const curr = sorted[i];
-      const prevEnd = new Date(prev.ends_at).getTime();
-      const currStart = new Date(curr.starts_at).getTime();
-      if (!Number.isFinite(prevEnd) || !Number.isFinite(currStart)) continue;
-
-      if (currStart < prevEnd) {
-        const rule = `Overlap mellem vagter for ${name}`;
-        if (curr.id) violationsByShiftId.set(curr.id, rule);
-        violationsByIdentity.set(shiftIdentityKey(curr), rule);
-        continue;
-      }
-
-      const restHours = (currStart - prevEnd) / (1000 * 60 * 60);
-      if (restHours < 11) {
-        const rule = `11-timers hviletid overskredet (${restHours.toFixed(1)} t) for ${name}`;
-        if (curr.id) violationsByShiftId.set(curr.id, rule);
-        violationsByIdentity.set(shiftIdentityKey(curr), rule);
+    const violationsForShift: ShiftViolation[] = [];
+    for (const [key, items] of violationByEmployeeDay.entries()) {
+      const [employeeId, dayKey] = key.split("|");
+      if (employeeId !== shift.user_id) continue;
+      if (!shiftOverlapsViolationDay(shift, dayKey)) continue;
+      for (const item of items) {
+        pushUniqueShiftViolation(violationsForShift, {
+          rule_id: item.rule_id,
+          date: item.date,
+          severity: item.severity,
+          message: item.message,
+        });
       }
     }
-  }
-
-  const out = new Map<string, string>();
-  for (const shift of shifts) {
-    const rule =
-      (shift.id ? violationsByShiftId.get(shift.id) : undefined) ??
-      violationsByIdentity.get(shiftIdentityKey(shift));
-    if (!rule) continue;
-    if (shift.id) out.set(shift.id, rule);
-    out.set(shiftIdentityKey(shift), rule);
+    if (violationsForShift.length === 0) continue;
+    violationsForShift.sort((a, b) => {
+      const severityDiff = severityPriority(b.severity) - severityPriority(a.severity);
+      if (severityDiff !== 0) return severityDiff;
+      return a.date.localeCompare(b.date);
+    });
+    if (shift.id) out.set(shift.id, violationsForShift);
+    out.set(shiftIdentityKey(shift), violationsForShift);
   }
   return out;
+}
+
+function topShiftViolation(violations: ShiftViolation[] | undefined): ShiftViolation | null {
+  if (!violations || violations.length === 0) return null;
+  return violations[0] ?? null;
+}
+
+function toComplianceInputShift(
+  shift: Pick<WorkplaceShiftRow, "user_id" | "starts_at" | "ends_at">
+): ComplianceInputShift | null {
+  if (!shift.user_id) return null;
+  return {
+    employee_id: shift.user_id,
+    starts_at: shift.starts_at,
+    ends_at: shift.ends_at,
+    // Shift types in the current workplace schema do not expose break_minutes yet.
+    // Keep shift_code empty to avoid false mandatory-break violations.
+    shift_code: null,
+  };
 }
 
 const DEFAULT_SHIFT_COLOR = "#94a3b8";
@@ -498,6 +548,7 @@ type ShiftGridCellProps = {
   styleToken: string;
   hoverDetails?: string;
   violationRule?: string;
+  violationSeverity?: Severity;
   onCellPointerDown: (
     e: {
       pointerType?: string;
@@ -543,6 +594,7 @@ const ShiftGridCell = memo(function ShiftGridCell({
   renderedCellStyle,
   hoverDetails,
   violationRule,
+  violationSeverity,
   onCellPointerDown,
   onCellPointerUp,
   onCellClick,
@@ -554,11 +606,12 @@ const ShiftGridCell = memo(function ShiftGridCell({
       : dayAmbient === "weekend"
         ? "bg-zinc-200/25 dark:bg-zinc-800/50"
         : "bg-zinc-50/50 dark:bg-zinc-950/50";
+  const violationTitlePrefix = violationSeverity ? `EU-regel (${violationSeverity})` : "EU-regel";
   const titleWithViolation =
     has && violationRule
       ? hoverDetails?.includes("EU-regel")
         ? hoverDetails
-        : [hoverDetails, `EU-regel: ${violationRule}`].filter(Boolean).join("\n")
+        : [hoverDetails, `${violationTitlePrefix}: ${violationRule}`].filter(Boolean).join("\n")
       : hoverDetails;
   const showCenteredViolationIcon = (() => {
     if (!has || !violationRule || !shift) return false;
@@ -574,13 +627,25 @@ const ShiftGridCell = memo(function ShiftGridCell({
     const midpoint = shiftStart + (shiftEnd - shiftStart) / 2;
     return midpoint >= slotStartMs && midpoint < slotEnd;
   })();
-  const violationHoverText = violationRule ? `EU-regel: ${violationRule}` : undefined;
+  const violationHoverText = violationRule
+    ? `${violationTitlePrefix}: ${violationRule}`
+    : undefined;
+  const violationAccentClass =
+    violationSeverity === "ERROR"
+      ? "ring-1 ring-red-500/80 dark:ring-red-400/80"
+      : violationSeverity === "WARNING"
+        ? "ring-1 ring-amber-500/80 dark:ring-amber-300/80"
+        : "";
+  const violationIconClass =
+    violationSeverity === "WARNING"
+      ? "text-amber-500 [text-shadow:0_0_3px_rgba(255,255,255,1),0_0_8px_rgba(255,255,255,0.95),0_0_14px_rgba(255,184,0,1),0_0_22px_rgba(255,184,0,0.95)]"
+      : "text-red-500 [text-shadow:0_0_3px_rgba(255,255,255,1),0_0_8px_rgba(255,255,255,0.95),0_0_14px_rgba(255,80,80,1),0_0_22px_rgba(255,80,80,0.95)]";
   return (
     <td
       key={cellKey}
       className={
         has
-          ? "relative border-b border-l border-zinc-300/60 px-0 py-2 dark:border-zinc-600/50"
+          ? `relative border-b border-l border-zinc-300/60 px-0 py-2 dark:border-zinc-600/50 ${violationAccentClass}`
           : `border-b border-l border-zinc-100 px-0 py-2 dark:border-zinc-800 ${emptySurface}`
       }
       style={renderedCellStyle}
@@ -599,7 +664,7 @@ const ShiftGridCell = memo(function ShiftGridCell({
     >
       {showCenteredViolationIcon ? (
         <span
-          className="absolute left-1/2 top-1/2 z-0 inline-flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-[30px] leading-none text-red-500 [text-shadow:0_0_3px_rgba(255,255,255,1),0_0_8px_rgba(255,255,255,0.95),0_0_14px_rgba(255,232,0,1),0_0_22px_rgba(255,232,0,0.95)] dark:bg-white/80 dark:text-red-500"
+          className={`absolute left-1/2 top-1/2 z-0 inline-flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-[30px] leading-none dark:bg-white/80 ${violationIconClass}`}
           title={violationHoverText}
           aria-label={violationHoverText}
         >
@@ -663,6 +728,7 @@ const ShiftGridCell = memo(function ShiftGridCell({
   prev.dayAmbient === next.dayAmbient &&
   prev.hoverDetails === next.hoverDetails &&
   prev.violationRule === next.violationRule &&
+  prev.violationSeverity === next.violationSeverity &&
   prev.day.getTime() === next.day.getTime()
 );
 
@@ -682,6 +748,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   const [anchorDate, setAnchorDate] = useState(() => startOfDay(new Date()));
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showOpenShiftsPanel, setShowOpenShiftsPanel] = useState(false);
+  const [showCompliancePanel, setShowCompliancePanel] = useState(false);
   const [rollingDays, setRollingDays] = useState<Date[]>(() =>
     expandForward(startOfDay(new Date()), ROLLING_DAY_COUNT)
   );
@@ -730,6 +797,12 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
 
   const [rollingShifts, setRollingShifts] = useState<WorkplaceShiftRow[]>([]);
   const [monthShifts, setMonthShifts] = useState<WorkplaceShiftRow[]>([]);
+  const [complianceRules, setComplianceRules] = useState<ComplianceRule[]>([]);
+  const [complianceHistoryShifts, setComplianceHistoryShifts] = useState<
+    WorkplaceComplianceHistoricalShiftRow[]
+  >([]);
+  const [complianceLoading, setComplianceLoading] = useState(false);
+  const [complianceError, setComplianceError] = useState<string | null>(null);
   const [loadingDeptIds, setLoadingDeptIds] = useState<string[]>([]);
   const [viewerUserId, setViewerUserId] = useState<string | null>(null);
   const [calendarAdminNameView, setCalendarAdminNameView] = useState(true);
@@ -784,9 +857,10 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       setLoading(true);
       setError(null);
     }
-    const [overviewRes, typesRes] = await Promise.all([
+    const [overviewRes, typesRes, complianceRulesRes] = await Promise.all([
       getWorkplaceDepartmentsOverview(workplaceId, { access: "calendar_member" }),
       getWorkplaceTypes(workplaceId),
+      getWorkplaceComplianceRules(workplaceId),
     ]);
     if (!overviewRes.ok) {
       if (!silent) {
@@ -804,6 +878,13 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     } else {
       setShiftTypes(overviewRes.shiftTypes);
       setEmployeeTypes(overviewRes.employeeTypes);
+    }
+    if (complianceRulesRes.ok) {
+      setComplianceRules(complianceRulesRes.data.rules);
+      setComplianceError(null);
+    } else {
+      setComplianceRules([]);
+      setComplianceError(complianceRulesRes.error);
     }
     if (!silent) {
       setLoading(false);
@@ -1131,6 +1212,72 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     return monthShifts.filter((s) => s.shift_type_id === filterShiftTypeId);
   }, [monthShifts, filterShiftTypeId]);
 
+  const uniqueVisibleShifts = useMemo(() => {
+    const byId = new Map<string, WorkplaceShiftRow>();
+    for (const shift of [...rollingShifts, ...monthShifts]) {
+      if (!shift.user_id) continue;
+      byId.set(shift.id, shift);
+    }
+    return [...byId.values()];
+  }, [monthShifts, rollingShifts]);
+
+  useEffect(() => {
+    const employees = [
+      ...new Set(
+        uniqueVisibleShifts
+          .map((shift) => shift.user_id)
+          .filter((id): id is string => Boolean(id))
+      ),
+    ];
+    if (employees.length === 0) {
+      setComplianceHistoryShifts([]);
+      setComplianceLoading(false);
+      return;
+    }
+    const earliestMs = Math.min(
+      ...uniqueVisibleShifts.map((shift) => new Date(shift.starts_at).getTime())
+    );
+    if (!Number.isFinite(earliestMs)) {
+      setComplianceHistoryShifts([]);
+      setComplianceLoading(false);
+      return;
+    }
+    const earliest = new Date(earliestMs);
+    const lookbackStart = addDays(earliest, -7 * 16);
+    let cancelled = false;
+    setComplianceLoading(true);
+    void (async () => {
+      const res = await getWorkplaceHistoricalShiftsForCompliance(
+        workplaceId,
+        employees,
+        lookbackStart.toISOString(),
+        earliest.toISOString()
+      );
+      if (cancelled) return;
+      if (!res.ok) {
+        setComplianceHistoryShifts([]);
+        setComplianceError(res.error);
+      } else {
+        setComplianceHistoryShifts(res.shifts);
+      }
+      setComplianceLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [uniqueVisibleShifts, workplaceId]);
+
+  const complianceViolations = useMemo(() => {
+    const current = uniqueVisibleShifts
+      .map((shift) => toComplianceInputShift(shift))
+      .filter((shift): shift is ComplianceInputShift => shift !== null);
+    const historical = complianceHistoryShifts
+      .map((shift) => toComplianceInputShift(shift))
+      .filter((shift): shift is ComplianceInputShift => shift !== null);
+    if (current.length === 0 || complianceRules.length === 0) return [] as EuViolation[];
+    return runComplianceEngine(current, historical, {}, complianceRules);
+  }, [complianceHistoryShifts, complianceRules, uniqueVisibleShifts]);
+
   const days30 = useMemo(() => {
     const out: Date[] = [];
     for (let i = 0; i < 30; i++) {
@@ -1208,10 +1355,29 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     return map;
   }, [members]);
 
-  const euViolationRuleMap = useMemo(() => {
-    const combined = [...rollingShiftsFiltered, ...monthShiftsFiltered];
-    return buildEuViolationRuleMap(combined, memberByUserId);
-  }, [rollingShiftsFiltered, monthShiftsFiltered, memberByUserId]);
+  const euViolationMap = useMemo(
+    () => buildComplianceViolationMap(uniqueVisibleShifts, complianceViolations),
+    [uniqueVisibleShifts, complianceViolations]
+  );
+
+  const upcomingComplianceViolations = useMemo(() => {
+    const todayKey = dayKeyLocal(startOfDay(new Date()));
+    const rows = complianceViolations
+      .filter((violation) => violation.date >= todayKey)
+      .map((violation) => ({
+        ...violation,
+        employee_name:
+          memberByUserId.get(violation.employee_id)?.display_name ?? violation.employee_id,
+      }));
+    rows.sort((a, b) => {
+      const severityDiff = severityPriority(b.severity) - severityPriority(a.severity);
+      if (severityDiff !== 0) return severityDiff;
+      const dateDiff = a.date.localeCompare(b.date);
+      if (dateDiff !== 0) return dateDiff;
+      return a.employee_name.localeCompare(b.employee_name, "da");
+    });
+    return rows;
+  }, [complianceViolations, memberByUserId]);
 
   const memberEditorWarnings = useMemo(() => {
     if (!memberWarningsReady || !memberEditorDraft || !memberEditorUserId) {
@@ -1266,18 +1432,21 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     }
     const euWarnings = new Set<string>();
     for (const shift of shiftsInMonth) {
-      const rule =
-        (shift.id ? euViolationRuleMap.get(shift.id) : undefined) ??
-        euViolationRuleMap.get(shiftIdentityKey(shift));
-      if (rule) {
-        euWarnings.add(`EU-regel brudt (${dayKeyLocal(new Date(shift.starts_at))}): ${rule}`);
+      const violations =
+        (shift.id ? euViolationMap.get(shift.id) : undefined) ??
+        euViolationMap.get(shiftIdentityKey(shift));
+      const topViolation = topShiftViolation(violations);
+      if (topViolation) {
+        euWarnings.add(
+          `EU-regel (${topViolation.severity}) (${dayKeyLocal(new Date(shift.starts_at))}): ${topViolation.message}`
+        );
       }
     }
     warnings.push(...euWarnings);
     return warnings;
   }, [
     anchorDate,
-    euViolationRuleMap,
+    euViolationMap,
     memberEditorDraft,
     memberEditorUserId,
     memberWarningsReady,
@@ -2543,6 +2712,10 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
           workplaceName.trim()
         )
       : "Vagtplan";
+  const upcomingComplianceCount = upcomingComplianceViolations.length;
+  const upcomingComplianceErrorCount = upcomingComplianceViolations.filter(
+    (violation) => violation.severity === "ERROR"
+  ).length;
 
   return (
     <div className="relative flex flex-col gap-4">
@@ -2561,17 +2734,35 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
             <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setShowDatePicker((prev) => !prev)}
-              className="rounded-lg border border-zinc-200 bg-white p-2 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
-              aria-label={t(
-                "calendar.nav.date_picker_aria",
-                "Vælg dag i kalenderen"
-              )}
-            >
-              <CalendarDays className="h-4 w-4" aria-hidden />
-            </button>
+              <button
+                type="button"
+                onClick={() => setShowDatePicker((prev) => !prev)}
+                className="rounded-lg border border-zinc-200 bg-white p-2 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                aria-label={t(
+                  "calendar.nav.date_picker_aria",
+                  "Vælg dag i kalenderen"
+                )}
+              >
+                <CalendarDays className="h-4 w-4" aria-hidden />
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowCompliancePanel((prev) => !prev)}
+                className="relative rounded-lg border border-zinc-200 bg-white p-2 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                aria-label="Compliance-overblik"
+                title="Compliance-overblik"
+              >
+                <ShieldAlert className="h-4 w-4" aria-hidden />
+                {upcomingComplianceCount > 0 ? (
+                  <span
+                    className={`absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-semibold text-white ${
+                      upcomingComplianceErrorCount > 0 ? "bg-red-600" : "bg-amber-500"
+                    }`}
+                  >
+                    {Math.min(99, upcomingComplianceCount)}
+                  </span>
+                ) : null}
+              </button>
               <button
                 type="button"
                 onClick={() => setShowOpenShiftsPanel((prev) => !prev)}
@@ -2604,6 +2795,66 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                   }}
                   className="w-full rounded border border-zinc-300 bg-white px-2 py-1.5 text-xs text-zinc-800 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                 />
+              </div>
+            ) : null}
+            {showCompliancePanel ? (
+              <div className="absolute left-0 top-full z-30 mt-2 w-[420px] max-w-[calc(100vw-24px)] rounded-lg border border-zinc-200 bg-white p-3 shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
+                <div className="mb-2 flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    Compliance fra i dag
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setShowCompliancePanel(false)}
+                    className="rounded p-1 text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                    aria-label="Luk compliance-overblik"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+                {complianceLoading ? (
+                  <p className="text-xs text-zinc-600 dark:text-zinc-300">
+                    Opdaterer compliance-data...
+                  </p>
+                ) : complianceError ? (
+                  <p className="rounded-md border border-red-200 bg-red-50 px-2 py-1.5 text-xs text-red-800 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-100">
+                    {complianceError}
+                  </p>
+                ) : upcomingComplianceViolations.length === 0 ? (
+                  <p className="text-xs text-zinc-600 dark:text-zinc-300">
+                    Ingen registrerede overtrædelser fra i dag og frem.
+                  </p>
+                ) : (
+                  <div className="max-h-80 space-y-2 overflow-y-auto pr-1">
+                    {upcomingComplianceViolations.map((violation, index) => (
+                      <div
+                        key={`${violation.rule_id}-${violation.employee_id}-${violation.date}-${index}`}
+                        className="rounded-md border border-zinc-200 bg-zinc-50 px-2 py-2 text-xs dark:border-zinc-700 dark:bg-zinc-950/60"
+                      >
+                        <div className="mb-1 flex items-center gap-2">
+                          <span
+                            className={`inline-flex rounded px-1.5 py-0.5 text-[10px] font-semibold ${
+                              violation.severity === "ERROR"
+                                ? "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-100"
+                                : "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-100"
+                            }`}
+                          >
+                            {violation.severity}
+                          </span>
+                          <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                            {violation.date}
+                          </span>
+                          <span className="text-zinc-500 dark:text-zinc-400">
+                            {violation.employee_name}
+                          </span>
+                        </div>
+                        <p className="text-zinc-700 dark:text-zinc-200">
+                          {violation.rule_id}: {violation.message}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ) : null}
             {showOpenShiftsPanel ? (
@@ -3172,11 +3423,15 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                         : []),
                                     ].join("\n")
                                   : undefined;
-                                const violationRule =
+                                const violations =
                                   shift
-                                    ? (shift.id ? euViolationRuleMap.get(shift.id) : undefined) ??
-                                      euViolationRuleMap.get(shiftIdentityKey(shift))
+                                    ? (shift.id ? euViolationMap.get(shift.id) : undefined) ??
+                                      euViolationMap.get(shiftIdentityKey(shift))
                                     : undefined;
+                                const topViolation = topShiftViolation(violations);
+                                const violationRule = topViolation
+                                  ? `${topViolation.rule_id}: ${topViolation.message}`
+                                  : undefined;
                                 const styleToken = `${shiftColor}|${showPattern ? requiredPattern : "none"}|${has ? "1" : "0"}|${dayAmbient}`;
                                 return (
                                   <ShiftGridCell
@@ -3198,6 +3453,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                     styleToken={styleToken}
                                     hoverDetails={hoverDetails}
                                     violationRule={violationRule}
+                                    violationSeverity={topViolation?.severity}
                                     onCellPointerDown={handleCellPointerDown}
                                     onCellPointerUp={handleCellPointerUp}
                                     onCellClick={handleGridCellClick}
@@ -3308,25 +3564,30 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                       : []),
                                     ...(shift
                                       ? (() => {
-                                          const violationRule =
+                                          const violations =
                                             (shift.id
-                                              ? euViolationRuleMap.get(shift.id)
+                                              ? euViolationMap.get(shift.id)
                                               : undefined) ??
-                                            euViolationRuleMap.get(shiftIdentityKey(shift));
-                                          return violationRule
+                                            euViolationMap.get(shiftIdentityKey(shift));
+                                          const topViolation = topShiftViolation(violations);
+                                          return topViolation
                                             ? [
-                                                `${t("calendar.shift_hover.eu_rule", "EU-regel")}: ${violationRule}`,
+                                                `${t("calendar.shift_hover.eu_rule", "EU-regel")} (${topViolation.severity}): ${topViolation.rule_id}: ${topViolation.message}`,
                                               ]
                                             : [];
                                         })()
                                       : []),
                                   ].join("\n")
                                 : undefined;
-                              const violationRule =
+                              const violations =
                                 shift
-                                  ? (shift.id ? euViolationRuleMap.get(shift.id) : undefined) ??
-                                    euViolationRuleMap.get(shiftIdentityKey(shift))
+                                  ? (shift.id ? euViolationMap.get(shift.id) : undefined) ??
+                                    euViolationMap.get(shiftIdentityKey(shift))
                                   : undefined;
+                              const topViolation = topShiftViolation(violations);
+                              const violationRule = topViolation
+                                ? `${topViolation.rule_id}: ${topViolation.message}`
+                                : undefined;
                               const styleToken = `${shiftColor}|${showPattern ? empPattern : "none"}|${has ? "1" : "0"}|${dayAmbient}`;
                               return (
                                 <ShiftGridCell
@@ -3348,6 +3609,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                   styleToken={styleToken}
                                   hoverDetails={hoverDetails}
                                   violationRule={violationRule}
+                                  violationSeverity={topViolation?.severity}
                                   onCellPointerDown={handleCellPointerDown}
                                   onCellPointerUp={handleCellPointerUp}
                                   onCellClick={handleGridCellClick}

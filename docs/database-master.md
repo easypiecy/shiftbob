@@ -25,6 +25,7 @@ Single source of truth for `public` schema objects defined in this repo’s SQL 
 | `supabase_rpc_workplace_session_reads.sql` | RPC’er `get_my_workplaces`, `get_my_roles_for_workplace`, `has_super_admin_membership` (SECURITY DEFINER, filtrerer på `auth.uid()`) — app bruger dem først så arbejdsplads/roller virker selv ved RLS-problemer |
 | `supabase_seed_philip_workplace_member.sql` | Dev: tilknyt `philip.schoenbaum@gmail.com` til en arbejdsplads (`ADMIN`) — se `user_roles`-kun Super Admin viser ikke arbejdspladser uden `workplace_members` |
 | `supabase_patch_workplace_future_planning.sql` | `future_planning_weeks`, `calendar_released_until`, `season_template_json` på `workplaces` (Fremtiden / frigivelse) |
+| `supabase_patch_compliance_rules.sql` | EU-regelmotor i DB: `compliance_rule_profiles` + `workplaces.compliance_rules_override_json` (global standard + lokal override pr. arbejdsplads) |
 | `supabase_patch_workplace_subscription_tier.sql` | Tilføjer `workplaces.subscription_tier` med default `FOUNDATION` og check-constraint for tiers (`FOUNDATION`, `PRO_PLANNER`, `HYBRID_APP`, `AUTOPILOT`) |
 | `supabase_seed_ui_translations_app.sql` | Udvider `ui_translations` med app-strenge (`en-US` + `da`): admin-menu, super-admin-menu, layout-tema, upload, dashboard-sider, Fremtiden, indstillinger, Compliance m.m. — idempotent (`ON CONFLICT DO UPDATE`). Kør efter `supabase_i18n_setup.sql`. |
 | `supabase_seed_ui_translations_compliance.sql` | Kun Compliance + `admin.nav.compliance` i `ui_translations` (samme som del af app-seed). Alternativ: `npm run seed:compliance-translations` med `SUPABASE_SERVICE_ROLE_KEY` i `.env.local` — nødvendigt for at rækkerne vises i `/super-admin/translations` (kildesprog `en-US`). |
@@ -159,6 +160,7 @@ Where `role` appears (`user_roles.role`, `workplace_members.role`), allowed valu
 | `future_planning_weeks` | `integer` | Default `8`, check `1…104` — antal uger af ufrigivet kalender vist under **Administrator → Fremtiden** |
 | `calendar_released_until` | `date` | Valgfri — sidste dato medarbejdere kan se planlagte vagter; efter denne dato er planen kun synlig for admin indtil frigivelse |
 | `season_template_json` | `jsonb` | Sæson-skabelon (perioder, krav pr. ugedag) til AI-analyse og planlægning |
+| `compliance_rules_override_json` | `jsonb` | Valgfri lokal override af EU-regler pr. arbejdsplads. `NULL` betyder brug global standard-profil |
 | `subscription_status` | `text` | Stripe-/betalingsstatus (`inactive`, `trialing`, `active`, `past_due`, `canceled`) |
 | `subscription_tier` | `text` | Produkt-tier til feature-gating: `FOUNDATION` (default), `PRO_PLANNER`, `HYBRID_APP`, `AUTOPILOT` |
 | `created_at` | `timestamptz` | |
@@ -174,6 +176,40 @@ Where `role` appears (`user_roles.role`, `workplace_members.role`), allowed valu
 **Grants:** `SELECT` to `authenticated`. No insert/update/delete policies in script — tenant creation is out of band (e.g. service role / Super Admin UI).
 
 **App:** `src/app/super-admin/workplaces/actions.ts` — `/super-admin/users`, `/super-admin/workplaces/new`, `/super-admin/workplaces/[id]` (inkl. afdelinger), `/super-admin/workplace-templates` (CRUD på standardtyper). `exportWorkplaceCsv` findes i samme modul til CSV-eksport (kan kaldes fra arbejdsplads-admin senere).
+
+**Kompatibilitet (legacy DB):** `updateWorkplace()` håndterer manglende `workplaces`-kolonner defensivt ved schema-cache/”column does not exist”-fejl (ukendt kolonne fjernes fra update-payload og forsøges igen), så gem af øvrige felter ikke blokeres.
+
+---
+
+## `public.compliance_rule_profiles`
+
+| | |
+|---|---|
+| **Source** | `supabase_patch_compliance_rules.sql` |
+| **Purpose** | Globalt regelsæt til EU-regelmotoren. Bruges som standardprofil (`profile_key = 'default'`) for alle arbejdspladser uden lokal override. |
+
+### Columns
+
+| Column | Type | Keys | Notes |
+|--------|------|------|--------|
+| `id` | `uuid` | **PK**, default `gen_random_uuid()` | |
+| `profile_key` | `text` | **UNIQUE** | Standard er `default` |
+| `rules_json` | `jsonb` | — | Serialiserede compliance-regler |
+| `created_at` | `timestamptz` | — | Default `now()` |
+| `updated_at` | `timestamptz` | — | Default `now()`, opdateres af trigger |
+
+### Trigger
+
+- `trg_touch_compliance_rule_profiles_updated_at` (BEFORE UPDATE) kalder `public.touch_compliance_rule_profiles_updated_at()` og holder `updated_at` synkron.
+
+### App
+
+- `src/app/super-admin/workplaces/actions.ts`
+  - `getGlobalComplianceRulesForSuperAdmin()`
+  - `saveGlobalComplianceRulesForSuperAdmin()`
+  - `getWorkplaceComplianceRules()` (resolver global standard vs. lokal override)
+  - `saveWorkplaceComplianceRules()`
+  - `resetWorkplaceComplianceRulesToDefault()`
 
 ---
 
@@ -517,7 +553,9 @@ Used by i18n RLS write policies. Super Admin UI gemmer oversættelser med **serv
 | `workplace_id` | `uuid` | **FK** → `workplaces(id)` |
 | `department_id` | `uuid` | **FK** → `workplace_departments(id)` (nullable) |
 | `user_id` | `uuid` | **FK** → `auth.users(id)` |
+| `required_employee_type_id` | `uuid` | **FK** → `workplace_employee_types(id)` (nullable) |
 | `shift_type_id` | `uuid` | **FK** → `workplace_shift_types(id)` (nullable) |
+| `note` | `text` | Valgfri note på vagt |
 | `starts_at` | `timestamptz` | |
 | `ends_at` | `timestamptz` | Skal være > `starts_at` |
 | `created_at` | `timestamptz` | |
@@ -552,6 +590,7 @@ workplace_department_members ──► workplace_departments.id
 workplace_shifts.workplace_id ──► workplaces.id
 workplace_shifts.department_id ──► workplace_departments.id
 workplace_shifts.user_id ──► auth.users
+workplace_shifts.required_employee_type_id ──► workplace_employee_types.id
 workplace_shifts.shift_type_id ──► workplace_shift_types.id
 
 employee_type_templates ──► workplace_employee_types.template_id
@@ -559,6 +598,7 @@ shift_type_templates      ──► workplace_shift_types.template_id
 workplaces.id             ──► workplace_employee_types.workplace_id
                               workplace_shift_types.workplace_id
                               workplace_api_keys.workplace_id
+compliance_rule_profiles.profile_key = 'default' ──► workplaces.compliance_rules_override_json (fallback/override resolver i app-lag)
 
 languages.language_code ◄── languages.primary_language_code (self-FK)
     ├── eu_countries.primary_language_code
@@ -581,6 +621,7 @@ languages.language_code ◄── languages.primary_language_code (self-FK)
 | `workplace_departments` | Afdelinger pr. tenant |
 | `workplace_department_members` | Bruger ↔ afdeling (samme arbejdsplads) |
 | `workplace_shifts` | Planlagte vagter (kalender) |
+| `compliance_rule_profiles` | Global EU-regelprofil (JSON) |
 | `user_ui_preferences` | Bruger-layout/tema (profil) |
 | `languages` | Language registry + fallback |
 | `eu_countries` | EU countries + primary language |
