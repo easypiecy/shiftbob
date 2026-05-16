@@ -349,6 +349,11 @@ async function routeAfterLogin(supabase, router) {
         return "fetch_error";
     }
     if (workplaces.length === 0) return "no_workplaces";
+    if (workplaces.length === 1) {
+        const only = workplaces[0];
+        setActiveWorkplaceCookie(only.id);
+        return routeRolesForActiveWorkplace(supabase, router, only.id);
+    }
     router.push("/select-workplace");
     return "routed";
 }

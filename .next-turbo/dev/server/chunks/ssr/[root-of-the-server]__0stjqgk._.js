@@ -70,8 +70,9 @@ async function WorkplaceSettingsPage() {
         (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$components$2f$navigation$2e$react$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["redirect"])("/select-workplace");
     }
     const workplaceId = raw;
-    const [wp, types, keys, et, st, dept, countries, initialLayoutTheme] = await Promise.all([
+    const [wp, rules, types, keys, et, st, dept, countries, initialLayoutTheme] = await Promise.all([
         (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$super$2d$admin$2f$workplaces$2f$actions$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getWorkplaceById"])(workplaceId),
+        (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$super$2d$admin$2f$workplaces$2f$actions$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getWorkplaceComplianceRules"])(workplaceId),
         (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$super$2d$admin$2f$workplaces$2f$actions$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getWorkplaceTypes"])(workplaceId),
         (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$super$2d$admin$2f$workplaces$2f$actions$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["listWorkplaceApiKeys"])(workplaceId),
         (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$super$2d$admin$2f$workplaces$2f$actions$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["listEmployeeTypeTemplates"])(workplaceId),
@@ -86,7 +87,7 @@ async function WorkplaceSettingsPage() {
             children: wp.error
         }, void 0, false, {
             fileName: "[project]/app/dashboard/indstillinger/page.tsx",
-            lineNumber: 37,
+            lineNumber: 39,
             columnNumber: 7
         }, this);
     }
@@ -96,7 +97,17 @@ async function WorkplaceSettingsPage() {
             children: types.error
         }, void 0, false, {
             fileName: "[project]/app/dashboard/indstillinger/page.tsx",
-            lineNumber: 44,
+            lineNumber: 46,
+            columnNumber: 7
+        }, this);
+    }
+    if (!rules.ok) {
+        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/60 dark:bg-red-950/50 dark:text-red-100",
+            children: rules.error
+        }, void 0, false, {
+            fileName: "[project]/app/dashboard/indstillinger/page.tsx",
+            lineNumber: 53,
             columnNumber: 7
         }, this);
     }
@@ -106,7 +117,7 @@ async function WorkplaceSettingsPage() {
             children: keys.error
         }, void 0, false, {
             fileName: "[project]/app/dashboard/indstillinger/page.tsx",
-            lineNumber: 51,
+            lineNumber: 60,
             columnNumber: 7
         }, this);
     }
@@ -116,7 +127,7 @@ async function WorkplaceSettingsPage() {
             children: dept.error
         }, void 0, false, {
             fileName: "[project]/app/dashboard/indstillinger/page.tsx",
-            lineNumber: 58,
+            lineNumber: 67,
             columnNumber: 7
         }, this);
     }
@@ -128,6 +139,7 @@ async function WorkplaceSettingsPage() {
         className: "mx-auto w-full max-w-[1600px] px-3 pb-2 pt-4 sm:px-4 sm:pt-6",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$super$2d$admin$2f$workplaces$2f5b$id$5d2f$workplace$2d$detail$2d$client$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
             initial: wp.data,
+            initialComplianceRules: rules.data,
             employeeTypes: types.employeeTypes,
             shiftTypes: types.shiftTypes,
             initialKeys: keys.data,
@@ -145,12 +157,12 @@ async function WorkplaceSettingsPage() {
             initialLayoutTheme: initialLayoutTheme
         }, void 0, false, {
             fileName: "[project]/app/dashboard/indstillinger/page.tsx",
-            lineNumber: 71,
+            lineNumber: 80,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/dashboard/indstillinger/page.tsx",
-        lineNumber: 70,
+        lineNumber: 79,
         columnNumber: 5
     }, this);
 }

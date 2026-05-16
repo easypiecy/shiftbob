@@ -1,5 +1,6 @@
 import {
   getWorkplaceById,
+  getWorkplaceComplianceRules,
   getWorkplaceDepartmentsOverview,
   getWorkplaceTypes,
   listEmployeeTypeTemplates,
@@ -15,8 +16,9 @@ export default async function WorkplaceDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [wp, types, keys, et, st, dept, countries] = await Promise.all([
+  const [wp, rules, types, keys, et, st, dept, countries] = await Promise.all([
     getWorkplaceById(id),
+    getWorkplaceComplianceRules(id),
     getWorkplaceTypes(id),
     listWorkplaceApiKeys(id),
     listEmployeeTypeTemplates(id),
@@ -36,6 +38,13 @@ export default async function WorkplaceDetailPage({
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/60 dark:bg-red-950/50 dark:text-red-100">
         {types.error}
+      </div>
+    );
+  }
+  if (!rules.ok) {
+    return (
+      <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/60 dark:bg-red-950/50 dark:text-red-100">
+        {rules.error}
       </div>
     );
   }
@@ -62,6 +71,7 @@ export default async function WorkplaceDetailPage({
   return (
     <WorkplaceDetailClient
       initial={wp.data}
+      initialComplianceRules={rules.data}
       employeeTypes={types.employeeTypes}
       shiftTypes={types.shiftTypes}
       initialKeys={keys.data}

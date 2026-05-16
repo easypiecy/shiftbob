@@ -4,6 +4,7 @@ import WorkplaceDetailClient from "@/app/super-admin/workplaces/[id]/workplace-d
 import { resolveUiThemeForRequest } from "@/src/lib/ui-theme-server";
 import {
   getWorkplaceById,
+  getWorkplaceComplianceRules,
   getWorkplaceDepartmentsOverview,
   getWorkplaceTypes,
   listEmployeeTypeTemplates,
@@ -21,8 +22,9 @@ export default async function WorkplaceSettingsPage() {
   }
 
   const workplaceId = raw;
-  const [wp, types, keys, et, st, dept, countries, initialLayoutTheme] = await Promise.all([
+  const [wp, rules, types, keys, et, st, dept, countries, initialLayoutTheme] = await Promise.all([
     getWorkplaceById(workplaceId),
+    getWorkplaceComplianceRules(workplaceId),
     getWorkplaceTypes(workplaceId),
     listWorkplaceApiKeys(workplaceId),
     listEmployeeTypeTemplates(workplaceId),
@@ -43,6 +45,13 @@ export default async function WorkplaceSettingsPage() {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/60 dark:bg-red-950/50 dark:text-red-100">
         {types.error}
+      </div>
+    );
+  }
+  if (!rules.ok) {
+    return (
+      <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/60 dark:bg-red-950/50 dark:text-red-100">
+        {rules.error}
       </div>
     );
   }
@@ -70,6 +79,7 @@ export default async function WorkplaceSettingsPage() {
     <div className="mx-auto w-full max-w-[1600px] px-3 pb-2 pt-4 sm:px-4 sm:pt-6">
       <WorkplaceDetailClient
         initial={wp.data}
+        initialComplianceRules={rules.data}
         employeeTypes={types.employeeTypes}
         shiftTypes={types.shiftTypes}
         initialKeys={keys.data}

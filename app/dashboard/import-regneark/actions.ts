@@ -2,7 +2,15 @@
 
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
+import { min as minDate, startOfDay, subWeeks } from "date-fns";
 import * as XLSX from "xlsx";
+import {
+  runComplianceEngine,
+  type ComplianceInputShift,
+  type EuViolation,
+  type ShiftTypeDictionary,
+} from "@/src/lib/compliance/engine";
+import { getWorkplaceComplianceRules } from "@/src/app/super-admin/workplaces/actions";
 import { assertWorkplaceAdminOrSuperAdmin } from "@/src/lib/workplace-admin-server";
 import { getAdminClient } from "@/src/utils/supabase/admin";
 import { createServerSupabase } from "@/src/utils/supabase/server";
@@ -58,6 +66,7 @@ export type ExtractedShiftType = {
   shift_code: string;
   start_time: string;
   end_time: string;
+  break_minutes: number | null;
 };
 
 export type ExtractedShift = {
@@ -68,19 +77,13 @@ export type ExtractedShift = {
   end_time: string;
 };
 
-export type EuRuleViolation = {
-  employee_name: string;
-  date: string;
-  time_range: string;
-  rule: string;
-};
-
 type ShiftTypeLookup = Record<
   string,
   {
     shift_code: string;
     start_time: string;
     end_time: string;
+    break_minutes: number | null;
   }
 >;
 
@@ -94,7 +97,7 @@ export type SpreadsheetExtractResult =
       extractedEmployees: ExtractedEmployee[];
       extractedShiftTypes: ExtractedShiftType[];
       extractedShifts: ExtractedShift[];
-      euViolations: EuRuleViolation[];
+      euViolations: EuViolation[];
       warnings: string[];
       matchedSheet: string;
     }
@@ -553,6 +556,15 @@ function parseShiftTypes(workbook: XLSX.WorkBook): {
   const codeIdx = Math.max(header.indexOf("shift code"), header.indexOf("code"));
   const startIdx = header.indexOf("start time");
   const endIdx = header.indexOf("end time");
+  const breakIdx = findHeaderIndex(
+    header,
+    "break min",
+    "break mins",
+    "break minutes",
+    "break",
+    "pause min",
+    "pause minutter"
+  );
 
   const shiftTypes: ExtractedShiftType[] = [];
   const lookup: ShiftTypeLookup = {};
@@ -564,10 +576,13 @@ function parseShiftTypes(workbook: XLSX.WorkBook): {
     const start_time = excelTimeToHHMM(row[startIdx]);
     const end_time = excelTimeToHHMM(row[endIdx]);
     if (!start_time || !end_time) continue;
+    const breakValue = Number(String(row[breakIdx] ?? "").replace(",", "."));
+    const break_minutes = Number.isFinite(breakValue) ? Math.max(0, Math.trunc(breakValue)) : null;
     const item: ExtractedShiftType = {
       shift_code,
       start_time,
       end_time,
+      break_minutes,
     };
     shiftTypes.push(item);
     lookup[shift_code] = item;
@@ -696,55 +711,103 @@ function parseMonthlySchedule(params: {
   return { shifts, warnings, matchedSheet: sheetName };
 }
 
-function detectEuRuleViolations(params: {
-  employees: ExtractedEmployee[];
-  shifts: ExtractedShift[];
-}): EuRuleViolation[] {
-  const { employees, shifts } = params;
-  const nameById = new Map<number, string>(
-    employees.map((employee) => [employee.employee_id, employee.full_name])
-  );
-  const byEmployee = new Map<number, ExtractedShift[]>();
-  for (const shift of shifts) {
-    const list = byEmployee.get(shift.employee_id) ?? [];
-    list.push(shift);
-    byEmployee.set(shift.employee_id, list);
+function toComplianceShift(shift: ExtractedShift): ComplianceInputShift | null {
+  const startsAt = shiftStartDateTime(shift);
+  const endsAt = shiftEndDateTime(shift);
+  if (Number.isNaN(startsAt.getTime()) || Number.isNaN(endsAt.getTime())) {
+    return null;
   }
+  return {
+    employee_id: String(shift.employee_id),
+    starts_at: startsAt.toISOString(),
+    ends_at: endsAt.toISOString(),
+    shift_code: normalizeShiftCode(shift.shift_code),
+  };
+}
 
-  const violations: EuRuleViolation[] = [];
-  for (const [employeeId, employeeShifts] of byEmployee.entries()) {
-    const sorted = [...employeeShifts].sort(
-      (a, b) => shiftStartDateTime(a).getTime() - shiftStartDateTime(b).getTime()
-    );
-    for (let i = 1; i < sorted.length; i++) {
-      const prev = sorted[i - 1];
-      const curr = sorted[i];
-      const prevEnd = shiftEndDateTime(prev).getTime();
-      const currStart = shiftStartDateTime(curr).getTime();
-      const employee_name = nameById.get(employeeId) ?? `#${employeeId}`;
+function buildShiftTypeDictionary(shiftTypes: ExtractedShiftType[]): ShiftTypeDictionary {
+  const out: ShiftTypeDictionary = {};
+  for (const shiftType of shiftTypes) {
+    const code = normalizeShiftCode(String(shiftType.shift_code ?? ""));
+    if (!code) continue;
+    out[code] = {
+      break_minutes: shiftType.break_minutes ?? null,
+    };
+  }
+  return out;
+}
 
-      if (currStart < prevEnd) {
-        violations.push({
-          employee_name,
-          date: curr.date,
-          time_range: `${curr.start_time} - ${curr.end_time}`,
-          rule: "Overlap mellem vagter",
-        });
-        continue;
-      }
-
-      const restHours = (currStart - prevEnd) / (1000 * 60 * 60);
-      if (restHours < 11) {
-        violations.push({
-          employee_name,
-          date: curr.date,
-          time_range: `${curr.start_time} - ${curr.end_time}`,
-          rule: `11-timers hviletid overskredet (${restHours.toFixed(1)} t)`,
-        });
-      }
+async function fetchHistoricalShiftsForCompliance(params: {
+  companyId: string;
+  extractedShifts: ExtractedShift[];
+}): Promise<ComplianceInputShift[]> {
+  const employeeIds = new Set<number>();
+  const starts: Date[] = [];
+  for (const shift of params.extractedShifts) {
+    if (Number.isFinite(shift.employee_id)) {
+      employeeIds.add(shift.employee_id);
     }
+    const start = shiftStartDateTime(shift);
+    if (!Number.isNaN(start.getTime())) starts.push(start);
   }
-  return violations;
+  if (employeeIds.size === 0 || starts.length === 0) return [];
+
+  const earliestDate = minDate(starts);
+  const fromDate = subWeeks(startOfDay(earliestDate), 16);
+
+  const admin = getAdminClient();
+  const memberRes = await admin
+    .from("workplace_members")
+    .select("user_id")
+    .eq("workplace_id", params.companyId);
+  if (memberRes.error) {
+    throw new Error(memberRes.error.message);
+  }
+  const memberUserIds = new Set((memberRes.data ?? []).map((row) => String(row.user_id)));
+  if (memberUserIds.size === 0) return [];
+
+  const authUsers = await listAllAuthUsers(admin);
+  const localEmployeeIdByUserId = new Map<string, number>();
+  for (const authUser of authUsers) {
+    if (!memberUserIds.has(authUser.id)) continue;
+    const metadata = authUser.user_metadata ?? {};
+    const importedCompanyId = String(metadata.import_company_id ?? "").trim();
+    const importedLocalEmployeeId = Number(metadata.import_local_employee_id);
+    if (importedCompanyId !== params.companyId || !Number.isInteger(importedLocalEmployeeId)) continue;
+    if (!employeeIds.has(importedLocalEmployeeId)) continue;
+    localEmployeeIdByUserId.set(authUser.id, importedLocalEmployeeId);
+  }
+  const userIds = [...localEmployeeIdByUserId.keys()];
+  if (userIds.length === 0) return [];
+
+  const historyRes = await admin
+    .from("workplace_shifts")
+    .select("user_id, starts_at, ends_at")
+    .eq("workplace_id", params.companyId)
+    .in("user_id", userIds)
+    .gte("ends_at", fromDate.toISOString())
+    .lt("starts_at", earliestDate.toISOString())
+    .order("starts_at", { ascending: true });
+  if (historyRes.error) {
+    throw new Error(historyRes.error.message);
+  }
+
+  const history: ComplianceInputShift[] = [];
+  for (const row of historyRes.data ?? []) {
+    const userId = String(row.user_id ?? "");
+    const localId = localEmployeeIdByUserId.get(userId);
+    if (!localId) continue;
+    const startsAt = new Date(String(row.starts_at ?? ""));
+    const endsAt = new Date(String(row.ends_at ?? ""));
+    if (Number.isNaN(startsAt.getTime()) || Number.isNaN(endsAt.getTime())) continue;
+    history.push({
+      employee_id: String(localId),
+      starts_at: startsAt.toISOString(),
+      ends_at: endsAt.toISOString(),
+      shift_code: null,
+    });
+  }
+  return history;
 }
 
 export async function runSpreadsheetImportAction(
@@ -800,7 +863,23 @@ export async function runSpreadsheetImportAction(
       shiftLookup: lookup,
     });
     const euViolations = runEuComplianceCheck
-      ? detectEuRuleViolations({ employees, shifts })
+      ? await (async () => {
+          const rulesRes = await getWorkplaceComplianceRules(companyId);
+          if (!rulesRes.ok) {
+            throw new Error(rulesRes.error);
+          }
+          return runComplianceEngine(
+            shifts
+              .map((shift) => toComplianceShift(shift))
+              .filter((shift): shift is ComplianceInputShift => shift !== null),
+            await fetchHistoricalShiftsForCompliance({
+              companyId,
+              extractedShifts: shifts,
+            }),
+            buildShiftTypeDictionary(shiftTypes),
+            rulesRes.data.rules
+          );
+        })()
       : [];
 
     return {

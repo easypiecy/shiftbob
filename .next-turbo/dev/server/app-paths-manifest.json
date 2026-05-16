@@ -1,8 +1,8 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
+  "/auth/callback/route": "app/auth/callback/route.js",
+  "/dashboard/indstillinger/page": "app/dashboard/indstillinger/page.js",
+  "/login/page": "app/login/page.js",
   "/manifest.webmanifest/route": "app/manifest.webmanifest/route.js",
-  "/select-workplace/page": "app/select-workplace/page.js",
-  "/super-admin/page": "app/super-admin/page.js",
-  "/super-admin/workplace-templates/page": "app/super-admin/workplace-templates/page.js"
+  "/select-workplace/page": "app/select-workplace/page.js"
 }

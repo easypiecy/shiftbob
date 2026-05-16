@@ -1,13 +1,15 @@
 import {
+  getGlobalComplianceRulesForSuperAdmin,
   listEmployeeTypeTemplates,
   listShiftTypeTemplates,
 } from "@/src/app/super-admin/workplaces/actions";
 import WorkplaceTemplatesClient from "./workplace-templates-client";
 
 export default async function WorkplaceTemplatesPage() {
-  const [et, st] = await Promise.all([
+  const [et, st, compliance] = await Promise.all([
     listEmployeeTypeTemplates(),
     listShiftTypeTemplates(),
+    getGlobalComplianceRulesForSuperAdmin(),
   ]);
 
   if (!et.ok) {
@@ -24,11 +26,20 @@ export default async function WorkplaceTemplatesPage() {
       </div>
     );
   }
+  if (!compliance.ok) {
+    return (
+      <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/60 dark:bg-red-950/50 dark:text-red-100">
+        Kunne ikke hente standard EU-regler: {compliance.error}
+      </div>
+    );
+  }
 
   return (
     <WorkplaceTemplatesClient
       initialEmployee={et.data}
       initialShift={st.data}
+      initialComplianceRules={compliance.rules}
+      initialComplianceSource={compliance.source}
     />
   );
 }

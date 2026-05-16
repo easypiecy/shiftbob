@@ -603,6 +603,7 @@ function revalidateWorkplaceDetailPages(workplaceId) {
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$cache$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["revalidatePath"])("/dashboard/indstillinger");
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$cache$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["revalidatePath"])("/dashboard/fremtiden");
 }
+const COMPLIANCE_PROFILE_KEY_DEFAULT = "default";
 /** PostgREST / Postgres når tabeller ikke findes eller cache er forældet */ function isMissingSchemaError(message) {
     const m = message.toLowerCase();
     return m.includes("schema cache") || m.includes("could not find") || m.includes("does not exist") || m.includes("42p01") || m.includes("undefined table") || m.includes("relation") && m.includes("does not exist");
@@ -2550,6 +2551,89 @@ async function getWorkplaceDepartmentsOverview(workplaceId, options) {
             });
         }));
         let members = [];
+        const employeeTypeIdByLabel = new Map();
+        for (const type of employeeTypes){
+            const labelKey = normalizeTemplateMatchKey(type.label);
+            if (labelKey) employeeTypeIdByLabel.set(labelKey, type.id);
+        }
+        const EMPLOYEE_TYPE_FALLBACKS = new Map([
+            [
+                "fuldtid",
+                "fuldtid"
+            ],
+            [
+                "full_time",
+                "fuldtid"
+            ],
+            [
+                "full time",
+                "fuldtid"
+            ],
+            [
+                "fulltime",
+                "fuldtid"
+            ],
+            [
+                "full-time",
+                "fuldtid"
+            ],
+            [
+                "permanent",
+                "fuldtid"
+            ],
+            [
+                "deltid",
+                "deltid"
+            ],
+            [
+                "part_time",
+                "deltid"
+            ],
+            [
+                "part time",
+                "deltid"
+            ],
+            [
+                "parttime",
+                "deltid"
+            ],
+            [
+                "part-time",
+                "deltid"
+            ],
+            [
+                "elev",
+                "elev"
+            ],
+            [
+                "trainee",
+                "elev"
+            ],
+            [
+                "vikar",
+                "vikar"
+            ],
+            [
+                "temp",
+                "vikar"
+            ],
+            [
+                "substitute",
+                "vikar"
+            ],
+            [
+                "ung",
+                "ung (under 18)"
+            ],
+            [
+                "youth",
+                "ung (under 18)"
+            ],
+            [
+                "youth_u18",
+                "ung (under 18)"
+            ]
+        ]);
         for (const m of memberRows){
             const uid = m.user_id;
             const userData = usersById.get(uid);
@@ -2558,13 +2642,20 @@ async function getWorkplaceDepartmentsOverview(workplaceId, options) {
             const override = overrideByUser.get(uid);
             const resolved = resolveMemberDisplayName(oauthName, override, email, uid);
             const empTypeRaw = m.employee_type_id;
+            let inferredEmployeeTypeId = null;
+            if (empTypeRaw == null) {
+                const importedType = userData?.userMetadata?.import_employee_type;
+                const importedKey = normalizeTemplateMatchKey(typeof importedType === "string" ? importedType : "");
+                const fallbackKey = EMPLOYEE_TYPE_FALLBACKS.get(importedKey) ?? importedKey;
+                inferredEmployeeTypeId = fallbackKey ? employeeTypeIdByLabel.get(fallbackKey) ?? null : null;
+            }
             members.push({
                 workplace_member_id: m.id,
                 user_id: uid,
                 email,
                 role: m.role,
                 department_ids: deptByUser.get(uid) ?? [],
-                employee_type_id: empTypeRaw === undefined || empTypeRaw === null ? null : String(empTypeRaw),
+                employee_type_id: empTypeRaw === undefined || empTypeRaw === null ? inferredEmployeeTypeId : String(empTypeRaw),
                 display_name: resolved.display_name,
                 oauth_display_name: resolved.oauth_display_name,
                 display_name_override: resolved.display_name_override

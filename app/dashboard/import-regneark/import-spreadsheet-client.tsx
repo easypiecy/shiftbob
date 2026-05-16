@@ -430,19 +430,24 @@ export function ImportSpreadsheetClient() {
               <table className="min-w-full text-left text-sm">
                 <thead className="bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
                   <tr>
-                    <th className="px-3 py-2 font-semibold">Navn</th>
+                    <th className="px-3 py-2 font-semibold">Medarbejder</th>
                     <th className="px-3 py-2 font-semibold">Dato</th>
-                    <th className="px-3 py-2 font-semibold">Tidspunkt</th>
-                    <th className="px-3 py-2 font-semibold">Regel overskredet</th>
+                    <th className="px-3 py-2 font-semibold">Alvor</th>
+                    <th className="px-3 py-2 font-semibold">Regel</th>
+                    <th className="px-3 py-2 font-semibold">Besked</th>
                   </tr>
                 </thead>
                 <tbody>
                   {violationsModalRun.result.euViolations.map((v, idx) => (
-                    <tr key={`${v.employee_name}-${v.date}-${idx}`} className="border-t border-zinc-200 dark:border-zinc-700">
-                      <td className="px-3 py-2">{v.employee_name}</td>
+                    <tr
+                      key={`${v.rule_id}-${v.employee_id}-${v.date}-${idx}`}
+                      className="border-t border-zinc-200 dark:border-zinc-700"
+                    >
+                      <td className="px-3 py-2">{v.employee_id}</td>
                       <td className="px-3 py-2">{v.date}</td>
-                      <td className="px-3 py-2">{v.time_range}</td>
-                      <td className="px-3 py-2">{v.rule}</td>
+                      <td className="px-3 py-2">{v.severity}</td>
+                      <td className="px-3 py-2">{v.rule_id}</td>
+                      <td className="px-3 py-2">{v.message}</td>
                     </tr>
                   ))}
                 </tbody>

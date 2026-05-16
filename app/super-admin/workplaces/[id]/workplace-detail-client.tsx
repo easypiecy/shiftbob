@@ -20,6 +20,7 @@ import {
   Scale,
   ShieldCheck,
   Trash2,
+  Copy,
 } from "lucide-react";
 import {
   copyWorkplaceTemplatesFromStandards,
@@ -32,8 +33,11 @@ import {
   resetWorkplaceCalendarData,
   revokeWorkplaceApiKey,
   saveWorkplaceDepartmentMemberships,
+  saveWorkplaceComplianceRules,
+  resetWorkplaceComplianceRulesToDefault,
   importWorkplaceMembersFromCsv,
   updateWorkplace,
+  type ComplianceRulesResolution,
   type WorkplaceMemberImportRowResult,
   type TypeTemplateRow,
   type WorkplaceApiKeyMeta,
@@ -52,6 +56,12 @@ import {
   localizeStandardShiftTypeLabel,
 } from "@/src/lib/type-label-i18n";
 import { LayoutThemeSidebar } from "@/src/components/layout-theme-sidebar";
+import {
+  describeComplianceRule,
+  getConfigActiveComplianceRules,
+  normalizeComplianceRules,
+  type ComplianceRule,
+} from "@/src/lib/compliance/rules";
 import { EmployeePermissions } from "@/src/components/settings/employee-permissions";
 
 /** Tom liste = ingen filter = alle typer på aksen. Fuld liste = samme som ingen filter → normalisér til []. */
@@ -68,48 +78,6 @@ function normalizePushIncludeFilter(ids: string[], allIds: string[]): string[] {
   return picked;
 }
 
-type EuRuleRow = {
-  parameter: string;
-  value: string;
-  notes: string;
-};
-
-type EuPolicyRow = {
-  category: string;
-  rule: string;
-  details: string;
-  notes: string;
-};
-
-const DEFAULT_EU_DIRECTIVE_RULES: EuRuleRow[] = [
-  { parameter: "Standard working week", value: "40 hours/week", notes: "Set per employee contract (EU max is 48h)" },
-  { parameter: "EU maximum working week", value: "48 hours/week", notes: "Averaged over 17-week reference period (Art. 6)" },
-  { parameter: "Max hours per day", value: "10 hours/day", notes: "Recommended maximum" },
-  { parameter: "Minimum daily rest", value: "11 hours", notes: "Hours between shifts (EU mandatory, Art. 3)" },
-  { parameter: "Minimum weekly rest", value: "24 consecutive hours/week", notes: "EU mandatory (Art. 5) - in practice 35h incl. daily rest" },
-  { parameter: "Max consecutive working days", value: "6 days", notes: "7th day should be rest (best practice)" },
-  { parameter: "Break: shift >= 6 hours", value: "30 minutes", notes: "Minimum break" },
-  { parameter: "Break: shift >= 9 hours", value: "45 minutes", notes: "Minimum break" },
-  { parameter: "Night shift definition", value: "22:00-06:00", notes: "Any shift with >= 3 hours in this window" },
-  { parameter: "Max night hours/week", value: "8 hours average", notes: "Average over 17-week period (EU)" },
-];
-
-const DEFAULT_YOUNG_WORKER_RULES: EuRuleRow[] = [
-  { parameter: "Young workers rest", value: "12 hours consecutive rest", notes: "Under 18" },
-];
-
-const DEFAULT_EU_POLICY_ROWS: EuPolicyRow[] = [
-  { category: "Pay", rule: "Evening/weekend premium", details: "Shifts after 18:00 and weekends", notes: "+25% above base rate (configurable)" },
-  { category: "Pay", rule: "Night premium", details: "Shifts classified as night work", notes: "+40% above base rate (configurable)" },
-  { category: "Pay", rule: "Public holiday", details: "Work on public holidays", notes: "+100% (double pay, configurable)" },
-  { category: "Shift Types", rule: "Code", details: "Short code used for ShiftBob import", notes: "MORNING, DAY, AFTERNOON ..." },
-  { category: "Shift Types", rule: "Full Name", details: "Display name shown in calendar cells", notes: "Morning, Day, Afternoon ..." },
-  { category: "Shift Types", rule: "Start / End", details: "Shift start and end times", notes: "06:00 / 14:00" },
-  { category: "Shift Types", rule: "Break (min)", details: "Mandatory break deducted from net hours", notes: "30 min for 8h shifts" },
-  { category: "Shift Types", rule: "Net Hours", details: "Paid hours after break deduction", notes: "7.5 for standard 8h shift" },
-  { category: "Shift Types", rule: "Pay Category", details: "Pay multiplier category", notes: "Standard / Evening +25% / Night +40%" },
-];
-
 type Props = {
   initial: WorkplaceDetail;
   employeeTypes: WorkplaceEmployeeTypeRow[];
@@ -120,6 +88,7 @@ type Props = {
   standardEmployeeTemplates: TypeTemplateRow[];
   standardShiftTemplates: TypeTemplateRow[];
   countryOptions?: EuCountryOptionRow[];
+  initialComplianceRules?: ComplianceRulesResolution;
   catalogError?: string | null;
   initialLayoutTheme?: UiThemeId;
   /** Super Admin: tilbage til brugere; arbejdsplads-admin: typisk Kalender */
@@ -131,6 +100,32 @@ type Props = {
   /** Nederst under «Gem ændringer» (fx Side-layout på dashboard/indstillinger) — brug children, ikke prop, for korrekt RSC-hydrering */
   children?: ReactNode;
 };
+
+const AI_JSON_GUIDE_TEXT = `Return only one valid JSON object.
+
+Required fields:
+- rule_id (string, unique)
+- type (one of: gap_between_shifts, weekly_rest, max_weekly_hours, max_daily_hours, max_consecutive_days, mandatory_break)
+- severity (ERROR or WARNING)
+- enabled (true or false)
+
+Type-specific numeric fields:
+- gap_between_shifts -> min_gap_hours
+- weekly_rest -> min_consecutive_hours (+ optional window_days)
+- max_weekly_hours -> max_hours (+ optional average_window_weeks)
+- max_daily_hours -> max_hours
+- max_consecutive_days -> max_days
+- mandatory_break -> shift_length_threshold_hours + min_break_minutes
+
+Output format example:
+{
+  "rule_id": "custom_weekly_rest_36h",
+  "type": "weekly_rest",
+  "severity": "ERROR",
+  "enabled": true,
+  "window_days": 7,
+  "min_consecutive_hours": 36
+}`;
 
 /** Ekstra props uden `children` (fx dashboard Indstillinger uden Side-layout-blok). */
 export type WorkplaceDetailClientProps = Omit<Props, "children">;
@@ -145,6 +140,7 @@ export default function WorkplaceDetailClient({
   standardEmployeeTemplates,
   standardShiftTemplates,
   countryOptions = [],
+  initialComplianceRules,
   catalogError,
   initialLayoutTheme,
   navUi,
@@ -156,6 +152,15 @@ export default function WorkplaceDetailClient({
   const showStandardCatalogEditLink =
     navUi?.showStandardCatalogEditLink ?? true;
   const router = useRouter();
+  const fallbackComplianceRules = useMemo<ComplianceRulesResolution>(
+    () => ({
+      rules: getConfigActiveComplianceRules(),
+      source: "config_default",
+    }),
+    []
+  );
+  const resolvedInitialComplianceRules: ComplianceRulesResolution =
+    initialComplianceRules ?? fallbackComplianceRules;
   const [d, setD] = useState(initial);
   const [keys, setKeys] = useState(initialKeys);
   const [msg, setMsg] = useState<string | null>(null);
@@ -199,14 +204,31 @@ export default function WorkplaceDetailClient({
         membersWithDepartments.map((m) => [m.user_id, [...m.department_ids]])
       )
   );
-  const [euDirectiveRules, setEuDirectiveRules] = useState<EuRuleRow[]>(
-    () => DEFAULT_EU_DIRECTIVE_RULES.map((row) => ({ ...row }))
+  const [complianceRules, setComplianceRules] = useState<ComplianceRule[]>(
+    resolvedInitialComplianceRules.rules
   );
-  const [youngWorkerRules, setYoungWorkerRules] = useState<EuRuleRow[]>(
-    () => DEFAULT_YOUNG_WORKER_RULES.map((row) => ({ ...row }))
+  const [complianceDraftJson, setComplianceDraftJson] = useState<string>(
+    JSON.stringify(resolvedInitialComplianceRules.rules, null, 2)
   );
-  const [euPolicyRows, setEuPolicyRows] = useState<EuPolicyRow[]>(
-    () => DEFAULT_EU_POLICY_ROWS.map((row) => ({ ...row }))
+  const [complianceSource, setComplianceSource] = useState<ComplianceRulesResolution["source"]>(
+    resolvedInitialComplianceRules.source
+  );
+  const [complianceBusy, setComplianceBusy] = useState<"save" | "reset" | null>(null);
+  const [showComplianceAdvanced, setShowComplianceAdvanced] = useState(false);
+  const [showAddComplianceRuleModal, setShowAddComplianceRuleModal] = useState(false);
+  const [showAiJsonGuide, setShowAiJsonGuide] = useState(false);
+  const [newComplianceRuleDraft, setNewComplianceRuleDraft] = useState<string>(
+    JSON.stringify(
+      {
+        rule_id: "custom_rule_id",
+        type: "max_daily_hours",
+        severity: "WARNING",
+        enabled: true,
+        max_hours: 10,
+      },
+      null,
+      2
+    )
   );
   const countryOptionsWithCurrent = useMemo(() => {
     const existing = [...countryOptions];
@@ -236,6 +258,13 @@ export default function WorkplaceDetailClient({
   useEffect(() => {
     setShiftList(shiftTypes);
   }, [shiftTypes]);
+
+  useEffect(() => {
+    if (!initialComplianceRules) return;
+    setComplianceRules(initialComplianceRules.rules);
+    setComplianceDraftJson(JSON.stringify(initialComplianceRules.rules, null, 2));
+    setComplianceSource(initialComplianceRules.source);
+  }, [initialComplianceRules]);
 
   useEffect(() => {
     try {
@@ -558,10 +587,166 @@ export default function WorkplaceDetailClient({
     }
   }
 
-  function resetEuRulesToDefault() {
-    setEuDirectiveRules(DEFAULT_EU_DIRECTIVE_RULES.map((row) => ({ ...row })));
-    setYoungWorkerRules(DEFAULT_YOUNG_WORKER_RULES.map((row) => ({ ...row })));
-    setEuPolicyRows(DEFAULT_EU_POLICY_ROWS.map((row) => ({ ...row })));
+  function updateComplianceCentralValue(ruleId: string, rawValue: string) {
+    const numeric = Number(rawValue.replace(",", "."));
+    if (!Number.isFinite(numeric) || numeric <= 0) return;
+    setComplianceRules((prev) => {
+      const next = prev.map((rule) => {
+        if (rule.rule_id !== ruleId) return rule;
+        if (rule.type === "gap_between_shifts") {
+          return { ...rule, min_gap_hours: numeric };
+        }
+        if (rule.type === "weekly_rest") {
+          return { ...rule, min_consecutive_hours: numeric };
+        }
+        if (rule.type === "max_weekly_hours") {
+          return { ...rule, max_hours: numeric };
+        }
+        if (rule.type === "max_daily_hours") {
+          return { ...rule, max_hours: numeric };
+        }
+        if (rule.type === "max_consecutive_days") {
+          return { ...rule, max_days: Math.trunc(numeric) };
+        }
+        return { ...rule, min_break_minutes: Math.trunc(numeric) };
+      });
+      setComplianceDraftJson(JSON.stringify(next, null, 2));
+      return next;
+    });
+  }
+
+  function updateComplianceSeverity(ruleId: string, severity: "ERROR" | "WARNING") {
+    setComplianceRules((prev) => {
+      const next = prev.map((rule) =>
+        rule.rule_id === ruleId ? { ...rule, severity } : rule
+      );
+      setComplianceDraftJson(JSON.stringify(next, null, 2));
+      return next;
+    });
+  }
+
+  function complianceCentralValue(rule: ComplianceRule): {
+    label: string;
+    value: number;
+  } {
+    if (rule.type === "gap_between_shifts") {
+      return { label: "Min. gap (timer)", value: rule.min_gap_hours };
+    }
+    if (rule.type === "weekly_rest") {
+      return { label: "Min. hvile (timer)", value: rule.min_consecutive_hours };
+    }
+    if (rule.type === "max_weekly_hours") {
+      return { label: "Maks. timer", value: rule.max_hours };
+    }
+    if (rule.type === "max_daily_hours") {
+      return { label: "Maks. timer", value: rule.max_hours };
+    }
+    if (rule.type === "max_consecutive_days") {
+      return { label: "Maks. dage", value: rule.max_days };
+    }
+    return { label: "Min. pause (min)", value: rule.min_break_minutes };
+  }
+
+  function removeComplianceRuleRow(ruleId: string) {
+    setComplianceRules((prev) => {
+      const next = prev.filter((rule) => rule.rule_id !== ruleId);
+      setComplianceDraftJson(JSON.stringify(next, null, 2));
+      return next;
+    });
+  }
+
+  function openAddComplianceRuleModal() {
+    setNewComplianceRuleDraft(
+      JSON.stringify(
+        {
+          rule_id: `custom_rule_${Date.now()}`,
+          type: "max_daily_hours",
+          severity: "WARNING",
+          enabled: true,
+          max_hours: 10,
+        },
+        null,
+        2
+      )
+    );
+    setShowAddComplianceRuleModal(true);
+  }
+
+  function insertComplianceRuleFromDraft() {
+    let parsedRaw: unknown;
+    try {
+      parsedRaw = JSON.parse(newComplianceRuleDraft);
+    } catch {
+      setMsg("Ny regel JSON er ugyldig. Ret formatet og proev igen.");
+      return;
+    }
+    const parsed = normalizeComplianceRules([parsedRaw]);
+    if (parsed.length === 0) {
+      setMsg("Kunne ikke oprette regel. Tjek felter og vaerdier.");
+      return;
+    }
+    const candidate = parsed[0];
+    setComplianceRules((prev) => {
+      const withoutSameId = prev.filter((rule) => rule.rule_id !== candidate.rule_id);
+      const next = [...withoutSameId, candidate];
+      setComplianceDraftJson(JSON.stringify(next, null, 2));
+      return next;
+    });
+    setShowAddComplianceRuleModal(false);
+    setMsg(`Regel "${candidate.rule_id}" tilfoejet lokalt. Husk at gemme.`);
+  }
+
+  async function copyAiJsonGuide() {
+    try {
+      await navigator.clipboard.writeText(AI_JSON_GUIDE_TEXT);
+      setMsg("Guide copied.");
+    } catch {
+      setMsg("Could not copy AI guide text.");
+    }
+  }
+
+  async function handleSaveComplianceRules() {
+    setComplianceBusy("save");
+    setMsg(null);
+    try {
+      let parsedRaw: unknown;
+      try {
+        parsedRaw = JSON.parse(complianceDraftJson);
+      } catch {
+        setMsg("EU-regler JSON er ugyldig. Ret formatet og proev igen.");
+        return;
+      }
+      const normalized = normalizeComplianceRules(parsedRaw);
+      const res = await saveWorkplaceComplianceRules(d.id, normalized);
+      if (!res.ok) {
+        setMsg(res.error);
+        return;
+      }
+      setComplianceRules(normalized);
+      setComplianceDraftJson(JSON.stringify(normalized, null, 2));
+      setComplianceSource("workplace_override");
+      setMsg("EU-regler gemt for denne arbejdsplads.");
+      router.refresh();
+    } finally {
+      setComplianceBusy(null);
+    }
+  }
+
+  async function handleResetComplianceRules() {
+    setComplianceBusy("reset");
+    setMsg(null);
+    try {
+      const res = await resetWorkplaceComplianceRulesToDefault(d.id);
+      if (!res.ok) {
+        setMsg(res.error);
+        return;
+      }
+      setComplianceSource("global_default");
+      setMsg("EU-regler nulstillet til standard.");
+      router.refresh();
+    } finally {
+      setComplianceBusy(null);
+    }
   }
 
   return (
@@ -1551,223 +1736,204 @@ export default function WorkplaceDetailClient({
 
       {dashboardTabsEnabled && activeSettingsTab === "rules" ? (
       <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-            {tr("rules.page.title")}
-          </h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          {tr("rules.page.title")}
+        </h2>
+        <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+          Reglerne her gaelder kun denne arbejdsplads. Kilde nu:{" "}
+          <span className="font-medium">
+            {complianceSource === "workplace_override"
+              ? "Lokal override"
+              : complianceSource === "global_default"
+                ? "Global standard (Super Admin)"
+                : "Lokal config-standard"}
+          </span>
+        </p>
+        <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
+          <table className="min-w-full text-left text-sm">
+            <thead className="bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+              <tr>
+                <th className="px-3 py-2 font-semibold">Rule ID</th>
+                <th className="px-3 py-2 font-semibold">Type</th>
+                <th className="px-3 py-2 font-semibold">Severity</th>
+                <th className="px-3 py-2 font-semibold">Konfiguration</th>
+                <th className="px-3 py-2 font-semibold">Central vaerdi</th>
+                <th className="px-3 py-2 font-semibold">Handling</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
+              {complianceRules.map((rule) => (
+                <tr key={rule.rule_id}>
+                  <td className="px-3 py-2 font-mono text-xs">{rule.rule_id}</td>
+                  <td className="px-3 py-2">{rule.type}</td>
+                  <td className="px-3 py-2">
+                    <select
+                      value={rule.severity}
+                      onChange={(e) =>
+                        updateComplianceSeverity(
+                          rule.rule_id,
+                          e.target.value === "ERROR" ? "ERROR" : "WARNING"
+                        )
+                      }
+                      className="rounded border border-zinc-300 bg-white px-2 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-950"
+                    >
+                      <option value="ERROR">ERROR</option>
+                      <option value="WARNING">WARNING</option>
+                    </select>
+                  </td>
+                  <td className="px-3 py-2">{describeComplianceRule(rule)}</td>
+                  <td className="px-3 py-2">
+                    <div className="min-w-[8rem]">
+                      <p className="mb-1 text-[11px] text-zinc-500 dark:text-zinc-400">
+                        {complianceCentralValue(rule).label}
+                      </p>
+                      <input
+                        type="number"
+                        min={1}
+                        step={rule.type === "max_consecutive_days" ? 1 : 0.5}
+                        value={complianceCentralValue(rule).value}
+                        onChange={(e) =>
+                          updateComplianceCentralValue(rule.rule_id, e.target.value)
+                        }
+                        className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-950"
+                      />
+                    </div>
+                  </td>
+                  <td className="px-3 py-2">
+                    <button
+                      type="button"
+                      onClick={() => removeComplianceRuleRow(rule.rule_id)}
+                      className="rounded border border-zinc-300 px-2 py-1 text-xs hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                    >
+                      Slet
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowComplianceAdvanced((prev) => !prev)}
+          className="text-xs font-medium text-zinc-600 underline underline-offset-2 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+        >
+          Advanced settings
+        </button>
+        {showComplianceAdvanced ? (
+          <label className="block">
+            <span className="mb-1 block text-xs font-medium text-zinc-500">Regler (JSON)</span>
+            <textarea
+              value={complianceDraftJson}
+              onChange={(e) => setComplianceDraftJson(e.target.value)}
+              rows={14}
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 font-mono text-xs dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+            />
+          </label>
+        ) : null}
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            onClick={resetEuRulesToDefault}
-            className="rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            onClick={openAddComplianceRuleModal}
+            className="rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-semibold hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
           >
-            {tr("settings.eu_rules.reset_default", "Reset til standard")}
+            {tr("settings.eu_rules.add_rule", "Tilføj regel")}
+          </button>
+          <button
+            type="button"
+            onClick={() => void handleSaveComplianceRules()}
+            disabled={complianceBusy !== null}
+            className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
+          >
+            {complianceBusy === "save" ? "Gemmer..." : "Gem lokale regler"}
+          </button>
+          <button
+            type="button"
+            onClick={() => void handleResetComplianceRules()}
+            disabled={complianceBusy !== null}
+            className="rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-semibold hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+          >
+            {complianceBusy === "reset" ? "Nulstiller..." : "Nulstil til standard"}
           </button>
         </div>
-        <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-          Justér parametrene manuelt direkte i felterne nedenfor.
-        </p>
-
-        <div className="space-y-6 rounded-xl border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-700 dark:bg-zinc-950/40">
-          <section className="space-y-2">
-            <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
-              EU Working Time Directive (2003/88/EC)
-            </h3>
-            <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
-              <table className="min-w-full text-left text-sm">
-                <thead className="bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
-                  <tr>
-                    <th className="px-3 py-2 font-semibold">Parameter</th>
-                    <th className="px-3 py-2 font-semibold">Værdi</th>
-                    <th className="px-3 py-2 font-semibold">Noter</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
-                  {euDirectiveRules.map((row, idx) => (
-                    <tr key={`eu-directive-${idx}`}>
-                      <td className="px-3 py-2">
-                        <input
-                          value={row.parameter}
-                          onChange={(e) =>
-                            setEuDirectiveRules((prev) =>
-                              prev.map((item, i) =>
-                                i === idx ? { ...item, parameter: e.target.value } : item
-                              )
-                            )
-                          }
-                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                        />
-                      </td>
-                      <td className="px-3 py-2">
-                        <input
-                          value={row.value}
-                          onChange={(e) =>
-                            setEuDirectiveRules((prev) =>
-                              prev.map((item, i) =>
-                                i === idx ? { ...item, value: e.target.value } : item
-                              )
-                            )
-                          }
-                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                        />
-                      </td>
-                      <td className="px-3 py-2">
-                        <input
-                          value={row.notes}
-                          onChange={(e) =>
-                            setEuDirectiveRules((prev) =>
-                              prev.map((item, i) =>
-                                i === idx ? { ...item, notes: e.target.value } : item
-                              )
-                            )
-                          }
-                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+        {showAddComplianceRuleModal ? (
+          <div className="fixed inset-0 z-[140] flex items-center justify-center bg-black/60 p-4">
+            <div className="w-full max-w-3xl rounded-xl border border-zinc-200 bg-white p-5 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
+              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+                {tr("settings.eu_rules.add_local_rule_title", "Tilføj lokal regel")}
+              </h3>
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                {tr(
+                  "settings.eu_rules.add_local_rule_intro",
+                  "Vi anbefaler, at du bruger AI til at skrive din regel. Klik på \"Copy guide\", indsæt guiden i din AI, og få en korrekt JSON-regel. Kopiér derefter JSON-koden ind i feltet nedenfor og klik på \"Indsæt regel\"."
+                )}
+              </p>
+              <div className="mt-3 rounded-lg border border-dashed border-zinc-300 bg-zinc-50/80 p-3 text-xs text-zinc-700 dark:border-zinc-700 dark:bg-zinc-950/40 dark:text-zinc-300">
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <p className="font-semibold">
+                    {tr("settings.eu_rules.ai_json_guide_title", "AI Json guide")}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowAiJsonGuide((prev) => !prev)}
+                      className="inline-flex items-center gap-1 rounded border border-zinc-300 px-2 py-1 text-[11px] hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                    >
+                      {showAiJsonGuide
+                        ? tr("settings.eu_rules.hide_guide", "Hide guide")
+                        : tr("settings.eu_rules.show_guide", "Show guide")}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void copyAiJsonGuide()}
+                      className="inline-flex items-center gap-1 rounded border border-zinc-300 px-2 py-1 text-[11px] hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                      title={tr("settings.eu_rules.copy_guide", "Copy guide")}
+                    >
+                      <Copy className="h-3.5 w-3.5" />
+                      {tr("settings.eu_rules.copy_guide", "Copy guide")}
+                    </button>
+                  </div>
+                </div>
+                {showAiJsonGuide ? (
+                  <pre className="whitespace-pre-wrap font-mono text-[11px] leading-relaxed">
+                    {AI_JSON_GUIDE_TEXT}
+                  </pre>
+                ) : null}
+              </div>
+              <label className="mt-3 block">
+                <span className="mb-1 block text-xs font-medium text-zinc-500">
+                  {tr("settings.eu_rules.rule_json_code_label", "Json kode")}
+                </span>
+                <textarea
+                  value={newComplianceRuleDraft}
+                  onChange={(e) => setNewComplianceRuleDraft(e.target.value)}
+                  rows={13}
+                  placeholder={tr(
+                    "settings.eu_rules.rule_json_code_placeholder",
+                    "Kopier Json koden ind her"
+                  )}
+                  className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 font-mono text-xs dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+                />
+              </label>
+              <div className="mt-4 flex flex-wrap justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAddComplianceRuleModal(false)}
+                  className="rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-semibold hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                >
+                  Luk
+                </button>
+                <button
+                  type="button"
+                  onClick={insertComplianceRuleFromDraft}
+                  className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs font-semibold text-white dark:bg-zinc-100 dark:text-zinc-900"
+                >
+                  Indsæt regel
+                </button>
+              </div>
             </div>
-          </section>
-
-          <section className="space-y-2">
-            <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
-              Young workers (under 18)
-            </h3>
-            <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
-              <table className="min-w-full text-left text-sm">
-                <thead className="bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
-                  <tr>
-                    <th className="px-3 py-2 font-semibold">Parameter</th>
-                    <th className="px-3 py-2 font-semibold">Værdi</th>
-                    <th className="px-3 py-2 font-semibold">Noter</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
-                  {youngWorkerRules.map((row, idx) => (
-                    <tr key={`young-worker-${idx}`}>
-                      <td className="px-3 py-2">
-                        <input
-                          value={row.parameter}
-                          onChange={(e) =>
-                            setYoungWorkerRules((prev) =>
-                              prev.map((item, i) =>
-                                i === idx ? { ...item, parameter: e.target.value } : item
-                              )
-                            )
-                          }
-                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                        />
-                      </td>
-                      <td className="px-3 py-2">
-                        <input
-                          value={row.value}
-                          onChange={(e) =>
-                            setYoungWorkerRules((prev) =>
-                              prev.map((item, i) =>
-                                i === idx ? { ...item, value: e.target.value } : item
-                              )
-                            )
-                          }
-                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                        />
-                      </td>
-                      <td className="px-3 py-2">
-                        <input
-                          value={row.notes}
-                          onChange={(e) =>
-                            setYoungWorkerRules((prev) =>
-                              prev.map((item, i) =>
-                                i === idx ? { ...item, notes: e.target.value } : item
-                              )
-                            )
-                          }
-                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          <section className="space-y-2">
-            <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
-              Additional parameters from policy sheet
-            </h3>
-            <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
-              <table className="min-w-full text-left text-sm">
-                <thead className="bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
-                  <tr>
-                    <th className="px-3 py-2 font-semibold">Category</th>
-                    <th className="px-3 py-2 font-semibold">Rule</th>
-                    <th className="px-3 py-2 font-semibold">Details</th>
-                    <th className="px-3 py-2 font-semibold">Notes</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
-                  {euPolicyRows.map((row, idx) => (
-                    <tr key={`eu-policy-${idx}`}>
-                      <td className="px-3 py-2">
-                        <input
-                          value={row.category}
-                          onChange={(e) =>
-                            setEuPolicyRows((prev) =>
-                              prev.map((item, i) =>
-                                i === idx ? { ...item, category: e.target.value } : item
-                              )
-                            )
-                          }
-                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                        />
-                      </td>
-                      <td className="px-3 py-2">
-                        <input
-                          value={row.rule}
-                          onChange={(e) =>
-                            setEuPolicyRows((prev) =>
-                              prev.map((item, i) =>
-                                i === idx ? { ...item, rule: e.target.value } : item
-                              )
-                            )
-                          }
-                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                        />
-                      </td>
-                      <td className="px-3 py-2">
-                        <input
-                          value={row.details}
-                          onChange={(e) =>
-                            setEuPolicyRows((prev) =>
-                              prev.map((item, i) =>
-                                i === idx ? { ...item, details: e.target.value } : item
-                              )
-                            )
-                          }
-                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                        />
-                      </td>
-                      <td className="px-3 py-2">
-                        <input
-                          value={row.notes}
-                          onChange={(e) =>
-                            setEuPolicyRows((prev) =>
-                              prev.map((item, i) =>
-                                i === idx ? { ...item, notes: e.target.value } : item
-                              )
-                            )
-                          }
-                          className="w-full rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        </div>
+          </div>
+        ) : null}
       </section>
       ) : null}
 

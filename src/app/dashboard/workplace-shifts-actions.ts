@@ -358,14 +358,13 @@ export async function createWorkplaceShift(
           department_id: input.departmentId,
           user_id: input.userId,
           shift_type_id: input.shiftTypeId,
-          note: input.note,
           starts_at: new Date(s).toISOString(),
           ends_at: new Date(e).toISOString(),
         })
         .select(SHIFT_SELECT_LEGACY)
         .single();
       data = legacyInsert.data
-        ? { ...legacyInsert.data, required_employee_type_id: null, note: input.note ?? null }
+        ? { ...legacyInsert.data, required_employee_type_id: null, note: null }
         : legacyInsert.data;
       error = legacyInsert.error;
     }

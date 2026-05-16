@@ -8,10 +8,16 @@ import {
   createShiftTypeTemplate,
   deleteEmployeeTypeTemplate,
   deleteShiftTypeTemplate,
+  saveGlobalComplianceRulesForSuperAdmin,
   type TypeTemplateRow,
   updateEmployeeTypeTemplate,
   updateShiftTypeTemplate,
 } from "@/src/app/super-admin/workplaces/actions";
+import {
+  describeComplianceRule,
+  normalizeComplianceRules,
+  type ComplianceRule,
+} from "@/src/lib/compliance/rules";
 import { EMPLOYEE_TYPE_PATTERNS } from "@/src/lib/calendar-shift-style";
 
 type NewTemplateForm = {
@@ -25,17 +31,28 @@ type NewTemplateForm = {
 type Props = {
   initialEmployee: TypeTemplateRow[];
   initialShift: TypeTemplateRow[];
+  initialComplianceRules: ComplianceRule[];
+  initialComplianceSource: "global_default" | "config_default";
 };
 
 export default function WorkplaceTemplatesClient({
   initialEmployee,
   initialShift,
+  initialComplianceRules,
+  initialComplianceSource,
 }: Props) {
   const router = useRouter();
   const [employee, setEmployee] = useState(initialEmployee);
   const [shift, setShift] = useState(initialShift);
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  const [complianceRules, setComplianceRules] = useState<ComplianceRule[]>(
+    initialComplianceRules
+  );
+  const [complianceDraftJson, setComplianceDraftJson] = useState<string>(
+    JSON.stringify(initialComplianceRules, null, 2)
+  );
+  const [complianceSource, setComplianceSource] = useState(initialComplianceSource);
 
   useEffect(() => {
     setEmployee(initialEmployee);
@@ -43,6 +60,11 @@ export default function WorkplaceTemplatesClient({
   useEffect(() => {
     setShift(initialShift);
   }, [initialShift]);
+  useEffect(() => {
+    setComplianceRules(initialComplianceRules);
+    setComplianceDraftJson(JSON.stringify(initialComplianceRules, null, 2));
+    setComplianceSource(initialComplianceSource);
+  }, [initialComplianceRules, initialComplianceSource]);
 
   const [newEmp, setNewEmp] = useState<NewTemplateForm>({
     name: "",
@@ -67,6 +89,55 @@ export default function WorkplaceTemplatesClient({
     }
   }
 
+  function addComplianceRuleRow() {
+    setComplianceRules((prev) => {
+      const next = [
+        ...prev,
+        {
+          rule_id: `global_custom_${Date.now()}`,
+          type: "max_daily_hours",
+          severity: "WARNING",
+          enabled: true,
+          max_hours: 10,
+        },
+      ];
+      setComplianceDraftJson(JSON.stringify(next, null, 2));
+      return next;
+    });
+  }
+
+  function removeComplianceRuleRow(ruleId: string) {
+    setComplianceRules((prev) => {
+      const next = prev.filter((rule) => rule.rule_id !== ruleId);
+      setComplianceDraftJson(JSON.stringify(next, null, 2));
+      return next;
+    });
+  }
+
+  async function handleSaveGlobalComplianceRules() {
+    let parsedRaw: unknown;
+    try {
+      parsedRaw = JSON.parse(complianceDraftJson);
+    } catch {
+      setMsg("EU-regler JSON er ugyldig. Ret formatet og proev igen.");
+      return;
+    }
+    const normalized = normalizeComplianceRules(parsedRaw);
+    const res = await run("compliance-save", () =>
+      saveGlobalComplianceRulesForSuperAdmin(normalized)
+    );
+    if (!res) return;
+    if (!res.ok) {
+      setMsg(res.error);
+      return;
+    }
+    setComplianceRules(normalized);
+    setComplianceDraftJson(JSON.stringify(normalized, null, 2));
+    setComplianceSource("global_default");
+    setMsg("Globalt EU-regelsaet opdateret.");
+    router.refresh();
+  }
+
   return (
     <div className="space-y-10">
       <div>
@@ -85,6 +156,85 @@ export default function WorkplaceTemplatesClient({
           {msg}
         </div>
       )}
+
+      <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+          Global EU-regelmotor (standard)
+        </h2>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          Kilde nu:{" "}
+          <span className="font-medium">
+            {complianceSource === "global_default" ? "Global standard (database)" : "Lokal config-standard"}
+          </span>
+          . Disse regler bruges som standard for alle arbejdspladser uden lokal override.
+        </p>
+        <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50/80 p-3 text-xs text-zinc-700 dark:border-zinc-700 dark:bg-zinc-950/40 dark:text-zinc-300">
+          <p className="font-semibold">Kort vejledning: tilfoej regel</p>
+          <p>
+            1) Klik &quot;Tilfoej standardregel&quot;, 2) rediger JSON-felterne (`rule_id`, `type`, `severity` +
+            type-specifikke felter), 3) klik &quot;Gem global standard&quot;.
+          </p>
+        </div>
+        <div className="overflow-x-auto rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
+          <table className="min-w-full text-left text-sm">
+            <thead className="bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+              <tr>
+                <th className="px-3 py-2 font-semibold">Rule ID</th>
+                <th className="px-3 py-2 font-semibold">Type</th>
+                <th className="px-3 py-2 font-semibold">Severity</th>
+                <th className="px-3 py-2 font-semibold">Konfiguration</th>
+                <th className="px-3 py-2 font-semibold">Handling</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
+              {complianceRules.map((rule) => (
+                <tr key={rule.rule_id}>
+                  <td className="px-3 py-2 font-mono text-xs">{rule.rule_id}</td>
+                  <td className="px-3 py-2">{rule.type}</td>
+                  <td className="px-3 py-2">{rule.severity}</td>
+                  <td className="px-3 py-2">{describeComplianceRule(rule)}</td>
+                  <td className="px-3 py-2">
+                    <button
+                      type="button"
+                      onClick={() => removeComplianceRuleRow(rule.rule_id)}
+                      className="rounded border border-zinc-300 px-2 py-1 text-xs hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                    >
+                      Slet
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <label className="block">
+          <span className="mb-1 block text-xs font-medium text-zinc-500">Regler (JSON)</span>
+          <textarea
+            value={complianceDraftJson}
+            onChange={(e) => setComplianceDraftJson(e.target.value)}
+            rows={14}
+            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 font-mono text-xs dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+          />
+        </label>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={addComplianceRuleRow}
+            className="rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-semibold hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+          >
+            Tilfoej standardregel
+          </button>
+          <button
+            type="button"
+            onClick={() => void handleSaveGlobalComplianceRules()}
+            disabled={busy === "compliance-save"}
+            className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
+          >
+            {busy === "compliance-save" ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            Gem global standard
+          </button>
+        </div>
+      </section>
 
       <TemplateSection
         variant="employee"
@@ -305,7 +455,7 @@ function TemplateSection({
           <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
             {rows.map((r) => (
               <TemplateRow
-                key={r.id}
+                key={`${r.id}-${r.name}-${r.slug}-${r.sort_order}-${r.calendar_color ?? ""}-${r.calendar_pattern ?? ""}`}
                 variant={variant}
                 row={r}
                 busy={busy === `${busyPrefix}-${r.id}`}
@@ -444,20 +594,6 @@ function TemplateRow({
   const [pattern, setPattern] = useState(
     row.calendar_pattern ?? "none"
   );
-
-  useEffect(() => {
-    setName(row.name);
-    setSlug(row.slug);
-    setSort(String(row.sort_order));
-    setColor(row.calendar_color ?? "#94a3b8");
-    setPattern(row.calendar_pattern ?? "none");
-  }, [
-    row.name,
-    row.slug,
-    row.sort_order,
-    row.calendar_color,
-    row.calendar_pattern,
-  ]);
 
   const dirty =
     name !== row.name ||

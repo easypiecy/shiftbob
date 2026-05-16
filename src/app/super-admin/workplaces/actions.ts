@@ -13,6 +13,12 @@ import {
   type SeasonTemplatePayload,
 } from "@/src/types/season-template";
 import {
+  getConfigDefaultComplianceRules,
+  normalizeComplianceRules,
+  serializeComplianceRules,
+  type ComplianceRule,
+} from "@/src/lib/compliance/rules";
+import {
   isSubscriptionTier,
   normalizeSubscriptionTier,
   type SubscriptionTier,
@@ -46,6 +52,13 @@ function revalidateWorkplaceDetailPages(workplaceId: string) {
   revalidatePath("/dashboard/fremtiden");
 }
 
+const COMPLIANCE_PROFILE_KEY_DEFAULT = "default";
+
+export type ComplianceRulesResolution = {
+  rules: ComplianceRule[];
+  source: "workplace_override" | "global_default" | "config_default";
+};
+
 /** PostgREST / Postgres når tabeller ikke findes eller cache er forældet */
 function isMissingSchemaError(message: string): boolean {
   const m = message.toLowerCase();
@@ -57,6 +70,28 @@ function isMissingSchemaError(message: string): boolean {
     m.includes("undefined table") ||
     (m.includes("relation") && m.includes("does not exist"))
   );
+}
+
+async function readGlobalComplianceRules(
+  admin: ReturnType<typeof getAdminClient>
+): Promise<{ rules: ComplianceRule[]; source: "global_default" | "config_default" }> {
+  const cfg = getConfigDefaultComplianceRules();
+  const { data, error } = await admin
+    .from("compliance_rule_profiles")
+    .select("rules_json")
+    .eq("profile_key", COMPLIANCE_PROFILE_KEY_DEFAULT)
+    .maybeSingle();
+  if (error) {
+    if (isMissingSchemaError(error.message)) {
+      return { rules: cfg, source: "config_default" };
+    }
+    throw new Error(error.message);
+  }
+  const parsed = normalizeComplianceRules(data?.rules_json ?? null);
+  if (parsed.length === 0) {
+    return { rules: cfg, source: "config_default" };
+  }
+  return { rules: parsed, source: "global_default" };
 }
 
 export type WorkplaceRow = {
@@ -101,6 +136,8 @@ export type WorkplaceDetail = {
   calendar_released_until: string | null;
   /** Sæson-skabelon (perioder / ugedage) */
   season_template_json: SeasonTemplatePayload;
+  /** Arbejdspladsens lokale regel-override (null = brug global standard) */
+  compliance_rules_override_json: ComplianceRule[] | null;
 };
 
 export type TypeTemplateRow = {
@@ -773,6 +810,10 @@ function mapDetail(row: Record<string, unknown>): WorkplaceDetail {
         ? null
         : String(row.calendar_released_until).slice(0, 10),
     season_template_json: normalizeSeasonTemplate(row.season_template_json),
+    compliance_rules_override_json: (() => {
+      const parsed = normalizeComplianceRules(row.compliance_rules_override_json);
+      return parsed.length > 0 ? parsed : null;
+    })(),
   };
 }
 
@@ -782,7 +823,7 @@ const WORKPLACE_DETAIL_SELECT_BASE =
 const WORKPLACE_DETAIL_SELECT_LEGACY =
   "id, name, company_name, vat_number, street_name, street_number, address_extra, postal_code, city, country_code, contact_email, phone, employee_count_band, stripe_customer_id, push_include_shift_type_ids, push_include_employee_type_ids, created_at";
 
-const WORKPLACE_DETAIL_SELECT_EXTENDED = `${WORKPLACE_DETAIL_SELECT_BASE}, future_planning_weeks, calendar_released_until, season_template_json`;
+const WORKPLACE_DETAIL_SELECT_EXTENDED = `${WORKPLACE_DETAIL_SELECT_BASE}, future_planning_weeks, calendar_released_until, season_template_json, compliance_rules_override_json`;
 
 export async function getWorkplaceById(
   id: string
@@ -815,6 +856,7 @@ export async function getWorkplaceById(
             future_planning_weeks: 8,
             calendar_released_until: null,
             season_template_json: {},
+            compliance_rules_override_json: null,
           }),
         };
       }
@@ -824,6 +866,152 @@ export async function getWorkplaceById(
       return { ok: false, error: "Arbejdsplads ikke fundet." };
     }
     return { ok: true, data: mapDetail(data as Record<string, unknown>) };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Ukendt fejl";
+    return { ok: false, error: msg };
+  }
+}
+
+export async function getGlobalComplianceRulesForSuperAdmin(): Promise<
+  { ok: true; rules: ComplianceRule[]; source: "global_default" | "config_default" } | { ok: false; error: string }
+> {
+  try {
+    await requireSuperAdmin();
+    const admin = getAdminClient();
+    const global = await readGlobalComplianceRules(admin);
+    return { ok: true, rules: global.rules, source: global.source };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Ukendt fejl";
+    return { ok: false, error: msg };
+  }
+}
+
+export async function saveGlobalComplianceRulesForSuperAdmin(
+  rules: ComplianceRule[]
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await requireSuperAdmin();
+    const normalized = normalizeComplianceRules(rules);
+    if (normalized.length === 0) {
+      return { ok: false, error: "Regelsaet kan ikke vaere tomt." };
+    }
+    const admin = getAdminClient();
+    const { error } = await admin.from("compliance_rule_profiles").upsert(
+      {
+        profile_key: COMPLIANCE_PROFILE_KEY_DEFAULT,
+        rules_json: serializeComplianceRules(normalized),
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "profile_key" }
+    );
+    if (error) {
+      if (isMissingSchemaError(error.message)) {
+        return {
+          ok: false,
+          error:
+            "Compliance rule profile-tabellen mangler. Koer SQL-patchen for compliance rules og reload schema.",
+        };
+      }
+      return { ok: false, error: error.message };
+    }
+    revalidatePath("/super-admin/workplace-templates");
+    revalidatePath("/dashboard/indstillinger");
+    return { ok: true };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Ukendt fejl";
+    return { ok: false, error: msg };
+  }
+}
+
+export async function getWorkplaceComplianceRules(
+  workplaceId: string
+): Promise<{ ok: true; data: ComplianceRulesResolution } | { ok: false; error: string }> {
+  try {
+    await assertWorkplaceAdminOrSuperAdmin(workplaceId);
+    const admin = getAdminClient();
+    const global = await readGlobalComplianceRules(admin);
+    const { data: wp, error } = await admin
+      .from("workplaces")
+      .select("compliance_rules_override_json")
+      .eq("id", workplaceId)
+      .maybeSingle();
+    if (error) {
+      if (isMissingSchemaError(error.message)) {
+        return { ok: true, data: { rules: global.rules, source: global.source } };
+      }
+      return { ok: false, error: error.message };
+    }
+    const override = normalizeComplianceRules(wp?.compliance_rules_override_json ?? null);
+    if (override.length > 0) {
+      return {
+        ok: true,
+        data: { rules: override, source: "workplace_override" },
+      };
+    }
+    return { ok: true, data: { rules: global.rules, source: global.source } };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Ukendt fejl";
+    return { ok: false, error: msg };
+  }
+}
+
+export async function saveWorkplaceComplianceRules(
+  workplaceId: string,
+  rules: ComplianceRule[]
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await assertWorkplaceAdminOrSuperAdmin(workplaceId);
+    const normalized = normalizeComplianceRules(rules);
+    if (normalized.length === 0) {
+      return { ok: false, error: "Regelsaet kan ikke vaere tomt." };
+    }
+    const admin = getAdminClient();
+    const { error } = await admin
+      .from("workplaces")
+      .update({
+        compliance_rules_override_json: serializeComplianceRules(normalized),
+      })
+      .eq("id", workplaceId);
+    if (error) {
+      if (isMissingSchemaError(error.message)) {
+        return {
+          ok: false,
+          error:
+            "Workplace-kolonnen for compliance override mangler. Koer SQL-patchen for compliance rules og reload schema.",
+        };
+      }
+      return { ok: false, error: error.message };
+    }
+    revalidateWorkplaceDetailPages(workplaceId);
+    return { ok: true };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Ukendt fejl";
+    return { ok: false, error: msg };
+  }
+}
+
+export async function resetWorkplaceComplianceRulesToDefault(
+  workplaceId: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await assertWorkplaceAdminOrSuperAdmin(workplaceId);
+    const admin = getAdminClient();
+    const { error } = await admin
+      .from("workplaces")
+      .update({ compliance_rules_override_json: null })
+      .eq("id", workplaceId);
+    if (error) {
+      if (isMissingSchemaError(error.message)) {
+        return {
+          ok: false,
+          error:
+            "Workplace-kolonnen for compliance override mangler. Koer SQL-patchen for compliance rules og reload schema.",
+        };
+      }
+      return { ok: false, error: error.message };
+    }
+    revalidateWorkplaceDetailPages(workplaceId);
+    return { ok: true };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Ukendt fejl";
     return { ok: false, error: msg };

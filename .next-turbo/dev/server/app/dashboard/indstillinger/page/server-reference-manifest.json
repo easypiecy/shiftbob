@@ -12,6 +12,30 @@
       "exportedName": "getWorkplaces",
       "filename": "src/app/super-admin/workplaces/actions.ts"
     },
+    "003cf814a12b523b48c66f8879bc93a97c57783bb3": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getGlobalComplianceRulesForSuperAdmin",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "exportedName": "getGlobalComplianceRulesForSuperAdmin",
+      "filename": "src/app/super-admin/workplaces/actions.ts"
+    },
+    "40090e9bcb76dca79181ae115db91aa4ff9d7c9f54": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "resetWorkplaceComplianceRulesToDefault",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "exportedName": "resetWorkplaceComplianceRulesToDefault",
+      "filename": "src/app/super-admin/workplaces/actions.ts"
+    },
     "400a744797871fabd6c8784f613823629e129c71af": {
       "workers": {
         "app/dashboard/indstillinger/page": {
@@ -70,6 +94,18 @@
         }
       },
       "exportedName": "createWorkplace",
+      "filename": "src/app/super-admin/workplaces/actions.ts"
+    },
+    "405b80c55a09220e385b5d03a336e67eef01987d8b": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceComplianceRules",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "exportedName": "getWorkplaceComplianceRules",
       "filename": "src/app/super-admin/workplaces/actions.ts"
     },
     "406d0f16e62da4fb8cc47dd7c46b3ba8ad86af6195": {
@@ -166,6 +202,18 @@
         }
       },
       "exportedName": "listWorkplaceApiKeys",
+      "filename": "src/app/super-admin/workplaces/actions.ts"
+    },
+    "40e1892422c0c98d89ba3a8e0bfaa82611d6c0f7f5": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "saveGlobalComplianceRulesForSuperAdmin",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "exportedName": "saveGlobalComplianceRulesForSuperAdmin",
       "filename": "src/app/super-admin/workplaces/actions.ts"
     },
     "40ef1c0b01fab1f0416afe02837b7a410958e48107": {
@@ -334,6 +382,18 @@
         }
       },
       "exportedName": "generateWorkplaceApiKey",
+      "filename": "src/app/super-admin/workplaces/actions.ts"
+    },
+    "60f2ca8491355ec9eccb032ffad4d9979f53a58ec7": {
+      "workers": {
+        "app/dashboard/indstillinger/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "saveWorkplaceComplianceRules",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        }
+      },
+      "exportedName": "saveWorkplaceComplianceRules",
       "filename": "src/app/super-admin/workplaces/actions.ts"
     },
     "60fa005521543123673f61050ebfde5ce49de26a60": {

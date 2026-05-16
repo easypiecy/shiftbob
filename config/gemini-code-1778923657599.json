@@ -1,0 +1,55 @@
+{
+  "rules": [
+    {
+      "id": "EU_DAILY_REST_11H",
+      "type": "gap_between_shifts",
+      "min_gap_hours": 11,
+      "severity": "ERROR",
+      "message": "EU violation: Less than 11 hours of rest between shifts."
+    },
+    {
+      "id": "EU_WEEKLY_REST_35H",
+      "type": "weekly_rest",
+      "min_consecutive_hours": 35,
+      "severity": "ERROR",
+      "message": "EU violation: Missing 35 hours of consecutive rest in a 7-day period."
+    },
+    {
+      "id": "EU_MAX_WEEKLY_48H",
+      "type": "max_weekly_hours",
+      "max_hours": 48,
+      "severity": "ERROR",
+      "message": "EU violation: Exceeds 48 hours of work in a week."
+    },
+    {
+      "id": "REC_MAX_DAILY_10H",
+      "type": "max_daily_hours",
+      "max_hours": 10,
+      "severity": "WARNING",
+      "message": "Warning: Shift exceeds the recommended 10 hours per day."
+    },
+    {
+      "id": "REC_MAX_CONSECUTIVE_DAYS_6",
+      "type": "max_consecutive_days",
+      "max_days": 6,
+      "severity": "WARNING",
+      "message": "Warning: Employee is scheduled for more than 6 consecutive days."
+    },
+    {
+      "id": "EU_MANDATORY_BREAK_6H",
+      "type": "mandatory_break",
+      "shift_length_threshold_hours": 6,
+      "min_break_minutes": 30,
+      "severity": "ERROR",
+      "message": "EU violation: Shifts of 6+ hours require a minimum 30-minute break."
+    },
+    {
+      "id": "EU_MANDATORY_BREAK_9H",
+      "type": "mandatory_break",
+      "shift_length_threshold_hours": 9,
+      "min_break_minutes": 45,
+      "severity": "ERROR",
+      "message": "EU violation: Shifts of 9+ hours require a minimum 45-minute break."
+    }
+  ]
+}
