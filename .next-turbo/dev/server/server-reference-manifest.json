@@ -14,6 +14,12 @@
     },
     "001a343955998fab1566a737e9a80dd3f7a04883ac": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaces",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -26,6 +32,12 @@
     },
     "003cf814a12b523b48c66f8879bc93a97c57783bb3": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getGlobalComplianceRulesForSuperAdmin",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -38,6 +50,12 @@
     },
     "40090e9bcb76dca79181ae115db91aa4ff9d7c9f54": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "resetWorkplaceComplianceRulesToDefault",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -50,6 +68,12 @@
     },
     "400a744797871fabd6c8784f613823629e129c71af": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "exportWorkplaceCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -62,6 +86,12 @@
     },
     "401c7d7dedb936715b4809394f214f715255e98962": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceTypes",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -80,6 +110,12 @@
     },
     "403c25bb288df6145565a07ef821a88f917fd8aa37": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -92,6 +128,12 @@
     },
     "4042f4768ba26f598e3f918aaa1c497d68fdf50b7f": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "resetWorkplaceCalendarData",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -104,6 +146,12 @@
     },
     "405584b5b956900dcea57e862bf8c0d1f30748f610": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -116,8 +164,20 @@
     },
     "405b80c55a09220e385b5d03a336e67eef01987d8b": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceComplianceRules",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceComplianceRules",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
           "exportedName": "getWorkplaceComplianceRules",
           "filename": "src/app/super-admin/workplaces/actions.ts"
@@ -128,6 +188,12 @@
     },
     "406d0f16e62da4fb8cc47dd7c46b3ba8ad86af6195": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -140,6 +206,12 @@
     },
     "406fbd9aa1d285b94472b18cf4a8fca836fff886aa": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -152,6 +224,12 @@
     },
     "4081521e0bfa388bf7a7929f4f2a842eab2dafc240": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "listShiftTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -164,6 +242,12 @@
     },
     "408408ad6ff6c256b8db582905f9e1452a1fa028da": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "listEmployeeTypeTemplates",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -176,6 +260,12 @@
     },
     "4088bec09bfeaab68a8d7d8b96a3ce0bcd05c7234c": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "copyWorkplaceTemplatesFromStandards",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -188,6 +278,12 @@
     },
     "4097036f0e59aec84357e924d87bd58f69de126491": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceById",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -206,6 +302,12 @@
     },
     "409d40d4c9e5171aa8f4cd4b34f29bb76ffbb6d088": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "listEuCountriesForWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -218,6 +320,12 @@
     },
     "40c53e89d9d480416ba6f89b020f40cc7573f76181": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "listWorkplaceApiKeys",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -230,6 +338,12 @@
     },
     "40e1892422c0c98d89ba3a8e0bfaa82611d6c0f7f5": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "saveGlobalComplianceRulesForSuperAdmin",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -242,6 +356,12 @@
     },
     "40ef1c0b01fab1f0416afe02837b7a410958e48107": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkplaceLegacy",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -254,6 +374,12 @@
     },
     "40f1c7b8028aa137282da3b9e76520d4d5b7ea6363": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -266,6 +392,12 @@
     },
     "60125dff8ce82f2d68a31a95364d935c9aedccf43e": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkplaceShiftType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -278,6 +410,12 @@
     },
     "602dab343e190bf3f645a3238a81e825b66e2b7d64": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkplaceEmployeeType",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -290,6 +428,12 @@
     },
     "60354e8506f41b7d6f61a0a265f5541909b514c912": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "updateWorkplace",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -302,6 +446,12 @@
     },
     "60370148a97e128bd87fbe4539c141ebeb200f9016": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "importWorkplaceMembersFromCsv",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -314,6 +464,12 @@
     },
     "603eaf18b83e2c3f89decbaed94cc37f20965ac7db": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceDepartmentsOverview",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -332,6 +488,12 @@
     },
     "60505118d199d20c1ace7c160e0ae7d58fea467f9b": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "updateEmployeeTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -344,6 +506,12 @@
     },
     "606dff1ed694fdbe20b6d05870630e8ee1e66ab746": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -356,6 +524,12 @@
     },
     "60867009d54b73dd5400ed4e2d6b333ac9b15eb9b9": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "updateShiftTypeTemplate",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -368,6 +542,12 @@
     },
     "608e44b4ed4db0e39782730959fd4e2e9d523abfb8": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "registerWorkplaceImportUpload",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -380,6 +560,12 @@
     },
     "609c49c12dd94a2cc4c44d8c6b1f57edcb90be1098": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "revokeWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -392,6 +578,12 @@
     },
     "60e4e4a6c2350ba5eeabef29cca8fc80773e95725a": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkplaceDepartment",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -404,6 +596,12 @@
     },
     "60ee8d875180a268c31e6c884cc538d0c6b03ed7d3": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "generateWorkplaceApiKey",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -416,6 +614,12 @@
     },
     "60f2ca8491355ec9eccb032ffad4d9979f53a58ec7": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "saveWorkplaceComplianceRules",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -428,6 +632,12 @@
     },
     "60fa005521543123673f61050ebfde5ce49de26a60": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "saveWorkplaceDepartmentMemberships",
+          "filename": "src/app/super-admin/workplaces/actions.ts"
+        },
         "app/dashboard/indstillinger/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/indstillinger/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/user-ui-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -458,6 +668,12 @@
     },
     "60e64b9a3c08dd75808add0d0cf5abd6c40b79aaff": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkplaceShift",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        },
         "app/dashboard/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -470,6 +686,12 @@
     },
     "60089aac22dcd5516cf72cfe57feb91e14b20c1ae7": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteWorkplaceShift",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        },
         "app/dashboard/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -480,8 +702,32 @@
       "filename": "src/app/dashboard/workplace-shifts-actions.ts",
       "exportedName": "deleteWorkplaceShift"
     },
+    "78d271c29d671e3a24df5bd5771edb5efc68b0012b": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceHistoricalShiftsForCompliance",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        },
+        "app/dashboard/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceHistoricalShiftsForCompliance",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "getWorkplaceHistoricalShiftsForCompliance"
+    },
     "70bd646879dbd70a4cbf76c51070f6ad255f836681": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "reassignWorkplaceShift",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        },
         "app/dashboard/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -494,6 +740,12 @@
     },
     "70bad88342a7866ea5ebcdd1c374738608ef02929e": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "swapWorkplaceShifts",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        },
         "app/dashboard/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -506,6 +758,12 @@
     },
     "7894d3dd170438ab50e4224a896a6dc957129fb9e3": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "updateWorkplaceShiftTiming",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        },
         "app/dashboard/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -518,6 +776,12 @@
     },
     "7c9e716383349ef97703adb1c22b23a486dc885972": {
       "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getWorkplaceShiftsInRange",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        },
         "app/dashboard/page": {
           "moduleId": "[project]/.next-internal/server/app/dashboard/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-member-calendar-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
           "async": false,
@@ -611,6 +875,78 @@
       },
       "filename": "src/app/dashboard/workplace-member-calendar-actions.ts",
       "exportedName": "uploadWorkplaceMemberCv"
+    },
+    "4011940c8e5d74ed04bfb4c613d45a4e6d640517b0": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getFuturePlanningSnapshot",
+          "filename": "src/app/dashboard/future-workplace-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/future-workplace-actions.ts",
+      "exportedName": "getFuturePlanningSnapshot"
+    },
+    "4072c9c3a32944650123cd0dddecd3b88ba4879104": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "loadUnreleasedShiftsForWindow",
+          "filename": "src/app/dashboard/future-workplace-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/future-workplace-actions.ts",
+      "exportedName": "loadUnreleasedShiftsForWindow"
+    },
+    "6053ee080610ebe19baa5053f34783093e7a407763": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "saveSeasonTemplate",
+          "filename": "src/app/dashboard/future-workplace-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/future-workplace-actions.ts",
+      "exportedName": "saveSeasonTemplate"
+    },
+    "60a0450783a653cc91f4f1bb49197aae9cb7a27b77": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "generateAiPlanPreview",
+          "filename": "src/app/dashboard/future-workplace-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/future-workplace-actions.ts",
+      "exportedName": "generateAiPlanPreview"
+    },
+    "60d364e6fcbe9c35e33b6654d528ed48946242b0ce": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "releaseCalendarWeeks",
+          "filename": "src/app/dashboard/future-workplace-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/future-workplace-actions.ts",
+      "exportedName": "releaseCalendarWeeks"
+    },
+    "4054131b572c317bcdcaf91e2dbf7085668ba9c7fa": {
+      "workers": {
+        "app/dashboard/fremtiden/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/fremtiden/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/app/super-admin/workplaces/actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE1 => \"[project]/src/app/dashboard/future-workplace-actions.ts [app-rsc] (ecmascript)\", ACTIONS_MODULE2 => \"[project]/src/app/dashboard/workplace-shifts-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "getCalendarViewerNameMode",
+          "filename": "src/app/dashboard/workplace-shifts-actions.ts"
+        }
+      },
+      "filename": "src/app/dashboard/workplace-shifts-actions.ts",
+      "exportedName": "getCalendarViewerNameMode"
     }
   },
   "edge": {},

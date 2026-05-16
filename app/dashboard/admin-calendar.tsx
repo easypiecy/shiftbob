@@ -19,6 +19,7 @@ import {
   Loader2,
   Plus,
   Search,
+  UserRoundMinus,
   X,
 } from "lucide-react";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -636,10 +637,10 @@ const ShiftGridCell = memo(function ShiftGridCell({
       : violationSeverity === "WARNING"
         ? "ring-1 ring-amber-500/80 dark:ring-amber-300/80"
         : "";
-  const violationIconClass =
+  const violationCircleClass =
     violationSeverity === "WARNING"
-      ? "text-amber-500 [text-shadow:0_0_3px_rgba(255,255,255,1),0_0_8px_rgba(255,255,255,0.95),0_0_14px_rgba(255,184,0,1),0_0_22px_rgba(255,184,0,0.95)]"
-      : "text-red-500 [text-shadow:0_0_3px_rgba(255,255,255,1),0_0_8px_rgba(255,255,255,0.95),0_0_14px_rgba(255,80,80,1),0_0_22px_rgba(255,80,80,0.95)]";
+      ? "border-[3px] border-amber-500/90 dark:border-amber-300/90"
+      : "border-[3px] border-red-500/90 dark:border-red-400/90";
   return (
     <td
       key={cellKey}
@@ -664,7 +665,7 @@ const ShiftGridCell = memo(function ShiftGridCell({
     >
       {showCenteredViolationIcon ? (
         <span
-          className={`absolute left-1/2 top-1/2 z-0 inline-flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-[30px] leading-none dark:bg-white/80 ${violationIconClass}`}
+          className={`pointer-events-auto absolute left-1/2 top-1/2 z-10 inline-flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 cursor-pointer select-none items-center justify-center rounded-full bg-white/90 text-[30px] leading-none text-black [text-shadow:0_0_2px_rgba(255,255,255,0.85)] dark:bg-white/90 ${violationCircleClass}`}
           title={violationHoverText}
           aria-label={violationHoverText}
         >
@@ -797,6 +798,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
 
   const [rollingShifts, setRollingShifts] = useState<WorkplaceShiftRow[]>([]);
   const [monthShifts, setMonthShifts] = useState<WorkplaceShiftRow[]>([]);
+  const [isCurrentViewShiftsLoaded, setIsCurrentViewShiftsLoaded] = useState(false);
   const [complianceRules, setComplianceRules] = useState<ComplianceRule[]>([]);
   const [complianceHistoryShifts, setComplianceHistoryShifts] = useState<
     WorkplaceComplianceHistoricalShiftRow[]
@@ -1010,6 +1012,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     const rangeStartIso = startOfDay(anchorDate).toISOString();
     const rangeEndIso = addDays(startOfDay(anchorDate), 30).toISOString();
     let cancelled = false;
+    setIsCurrentViewShiftsLoaded(false);
     setLoadingDeptIds([]);
     enqueueShiftLoad(async (isStale) => {
       if (cancelled || isStale()) return;
@@ -1024,6 +1027,9 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
         },
         () => cancelled || isStale()
       );
+      if (!cancelled && !isStale()) {
+        setIsCurrentViewShiftsLoaded(true);
+      }
     });
     return () => {
       cancelled = true;
@@ -1222,6 +1228,10 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   }, [monthShifts, rollingShifts]);
 
   useEffect(() => {
+    if (!isCurrentViewShiftsLoaded) {
+      setComplianceLoading(false);
+      return;
+    }
     const employees = [
       ...new Set(
         uniqueVisibleShifts
@@ -1265,7 +1275,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [uniqueVisibleShifts, workplaceId]);
+  }, [isCurrentViewShiftsLoaded, uniqueVisibleShifts, workplaceId]);
 
   const complianceViolations = useMemo(() => {
     const current = uniqueVisibleShifts
@@ -1477,6 +1487,11 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     if (!showOpenShiftsPanel) return;
     void refreshOpenShiftFeed();
   }, [showOpenShiftsPanel, refreshOpenShiftFeed]);
+
+  useEffect(() => {
+    if (!isCurrentViewShiftsLoaded) return;
+    void refreshOpenShiftFeed();
+  }, [isCurrentViewShiftsLoaded, refreshOpenShiftFeed]);
 
   useEffect(() => {
     if (!showOpenShiftsPanel) return;
@@ -2594,6 +2609,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
     if (loading) return;
     if (viewMode !== "rolling" || !rollingFetchStartIso || !rollingFetchEndIso) return;
     let cancelled = false;
+    setIsCurrentViewShiftsLoaded(false);
     setLoadingDeptIds([]);
     enqueueShiftLoad(async (isStale) => {
       if (cancelled || isStale()) return;
@@ -2610,6 +2626,9 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
         },
         () => cancelled || isStale()
       );
+      if (!cancelled && !isStale()) {
+        setIsCurrentViewShiftsLoaded(true);
+      }
     });
     return () => {
       cancelled = true;
@@ -2736,19 +2755,12 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => setShowDatePicker((prev) => !prev)}
-                className="rounded-lg border border-zinc-200 bg-white p-2 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
-                aria-label={t(
-                  "calendar.nav.date_picker_aria",
-                  "Vælg dag i kalenderen"
-                )}
-              >
-                <CalendarDays className="h-4 w-4" aria-hidden />
-              </button>
-              <button
-                type="button"
                 onClick={() => setShowCompliancePanel((prev) => !prev)}
-                className="relative rounded-lg border border-zinc-200 bg-white p-2 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                className={`relative rounded-lg border border-zinc-200 bg-white p-2 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800 ${
+                  upcomingComplianceErrorCount > 0
+                    ? "text-red-600 dark:text-red-300"
+                    : "text-zinc-600 dark:text-zinc-300"
+                }`}
                 aria-label="Compliance-overblik"
                 title="Compliance-overblik"
               >
@@ -2766,16 +2778,31 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
               <button
                 type="button"
                 onClick={() => setShowOpenShiftsPanel((prev) => !prev)}
-                className="relative rounded-lg border border-zinc-200 bg-white p-2 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                className={`relative rounded-lg border border-zinc-200 bg-white p-2 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800 ${
+                  upcomingOpenShifts.length > 0
+                    ? "text-red-600 dark:text-red-300"
+                    : "text-zinc-600 dark:text-zinc-300"
+                }`}
                 aria-label="Ledige vagter"
                 title="Ledige vagter"
               >
-                <FileText className="h-4 w-4" aria-hidden />
+                <UserRoundMinus className="h-4 w-4" aria-hidden />
                 {upcomingOpenShifts.length > 0 ? (
                   <span className="absolute -right-1 -top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white">
                     {Math.min(99, upcomingOpenShifts.length)}
                   </span>
                 ) : null}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowDatePicker((prev) => !prev)}
+                className="rounded-lg border border-zinc-200 bg-white p-2 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                aria-label={t(
+                  "calendar.nav.date_picker_aria",
+                  "Vælg dag i kalenderen"
+                )}
+              >
+                <CalendarDays className="h-4 w-4" aria-hidden />
               </button>
             </div>
             {showDatePicker ? (

@@ -91,15 +91,16 @@ export default function WorkplaceTemplatesClient({
 
   function addComplianceRuleRow() {
     setComplianceRules((prev) => {
+      const newRule: ComplianceRule = {
+        rule_id: `global_custom_${Date.now()}`,
+        type: "max_daily_hours",
+        severity: "WARNING",
+        enabled: true,
+        max_hours: 10,
+      };
       const next = [
         ...prev,
-        {
-          rule_id: `global_custom_${Date.now()}`,
-          type: "max_daily_hours",
-          severity: "WARNING",
-          enabled: true,
-          max_hours: 10,
-        },
+        newRule,
       ];
       setComplianceDraftJson(JSON.stringify(next, null, 2));
       return next;
