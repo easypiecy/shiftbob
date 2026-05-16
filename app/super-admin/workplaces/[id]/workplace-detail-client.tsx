@@ -175,7 +175,6 @@ export default function WorkplaceDetailClient({
     | "types"
     | "api"
     | "rules"
-    | "compliance"
     | "billing"
   >("company");
   const [empList, setEmpList] = useState(employeeTypes);
@@ -213,6 +212,7 @@ export default function WorkplaceDetailClient({
   );
   const [complianceBusy, setComplianceBusy] = useState<"save" | "reset" | null>(null);
   const [showComplianceAdvanced, setShowComplianceAdvanced] = useState(false);
+  const [showAiComplianceStatement, setShowAiComplianceStatement] = useState(false);
   const [showAddComplianceRuleModal, setShowAddComplianceRuleModal] = useState(false);
   const [showAiJsonGuide, setShowAiJsonGuide] = useState(false);
   const [newComplianceRuleDraft, setNewComplianceRuleDraft] = useState<string>(
@@ -788,10 +788,9 @@ export default function WorkplaceDetailClient({
               { id: "types", label: "Typer", icon: Layers3 },
               {
                 id: "rules",
-                label: tr("settings.tabs.eu_rules", "EU regler"),
+                label: tr("settings.tabs.compliance", "Compliance"),
                 icon: Scale,
               },
-              { id: "compliance", label: "Compliance", icon: ShieldCheck },
               { id: "api", label: "API", icon: KeyRound },
               { id: "billing", label: "Billing", icon: CreditCard },
             ].map((tab) => {
@@ -808,7 +807,6 @@ export default function WorkplaceDetailClient({
                         | "planning"
                         | "types"
                         | "rules"
-                        | "compliance"
                         | "api"
                         | "billing"
                     )
@@ -1849,9 +1847,71 @@ export default function WorkplaceDetailClient({
             disabled={complianceBusy !== null}
             className="rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-semibold hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
           >
-            {complianceBusy === "reset" ? "Nulstiller..." : "Nulstil til standard"}
+            {complianceBusy === "reset"
+              ? "Nulstiller..."
+              : tr(
+                  "settings.eu_rules.reset_default",
+                  "Reset to EU compliance rules"
+                )}
           </button>
         </div>
+        <div className="pt-2">
+          <button
+            type="button"
+            onClick={() => setShowAiComplianceStatement((prev) => !prev)}
+            className="text-xs font-medium text-zinc-600 underline underline-offset-2 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+          >
+            AI compliance statement
+          </button>
+        </div>
+        {showAiComplianceStatement ? (
+          <div className="space-y-4 rounded-lg border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-700 dark:bg-zinc-950/40">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+              {tr("compliance.page.title")}
+            </h3>
+            <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+              {tr("compliance.page.intro")}
+            </p>
+            <section className="mt-2">
+              <h4 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+                {tr("compliance.section.system_title")}
+              </h4>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                {tr("compliance.section.system_body")}
+              </p>
+            </section>
+            <section className="mt-2">
+              <h4 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+                {tr("compliance.section.ai_title")}
+              </h4>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                {tr("compliance.section.ai_body")}
+              </p>
+            </section>
+            <section className="mt-2">
+              <h4 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+                {tr("compliance.section.gdpr_title")}
+              </h4>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                {tr("compliance.section.gdpr_body")}
+              </p>
+            </section>
+            <section className="mt-2">
+              <h4 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+                {tr("compliance.section.tenant_title")}
+              </h4>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                {tr("compliance.section.tenant_body").replace(
+                  "{workplace}",
+                  d.company_name?.trim() || d.name
+                )}
+              </p>
+            </section>
+            <p className="rounded-lg border border-zinc-200 bg-zinc-100/80 px-3 py-2.5 text-xs leading-relaxed text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400">
+              {tr("compliance.footer.rolling")}
+            </p>
+          </div>
+        ) : null}
         {showAddComplianceRuleModal ? (
           <div className="fixed inset-0 z-[140] flex items-center justify-center bg-black/60 p-4">
             <div className="w-full max-w-3xl rounded-xl border border-zinc-200 bg-white p-5 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900">
@@ -1930,55 +1990,6 @@ export default function WorkplaceDetailClient({
             </div>
           </div>
         ) : null}
-      </section>
-      ) : null}
-
-      {dashboardTabsEnabled && activeSettingsTab === "compliance" ? (
-      <section className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-          {tr("compliance.page.title")}
-        </h2>
-        <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-          {tr("compliance.page.intro")}
-        </p>
-        <section className="mt-2">
-          <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-            {tr("compliance.section.system_title")}
-          </h3>
-          <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-            {tr("compliance.section.system_body")}
-          </p>
-        </section>
-        <section className="mt-2">
-          <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-            {tr("compliance.section.ai_title")}
-          </h3>
-          <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-            {tr("compliance.section.ai_body")}
-          </p>
-        </section>
-        <section className="mt-2">
-          <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-            {tr("compliance.section.gdpr_title")}
-          </h3>
-          <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-            {tr("compliance.section.gdpr_body")}
-          </p>
-        </section>
-        <section className="mt-2">
-          <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-            {tr("compliance.section.tenant_title")}
-          </h3>
-          <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-            {tr("compliance.section.tenant_body").replace(
-              "{workplace}",
-              d.company_name?.trim() || d.name
-            )}
-          </p>
-        </section>
-        <p className="rounded-lg border border-zinc-200 bg-zinc-100/80 px-3 py-2.5 text-xs leading-relaxed text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400">
-          {tr("compliance.footer.rolling")}
-        </p>
       </section>
       ) : null}
 

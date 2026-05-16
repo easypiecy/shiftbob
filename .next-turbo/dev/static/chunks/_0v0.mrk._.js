@@ -1105,7 +1105,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$layers$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Layers3$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/layers.js [app-client] (ecmascript) <export default as Layers3>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/loader-circle.js [app-client] (ecmascript) <export default as Loader2>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$scale$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Scale$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/scale.js [app-client] (ecmascript) <export default as Scale>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$shield$2d$check$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ShieldCheck$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/shield-check.js [app-client] (ecmascript) <export default as ShieldCheck>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$trash$2d$2$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Trash2$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/trash-2.js [app-client] (ecmascript) <export default as Trash2>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$copy$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Copy$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/copy.js [app-client] (ecmascript) <export default as Copy>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$super$2d$admin$2f$workplaces$2f$data$3a$3140a6__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$text$2f$javascript$3e$__ = __turbopack_context__.i("[project]/src/app/super-admin/workplaces/data:3140a6 [app-client] (ecmascript) <text/javascript>");
@@ -1230,6 +1229,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
     const [complianceSource, setComplianceSource] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(resolvedInitialComplianceRules.source);
     const [complianceBusy, setComplianceBusy] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [showComplianceAdvanced, setShowComplianceAdvanced] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [showAiComplianceStatement, setShowAiComplianceStatement] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [showAddComplianceRuleModal, setShowAddComplianceRuleModal] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [showAiJsonGuide, setShowAiJsonGuide] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [newComplianceRuleDraft, setNewComplianceRuleDraft] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(JSON.stringify({
@@ -1905,13 +1905,8 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         },
                         {
                             id: "rules",
-                            label: tr("settings.tabs.eu_rules", "EU regler"),
+                            label: tr("settings.tabs.compliance", "Compliance"),
                             icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$scale$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Scale$3e$__["Scale"]
-                        },
-                        {
-                            id: "compliance",
-                            label: "Compliance",
-                            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$shield$2d$check$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ShieldCheck$3e$__["ShieldCheck"]
                         },
                         {
                             id: "api",
@@ -1935,14 +1930,14 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                     className: "h-3.5 w-3.5"
                                 }, void 0, false, {
                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                    lineNumber: 822,
+                                    lineNumber: 820,
                                     columnNumber: 19
                                 }, this),
                                 tab.label
                             ]
                         }, tab.id, true, {
                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                            lineNumber: 801,
+                            lineNumber: 800,
                             columnNumber: 17
                         }, this);
                     })
@@ -1964,7 +1959,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         children: "Firma & adresse"
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 833,
+                        lineNumber: 831,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1978,7 +1973,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "Visningsnavn"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 838,
+                                        lineNumber: 836,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1990,13 +1985,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 839,
+                                        lineNumber: 837,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 837,
+                                lineNumber: 835,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -2007,7 +2002,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "Firmanavn"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 846,
+                                        lineNumber: 844,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2019,13 +2014,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 847,
+                                        lineNumber: 845,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 845,
+                                lineNumber: 843,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -2036,7 +2031,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "CVR / VAT"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 856,
+                                        lineNumber: 854,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2048,13 +2043,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 857,
+                                        lineNumber: 855,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 855,
+                                lineNumber: 853,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -2065,7 +2060,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "Antal ansatte"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 866,
+                                        lineNumber: 864,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -2080,18 +2075,18 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: b
                                             }, b, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 878,
+                                                lineNumber: 876,
                                                 columnNumber: 17
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 867,
+                                        lineNumber: 865,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 865,
+                                lineNumber: 863,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -2102,7 +2097,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "Vejnavn"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 885,
+                                        lineNumber: 883,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2114,13 +2109,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 886,
+                                        lineNumber: 884,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 884,
+                                lineNumber: 882,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -2131,7 +2126,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "Nr."
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 895,
+                                        lineNumber: 893,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2143,13 +2138,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 896,
+                                        lineNumber: 894,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 894,
+                                lineNumber: 892,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -2160,7 +2155,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "Postnr."
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 905,
+                                        lineNumber: 903,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2172,13 +2167,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 906,
+                                        lineNumber: 904,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 904,
+                                lineNumber: 902,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -2189,7 +2184,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "By"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 915,
+                                        lineNumber: 913,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2201,13 +2196,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 916,
+                                        lineNumber: 914,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 914,
+                                lineNumber: 912,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -2218,7 +2213,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "Land (ISO-2)"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 925,
+                                        lineNumber: 923,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -2234,7 +2229,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Vælg land…"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 936,
+                                                lineNumber: 934,
                                                 columnNumber: 15
                                             }, this),
                                             countryOptionsWithCurrent.map((country)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2247,19 +2242,19 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                     ]
                                                 }, country.country_code, true, {
                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                    lineNumber: 938,
+                                                    lineNumber: 936,
                                                     columnNumber: 17
                                                 }, this))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 926,
+                                        lineNumber: 924,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 924,
+                                lineNumber: 922,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -2270,7 +2265,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "Yderligere"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 945,
+                                        lineNumber: 943,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2282,13 +2277,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 946,
+                                        lineNumber: 944,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 944,
+                                lineNumber: 942,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -2299,7 +2294,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "E-mail"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 955,
+                                        lineNumber: 953,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2312,13 +2307,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 956,
+                                        lineNumber: 954,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 954,
+                                lineNumber: 952,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -2329,7 +2324,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "Telefon"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 966,
+                                        lineNumber: 964,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2342,25 +2337,25 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 967,
+                                        lineNumber: 965,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 965,
+                                lineNumber: 963,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 836,
+                        lineNumber: 834,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                lineNumber: 832,
+                lineNumber: 830,
                 columnNumber: 7
             }, this) : null,
             !dashboardTabsEnabled || activeSettingsTab === "planning" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -2371,7 +2366,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         children: tr("settings.calendar_future.title")
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 982,
+                        lineNumber: 980,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2385,14 +2380,14 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: tr("admin.nav.future")
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 987,
+                                lineNumber: 985,
                                 columnNumber: 11
                             }, this),
                             tr("settings.calendar_future.intro_suffix")
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 985,
+                        lineNumber: 983,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -2403,7 +2398,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: tr("settings.calendar_future.weeks_label")
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 996,
+                                lineNumber: 994,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2421,19 +2416,19 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 999,
+                                lineNumber: 997,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 995,
+                        lineNumber: 993,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                lineNumber: 981,
+                lineNumber: 979,
                 columnNumber: 7
             }, this) : null,
             !dashboardTabsEnabled || activeSettingsTab === "planning" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -2444,7 +2439,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         children: tr("settings.employee_permissions.title", "Medarbejdernes vagtkontrol")
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1021,
+                        lineNumber: 1019,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2452,7 +2447,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         children: tr("settings.employee_permissions.intro", "Vælg hvor meget medarbejderne må styre vagtbytte i appen. Indstillingen bruges til godkendelsesflow i kalenderen.")
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1024,
+                        lineNumber: 1022,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$settings$2f$employee$2d$permissions$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["EmployeePermissions"], {
@@ -2464,13 +2459,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 }))
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1030,
+                        lineNumber: 1028,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                lineNumber: 1020,
+                lineNumber: 1018,
                 columnNumber: 7
             }, this) : null,
             !dashboardTabsEnabled || activeSettingsTab === "company" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -2483,7 +2478,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: "Afdelinger"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1043,
+                                lineNumber: 1041,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2491,13 +2486,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: "Opret afdelinger (fx Køkken, Bar) og tilknyt medarbejdere. Kun brugere der allerede er medlem af arbejdspladsen kan tilføjes — validering sker også på serveren."
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1046,
+                                lineNumber: 1044,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1042,
+                        lineNumber: 1040,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2511,7 +2506,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "Ny afdeling"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1055,
+                                        lineNumber: 1053,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2521,13 +2516,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1058,
+                                        lineNumber: 1056,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1054,
+                                lineNumber: 1052,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2540,20 +2535,20 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "h-4 w-4 animate-spin"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1071,
+                                        lineNumber: 1069,
                                         columnNumber: 25
                                     }, this) : null,
                                     "Opret"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1065,
+                                lineNumber: 1063,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1053,
+                        lineNumber: 1051,
                         columnNumber: 9
                     }, this),
                     deptList.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2561,7 +2556,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         children: "Ingen afdelinger endnu — opret mindst én for at tilknytte medarbejdere."
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1077,
+                        lineNumber: 1075,
                         columnNumber: 11
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
                         className: "flex flex-wrap gap-2",
@@ -2573,7 +2568,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: dep.name
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1087,
+                                        lineNumber: 1085,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2586,23 +2581,23 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                             className: "h-4 w-4"
                                         }, void 0, false, {
                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                            lineNumber: 1095,
+                                            lineNumber: 1093,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1088,
+                                        lineNumber: 1086,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, dep.id, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1083,
+                                lineNumber: 1081,
                                 columnNumber: 15
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1081,
+                        lineNumber: 1079,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2615,7 +2610,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: tr("settings.members_import.title", "Importér medarbejdere")
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1104,
+                                        lineNumber: 1102,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2623,13 +2618,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: tr("settings.members_import.intro", "Brug formatet nedenfor. Nye medarbejdere oprettes og får aktiveringslink; eksisterende brugere tilknyttes arbejdspladsen.")
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1107,
+                                        lineNumber: 1105,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1103,
+                                lineNumber: 1101,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2640,7 +2635,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: tr("settings.members_import.format_title", "Prædefineret format (semicolon-separeret)")
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1115,
+                                        lineNumber: 1113,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("code", {
@@ -2648,7 +2643,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: tr("settings.members_import.header_example", "first_name;last_name;email;mobile_phone;street_name;street_number;postal_code;city;country;employee_type;note")
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1118,
+                                        lineNumber: 1116,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("code", {
@@ -2656,13 +2651,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: tr("settings.members_import.row_example", "Anna;Jensen;anna@firma.dk;+4522334455;Nørregade;12;8000;Aarhus;DK;Kok;Kan kun arbejde eftermiddag")
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1124,
+                                        lineNumber: 1122,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1114,
+                                lineNumber: 1112,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -2673,7 +2668,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 className: "w-full resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2 text-xs font-mono dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1131,
+                                lineNumber: 1129,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2689,14 +2684,14 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 className: "h-4 w-4 animate-spin"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1148,
+                                                lineNumber: 1146,
                                                 columnNumber: 29
                                             }, this) : null,
                                             tr("settings.members_import.cta", "Start import")
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1142,
+                                        lineNumber: 1140,
                                         columnNumber: 13
                                     }, this),
                                     importSummary ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2726,13 +2721,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1152,
+                                        lineNumber: 1150,
                                         columnNumber: 15
                                     }, this) : null
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1141,
+                                lineNumber: 1139,
                                 columnNumber: 11
                             }, this),
                             importResults.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2749,7 +2744,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                         children: tr("settings.members_import.col_line", "Linje")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1168,
+                                                        lineNumber: 1166,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2757,7 +2752,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                         children: tr("settings.members_import.col_email", "E-mail")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1171,
+                                                        lineNumber: 1169,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2765,7 +2760,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                         children: tr("settings.members_import.col_status", "Status")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1174,
+                                                        lineNumber: 1172,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2773,7 +2768,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                         children: tr("settings.members_import.col_message", "Besked")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1177,
+                                                        lineNumber: 1175,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2781,18 +2776,18 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                         children: tr("settings.members_import.col_link", "Aktiveringslink")
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1180,
+                                                        lineNumber: 1178,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1167,
+                                                lineNumber: 1165,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                            lineNumber: 1166,
+                                            lineNumber: 1164,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -2804,7 +2799,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                             children: row.line
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                            lineNumber: 1188,
+                                                            lineNumber: 1186,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2812,7 +2807,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                             children: row.email || "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                            lineNumber: 1189,
+                                                            lineNumber: 1187,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2820,7 +2815,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                             children: tr(`settings.members_import.status.${row.status}`, row.status)
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                            lineNumber: 1190,
+                                                            lineNumber: 1188,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2828,7 +2823,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                             children: row.message
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                            lineNumber: 1196,
+                                                            lineNumber: 1194,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2841,46 +2836,46 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 children: tr("settings.members_import.link_open", "Åbn link")
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1199,
+                                                                lineNumber: 1197,
                                                                 columnNumber: 27
                                                             }, this) : "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                            lineNumber: 1197,
+                                                            lineNumber: 1195,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, `${row.line}-${row.email}`, true, {
                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                    lineNumber: 1187,
+                                                    lineNumber: 1185,
                                                     columnNumber: 21
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                            lineNumber: 1185,
+                                            lineNumber: 1183,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                    lineNumber: 1165,
+                                    lineNumber: 1163,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1164,
+                                lineNumber: 1162,
                                 columnNumber: 13
                             }, this) : null
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1102,
+                        lineNumber: 1100,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                lineNumber: 1041,
+                lineNumber: 1039,
                 columnNumber: 7
             }, this) : null,
             !dashboardTabsEnabled || activeSettingsTab === "types" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -2896,7 +2891,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "Vagt- og medarbejdertyper"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1225,
+                                        lineNumber: 1223,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2907,7 +2902,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Standardkataloget"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1229,
+                                                lineNumber: 1227,
                                                 columnNumber: 15
                                             }, this),
                                             " ",
@@ -2918,7 +2913,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Fra standard"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1234,
+                                                lineNumber: 1232,
                                                 columnNumber: 15
                                             }, this),
                                             ". Typer du tilføjer her selv er",
@@ -2928,20 +2923,20 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Egen"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1238,
+                                                lineNumber: 1236,
                                                 columnNumber: 15
                                             }, this),
                                             "."
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1228,
+                                        lineNumber: 1226,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1224,
+                                lineNumber: 1222,
                                 columnNumber: 11
                             }, this),
                             showStandardCatalogEditLink ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -2950,13 +2945,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: "Redigér standardkatalog"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1245,
+                                lineNumber: 1243,
                                 columnNumber: 13
                             }, this) : null
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1223,
+                        lineNumber: 1221,
                         columnNumber: 9
                     }, this),
                     catalogError ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2967,7 +2962,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1255,
+                        lineNumber: 1253,
                         columnNumber: 11
                     }, this) : null,
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2978,7 +2973,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: "Vagttyper"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1261,
+                                lineNumber: 1259,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2992,7 +2987,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Standardkatalog (Super Admin)"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1266,
+                                                lineNumber: 1264,
                                                 columnNumber: 15
                                             }, this),
                                             standardShiftTemplates.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3000,7 +2995,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Ingen vagttyper i standardkataloget."
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1270,
+                                                lineNumber: 1268,
                                                 columnNumber: 17
                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700",
@@ -3016,7 +3011,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                         children: "Navn"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                        lineNumber: 1278,
+                                                                        lineNumber: 1276,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3024,18 +3019,18 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                         children: "Slug"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                        lineNumber: 1279,
+                                                                        lineNumber: 1277,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1277,
+                                                                lineNumber: 1275,
                                                                 columnNumber: 23
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                            lineNumber: 1276,
+                                                            lineNumber: 1274,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -3047,7 +3042,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                             children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$type$2d$label$2d$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["localizeStandardShiftTypeLabel"])(r.name, tr, r.slug)
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                            lineNumber: 1285,
+                                                                            lineNumber: 1283,
                                                                             columnNumber: 27
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3055,35 +3050,35 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                             children: r.slug
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                            lineNumber: 1288,
+                                                                            lineNumber: 1286,
                                                                             columnNumber: 27
                                                                         }, this)
                                                                     ]
                                                                 }, r.id, true, {
                                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                    lineNumber: 1284,
+                                                                    lineNumber: 1282,
                                                                     columnNumber: 25
                                                                 }, this))
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                            lineNumber: 1282,
+                                                            lineNumber: 1280,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                    lineNumber: 1275,
+                                                    lineNumber: 1273,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1274,
+                                                lineNumber: 1272,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1265,
+                                        lineNumber: 1263,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3094,7 +3089,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "På denne arbejdsplads"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1299,
+                                                lineNumber: 1297,
                                                 columnNumber: 15
                                             }, this),
                                             shiftList.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3102,7 +3097,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Ingen vagttyper endnu — tilføj egne nedenfor eller kopier fra standard ved ny arbejdsplads."
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1303,
+                                                lineNumber: 1301,
                                                 columnNumber: 17
                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
                                                 className: "space-y-2",
@@ -3116,7 +3111,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$type$2d$label$2d$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["localizeStandardShiftTypeLabel"])(t.label, tr)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1319,
+                                                                lineNumber: 1317,
                                                                 columnNumber: 25
                                                             }, this),
                                                             t.template_id ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3124,14 +3119,14 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 children: "Fra standard"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1323,
+                                                                lineNumber: 1321,
                                                                 columnNumber: 27
                                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 className: "inline-flex rounded-md bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-900 dark:bg-violet-950/50 dark:text-violet-100",
                                                                 children: "Egen"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1327,
+                                                                lineNumber: 1325,
                                                                 columnNumber: 27
                                                             }, this),
                                                             stdName ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3143,19 +3138,19 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1332,
+                                                                lineNumber: 1330,
                                                                 columnNumber: 27
                                                             }, this) : null
                                                         ]
                                                     }, t.id, true, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1315,
+                                                        lineNumber: 1313,
                                                         columnNumber: 23
                                                     }, this);
                                                 })
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1308,
+                                                lineNumber: 1306,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3169,7 +3164,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 children: "Tilføj egen vagttype"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1343,
+                                                                lineNumber: 1341,
                                                                 columnNumber: 19
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3179,13 +3174,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1346,
+                                                                lineNumber: 1344,
                                                                 columnNumber: 19
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1342,
+                                                        lineNumber: 1340,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3198,38 +3193,38 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 className: "h-4 w-4 animate-spin"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1360,
+                                                                lineNumber: 1358,
                                                                 columnNumber: 21
                                                             }, this) : null,
                                                             "Tilføj"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1353,
+                                                        lineNumber: 1351,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1341,
+                                                lineNumber: 1339,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1298,
+                                        lineNumber: 1296,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1264,
+                                lineNumber: 1262,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1260,
+                        lineNumber: 1258,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3240,7 +3235,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: "Medarbejdertyper"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1370,
+                                lineNumber: 1368,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3254,7 +3249,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Standardkatalog (Super Admin)"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1375,
+                                                lineNumber: 1373,
                                                 columnNumber: 15
                                             }, this),
                                             standardEmployeeTemplates.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3262,7 +3257,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Ingen medarbejdertyper i standardkataloget."
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1379,
+                                                lineNumber: 1377,
                                                 columnNumber: 17
                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700",
@@ -3278,7 +3273,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                         children: "Navn"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                        lineNumber: 1387,
+                                                                        lineNumber: 1385,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -3286,18 +3281,18 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                         children: "Slug"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                        lineNumber: 1388,
+                                                                        lineNumber: 1386,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1386,
+                                                                lineNumber: 1384,
                                                                 columnNumber: 23
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                            lineNumber: 1385,
+                                                            lineNumber: 1383,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -3309,7 +3304,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                             children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$type$2d$label$2d$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["localizeStandardEmployeeTypeLabel"])(r.name, tr, r.slug)
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                            lineNumber: 1394,
+                                                                            lineNumber: 1392,
                                                                             columnNumber: 27
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -3317,35 +3312,35 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                             children: r.slug
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                            lineNumber: 1397,
+                                                                            lineNumber: 1395,
                                                                             columnNumber: 27
                                                                         }, this)
                                                                     ]
                                                                 }, r.id, true, {
                                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                    lineNumber: 1393,
+                                                                    lineNumber: 1391,
                                                                     columnNumber: 25
                                                                 }, this))
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                            lineNumber: 1391,
+                                                            lineNumber: 1389,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                    lineNumber: 1384,
+                                                    lineNumber: 1382,
                                                     columnNumber: 19
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1383,
+                                                lineNumber: 1381,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1374,
+                                        lineNumber: 1372,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3356,7 +3351,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "På denne arbejdsplads"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1408,
+                                                lineNumber: 1406,
                                                 columnNumber: 15
                                             }, this),
                                             empList.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3364,7 +3359,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Ingen medarbejdertyper endnu — tilføj egne nedenfor eller kopier fra standard ved ny arbejdsplads."
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1412,
+                                                lineNumber: 1410,
                                                 columnNumber: 17
                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
                                                 className: "space-y-2",
@@ -3378,7 +3373,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$type$2d$label$2d$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["localizeStandardEmployeeTypeLabel"])(t.label, tr)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1428,
+                                                                lineNumber: 1426,
                                                                 columnNumber: 25
                                                             }, this),
                                                             t.template_id ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3386,14 +3381,14 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 children: "Fra standard"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1432,
+                                                                lineNumber: 1430,
                                                                 columnNumber: 27
                                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 className: "inline-flex rounded-md bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-900 dark:bg-violet-950/50 dark:text-violet-100",
                                                                 children: "Egen"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1436,
+                                                                lineNumber: 1434,
                                                                 columnNumber: 27
                                                             }, this),
                                                             stdName ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3405,19 +3400,19 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1441,
+                                                                lineNumber: 1439,
                                                                 columnNumber: 27
                                                             }, this) : null
                                                         ]
                                                     }, t.id, true, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1424,
+                                                        lineNumber: 1422,
                                                         columnNumber: 23
                                                     }, this);
                                                 })
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1417,
+                                                lineNumber: 1415,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3431,7 +3426,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 children: "Tilføj egen medarbejdertype"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1452,
+                                                                lineNumber: 1450,
                                                                 columnNumber: 19
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3441,13 +3436,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1455,
+                                                                lineNumber: 1453,
                                                                 columnNumber: 19
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1451,
+                                                        lineNumber: 1449,
                                                         columnNumber: 17
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3460,44 +3455,44 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 className: "h-4 w-4 animate-spin"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1469,
+                                                                lineNumber: 1467,
                                                                 columnNumber: 21
                                                             }, this) : null,
                                                             "Tilføj"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1462,
+                                                        lineNumber: 1460,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1450,
+                                                lineNumber: 1448,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1407,
+                                        lineNumber: 1405,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1373,
+                                lineNumber: 1371,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1369,
+                        lineNumber: 1367,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                lineNumber: 1222,
+                lineNumber: 1220,
                 columnNumber: 7
             }, this) : null,
             !dashboardTabsEnabled ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -3510,7 +3505,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: "Notifikationer (Push / SMS)"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1483,
+                                lineNumber: 1481,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3518,13 +3513,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: "Styr kun hvem der kan modtage push eller SMS — ikke kalender eller vagtplan. Ingen filtrering på en akse betyder alle typer på den akse; du kan også begrænse til udvalgte typer."
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1486,
+                                lineNumber: 1484,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1482,
+                        lineNumber: 1480,
                         columnNumber: 9
                     }, this),
                     canCopyMissingStandardTypes ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3535,7 +3530,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: "Der mangler typer på arbejdspladsen. Kopier fra standardkataloget for at kunne vælge målgruppe her."
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1495,
+                                lineNumber: 1493,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3548,20 +3543,20 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "h-4 w-4 animate-spin"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1506,
+                                        lineNumber: 1504,
                                         columnNumber: 17
                                     }, this) : null,
                                     "Kopier standardtyper"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1499,
+                                lineNumber: 1497,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1494,
+                        lineNumber: 1492,
                         columnNumber: 11
                     }, this) : null,
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3572,7 +3567,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: "Vagttyper (Push / SMS)"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1514,
+                                lineNumber: 1512,
                                 columnNumber: 11
                             }, this),
                             shiftList.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3580,7 +3575,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: 'Ingen vagttyper på arbejdspladsen endnu — tilføj egne under "Vagt- og medarbejdertyper" ovenfor eller brug "Kopier standardtyper".'
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1518,
+                                lineNumber: 1516,
                                 columnNumber: 13
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                                 children: [
@@ -3603,20 +3598,20 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                         className: "border-zinc-300"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1531,
+                                                        lineNumber: 1529,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         children: "Alle vagttyper"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1540,
+                                                        lineNumber: 1538,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1530,
+                                                lineNumber: 1528,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -3635,26 +3630,26 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                         className: "border-zinc-300"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1543,
+                                                        lineNumber: 1541,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         children: "Kun udvalgte vagttyper"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1555,
+                                                        lineNumber: 1553,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1542,
+                                                lineNumber: 1540,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1525,
+                                        lineNumber: 1523,
                                         columnNumber: 15
                                     }, this),
                                     shiftModeAll ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3668,7 +3663,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1560,
+                                        lineNumber: 1558,
                                         columnNumber: 17
                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "space-y-2",
@@ -3686,7 +3681,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                         children: "Alle typer (ingen filter)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1567,
+                                                        lineNumber: 1565,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3701,13 +3696,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                         children: "Markér alle"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1579,
+                                                        lineNumber: 1577,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1566,
+                                                lineNumber: 1564,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -3723,30 +3718,30 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                     className: "rounded border-zinc-300"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                    lineNumber: 1596,
+                                                                    lineNumber: 1594,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$type$2d$label$2d$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["localizeStandardShiftTypeLabel"])(t.label, tr)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                            lineNumber: 1595,
+                                                            lineNumber: 1593,
                                                             columnNumber: 25
                                                         }, this)
                                                     }, t.id, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1594,
+                                                        lineNumber: 1592,
                                                         columnNumber: 23
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1592,
+                                                lineNumber: 1590,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1565,
+                                        lineNumber: 1563,
                                         columnNumber: 17
                                     }, this)
                                 ]
@@ -3754,7 +3749,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1513,
+                        lineNumber: 1511,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3765,7 +3760,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: "Medarbejdertyper (Push / SMS)"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1614,
+                                lineNumber: 1612,
                                 columnNumber: 11
                             }, this),
                             empList.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3773,7 +3768,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: 'Ingen medarbejdertyper på arbejdspladsen endnu — tilføj egne under "Vagt- og medarbejdertyper" eller brug "Kopier standardtyper".'
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1618,
+                                lineNumber: 1616,
                                 columnNumber: 13
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                                 children: [
@@ -3796,20 +3791,20 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                         className: "border-zinc-300"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1631,
+                                                        lineNumber: 1629,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         children: "Alle medarbejdertyper"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1640,
+                                                        lineNumber: 1638,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1630,
+                                                lineNumber: 1628,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -3828,26 +3823,26 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                         className: "border-zinc-300"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1643,
+                                                        lineNumber: 1641,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         children: "Kun udvalgte medarbejdertyper"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1655,
+                                                        lineNumber: 1653,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1642,
+                                                lineNumber: 1640,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1625,
+                                        lineNumber: 1623,
                                         columnNumber: 15
                                     }, this),
                                     empModeAll ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3861,7 +3856,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1660,
+                                        lineNumber: 1658,
                                         columnNumber: 17
                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "space-y-2",
@@ -3879,7 +3874,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                         children: "Alle typer (ingen filter)"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1667,
+                                                        lineNumber: 1665,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3894,13 +3889,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                         children: "Markér alle"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1679,
+                                                        lineNumber: 1677,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1666,
+                                                lineNumber: 1664,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -3916,30 +3911,30 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                     className: "rounded border-zinc-300"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                    lineNumber: 1696,
+                                                                    lineNumber: 1694,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$type$2d$label$2d$i18n$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["localizeStandardEmployeeTypeLabel"])(t.label, tr)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                            lineNumber: 1695,
+                                                            lineNumber: 1693,
                                                             columnNumber: 25
                                                         }, this)
                                                     }, t.id, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1694,
+                                                        lineNumber: 1692,
                                                         columnNumber: 23
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1692,
+                                                lineNumber: 1690,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1665,
+                                        lineNumber: 1663,
                                         columnNumber: 17
                                     }, this)
                                 ]
@@ -3947,13 +3942,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1613,
+                        lineNumber: 1611,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                lineNumber: 1481,
+                lineNumber: 1479,
                 columnNumber: 7
             }, this) : null,
             !dashboardTabsEnabled || activeSettingsTab === "company" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -3964,7 +3959,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         children: "Farver og layout"
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1717,
+                        lineNumber: 1715,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3972,27 +3967,27 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         children: "Vælg farvetema for dashboard-menuen."
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1720,
+                        lineNumber: 1718,
                         columnNumber: 9
                     }, this),
                     initialLayoutTheme ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$layout$2d$theme$2d$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["LayoutThemeSidebar"], {
                         initialTheme: initialLayoutTheme
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1724,
+                        lineNumber: 1722,
                         columnNumber: 11
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                         className: "text-sm text-zinc-500 dark:text-zinc-400",
                         children: "Tema er midlertidigt utilgængeligt."
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1726,
+                        lineNumber: 1724,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                lineNumber: 1716,
+                lineNumber: 1714,
                 columnNumber: 7
             }, this) : null,
             dashboardTabsEnabled && activeSettingsTab === "rules" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -4003,7 +3998,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         children: tr("rules.page.title")
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1735,
+                        lineNumber: 1733,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4016,13 +4011,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: complianceSource === "workplace_override" ? "Lokal override" : complianceSource === "global_default" ? "Global standard (Super Admin)" : "Lokal config-standard"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1740,
+                                lineNumber: 1738,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1738,
+                        lineNumber: 1736,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4039,7 +4034,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Rule ID"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1752,
+                                                lineNumber: 1750,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -4047,7 +4042,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Type"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1753,
+                                                lineNumber: 1751,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -4055,7 +4050,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Severity"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1754,
+                                                lineNumber: 1752,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -4063,7 +4058,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Konfiguration"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1755,
+                                                lineNumber: 1753,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -4071,7 +4066,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Central vaerdi"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1756,
+                                                lineNumber: 1754,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -4079,18 +4074,18 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Handling"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 1757,
+                                                lineNumber: 1755,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1751,
+                                        lineNumber: 1749,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                    lineNumber: 1750,
+                                    lineNumber: 1748,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -4102,7 +4097,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                     children: rule.rule_id
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                    lineNumber: 1763,
+                                                    lineNumber: 1761,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -4110,7 +4105,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                     children: rule.type
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                    lineNumber: 1764,
+                                                    lineNumber: 1762,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -4125,7 +4120,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 children: "ERROR"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1776,
+                                                                lineNumber: 1774,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -4133,18 +4128,18 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 children: "WARNING"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1777,
+                                                                lineNumber: 1775,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1766,
+                                                        lineNumber: 1764,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                    lineNumber: 1765,
+                                                    lineNumber: 1763,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -4152,7 +4147,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                     children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$compliance$2f$rules$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["describeComplianceRule"])(rule)
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                    lineNumber: 1780,
+                                                    lineNumber: 1778,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -4165,7 +4160,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 children: complianceCentralValue(rule).label
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1783,
+                                                                lineNumber: 1781,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4177,18 +4172,18 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                 className: "w-full rounded border border-zinc-300 bg-white px-2 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-950"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                lineNumber: 1786,
+                                                                lineNumber: 1784,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1782,
+                                                        lineNumber: 1780,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                    lineNumber: 1781,
+                                                    lineNumber: 1779,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -4200,34 +4195,34 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                         children: "Slet"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                        lineNumber: 1799,
+                                                        lineNumber: 1797,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                    lineNumber: 1798,
+                                                    lineNumber: 1796,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, rule.rule_id, true, {
                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                            lineNumber: 1762,
+                                            lineNumber: 1760,
                                             columnNumber: 17
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                    lineNumber: 1760,
+                                    lineNumber: 1758,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                            lineNumber: 1749,
+                            lineNumber: 1747,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1748,
+                        lineNumber: 1746,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4237,7 +4232,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         children: "Advanced settings"
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1812,
+                        lineNumber: 1810,
                         columnNumber: 9
                     }, this),
                     showComplianceAdvanced ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -4248,7 +4243,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: "Regler (JSON)"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1821,
+                                lineNumber: 1819,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -4258,13 +4253,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 font-mono text-xs dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1822,
+                                lineNumber: 1820,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1820,
+                        lineNumber: 1818,
                         columnNumber: 11
                     }, this) : null,
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4277,7 +4272,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: tr("settings.eu_rules.add_rule", "Tilføj regel")
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1831,
+                                lineNumber: 1829,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4288,7 +4283,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: complianceBusy === "save" ? "Gemmer..." : "Gem lokale regler"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1838,
+                                lineNumber: 1836,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4296,18 +4291,168 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 onClick: ()=>void handleResetComplianceRules(),
                                 disabled: complianceBusy !== null,
                                 className: "rounded-lg border border-zinc-300 px-3 py-1.5 text-xs font-semibold hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:hover:bg-zinc-800",
-                                children: complianceBusy === "reset" ? "Nulstiller..." : "Nulstil til standard"
+                                children: complianceBusy === "reset" ? "Nulstiller..." : tr("settings.eu_rules.reset_default", "Reset to EU compliance rules")
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1846,
+                                lineNumber: 1844,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1830,
+                        lineNumber: 1828,
                         columnNumber: 9
                     }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "pt-2",
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                            type: "button",
+                            onClick: ()=>setShowAiComplianceStatement((prev)=>!prev),
+                            className: "text-xs font-medium text-zinc-600 underline underline-offset-2 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100",
+                            children: "AI compliance statement"
+                        }, void 0, false, {
+                            fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                            lineNumber: 1859,
+                            columnNumber: 11
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                        lineNumber: 1858,
+                        columnNumber: 9
+                    }, this),
+                    showAiComplianceStatement ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "space-y-4 rounded-lg border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-700 dark:bg-zinc-950/40",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                className: "text-sm font-semibold uppercase tracking-wide text-zinc-500",
+                                children: tr("compliance.page.title")
+                            }, void 0, false, {
+                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                lineNumber: 1869,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                className: "text-sm leading-relaxed text-zinc-600 dark:text-zinc-400",
+                                children: tr("compliance.page.intro")
+                            }, void 0, false, {
+                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                lineNumber: 1872,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                                className: "mt-2",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                                        className: "text-sm font-semibold text-zinc-800 dark:text-zinc-200",
+                                        children: tr("compliance.section.system_title")
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                        lineNumber: 1876,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400",
+                                        children: tr("compliance.section.system_body")
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                        lineNumber: 1879,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                lineNumber: 1875,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                                className: "mt-2",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                                        className: "text-sm font-semibold text-zinc-800 dark:text-zinc-200",
+                                        children: tr("compliance.section.ai_title")
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                        lineNumber: 1884,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400",
+                                        children: tr("compliance.section.ai_body")
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                        lineNumber: 1887,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                lineNumber: 1883,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                                className: "mt-2",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                                        className: "text-sm font-semibold text-zinc-800 dark:text-zinc-200",
+                                        children: tr("compliance.section.gdpr_title")
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                        lineNumber: 1892,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400",
+                                        children: tr("compliance.section.gdpr_body")
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                        lineNumber: 1895,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                lineNumber: 1891,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                                className: "mt-2",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                                        className: "text-sm font-semibold text-zinc-800 dark:text-zinc-200",
+                                        children: tr("compliance.section.tenant_title")
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                        lineNumber: 1900,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400",
+                                        children: tr("compliance.section.tenant_body").replace("{workplace}", d.company_name?.trim() || d.name)
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                        lineNumber: 1903,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                lineNumber: 1899,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                className: "rounded-lg border border-zinc-200 bg-zinc-100/80 px-3 py-2.5 text-xs leading-relaxed text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400",
+                                children: tr("compliance.footer.rolling")
+                            }, void 0, false, {
+                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                                lineNumber: 1910,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
+                        lineNumber: 1868,
+                        columnNumber: 11
+                    }, this) : null,
                     showAddComplianceRuleModal ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "fixed inset-0 z-[140] flex items-center justify-center bg-black/60 p-4",
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4318,7 +4463,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                     children: tr("settings.eu_rules.add_local_rule_title", "Tilføj lokal regel")
                                 }, void 0, false, {
                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                    lineNumber: 1858,
+                                    lineNumber: 1918,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4326,7 +4471,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                     children: tr("settings.eu_rules.add_local_rule_intro", "Vi anbefaler, at du bruger AI til at skrive din regel. Klik på \"Copy guide\", indsæt guiden i din AI, og få en korrekt JSON-regel. Kopiér derefter JSON-koden ind i feltet nedenfor og klik på \"Indsæt regel\".")
                                 }, void 0, false, {
                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                    lineNumber: 1861,
+                                    lineNumber: 1921,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4340,7 +4485,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                     children: tr("settings.eu_rules.ai_json_guide_title", "AI Json guide")
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                    lineNumber: 1869,
+                                                    lineNumber: 1929,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4353,7 +4498,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                             children: showAiJsonGuide ? tr("settings.eu_rules.hide_guide", "Hide guide") : tr("settings.eu_rules.show_guide", "Show guide")
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                            lineNumber: 1873,
+                                                            lineNumber: 1933,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4366,26 +4511,26 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                                     className: "h-3.5 w-3.5"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                                    lineNumber: 1888,
+                                                                    lineNumber: 1948,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 tr("settings.eu_rules.copy_guide", "Copy guide")
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                            lineNumber: 1882,
+                                                            lineNumber: 1942,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                    lineNumber: 1872,
+                                                    lineNumber: 1932,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                            lineNumber: 1868,
+                                            lineNumber: 1928,
                                             columnNumber: 17
                                         }, this),
                                         showAiJsonGuide ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("pre", {
@@ -4393,13 +4538,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                             children: AI_JSON_GUIDE_TEXT
                                         }, void 0, false, {
                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                            lineNumber: 1894,
+                                            lineNumber: 1954,
                                             columnNumber: 19
                                         }, this) : null
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                    lineNumber: 1867,
+                                    lineNumber: 1927,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -4410,7 +4555,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                             children: tr("settings.eu_rules.rule_json_code_label", "Json kode")
                                         }, void 0, false, {
                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                            lineNumber: 1900,
+                                            lineNumber: 1960,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -4421,13 +4566,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                             className: "w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 font-mono text-xs dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
                                         }, void 0, false, {
                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                            lineNumber: 1903,
+                                            lineNumber: 1963,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                    lineNumber: 1899,
+                                    lineNumber: 1959,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4440,7 +4585,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                             children: "Luk"
                                         }, void 0, false, {
                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                            lineNumber: 1915,
+                                            lineNumber: 1975,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4450,163 +4595,30 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                             children: "Indsæt regel"
                                         }, void 0, false, {
                                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                            lineNumber: 1922,
+                                            lineNumber: 1982,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                    lineNumber: 1914,
+                                    lineNumber: 1974,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                            lineNumber: 1857,
+                            lineNumber: 1917,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1856,
+                        lineNumber: 1916,
                         columnNumber: 11
                     }, this) : null
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                lineNumber: 1734,
-                columnNumber: 7
-            }, this) : null,
-            dashboardTabsEnabled && activeSettingsTab === "compliance" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
-                className: "space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900",
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                        className: "text-sm font-semibold uppercase tracking-wide text-zinc-500",
-                        children: tr("compliance.page.title")
-                    }, void 0, false, {
-                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1938,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                        className: "text-sm leading-relaxed text-zinc-600 dark:text-zinc-400",
-                        children: tr("compliance.page.intro")
-                    }, void 0, false, {
-                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1941,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
-                        className: "mt-2",
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                className: "text-sm font-semibold text-zinc-800 dark:text-zinc-200",
-                                children: tr("compliance.section.system_title")
-                            }, void 0, false, {
-                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1945,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                className: "mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400",
-                                children: tr("compliance.section.system_body")
-                            }, void 0, false, {
-                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1948,
-                                columnNumber: 11
-                            }, this)
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1944,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
-                        className: "mt-2",
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                className: "text-sm font-semibold text-zinc-800 dark:text-zinc-200",
-                                children: tr("compliance.section.ai_title")
-                            }, void 0, false, {
-                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1953,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                className: "mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400",
-                                children: tr("compliance.section.ai_body")
-                            }, void 0, false, {
-                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1956,
-                                columnNumber: 11
-                            }, this)
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1952,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
-                        className: "mt-2",
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                className: "text-sm font-semibold text-zinc-800 dark:text-zinc-200",
-                                children: tr("compliance.section.gdpr_title")
-                            }, void 0, false, {
-                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1961,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                className: "mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400",
-                                children: tr("compliance.section.gdpr_body")
-                            }, void 0, false, {
-                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1964,
-                                columnNumber: 11
-                            }, this)
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1960,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
-                        className: "mt-2",
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                className: "text-sm font-semibold text-zinc-800 dark:text-zinc-200",
-                                children: tr("compliance.section.tenant_title")
-                            }, void 0, false, {
-                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1969,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                className: "mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400",
-                                children: tr("compliance.section.tenant_body").replace("{workplace}", d.company_name?.trim() || d.name)
-                            }, void 0, false, {
-                                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1972,
-                                columnNumber: 11
-                            }, this)
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1968,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                        className: "rounded-lg border border-zinc-200 bg-zinc-100/80 px-3 py-2.5 text-xs leading-relaxed text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400",
-                        children: tr("compliance.footer.rolling")
-                    }, void 0, false, {
-                        fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1979,
-                        columnNumber: 9
-                    }, this)
-                ]
-            }, void 0, true, {
-                fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                lineNumber: 1937,
+                lineNumber: 1732,
                 columnNumber: 7
             }, this) : null,
             !dashboardTabsEnabled || activeSettingsTab === "api" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -4617,7 +4629,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         children: "API-nøgler"
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1987,
+                        lineNumber: 1998,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4631,7 +4643,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         children: "Label"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1992,
+                                        lineNumber: 2003,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4640,13 +4652,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 1995,
+                                        lineNumber: 2006,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 1991,
+                                lineNumber: 2002,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4659,20 +4671,20 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                         className: "h-4 w-4"
                                     }, void 0, false, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 2007,
+                                        lineNumber: 2018,
                                         columnNumber: 13
                                     }, this),
                                     "Generér nøgle"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 2001,
+                                lineNumber: 2012,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 1990,
+                        lineNumber: 2001,
                         columnNumber: 9
                     }, this),
                     secretOnce && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4684,7 +4696,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: "Kopiér nu — vises kun én gang:"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 2016,
+                                lineNumber: 2027,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("code", {
@@ -4692,13 +4704,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 children: secretOnce
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 2017,
+                                lineNumber: 2028,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 2012,
+                        lineNumber: 2023,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -4713,7 +4725,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: k.label
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 2029,
+                                                lineNumber: 2040,
                                                 columnNumber: 17
                                             }, this),
                                             " ",
@@ -4725,7 +4737,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 2030,
+                                                lineNumber: 2041,
                                                 columnNumber: 17
                                             }, this),
                                             k.revoked_at ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4733,13 +4745,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 children: "Tilbagekaldt"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 2032,
+                                                lineNumber: 2043,
                                                 columnNumber: 19
                                             }, this) : null
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 2028,
+                                        lineNumber: 2039,
                                         columnNumber: 15
                                     }, this),
                                     !k.revoked_at ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4752,31 +4764,31 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                                 className: "h-4 w-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                                lineNumber: 2042,
+                                                lineNumber: 2053,
                                                 columnNumber: 19
                                             }, this),
                                             "Tilbagekald"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                        lineNumber: 2036,
+                                        lineNumber: 2047,
                                         columnNumber: 17
                                     }, this) : null
                                 ]
                             }, k.id, true, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 2024,
+                                lineNumber: 2035,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 2022,
+                        lineNumber: 2033,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                lineNumber: 1986,
+                lineNumber: 1997,
                 columnNumber: 7
             }, this) : null,
             !dashboardTabsEnabled || activeSettingsTab === "billing" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
@@ -4787,7 +4799,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         children: "Billing"
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 2054,
+                        lineNumber: 2065,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4795,13 +4807,13 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                         children: "Her placerer vi fremtidige fakturaer til download."
                     }, void 0, false, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 2057,
+                        lineNumber: 2068,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                lineNumber: 2053,
+                lineNumber: 2064,
                 columnNumber: 7
             }, this) : null,
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4817,14 +4829,14 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 className: "h-4 w-4 animate-spin"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 2070,
+                                lineNumber: 2081,
                                 columnNumber: 21
                             }, this) : null,
                             "Gem ændringer"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 2064,
+                        lineNumber: 2075,
                         columnNumber: 9
                     }, this),
                     dashboardTabsEnabled ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4837,20 +4849,20 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                                 className: "h-4 w-4 animate-spin"
                             }, void 0, false, {
                                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                                lineNumber: 2080,
+                                lineNumber: 2091,
                                 columnNumber: 26
                             }, this) : null,
                             "Nulstil kalender"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                        lineNumber: 2074,
+                        lineNumber: 2085,
                         columnNumber: 11
                     }, this) : null
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                lineNumber: 2063,
+                lineNumber: 2074,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4859,7 +4871,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
                 children: children
             }, void 0, false, {
                 fileName: "[project]/app/super-admin/workplaces/[id]/workplace-detail-client.tsx",
-                lineNumber: 2086,
+                lineNumber: 2097,
                 columnNumber: 7
             }, this)
         ]
@@ -4869,7 +4881,7 @@ function WorkplaceDetailClient({ initial, employeeTypes, shiftTypes, initialKeys
         columnNumber: 5
     }, this);
 }
-_s(WorkplaceDetailClient, "ltP0/VIbY+AYFKA7CCdE8LMHxJg=", false, function() {
+_s(WorkplaceDetailClient, "f2wJNsKIhJK+eG6/zrbDXghnBLs=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$translations$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useTranslations"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]

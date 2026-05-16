@@ -1506,7 +1506,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
       const topViolation = topShiftViolation(violations);
       if (topViolation) {
         euWarnings.add(
-          `EU-regel (${topViolation.severity}) (${dayKeyLocal(new Date(shift.starts_at))}): ${topViolation.message}`
+          `EU-regel (${topViolation.severity}) (${dayKeyLocal(new Date(shift.starts_at))}): ${topViolation.rule_id}`
         );
       }
     }
@@ -3042,9 +3042,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                             {violation.employee_name}
                           </span>
                         </div>
-                        <p className="text-zinc-700 dark:text-zinc-200">
-                          {violation.rule_id}: {violation.message}
-                        </p>
+                        <p className="text-zinc-700 dark:text-zinc-200">{violation.rule_id}</p>
                       </div>
                     ))}
                   </div>
@@ -3648,7 +3646,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                     : undefined;
                                 const topViolation = topShiftViolation(violations);
                                 const violationRule = topViolation
-                                  ? `${topViolation.rule_id}: ${topViolation.message}`
+                                  ? topViolation.rule_id
                                   : undefined;
                                 const styleToken = `${shiftColor}|${showPattern ? requiredPattern : "none"}|${has ? "1" : "0"}|${dayAmbient}`;
                                 return (
@@ -3796,7 +3794,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                           const topViolation = topShiftViolation(violations);
                                           return topViolation
                                             ? [
-                                                `${t("calendar.shift_hover.eu_rule", "EU-regel")} (${topViolation.severity}): ${topViolation.rule_id}: ${topViolation.message}`,
+                                                `${t("calendar.shift_hover.eu_rule", "EU-regel")} (${topViolation.severity}): ${topViolation.rule_id}`,
                                               ]
                                             : [];
                                         })()
@@ -3810,7 +3808,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
                                   : undefined;
                               const topViolation = topShiftViolation(violations);
                               const violationRule = topViolation
-                                ? `${topViolation.rule_id}: ${topViolation.message}`
+                                ? topViolation.rule_id
                                 : undefined;
                               const styleToken = `${shiftColor}|${showPattern ? empPattern : "none"}|${has ? "1" : "0"}|${dayAmbient}`;
                               return (
