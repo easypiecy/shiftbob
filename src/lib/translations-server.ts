@@ -45,7 +45,20 @@ export async function getTranslationsCached(languageCode?: string) {
 }
 
 export function createTranslator(map: Record<string, string>) {
-  return (key: string, fallback?: string) => map[key] ?? fallback ?? key;
+  const preferFallbackInDev =
+    process.env.NODE_ENV !== "production" &&
+    process.env.SHIFTBOB_DEV_TRANSLATIONS_FROM_DB !== "1";
+
+  return (key: string, fallback?: string) => {
+    const fromMap = map[key];
+    if (fromMap != null && fromMap !== "") {
+      return fromMap;
+    }
+    if (preferFallbackInDev && typeof fallback === "string") {
+      return fallback;
+    }
+    return fallback ?? key;
+  };
 }
 
 export { DEFAULT_UI_LANGUAGE };

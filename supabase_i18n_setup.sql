@@ -145,7 +145,7 @@ grant insert, update, delete on table public.ui_translations to authenticated;
 -- ---------------------------------------------------------------------------
 insert into public.languages (language_code, name, primary_language_code) values
   ('en-US', 'English (United States)', null),
-  ('en-IE', 'English (Ireland)', 'en-US'),
+  ('en-IE', 'English (United Kingdom)', 'en-US'),
   ('de', 'German', null),
   ('de-AT', 'German (Austria)', 'de'),
   ('nl', 'Dutch', null),

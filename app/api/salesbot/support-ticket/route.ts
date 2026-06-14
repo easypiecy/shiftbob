@@ -1,5 +1,11 @@
 import { createServerSupabase } from "@/src/utils/supabase/server";
 import { getAdminClient } from "@/src/utils/supabase/admin";
+import {
+  checkIpAbuseGuardAllowed,
+  recordIpAbuseGuardHit,
+  type IpAbuseGuardAction,
+} from "@/src/lib/ip-abuse-guard";
+import { getClientIpFromRequest } from "@/src/lib/request-ip";
 
 type SubmitBody = {
   languageCode?: string;
@@ -7,6 +13,7 @@ type SubmitBody = {
   message?: string;
   name?: string;
   email?: string;
+  abuseGuardAction?: IpAbuseGuardAction;
 };
 
 export const runtime = "nodejs";
@@ -60,6 +67,17 @@ export async function POST(req: Request) {
       return Response.json({ ok: false, error: "Invalid email address." }, { status: 400 });
     }
 
+    const clientIp = getClientIpFromRequest(req);
+    if (payload.abuseGuardAction) {
+      const guard = await checkIpAbuseGuardAllowed(payload.abuseGuardAction, clientIp);
+      if (!guard.ok) {
+        return Response.json(
+          { ok: false, error: guard.error, rateLimited: true },
+          { status: 429 }
+        );
+      }
+    }
+
     const admin = getAdminClient();
     const inserted = await admin
       .from("support_tickets")
@@ -95,6 +113,10 @@ export async function POST(req: Request) {
     });
     if (messageInsert.error) {
       return Response.json({ ok: false, error: messageInsert.error.message }, { status: 500 });
+    }
+
+    if (payload.abuseGuardAction) {
+      await recordIpAbuseGuardHit(payload.abuseGuardAction, clientIp);
     }
 
     return Response.json({ ok: true, ticketId });

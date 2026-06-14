@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { CheckCircle2, FileSpreadsheet, Sheet } from "lucide-react";
 import { createTranslator } from "@/src/lib/translations-server";
+import { formatLocalPriceHint } from "@/src/lib/local-currency-from-language";
+import { EnterpriseCallout } from "./enterprise-callout";
 
 type LocalizedText = {
   key: string;
@@ -13,30 +15,36 @@ type Plan = {
   subtitle: LocalizedText;
   modeLabel: LocalizedText;
   modeTone: "green" | "yellow";
-  price: LocalizedText;
+  modeLabels?: Array<{
+    label: LocalizedText;
+    tone: "green" | "yellow";
+  }>;
+  priceEurAmount: number;
   periodMain: LocalizedText;
   periodPerUser?: LocalizedText;
   description: LocalizedText;
   features: LocalizedText[];
+  specialFeature?: LocalizedText;
   ctas: Array<{
     label: LocalizedText;
     href: string;
     style: "primary" | "secondary" | "contrast";
   }>;
   badge?: LocalizedText;
+  employeeLimitFootnote?: LocalizedText;
 };
 
 const plans: Plan[] = [
   {
     id: "foundation",
-    title: { key: "landing.plans.foundation.title", fallback: "The free Basic" },
+    title: { key: "landing.plans.foundation.title", fallback: "Free Basic" },
     subtitle: {
       key: "landing.plans.foundation.subtitle",
       fallback: "Free Spreadsheet & Checker",
     },
     modeLabel: { key: "landing.plans.mode.spreadsheet", fallback: "Spreadsheet" },
     modeTone: "green",
-    price: { key: "landing.plans.foundation.price", fallback: "0 EUR" },
+    priceEurAmount: 0,
     periodMain: { key: "landing.plans.foundation.period", fallback: "Forever." },
     description: {
       key: "landing.plans.foundation.description",
@@ -84,65 +92,30 @@ const plans: Plan[] = [
     ],
   },
   {
-    id: "pro-planner",
-    title: { key: "landing.plans.pro_planner.title", fallback: "The Pro Planner" },
-    subtitle: {
-      key: "landing.plans.pro_planner.subtitle",
-      fallback: "Secure EU compliance",
-    },
-    modeLabel: { key: "landing.plans.mode.spreadsheet", fallback: "Spreadsheet" },
-    modeTone: "green",
-    price: { key: "landing.plans.pro_planner.price", fallback: "49 EUR" },
-    periodMain: { key: "landing.plans.period.month", fallback: "/ month" },
-    description: {
-      key: "landing.plans.pro_planner.description",
-      fallback: "For managers who iterate. Build your schedule in Excel and verify it infinitely.",
-    },
-    features: [
-      {
-        key: "landing.plans.pro_planner.feature1",
-        fallback: "Everything in the free Basic plan",
-      },
-      {
-        key: "landing.plans.pro_planner.feature2",
-        fallback: "Unlimited EU-compliance checks",
-      },
-      {
-        key: "landing.plans.pro_planner.feature3",
-        fallback: "3 employees get free access to your schedule in the ShiftBob app",
-      },
-      {
-        key: "landing.plans.pro_planner.feature4",
-        fallback: "Secure cloud storage of all past schedules",
-      },
-      {
-        key: "landing.plans.pro_planner.feature5",
-        fallback: "Priority email support",
-      },
-    ],
-    ctas: [
-      {
-        label: {
-          key: "landing.plans.pro_planner.cta.subscribe",
-          fallback: "Subscribe Now",
-        },
-        href: "/employer-signup?product=pro_planner",
-        style: "primary",
-      },
-    ],
-  },
-  {
     id: "hybrid-app",
-    title: { key: "landing.plans.hybrid_app.title", fallback: "The Hybrid App" },
+    title: { key: "landing.plans.hybrid_app.title", fallback: "Hybrid App" },
     subtitle: {
       key: "landing.plans.hybrid_app.subtitle",
       fallback: "Spreadsheet to Smartphone",
     },
-    modeLabel: { key: "landing.plans.mode.spreadsheet", fallback: "Spreadsheet" },
-    modeTone: "green",
-    price: { key: "landing.plans.hybrid_app.price", fallback: "29 EUR" },
+    modeLabel: { key: "landing.plans.mode.online", fallback: "Online" },
+    modeTone: "yellow",
+    modeLabels: [
+      {
+        label: { key: "landing.plans.mode.spreadsheet", fallback: "Spreadsheet" },
+        tone: "green",
+      },
+      {
+        label: { key: "landing.plans.mode.online", fallback: "Online" },
+        tone: "yellow",
+      },
+    ],
+    priceEurAmount: 49,
     periodMain: { key: "landing.plans.period.month", fallback: "/ month" },
-    periodPerUser: { key: "landing.plans.period.per_user", fallback: "1 EUR per user" },
+    employeeLimitFootnote: {
+      key: "landing.plans.employee_limit_footnote",
+      fallback: "*Up to 100 employees",
+    },
     description: {
       key: "landing.plans.hybrid_app.description",
       fallback: "You keep the spreadsheet. Your staff gets the app. Bridge the gap completely.",
@@ -150,7 +123,7 @@ const plans: Plan[] = [
     features: [
       {
         key: "landing.plans.hybrid_app.feature1",
-        fallback: "Everything in The free Basic and The Pro Planner",
+        fallback: "Everything in the free Basic plan",
       },
       {
         key: "landing.plans.hybrid_app.feature2",
@@ -173,6 +146,14 @@ const plans: Plan[] = [
         fallback:
           "Seasonal businesses can pause their subscription freely during off-season periods",
       },
+      {
+        key: "landing.plans.hybrid_app.feature7",
+        fallback: "Unlimited EU-compliance checks",
+      },
+      {
+        key: "landing.plans.hybrid_app.feature8",
+        fallback: "Priority email support",
+      },
     ],
     ctas: [
       {
@@ -188,7 +169,7 @@ const plans: Plan[] = [
   },
   {
     id: "autopilot",
-    title: { key: "landing.plans.autopilot.title", fallback: "The Autopilot" },
+    title: { key: "landing.plans.autopilot.title", fallback: "Autopilot" },
     subtitle: {
       key: "landing.plans.autopilot.subtitle",
       fallback: "Full Online Management",
@@ -198,9 +179,12 @@ const plans: Plan[] = [
       fallback: "Online & automatic",
     },
     modeTone: "yellow",
-    price: { key: "landing.plans.autopilot.price", fallback: "59 EUR" },
+    priceEurAmount: 99,
     periodMain: { key: "landing.plans.period.month", fallback: "/ month" },
-    periodPerUser: { key: "landing.plans.period.per_user", fallback: "1 EUR per user" },
+    employeeLimitFootnote: {
+      key: "landing.plans.employee_limit_footnote",
+      fallback: "*Up to 100 employees",
+    },
     description: {
       key: "landing.plans.autopilot.description",
       fallback: "Ditch the spreadsheet entirely. Let our engine build and manage your schedule.",
@@ -228,14 +212,21 @@ const plans: Plan[] = [
       },
       {
         key: "landing.plans.autopilot.feature6",
-        fallback: "Time-calculation export",
+        fallback: "Time-calculation export (incl. API access)",
       },
       {
         key: "landing.plans.autopilot.feature7",
         fallback: "Create custom shift types",
       },
-      { key: "landing.plans.autopilot.feature8", fallback: "API access" },
+      {
+        key: "landing.plans.autopilot.feature8",
+        fallback: "Customize with local rule setup",
+      },
     ],
+    specialFeature: {
+      key: "landing.plans.autopilot.special_feature_employee_chat",
+      fallback: "Employee chat",
+    },
     ctas: [
       {
         label: {
@@ -260,10 +251,10 @@ function CtaButton({
 }) {
   const styles =
     style === "secondary"
-      ? "border border-zinc-300 bg-white text-zinc-900 hover:border-zinc-500"
+      ? "border border-zinc-200 bg-white text-zinc-900 shadow-sm hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md"
       : style === "contrast"
         ? "bg-[#111827] text-white shadow-[0_8px_20px_rgba(17,24,39,0.22)] hover:-translate-y-0.5 hover:bg-black hover:shadow-[0_14px_28px_rgba(17,24,39,0.34)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#111827]/40 active:translate-y-0"
-        : "bg-[#4A90E2] text-white hover:bg-[#3A7FD1]";
+        : "bg-[#4A90E2] text-white shadow-[0_10px_24px_rgba(74,144,226,0.22)] hover:-translate-y-0.5 hover:bg-[#3A7FD1] hover:shadow-[0_14px_30px_rgba(74,144,226,0.3)]";
 
   return (
     <Link
@@ -275,26 +266,34 @@ function CtaButton({
   );
 }
 
+function formatEurListPrice(eurAmount: number): string {
+  return `${eurAmount} EUR`;
+}
+
 function PlanCard({
   plan,
   t,
+  languageCode,
 }: {
   plan: Plan;
   t: (key: string, fallback?: string) => string;
+  languageCode: string;
 }) {
-  const modeStyles =
-    plan.modeTone === "yellow"
-      ? "bg-amber-100 text-amber-900 border-amber-200"
-      : "bg-emerald-100 text-emerald-900 border-emerald-200";
+  const modeStylesFor = (tone: "green" | "yellow") =>
+    tone === "yellow"
+      ? "bg-amber-50 text-amber-900 border-amber-200/80"
+      : "bg-emerald-50 text-emerald-900 border-emerald-200/80";
+
+  const localPriceHint = formatLocalPriceHint(plan.priceEurAmount, languageCode);
 
   return (
-    <article className="relative flex h-full flex-col rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+    <article className="relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-white bg-white/90 p-6 shadow-[0_18px_48px_rgba(15,23,42,0.07)] ring-1 ring-zinc-950/5 transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.1)]">
       {plan.badge ? (
-        <span className="absolute -top-3 right-4 rounded-full bg-[#4A90E2] px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-white">
+        <span className="absolute right-5 top-5 z-10 rounded-full bg-[#4A90E2] px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-white shadow-[0_10px_24px_rgba(74,144,226,0.28)]">
           {t(plan.badge.key, plan.badge.fallback)}
         </span>
       ) : null}
-      <div className="-mx-6 -mt-6 mb-2 flex min-h-[96px] items-start justify-between gap-3 rounded-t-2xl bg-black px-6 py-5">
+      <div className="-mx-6 -mt-6 mb-3 flex min-h-[96px] items-start justify-between gap-3 bg-[linear-gradient(135deg,#0f172a_0%,#172033_58%,#1e3a5f_100%)] px-6 py-5">
         <div className="min-w-0">
           <h3 className="text-2xl font-bold tracking-tight text-white">
             {t(plan.title.key, plan.title.fallback)}
@@ -305,16 +304,24 @@ function PlanCard({
         </div>
       </div>
       <div className="mb-4">
-        <span
-          className={`inline-flex rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] ${modeStyles}`}
-        >
-          {t(plan.modeLabel.key, plan.modeLabel.fallback)}
-        </span>
+        <div className="flex flex-wrap gap-2">
+          {(plan.modeLabels ?? [{ label: plan.modeLabel, tone: plan.modeTone }]).map((entry) => (
+            <span
+              key={entry.label.key}
+              className={`inline-flex rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] ${modeStylesFor(entry.tone)}`}
+            >
+              {t(entry.label.key, entry.label.fallback)}
+            </span>
+          ))}
+        </div>
       </div>
 
       <div className="flex min-h-[78px] flex-col justify-end">
-        <p className="text-3xl font-black text-zinc-900">
-          {t(plan.price.key, plan.price.fallback)}
+        <p className="text-3xl font-black tracking-tight text-zinc-950">
+          {formatEurListPrice(plan.priceEurAmount)}
+          {localPriceHint ? (
+            <span className="ml-1.5 text-lg font-semibold text-zinc-500">{localPriceHint}</span>
+          ) : null}
         </p>
         <p className="text-sm font-medium text-zinc-600">
           {t(plan.periodMain.key, plan.periodMain.fallback)}
@@ -326,11 +333,11 @@ function PlanCard({
           ) : null}
         </p>
       </div>
-      <p className="mt-4 min-h-[84px] text-sm leading-6 text-zinc-700">
+      <p className="mt-4 min-h-[84px] text-sm leading-6 text-zinc-600">
         {t(plan.description.key, plan.description.fallback)}
       </p>
 
-      <ul className="mt-5 flex-1 space-y-2 text-sm text-zinc-800">
+      <ul className="mt-5 flex-1 space-y-2 text-sm text-zinc-700">
         {plan.features.map((feature) => (
           <li key={feature.key} className="flex gap-2">
             <CheckCircle2
@@ -340,6 +347,19 @@ function PlanCard({
             <span>{t(feature.key, feature.fallback)}</span>
           </li>
         ))}
+        {plan.specialFeature ? (
+          <li className="mt-3 rounded-2xl border border-violet-200 bg-violet-50/80 px-3 py-2 text-violet-900">
+            <span className="mr-2 inline-flex rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em]">
+              {t("landing.plans.special_feature_label", "Special feature")}
+            </span>
+            <span>{t(plan.specialFeature.key, plan.specialFeature.fallback)}</span>
+          </li>
+        ) : null}
+        {plan.employeeLimitFootnote ? (
+          <li className="pt-2 text-xs italic text-zinc-500">
+            {t(plan.employeeLimitFootnote.key, plan.employeeLimitFootnote.fallback)}
+          </li>
+        ) : null}
       </ul>
 
       <div className="mt-6 flex min-h-[96px] flex-col justify-end gap-2">
@@ -358,21 +378,23 @@ function PlanCard({
 
 export function ProductChoices({
   translations,
+  languageCode,
 }: {
   translations: Record<string, string>;
+  languageCode: string;
 }) {
   const t = createTranslator(translations);
 
   return (
-    <section className="border-y border-zinc-200 bg-zinc-50">
+    <section className="border-y border-zinc-200/70 bg-[linear-gradient(180deg,#f8fbff_0%,#f3f7fb_100%)]">
       <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-4xl text-center">
           <div className="flex items-center justify-center gap-3">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#4A90E2]/30 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#1d6f42] shadow-sm">
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/80 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700 shadow-sm">
               <FileSpreadsheet className="h-4 w-4" aria-hidden="true" />
               {t("landing.plans.header.excel", "Excel")}
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#4A90E2]/30 bg-white px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#188038] shadow-sm">
+            <span className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/80 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-sky-700 shadow-sm">
               <Sheet className="h-4 w-4" aria-hidden="true" />
               {t("landing.plans.header.google_sheets", "Google Sheets")}
             </span>
@@ -380,16 +402,25 @@ export function ProductChoices({
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
             {t(
               "landing.plans.header.title",
-              "Your spreadsheet is still the boss—we just give it superpowers"
+              "From your spreadsheet straight to your team's smartphones."
             )}
           </h2>
         </div>
 
-        <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {plans.map((plan) => (
-            <PlanCard key={plan.id} plan={plan} t={t} />
+            <PlanCard key={plan.id} plan={plan} t={t} languageCode={languageCode} />
           ))}
         </div>
+
+        <EnterpriseCallout
+          headline={t("landing.plans.enterprise.title", "Enterprise Solution")}
+          subheadline={t(
+            "landing.plans.enterprise.subtitle",
+            "Managing a team of more than 100 employees? Contact us today for a tailored pricing agreement and custom onboarding."
+          )}
+          buttonLabel={t("landing.plans.enterprise.cta", "Contact Us")}
+        />
       </div>
     </section>
   );

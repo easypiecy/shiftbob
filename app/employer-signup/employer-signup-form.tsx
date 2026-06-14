@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-type ProductId = "basic" | "pro_planner" | "hybrid_app" | "autopilot";
+type ProductId = "basic" | "hybrid_app" | "autopilot";
 
 type EmployerSignupFormProps = {
   initialProduct: ProductId;
@@ -10,7 +10,6 @@ type EmployerSignupFormProps = {
   copy?: {
     labelProduct: string;
     productBasic: string;
-    productProPlanner: string;
     productHybridApp: string;
     productAutopilot: string;
     labelCompanyName: string;
@@ -59,7 +58,6 @@ type MessageState = { kind: "success" | "error"; text: string } | null;
 const DEFAULT_COPY_EN: NonNullable<EmployerSignupFormProps["copy"]> = {
   labelProduct: "Product",
   productBasic: "Basic (free)",
-  productProPlanner: "Pro Planner",
   productHybridApp: "Hybrid App",
   productAutopilot: "Autopilot",
   labelCompanyName: "Company name",
@@ -108,7 +106,6 @@ const DEFAULT_COPY_EN: NonNullable<EmployerSignupFormProps["copy"]> = {
 const DEFAULT_COPY_DA: NonNullable<EmployerSignupFormProps["copy"]> = {
   labelProduct: "Produkt",
   productBasic: "Basic (gratis)",
-  productProPlanner: "Pro Planner",
   productHybridApp: "Hybrid App",
   productAutopilot: "Autopilot",
   labelCompanyName: "Virksomhedsnavn",
@@ -203,9 +200,8 @@ function submitLabelFor(product: ProductId): string {
 }
 
 function priceForProduct(product: ProductId): string {
-  if (product === "pro_planner") return "49 EUR";
-  if (product === "hybrid_app") return "29 EUR";
-  if (product === "autopilot") return "59 EUR";
+  if (product === "hybrid_app") return "49 EUR";
+  if (product === "autopilot") return "99 EUR";
   return "0 EUR";
 }
 
@@ -218,7 +214,6 @@ export function EmployerSignupForm({
   const productOptions: Array<{ id: ProductId; label: string }> = useMemo(
     () => [
       { id: "basic", label: copy.productBasic },
-      { id: "pro_planner", label: copy.productProPlanner },
       { id: "hybrid_app", label: copy.productHybridApp },
       { id: "autopilot", label: copy.productAutopilot },
     ],
@@ -318,6 +313,7 @@ export function EmployerSignupForm({
         message: `Ny oprettelsesforesporgsel fra arbejdsgiver:\n\n${details}`,
         name: `${params.trimmedFirstName} ${params.trimmedLastName}`.trim(),
         email: params.trimmedEmail,
+        ...(product === "basic" ? { abuseGuardAction: "basic_signup" as const } : {}),
       }),
     });
     return (await res.json()) as
@@ -399,7 +395,7 @@ export function EmployerSignupForm({
       if (!data.ok) {
         setMessage({
           kind: "error",
-          text: copy.errorSubmitFailed,
+          text: data.error?.trim() || copy.errorSubmitFailed,
         });
         return;
       }

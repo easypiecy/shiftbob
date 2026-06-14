@@ -53,7 +53,7 @@ export const SUBSCRIPTION_PLAN_CONFIG: Record<
   HYBRID_APP: {
     tier: "HYBRID_APP",
     title: "Hybrid App",
-    priceLabel: "29 EUR / month + 1 EUR per user",
+    priceLabel: "49 EUR / month",
     hasAppAccess: true,
     hasUnlimitedChecks: true,
     canAccessOnlineSettings: false,
@@ -64,7 +64,7 @@ export const SUBSCRIPTION_PLAN_CONFIG: Record<
   AUTOPILOT: {
     tier: "AUTOPILOT",
     title: "Autopilot",
-    priceLabel: "59 EUR / month + 1 EUR per user",
+    priceLabel: "99 EUR / month",
     hasAppAccess: true,
     hasUnlimitedChecks: true,
     canAccessOnlineSettings: true,

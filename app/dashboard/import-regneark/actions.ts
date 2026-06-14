@@ -12,6 +12,16 @@ import {
 } from "@/src/lib/compliance/engine";
 import { getWorkplaceComplianceRules } from "@/src/app/super-admin/workplaces/actions";
 import { assertWorkplaceAdminOrSuperAdmin } from "@/src/lib/workplace-admin-server";
+import { resolveWorkplaceSubscriptionTier } from "@/src/lib/workplace-subscription-server";
+import {
+  checkIpAbuseGuardAllowed,
+  recordIpAbuseGuardHit,
+  subscriptionTierRequiresComplianceIpGuard,
+} from "@/src/lib/ip-abuse-guard";
+import { getRequestClientIp } from "@/src/lib/request-ip";
+import {
+  assertSpreadsheetImportEmployeeCapacity,
+} from "@/src/lib/workplace-employee-limit-server";
 import { getAdminClient } from "@/src/utils/supabase/admin";
 import { createServerSupabase } from "@/src/utils/supabase/server";
 
@@ -104,6 +114,7 @@ export type SpreadsheetExtractResult =
   | {
       ok: false;
       error: string;
+      employeeLimitExceeded?: boolean;
     };
 
 export type ApproveSpreadsheetPlanResult =
@@ -113,7 +124,7 @@ export type ApproveSpreadsheetPlanResult =
       createdEmployees: number;
       insertedShifts: number;
     }
-  | { ok: false; error: string };
+  | { ok: false; error: string; employeeLimitExceeded?: boolean };
 
 function asMatrix(sheet: XLSX.WorkSheet): Matrix {
   return XLSX.utils.sheet_to_json(sheet, {
@@ -840,6 +851,21 @@ export async function runSpreadsheetImportAction(
       return { ok: false, error: "Ugyldigt år." };
     }
 
+    const subscriptionTier = await resolveWorkplaceSubscriptionTier(companyId);
+    const clientIp = await getRequestClientIp();
+    if (
+      runEuComplianceCheck &&
+      subscriptionTierRequiresComplianceIpGuard(subscriptionTier)
+    ) {
+      const guard = await checkIpAbuseGuardAllowed(
+        "foundation_compliance_check",
+        clientIp
+      );
+      if (!guard.ok) {
+        return { ok: false, error: guard.error };
+      }
+    }
+
     const buffer = await file.arrayBuffer();
     const workbook = XLSX.read(buffer, { type: "array" });
 
@@ -854,6 +880,19 @@ export async function runSpreadsheetImportAction(
       workbook,
       departmentIdByName,
     });
+
+    const employeeCapacity = await assertSpreadsheetImportEmployeeCapacity(
+      companyId,
+      employees
+    );
+    if (!employeeCapacity.ok) {
+      return {
+        ok: false,
+        error: employeeCapacity.error,
+        employeeLimitExceeded: true,
+      };
+    }
+
     const { shiftTypes, lookup } = parseShiftTypes(workbook);
     const { shifts, warnings, matchedSheet } = parseMonthlySchedule({
       workbook,
@@ -881,6 +920,13 @@ export async function runSpreadsheetImportAction(
           );
         })()
       : [];
+
+    if (
+      runEuComplianceCheck &&
+      subscriptionTierRequiresComplianceIpGuard(subscriptionTier)
+    ) {
+      await recordIpAbuseGuardHit("foundation_compliance_check", clientIp);
+    }
 
     return {
       ok: true,
@@ -977,6 +1023,18 @@ export async function approveSpreadsheetPlanAction(
       ? input.extractedShiftTypes
       : [];
     const extractedShifts = Array.isArray(input.extractedShifts) ? input.extractedShifts : [];
+
+    const employeeCapacity = await assertSpreadsheetImportEmployeeCapacity(
+      companyId,
+      extractedEmployees
+    );
+    if (!employeeCapacity.ok) {
+      return {
+        ok: false,
+        error: employeeCapacity.error,
+        employeeLimitExceeded: true,
+      };
+    }
 
     const shiftTimeByCode = new Map<string, { start_time: string; end_time: string }>();
     for (const shiftType of extractedShiftTypes) {

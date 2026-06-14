@@ -21,5 +21,6 @@ export async function setUiLanguageAction(
     secure: process.env.NODE_ENV === "production",
   });
   revalidatePath("/", "layout");
+  revalidatePath("/landing");
   return { ok: true };
 }

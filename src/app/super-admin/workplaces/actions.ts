@@ -7,6 +7,9 @@ import {
   assertWorkplaceMember,
   isWorkplaceCalendarAdminView,
 } from "@/src/lib/workplace-admin-server";
+import {
+  assertStandardPlanEmployeeCapacity,
+} from "@/src/lib/workplace-employee-limit-server";
 import { assertSuperAdminAccess } from "@/src/lib/super-admin";
 import {
   normalizeSeasonTemplate,
@@ -2532,7 +2535,7 @@ export async function importWorkplaceMembersFromCsv(
       results: WorkplaceMemberImportRowResult[];
       summary: { createdInvited: number; addedExisting: number; alreadyMember: number; errors: number };
     }
-  | { ok: false; error: string }
+  | { ok: false; error: string; employeeLimitExceeded?: boolean }
 > {
   try {
     await assertWorkplaceAdminOrSuperAdmin(workplaceId);
@@ -2599,6 +2602,33 @@ export async function importWorkplaceMembersFromCsv(
       employeeTypeByLabel.set(key, row.id as string);
     }
     const memberUserIds = new Set((membershipRes.data ?? []).map((x) => x.user_id as string));
+
+    let prospectiveNewMembers = 0;
+    for (let idx = 1; idx < lines.length; idx += 1) {
+      const cells = parseSemicolonCsvLine(lines[idx]);
+      if (cells.length !== expectedHeader.length) continue;
+      const email = (cells[2] ?? "").trim().toLowerCase();
+      const firstName = cells[0]?.trim() ?? "";
+      const lastName = cells[1]?.trim() ?? "";
+      const employeeTypeLabel = cells[9]?.trim() ?? "";
+      if (!firstName || !lastName || !email || !employeeTypeLabel) continue;
+      if (!employeeTypeByLabel.has(normalizeTemplateMatchKey(employeeTypeLabel))) continue;
+      const existingUserId = authByEmail.get(email) ?? null;
+      if (existingUserId && memberUserIds.has(existingUserId)) continue;
+      prospectiveNewMembers += 1;
+    }
+
+    const capacity = await assertStandardPlanEmployeeCapacity(
+      workplaceId,
+      prospectiveNewMembers
+    );
+    if (!capacity.ok) {
+      return {
+        ok: false,
+        error: capacity.error,
+        employeeLimitExceeded: true,
+      };
+    }
 
     const seenEmails = new Set<string>();
     const results: WorkplaceMemberImportRowResult[] = [];

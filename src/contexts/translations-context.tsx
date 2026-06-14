@@ -37,9 +37,21 @@ export function useUiLanguage(): string {
 
 export function useTranslations() {
   const map = useContext(TranslationsContext);
+  const preferFallbackInDev =
+    process.env.NODE_ENV !== "production" &&
+    process.env.NEXT_PUBLIC_SHIFTBOB_DEV_TRANSLATIONS_FROM_DB !== "1";
   const t = useCallback(
-    (key: string, fallback?: string) => map[key] ?? fallback ?? key,
-    [map]
+    (key: string, fallback?: string) => {
+      const fromMap = map[key];
+      if (fromMap != null && fromMap !== "") {
+        return fromMap;
+      }
+      if (preferFallbackInDev && typeof fallback === "string") {
+        return fallback;
+      }
+      return fallback ?? key;
+    },
+    [map, preferFallbackInDev]
   );
   return useMemo(() => ({ t, map }), [t, map]);
 }

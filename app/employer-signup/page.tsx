@@ -10,11 +10,11 @@ import { SalesBotWidget } from "../landing/sales-bot-widget";
 import { UiLanguageSelect } from "../login/login-language-picker";
 import { EmployerSignupForm } from "./employer-signup-form";
 
-type ProductId = "basic" | "pro_planner" | "hybrid_app" | "autopilot";
+type ProductId = "basic" | "hybrid_app" | "autopilot";
 
 function normalizeProduct(value?: string): ProductId {
   const v = (value ?? "").trim().toLowerCase();
-  if (v === "pro_planner") return "pro_planner";
+  if (v === "pro_planner") return "hybrid_app";
   if (v === "hybrid_app") return "hybrid_app";
   if (v === "autopilot") return "autopilot";
   return "basic";
@@ -75,7 +75,6 @@ export default async function EmployerSignupPage({
             copy={{
               labelProduct: t("employer_signup.label.product", "Product"),
               productBasic: t("employer_signup.product.basic", "Basic (free)"),
-              productProPlanner: t("employer_signup.product.pro_planner", "Pro Planner"),
               productHybridApp: t("employer_signup.product.hybrid_app", "Hybrid App"),
               productAutopilot: t("employer_signup.product.autopilot", "Autopilot"),
               labelCompanyName: t("employer_signup.label.company_name", "Company name"),

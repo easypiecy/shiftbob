@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { CalendarRange, CheckCircle2, FileSpreadsheet, Loader2, ShieldCheck } from "lucide-react";
+import { EmployeeLimitExceededModal } from "@/src/components/employee-limit-exceeded-modal";
+import { EMPLOYEE_LIMIT_EXCEEDED_MESSAGE } from "@/src/config/employee-limits";
 import { getActiveWorkplaceIdFromCookie } from "@/src/lib/workplaces";
 import {
   approveSpreadsheetPlanAction,
@@ -49,6 +51,7 @@ export function ImportSpreadsheetClient() {
   const [violationsModalRun, setViolationsModalRun] = useState<ImportRun | null>(null);
   const [approveSummary, setApproveSummary] = useState<ApproveSpreadsheetPlanResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [employeeLimitModalOpen, setEmployeeLimitModalOpen] = useState(false);
   const [pending, startTransition] = useTransition();
   const [approving, startApproveTransition] = useTransition();
   const latestResult = importRuns[0]?.result ?? null;
@@ -102,6 +105,10 @@ export function ImportSpreadsheetClient() {
 
       const result = await runSpreadsheetImportAction(fd);
       if (!result.ok) {
+        if (result.employeeLimitExceeded) {
+          setEmployeeLimitModalOpen(true);
+          return;
+        }
         setError(result.error);
         return;
       }
@@ -170,6 +177,8 @@ export function ImportSpreadsheetClient() {
             : prev
         );
         setViolationsModalRun(null);
+      } else if (res.employeeLimitExceeded) {
+        setEmployeeLimitModalOpen(true);
       } else {
         setError(res.error);
       }
@@ -496,6 +505,14 @@ export function ImportSpreadsheetClient() {
           </div>
         </div>
       ) : null}
+
+      <EmployeeLimitExceededModal
+        open={employeeLimitModalOpen}
+        message={EMPLOYEE_LIMIT_EXCEEDED_MESSAGE}
+        contactLabel="Contact Us"
+        closeLabel="Close"
+        onClose={() => setEmployeeLimitModalOpen(false)}
+      />
     </div>
   );
 }

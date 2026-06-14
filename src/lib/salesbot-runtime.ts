@@ -600,15 +600,15 @@ function planQuickFacts(
     }
     if (plan === "hybrid_app") {
       return {
-        price: "Hybrid App koster 29 EUR/md. + 1 EUR pr. bruger",
+        price: "Hybrid App koster 49 EUR/md.",
         key: "I får alt fra Pro + apps til medarbejdere, vagtbytte og godkendelsesoverblik",
         limitOrExtra: "Sæsonpause er muligt i lavsæsonen",
       };
     }
     return {
-      price: "Autopilot koster 59 EUR/md. + 1 EUR pr. bruger",
+      price: "Autopilot koster 99 EUR/md.",
       key: "I får alt fra tidligere planer + automatisk vagtgenerering og avancerede indstillinger",
-      limitOrExtra: "API-adgang er inkluderet",
+      limitOrExtra: "API-adgang og medarbejderchat er inkluderet",
     };
   }
 
@@ -628,15 +628,15 @@ function planQuickFacts(
   }
   if (plan === "hybrid_app") {
     return {
-      price: "Hybrid App is 29 EUR/month + 1 EUR per user",
+      price: "Hybrid App is 49 EUR/month",
       key: "You get everything in Pro plus employee apps, shift swaps, and approval overview",
       limitOrExtra: "Seasonal pause is available during off-season",
     };
   }
   return {
-    price: "Autopilot is 59 EUR/month + 1 EUR per user",
+    price: "Autopilot is 99 EUR/month",
     key: "You get everything in previous plans plus automatic shift generation and advanced options",
-    limitOrExtra: "API access is included",
+    limitOrExtra: "API access and employee chat are included",
   };
 }
 

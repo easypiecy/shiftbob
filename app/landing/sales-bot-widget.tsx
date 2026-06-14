@@ -3,6 +3,10 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Loader2, RotateCcw, Send, X } from "lucide-react";
 import Image from "next/image";
+import {
+  SUPPORT_TICKET_OPEN_EVENT,
+  type SupportTicketOpenDetail,
+} from "@/src/lib/support-ticket-events";
 
 type ChatMessage = {
   id: string;
@@ -106,6 +110,24 @@ export function SalesBotWidget({
       setDismissed(false);
     }
   }, [dismissStorageKey]);
+
+  useEffect(() => {
+    function onOpenSupportTicket(event: Event) {
+      const detail = (event as CustomEvent<SupportTicketOpenDetail>).detail;
+      setOpen(true);
+      setSupportOpen(true);
+      if (detail?.subject) setSupportSubject(detail.subject);
+      if (detail?.message) setSupportMessage(detail.message);
+      void initializeChat();
+    }
+
+    window.addEventListener(SUPPORT_TICKET_OPEN_EVENT, onOpenSupportTicket);
+    return () => {
+      window.removeEventListener(SUPPORT_TICKET_OPEN_EVENT, onOpenSupportTicket);
+    };
+    // initializeChat intentionally omitted — listener should stay stable across renders.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [languageCode, initialAssistantMessage, supportNeedIdentityMessage]);
 
   function addAssistantMessage(text: string) {
     setMessages((prev) => [

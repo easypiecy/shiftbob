@@ -88,7 +88,7 @@ function SubscriptionLockedUpsell({
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <span className="inline-flex items-center gap-2 rounded-lg bg-black px-3 py-2 text-sm font-semibold text-white dark:bg-zinc-100 dark:text-zinc-900">
               <Sparkles className="h-4 w-4" />
-              The Autopilot - 59 EUR / month + 1 EUR per user
+              The Autopilot - 99 EUR / month
             </span>
             <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
               Current tier: {tier}

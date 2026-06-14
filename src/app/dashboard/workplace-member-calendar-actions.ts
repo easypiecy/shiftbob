@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { randomUUID } from "node:crypto";
 import { assertWorkplaceAdminOrSuperAdmin } from "@/src/lib/workplace-admin-server";
+import { assertStandardPlanEmployeeCapacity } from "@/src/lib/workplace-employee-limit-server";
 import { getAdminClient } from "@/src/utils/supabase/admin";
 
 function isMissingSchemaError(message: string): boolean {
@@ -372,11 +373,23 @@ export async function getWorkplaceMemberProfileDetails(
 export async function createWorkplaceMemberWithProfile(
   workplaceId: string,
   input: WorkplaceMemberProfileInput
-): Promise<{ ok: true; userId: string } | { ok: false; error: string }> {
+): Promise<
+  | { ok: true; userId: string }
+  | { ok: false; error: string; employeeLimitExceeded?: boolean }
+> {
   try {
     await assertWorkplaceAdminOrSuperAdmin(workplaceId);
     const parsed = validateProfileInput(input);
     if (!parsed.ok) return parsed;
+
+    const capacity = await assertStandardPlanEmployeeCapacity(workplaceId, 1);
+    if (!capacity.ok) {
+      return {
+        ok: false,
+        error: capacity.error,
+        employeeLimitExceeded: true,
+      };
+    }
 
     const admin = getAdminClient();
     const profile = parsed.value;

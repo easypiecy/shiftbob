@@ -65,7 +65,7 @@ export async function assertWorkplaceSubscriptionFeature(
   const allowed = await workplaceHasSubscriptionFeature(workplaceId, feature);
   if (!allowed) {
     throw new Error(
-      "This feature requires The Autopilot (59 EUR / month + 1 EUR per user)."
+      "This feature requires The Autopilot (99 EUR / month)."
     );
   }
 }

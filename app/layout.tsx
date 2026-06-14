@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Sora, Space_Grotesk } from "next/font/google";
 import { AppRootProviders } from "@/src/components/app-root-providers";
 import { SHIFTBOB_SITE_ICON } from "@/src/lib/brand-assets";
 import {
@@ -12,9 +12,15 @@ import "./globals.css";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const sora = Sora({
+  variable: "--font-sora",
   subsets: ["latin"],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  weight: ["700"],
 });
 
 const geistMono = Geist_Mono({
@@ -64,7 +70,8 @@ export default async function RootLayout({
     resolveRequestUiLanguage(),
   ]);
   const htmlClass = [
-    geistSans.variable,
+    sora.variable,
+    spaceGrotesk.variable,
     geistMono.variable,
     "h-full antialiased",
     theme !== "light" ? "dark" : "",

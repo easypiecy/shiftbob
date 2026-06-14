@@ -60,6 +60,8 @@ import {
   updateWorkplaceMemberWithProfile,
   uploadWorkplaceMemberCv,
 } from "@/src/app/dashboard/workplace-member-calendar-actions";
+import { EmployeeLimitExceededModal } from "@/src/components/employee-limit-exceeded-modal";
+import { EMPLOYEE_LIMIT_EXCEEDED_MESSAGE } from "@/src/config/employee-limits";
 import EmployeeCalendarNameCell from "@/app/dashboard/employee-calendar-name-cell";
 import { useTranslations, useUiLanguage } from "@/src/contexts/translations-context";
 import {
@@ -824,6 +826,7 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
   const [memberEditorDraft, setMemberEditorDraft] = useState<MemberProfileDraft | null>(null);
   const [memberEditorBusy, setMemberEditorBusy] = useState(false);
   const [memberEditorMessage, setMemberEditorMessage] = useState<string | null>(null);
+  const [employeeLimitModalOpen, setEmployeeLimitModalOpen] = useState(false);
   const [memberWarningsReady, setMemberWarningsReady] = useState(false);
   const [memberCvBusy, setMemberCvBusy] = useState(false);
   const [memberHasCv, setMemberHasCv] = useState(false);
@@ -1772,6 +1775,10 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
           note: memberEditorDraft.note.trim() ? memberEditorDraft.note : null,
         });
         if (!res.ok) {
+          if (res.employeeLimitExceeded) {
+            setEmployeeLimitModalOpen(true);
+            return;
+          }
           setMemberEditorMessage(res.error);
           return;
         }
@@ -4779,6 +4786,17 @@ export default function AdminCalendar({ workplaceId, workplaceName }: Props) {
           </div>
         </div>
       ) : null}
+
+      <EmployeeLimitExceededModal
+        open={employeeLimitModalOpen}
+        message={t(
+          "employee_limit.exceeded_message",
+          EMPLOYEE_LIMIT_EXCEEDED_MESSAGE
+        )}
+        contactLabel={t("landing.plans.enterprise.cta", "Contact Us")}
+        closeLabel={t("common.close", "Close")}
+        onClose={() => setEmployeeLimitModalOpen(false)}
+      />
     </div>
   );
 }

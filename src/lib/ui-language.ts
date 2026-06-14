@@ -45,7 +45,7 @@ export function isSupportedUiLanguage(code: string): code is UiLanguageCode {
 /** Vist navn i sprogvælger (engelske navne fra DB). */
 export const UI_LANGUAGE_LABELS: Record<string, string> = {
   "en-US": "English (United States)",
-  "en-IE": "English (Ireland)",
+  "en-IE": "English (United Kingdom)",
   de: "German",
   "de-AT": "German (Austria)",
   nl: "Dutch",
