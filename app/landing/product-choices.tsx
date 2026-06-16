@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckCircle2, FileSpreadsheet, Sheet } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { createTranslator } from "@/src/lib/translations-server";
 import { formatLocalPriceHint } from "@/src/lib/local-currency-from-language";
 import { EnterpriseCallout } from "./enterprise-callout";
@@ -389,20 +389,10 @@ export function ProductChoices({
     <section className="border-y border-zinc-200/70 bg-[linear-gradient(180deg,#f8fbff_0%,#f3f7fb_100%)]">
       <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-4xl text-center">
-          <div className="flex items-center justify-center gap-3">
-            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/80 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700 shadow-sm">
-              <FileSpreadsheet className="h-4 w-4" aria-hidden="true" />
-              {t("landing.plans.header.excel", "Excel")}
-            </span>
-            <span className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/80 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-sky-700 shadow-sm">
-              <Sheet className="h-4 w-4" aria-hidden="true" />
-              {t("landing.plans.header.google_sheets", "Google Sheets")}
-            </span>
-          </div>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
             {t(
               "landing.plans.header.title",
-              "From your spreadsheet straight to your team's smartphones."
+              "Pricing"
             )}
           </h2>
         </div>

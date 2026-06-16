@@ -6,6 +6,7 @@ import {
   UI_LANGUAGE_COOKIE,
 } from "@/src/lib/ui-language";
 import { getTranslationsCached } from "@/src/lib/translations-server";
+import { applyUiTranslationOverrides } from "@/src/lib/ui-translation-overrides";
 
 export { UI_LANGUAGE_COOKIE };
 
@@ -26,5 +27,6 @@ export async function resolveRequestUiLanguage(): Promise<string> {
 export async function getUiTranslations() {
   noStore();
   const lang = await resolveRequestUiLanguage();
-  return getTranslationsCached(lang);
+  const map = await getTranslationsCached(lang);
+  return applyUiTranslationOverrides(map, lang);
 }

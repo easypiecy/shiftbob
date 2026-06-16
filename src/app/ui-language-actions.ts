@@ -22,5 +22,8 @@ export async function setUiLanguageAction(
   });
   revalidatePath("/", "layout");
   revalidatePath("/landing");
+  revalidatePath("/landing2");
+  revalidatePath("/landing3");
+  revalidatePath("/landing4");
   return { ok: true };
 }

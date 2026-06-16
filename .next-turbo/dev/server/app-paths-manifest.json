@@ -1,4 +1,8 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
   "/manifest.webmanifest/route": "app/manifest.webmanifest/route.js",
+  "/landing3/page": "app/landing3/page.js",
+  "/landing4/page": "app/landing4/page.js",
+  "/employer-signup/page": "app/employer-signup/page.js",
   "/landing/page": "app/landing/page.js"
 }

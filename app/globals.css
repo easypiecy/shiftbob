@@ -378,6 +378,16 @@ html[data-theme="unicorn"] .employee-calendar-name {
   box-shadow: 0 8px 14px rgb(0 0 0 / 0.16);
 }
 
+html.dark .bob-orb,
+.bob-loader-dark .bob-orb {
+  color: #f4f4f5;
+  background: linear-gradient(145deg, #27272a 0%, #18181b 100%);
+  border: 2px solid #52525b;
+  box-shadow:
+    0 0 22px rgb(56 189 248 / 0.18),
+    0 8px 20px rgb(0 0 0 / 0.45);
+}
+
 .bob-orb-1 {
   animation: bob-hop-1 1.2s ease-in-out infinite;
 }
@@ -417,5 +427,114 @@ html[data-theme="unicorn"] .employee-calendar-name {
   }
   38% {
     transform: translateY(-0.58rem);
+  }
+}
+
+.landing4-cta-border {
+  background: linear-gradient(
+    90deg,
+    #34d399 0%,
+    #2dd4bf 14%,
+    #38bdf8 28%,
+    #22d3ee 42%,
+    #a78bfa 57%,
+    #e879f9 71%,
+    #fbbf24 85%,
+    #34d399 100%
+  );
+  background-size: 200% 100%;
+  background-position: 0% 50%;
+}
+
+.landing4-cta-border:hover {
+  animation: landing4-cta-gradient-flow 1.6s linear infinite;
+}
+
+@keyframes landing4-cta-gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+/* Landing4 mobile: ~30% smaller typography, full-bleed visuals */
+@layer utilities {
+  @media (max-width: 639px) {
+    .landing4-page .text-xs {
+      font-size: 0.525rem;
+      line-height: 0.875rem;
+    }
+
+    .landing4-page .text-sm {
+      font-size: 0.6125rem;
+      line-height: 0.9625rem;
+    }
+
+    .landing4-page .text-base {
+      font-size: 0.7rem;
+      line-height: 1.05rem;
+    }
+
+    .landing4-page .text-lg {
+      font-size: 0.7875rem;
+      line-height: 1.1375rem;
+    }
+
+    .landing4-page .text-xl {
+      font-size: 0.875rem;
+      line-height: 1.1875rem;
+    }
+
+    .landing4-page .text-2xl {
+      font-size: 1.05rem;
+      line-height: 1.4rem;
+    }
+
+    .landing4-page .text-3xl {
+      font-size: 1.3125rem;
+      line-height: 1.575rem;
+    }
+
+    .landing4-page .text-4xl {
+      font-size: 1.575rem;
+      line-height: 1.75rem;
+    }
+
+    .landing4-page .text-5xl {
+      font-size: 2.1rem;
+      line-height: 2.275rem;
+    }
+
+    .landing4-page .text-6xl {
+      font-size: 2.625rem;
+      line-height: 2.8rem;
+    }
+
+    .landing4-page .text-\[10px\] {
+      font-size: 7px;
+    }
+
+    .landing4-page .text-\[11px\] {
+      font-size: 7.7px;
+    }
+
+    .landing4-page .landing4-chapter-step {
+      height: 3.85rem;
+      width: 3.85rem;
+      font-size: 1.575rem;
+      line-height: 1.75rem;
+    }
+
+    .landing4-visual-bleed {
+      width: 100vw;
+      max-width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+    }
   }
 }
