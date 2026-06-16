@@ -5,6 +5,7 @@ import { Sparkles } from "lucide-react";
 import {
   loadTargetTexts,
   saveTranslation,
+  translateEmptyBatch,
   translateWithAI,
 } from "@/src/app/super-admin/translations/actions";
 
@@ -50,6 +51,7 @@ export default function TranslationsEditor({ languages, sourceRows }: Props) {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [batchRunning, setBatchRunning] = useState(false);
+  const [keyPrefix, setKeyPrefix] = useState("");
   const [batchProgress, setBatchProgress] = useState<{
     langIndex: number;
     langTotal: number;
@@ -106,6 +108,72 @@ export default function TranslationsEditor({ languages, sourceRows }: Props) {
     [setInput, targetLabel]
   );
 
+  const filteredSourceRows = useMemo(() => {
+    const prefix = keyPrefix.trim();
+    if (!prefix) return sourceRows;
+    return sourceRows.filter((row) => row.translation_key.startsWith(prefix));
+  }, [keyPrefix, sourceRows]);
+
+  const emptyCountForTarget = useMemo(() => {
+    return filteredSourceRows.filter((row) => {
+      const v = String(inputs[row.translation_key] ?? "").trim();
+      return row.text_value.trim() && !v;
+    }).length;
+  }, [filteredSourceRows, inputs]);
+
+  const runBatchForLanguage = useCallback(
+    async (
+      langCode: string,
+      langLabel: string,
+      langIndex: number,
+      langTotal: number
+    ) => {
+      let offset = 0;
+      let langFilled = 0;
+      let langProcessed = 0;
+      let totalEmpty = 0;
+      const langErrors: string[] = [];
+
+      while (true) {
+        const batch = await translateEmptyBatch({
+          languageCode: langCode,
+          languageLabel: langLabel,
+          offset,
+          keyPrefix: keyPrefix.trim() || undefined,
+        });
+
+        if (!batch.ok) {
+          langErrors.push(`${langCode}: ${batch.error}`);
+          break;
+        }
+
+        totalEmpty = batch.totalEmpty;
+        langFilled += batch.filled;
+        langProcessed += batch.processed;
+        offset = batch.nextOffset;
+        langErrors.push(...batch.errors);
+
+        setBatchProgress({
+          langIndex,
+          langTotal,
+          langCode,
+          rowCurrent: Math.min(offset, batch.totalEmpty),
+          rowTotal: batch.totalEmpty,
+        });
+
+        if (!batch.hasMore) break;
+      }
+
+      return {
+        langFilled,
+        langProcessed,
+        totalEmpty,
+        langErrors,
+      };
+    },
+    [keyPrefix, targetLang]
+  );
+
   const handleFillAllEmptyAllLanguages = useCallback(async () => {
     if (targetOptions.length === 0) return;
     setMessage(null);
@@ -119,18 +187,14 @@ export default function TranslationsEditor({ languages, sourceRows }: Props) {
       const langCode = opt.language_code;
       const langLabel = opt.name;
 
-      const loaded = await loadTargetTexts(langCode);
-      if (!loaded.ok) {
-        errors.push(`${langCode} (hentning): ${loaded.error}`);
-        continue;
-      }
-      const map = loaded.map;
-      const rows = sourceRows.filter((row) => {
-        const v = String(map[row.translation_key] ?? "").trim();
-        return row.text_value.trim() && !v;
-      });
+      const result = await runBatchForLanguage(
+        langCode,
+        langLabel,
+        li + 1,
+        targetOptions.length
+      );
 
-      if (rows.length === 0) {
+      if (result.totalEmpty === 0) {
         setBatchProgress({
           langIndex: li + 1,
           langTotal: targetOptions.length,
@@ -141,45 +205,9 @@ export default function TranslationsEditor({ languages, sourceRows }: Props) {
         continue;
       }
 
-      for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        processedRows++;
-        setBatchProgress({
-          langIndex: li + 1,
-          langTotal: targetOptions.length,
-          langCode,
-          rowCurrent: i + 1,
-          rowTotal: rows.length,
-        });
-        setLoadingMap((m) => ({ ...m, [row.translation_key]: true }));
-        try {
-          const tr = await translateWithAI(
-            row.text_value,
-            row.context_description,
-            langLabel
-          );
-          if (!tr.ok) {
-            errors.push(`${langCode} · ${row.translation_key}: ${tr.error}`);
-            continue;
-          }
-          if (langCode === targetLang) {
-            setInput(row.translation_key, tr.text);
-          }
-          const sv = await saveTranslation({
-            translationKey: row.translation_key,
-            languageCode: langCode,
-            textValue: tr.text,
-            contextDescription: row.context_description,
-          });
-          if (!sv.ok) {
-            errors.push(`${langCode} · ${row.translation_key}: ${sv.error}`);
-            continue;
-          }
-          filled++;
-        } finally {
-          setLoadingMap((m) => ({ ...m, [row.translation_key]: false }));
-        }
-      }
+      filled += result.langFilled;
+      processedRows += result.langProcessed;
+      errors.push(...result.langErrors);
     }
 
     setBatchRunning(false);
@@ -193,7 +221,11 @@ export default function TranslationsEditor({ languages, sourceRows }: Props) {
     }
 
     if (processedRows === 0) {
-      setMessage("Ingen tomme oversættelser på noget målsprog.");
+      setMessage(
+        keyPrefix.trim()
+          ? `Ingen tomme oversættelser for prefix "${keyPrefix.trim()}" på noget målsprog.`
+          : "Ingen tomme oversættelser på noget målsprog."
+      );
       return;
     }
     if (errors.length === 0) {
@@ -208,12 +240,57 @@ export default function TranslationsEditor({ languages, sourceRows }: Props) {
         }`
       );
     }
-  }, [
-    sourceRows,
-    targetOptions,
-    targetLang,
-    setInput,
-  ]);
+  }, [keyPrefix, runBatchForLanguage, targetLang, targetOptions]);
+
+  const handleFillEmptyForSelectedLanguage = useCallback(async () => {
+    if (!targetLang) return;
+    const opt = targetOptions.find((l) => l.language_code === targetLang);
+    if (!opt) return;
+
+    setMessage(null);
+    setBatchRunning(true);
+    let filled = 0;
+    let processedRows = 0;
+    const errors: string[] = [];
+
+    const result = await runBatchForLanguage(
+      opt.language_code,
+      opt.name,
+      1,
+      1
+    );
+
+    filled += result.langFilled;
+    processedRows += result.langProcessed;
+    errors.push(...result.langErrors);
+
+    setBatchRunning(false);
+    setBatchProgress(null);
+
+    const reload = await loadTargetTexts(targetLang);
+    if (reload.ok) {
+      setInputs(reload.map);
+    }
+
+    if (result.totalEmpty === 0) {
+      setMessage(
+        keyPrefix.trim()
+          ? `Ingen tomme felter for "${keyPrefix.trim()}" på ${targetLang}.`
+          : `Ingen tomme felter på ${targetLang}.`
+      );
+      return;
+    }
+    if (errors.length === 0) {
+      setMessage(`Færdig: ${filled} oversættelser gemt for ${targetLang}.`);
+      return;
+    }
+    const preview = errors.slice(0, 5).join(" · ");
+    setMessage(
+      `Gemt ${filled} af ${processedRows} forsøg for ${targetLang}. ${errors.length} fejl: ${preview}${
+        errors.length > 5 ? " …" : ""
+      }`
+    );
+  }, [keyPrefix, runBatchForLanguage, targetLang, targetOptions]);
 
   const runSave = useCallback(
     async (row: SourceRow) => {
@@ -251,11 +328,28 @@ export default function TranslationsEditor({ languages, sourceRows }: Props) {
             <span className="font-medium text-zinc-800 dark:text-zinc-200">
               {SOURCE_LANG}
             </span>
-            . Vælg målsprog og rediger eller brug AI. Knappen «AI for alle tomme»
-            kører alle målsprog efter hinanden og udfylder kun tomme felter.
+            . Vælg målsprog og rediger eller brug AI. Batch udfylder kun tomme felter
+            (4 ad gangen med pause mod Gemini rate limits).
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+          <div className="flex flex-col gap-1">
+            <label
+              htmlFor="key-prefix"
+              className="text-xs font-medium uppercase tracking-wide text-zinc-500"
+            >
+              Nøgle-filter
+            </label>
+            <input
+              id="key-prefix"
+              type="text"
+              value={keyPrefix}
+              onChange={(e) => setKeyPrefix(e.target.value)}
+              disabled={batchRunning}
+              placeholder="fx landing4."
+              className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm disabled:opacity-60 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100"
+            />
+          </div>
           <div className="flex flex-col gap-1">
             <label
               htmlFor="target-lang"
@@ -277,6 +371,24 @@ export default function TranslationsEditor({ languages, sourceRows }: Props) {
               ))}
             </select>
           </div>
+          <button
+            type="button"
+            onClick={() => void handleFillEmptyForSelectedLanguage()}
+            disabled={
+              !targetLang ||
+              batchRunning ||
+              savingKey !== null ||
+              emptyCountForTarget === 0
+            }
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-violet-300 bg-violet-50 px-4 py-2.5 text-sm font-semibold text-violet-900 shadow-sm transition hover:bg-violet-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-violet-800 dark:bg-violet-950/40 dark:text-violet-100 dark:hover:bg-violet-900/30"
+          >
+            <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
+            {batchRunning && batchProgress
+              ? batchProgress.rowTotal === 0
+                ? `${batchProgress.langCode} · ingen tomme`
+                : `${batchProgress.langCode} ${batchProgress.rowCurrent}/${batchProgress.rowTotal}`
+              : `AI tomme (${emptyCountForTarget})`}
+          </button>
           <button
             type="button"
             onClick={() => void handleFillAllEmptyAllLanguages()}
@@ -352,6 +464,14 @@ export default function TranslationsEditor({ languages, sourceRows }: Props) {
       )}
 
       {targetLang && (
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          Viser {filteredSourceRows.length} nøgler
+          {keyPrefix.trim() ? ` med prefix "${keyPrefix.trim()}"` : ""}.{" "}
+          {emptyCountForTarget} tomme på {targetLabel}.
+        </p>
+      )}
+
+      {targetLang && (
         <div className="overflow-x-auto rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
           <table className="min-w-full divide-y divide-zinc-200 text-left text-sm dark:divide-zinc-800">
             <thead className="bg-zinc-50 dark:bg-zinc-800/50">
@@ -374,7 +494,7 @@ export default function TranslationsEditor({ languages, sourceRows }: Props) {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-              {sourceRows.map((row) => {
+              {filteredSourceRows.map((row) => {
                 const val = inputs[row.translation_key] ?? "";
                 const busy = loadingMap[row.translation_key];
                 const saving = savingKey === row.translation_key;

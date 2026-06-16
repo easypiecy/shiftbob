@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { WEBSITE_ASSETS } from "@/src/config/website-assets";
+import { createTranslator } from "@/src/lib/translations-server";
 
 const SECTION_ID = "landing4-chapter-5";
 
@@ -14,7 +15,12 @@ function computeChapterPresence(section: HTMLElement) {
   return Math.max(0, 1 - distance / (viewport * 0.62));
 }
 
-export function Chapter5ScrollVideo() {
+export function Chapter5ScrollVideo({
+  translations,
+}: {
+  translations: Record<string, string>;
+}) {
+  const t = createTranslator(translations);
   const videoRef = useRef<HTMLVideoElement>(null);
   const durationRef = useRef(0);
   const presenceRef = useRef(0);
@@ -79,7 +85,10 @@ export function Chapter5ScrollVideo() {
           muted
           playsInline
           preload="auto"
-          aria-label="Robotarm der genererer vagtplan automatisk"
+          aria-label={t(
+            "landing4.visual.ch5.video_aria",
+            "Robotarm der genererer vagtplan automatisk"
+          )}
           className="h-full w-full object-cover object-center"
         />
       </div>

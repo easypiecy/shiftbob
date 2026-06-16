@@ -2,6 +2,7 @@
 
 import { type ReactNode } from "react";
 import { Download, ShieldCheck } from "lucide-react";
+import { createTranslator } from "@/src/lib/translations-server";
 import {
   ChapterSectionScrollBg,
   ChapterTransitionScrollArrow,
@@ -67,7 +68,7 @@ function ChapterShell({
           }`}
         >
           <div className="mb-6">
-            <span className="inline-flex h-[5.5rem] w-[5.5rem] items-center justify-center rounded-full border-2 border-zinc-700 bg-zinc-900 text-4xl font-black text-white shadow-[0_0_24px_rgba(0,0,0,0.35)] landing4-chapter-step">
+            <span className="landing4-chapter-step inline-flex h-[5.5rem] w-[5.5rem] items-center justify-center rounded-full border-2 border-zinc-700 bg-zinc-900 text-4xl font-black text-white shadow-[0_0_24px_rgba(0,0,0,0.35)]">
               {step}
             </span>
             <div className="mt-4 text-xs font-semibold uppercase tracking-[0.14em] sm:text-sm">
@@ -118,150 +119,217 @@ function StoryCta({
   );
 }
 
-export function Landing4Story() {
+export function Landing4Story({
+  translations,
+}: {
+  translations: Record<string, string>;
+}) {
+  const t = createTranslator(translations);
+
   return (
     <Landing4ScrollProvider>
       <div className="relative">
-        <ChapterProgressRail />
+        <ChapterProgressRail translations={translations} />
 
-        <Landing4Hero />
+        <Landing4Hero translations={translations} />
 
         <ChapterShell
-        step={1}
-        id="landing4-chapter-1"
-        accent="rgba(16,185,129,0.12)"
-        eyebrow={
-          <span className="inline-flex items-center gap-2 text-emerald-400">
-            <ShieldCheck className="h-4 w-4 shrink-0" /> Compliance
-          </span>
-        }
-        visual={<Chapter1ScrollVisual />}
-      >
-        <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
-          Lever din vagtplan op til de seneste{" "}
-          <StoryHighlight tone="emerald" thick>
-            EU-regler
-          </StoryHighlight>
-          ?
-        </h2>
-        <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
-          De skærpede EU-direktiver stiller markant større krav til arbejdsgivere, når det gælder{" "}
-          <StoryDetail
-            label="tidsregistrering"
-            detail="Dokumentation af faktisk arbejdstid er et centralt krav i de opdaterede direktiver."
-          />{" "}
-          og{" "}
-          <StoryDetail
-            label="hviletidsbestemmelser"
-            detail="FX 11-timers daglig hvile og ugentligt fridøgn — ShiftBob tjekker automatisk for brud."
+          step={1}
+          id="landing4-chapter-1"
+          accent="rgba(16,185,129,0.12)"
+          eyebrow={
+            <span className="inline-flex items-center gap-2 text-emerald-400">
+              <ShieldCheck className="h-4 w-4 shrink-0" />
+              {t("landing4.chapter1.eyebrow", "Compliance")}
+            </span>
+          }
+          visual={<Chapter1ScrollVisual translations={translations} />}
+        >
+          <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
+            {t("landing4.chapter1.title_prefix", "Lever din vagtplan op til de seneste ")}
+            <StoryHighlight tone="emerald" thick>
+              {t("landing4.chapter1.title_highlight", "EU-regler")}
+            </StoryHighlight>
+            {t("landing4.chapter1.title_suffix", "?")}
+          </h2>
+          <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
+            {t(
+              "landing4.chapter1.body_prefix",
+              "De skærpede EU-direktiver stiller markant større krav til arbejdsgivere, når det gælder "
+            )}
+            <StoryDetail
+              label={t("landing4.chapter1.detail.time_registration.label", "tidsregistrering")}
+              detail={t(
+                "landing4.chapter1.detail.time_registration.tooltip",
+                "Dokumentation af faktisk arbejdstid er et centralt krav i de opdaterede direktiver."
+              )}
+            />
+            {t("landing4.chapter1.body_mid", " og ")}
+            <StoryDetail
+              label={t("landing4.chapter1.detail.rest_periods.label", "hviletidsbestemmelser")}
+              detail={t(
+                "landing4.chapter1.detail.rest_periods.tooltip",
+                "FX 11-timers daglig hvile og ugentligt fridøgn — ShiftBob tjekker automatisk for brud."
+              )}
+            />
+            {t(
+              "landing4.chapter1.body_suffix",
+              ". Er du sikker på, at dine nuværende processer holder jer på den sikre side af loven?"
+            )}
+          </p>
+        </ChapterShell>
+
+        <ChapterShell
+          step={2}
+          id="landing4-chapter-2"
+          accent="rgba(16,185,129,0.1)"
+          scrollBgColor="#18181b"
+          reverseLayout
+          className="mt-2 sm:mt-4 lg:mt-6"
+          eyebrow={
+            <span className="text-emerald-400">
+              {t("landing4.chapter2.eyebrow", "Gratis start")}
+            </span>
+          }
+          visual={<Chapter2ScrollVisual translations={translations} />}
+        >
+          <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
+            {t(
+              "landing4.chapter2.title_prefix",
+              "Download det ultimative regneark til vagtplanlægning — 100% "
+            )}
+            <StoryHighlight tone="emerald" thick>
+              {t("landing4.chapter2.title_highlight", "gratis")}
+            </StoryHighlight>
+          </h2>
+          <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
+            {t(
+              "landing4.chapter2.body_prefix",
+              "Få det fulde overblik over dit team. Hent vores professionelle Excel-skabelon i dag og få indbygget "
+            )}
+            <StoryDetail
+              label={t("landing4.chapter2.detail.hour_calc.label", "timeberegning")}
+              detail={t(
+                "landing4.chapter2.detail.hour_calc.tooltip",
+                "Automatiske summeringer pr. medarbejder og måned — klar til løn og overblik."
+              )}
+            />
+            {t(
+              "landing4.chapter2.body_suffix",
+              ", automatisk struktur og et klart overblik over jeres arbejdstid."
+            )}
+          </p>
+          <StoryCta
+            href="/employer-signup?product=basic"
+            label={t("landing4.chapter2.cta", "Hent den her")}
+            trailingIcon="download"
           />
-          . Er du sikker på, at dine nuværende processer holder jer på den sikre side af loven?
-        </p>
-      </ChapterShell>
+        </ChapterShell>
 
-      <ChapterShell
-        step={2}
-        id="landing4-chapter-2"
-        accent="rgba(16,185,129,0.1)"
-        scrollBgColor="#18181b"
-        reverseLayout
-        className="mt-2 sm:mt-4 lg:mt-6"
-        eyebrow={<span className="text-emerald-400">Gratis start</span>}
-        visual={<Chapter2ScrollVisual />}
-      >
-        <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
-          Download det ultimative regneark til vagtplanlægning — 100%{" "}
-          <StoryHighlight tone="emerald" thick>
-            gratis
-          </StoryHighlight>
-        </h2>
-        <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
-          Få det fulde overblik over dit team. Hent vores professionelle Excel-skabelon i dag og få
-          indbygget{" "}
-          <StoryDetail
-            label="timeberegning"
-            detail="Automatiske summeringer pr. medarbejder og måned — klar til løn og overblik."
+        <ChapterShell
+          step={3}
+          id="landing4-chapter-3"
+          accent="rgba(56,189,248,0.12)"
+          eyebrow={
+            <span className="text-sky-400">{t("landing4.chapter3.eyebrow", "Gratis tjek")}</span>
+          }
+          visual={<Chapter3UploadVisual translations={translations} />}
+        >
+          <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
+            {t("landing4.chapter3.title_prefix", "Send os dit regneark, og få en gratis ")}
+            <StoryHighlight tone="sky" thick>
+              {t("landing4.chapter3.title_highlight", "compliance-rapport")}
+            </StoryHighlight>
+          </h2>
+          <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
+            {t(
+              "landing4.chapter3.body",
+              "Lad os tjekke din nuværende vagtplan for potentielle lovbrud. Upload dit regneark her eller send det til os på e-mail — så modtager du en uforpligtende rapport, der viser, om I overholder reglerne."
+            )}
+          </p>
+        </ChapterShell>
+
+        <ChapterTransitionScrollArrow
+          fromId="landing4-chapter-3"
+          toId="landing4-chapter-4"
+          alignToTextColumn
+        />
+
+        <ChapterShell
+          step={4}
+          id="landing4-chapter-4"
+          accent="rgba(56,189,248,0.1)"
+          reverseLayout
+          className="mt-8 sm:mt-12"
+          eyebrow={
+            <span className="text-sky-400">
+              {t("landing4.chapter4.eyebrow", "Hybrid App")}
+            </span>
+          }
+          visual={<Chapter4PhoneVisual translations={translations} />}
+        >
+          <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
+            {t(
+              "landing4.chapter4.title_prefix",
+              "Når du er klar: Giv dine medarbejdere vagtplanen direkte som "
+            )}
+            <StoryHighlight tone="sky" thick>
+              {t("landing4.chapter4.title_highlight", "app")}
+            </StoryHighlight>
+          </h2>
+          <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
+            {t(
+              "landing4.chapter4.body_prefix",
+              "Vores intelligente regneark klarer automatisk oprettelsen af dine medarbejdere i systemet. Vil du give dit team direkte adgang til deres vagter, chat og vagtbytte på farten? Forbind regnearket med medarbejder-appen fra kun "
+            )}
+            <StoryHighlight tone="white">{t("landing4.chapter4.price", "49 EUR")}</StoryHighlight>
+            {t("landing4.chapter4.body_suffix", " om måneden.")}
+          </p>
+          <StoryCta
+            href="/employer-signup?product=hybrid_app"
+            label={t("landing4.chapter4.cta", "Kom i gang med appen")}
           />
-          , automatisk struktur og et klart overblik over jeres arbejdstid.
-        </p>
-        <StoryCta href="/employer-signup?product=basic" label="Hent den her" trailingIcon="download" />
-      </ChapterShell>
+        </ChapterShell>
 
-      <ChapterShell
-        step={3}
-        id="landing4-chapter-3"
-        accent="rgba(56,189,248,0.12)"
-        eyebrow={<span className="text-sky-400">Gratis tjek</span>}
-        visual={<Chapter3UploadVisual />}
-      >
-        <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
-          Send os dit regneark, og få en gratis{" "}
-          <StoryHighlight tone="sky" thick>
-            compliance-rapport
-          </StoryHighlight>
-        </h2>
-        <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
-          Lad os tjekke din nuværende vagtplan for potentielle lovbrud. Upload dit regneark her eller
-          send det til os på e-mail — så modtager du en uforpligtende rapport, der viser, om I
-          overholder reglerne.
-        </p>
-      </ChapterShell>
-
-      <ChapterTransitionScrollArrow
-        fromId="landing4-chapter-3"
-        toId="landing4-chapter-4"
-        alignToTextColumn
-      />
-
-      <ChapterShell
-        step={4}
-        id="landing4-chapter-4"
-        accent="rgba(56,189,248,0.1)"
-        reverseLayout
-        className="mt-8 sm:mt-12"
-        eyebrow={<span className="text-sky-400">Hybrid App</span>}
-        visual={<Chapter4PhoneVisual />}
-      >
-        <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
-          Når du er klar: Giv dine medarbejdere vagtplanen direkte som{" "}
-          <StoryHighlight tone="sky" thick>
-            app
-          </StoryHighlight>
-        </h2>
-        <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
-          Vores intelligente regneark klarer automatisk oprettelsen af dine medarbejdere i systemet.
-          Vil du give dit team direkte adgang til deres vagter, chat og vagtbytte på farten? Forbind
-          regnearket med medarbejder-appen fra kun{" "}
-          <StoryHighlight tone="white">49 EUR</StoryHighlight> om måneden.
-        </p>
-        <StoryCta href="/employer-signup?product=hybrid_app" label="Kom i gang med appen" />
-      </ChapterShell>
-
-      <ChapterShell
-        step={5}
-        id="landing4-chapter-5"
-        accent="rgba(139,92,246,0.14)"
-        eyebrow={<span className="text-violet-400">Autopilot</span>}
-        visual={<Chapter5ScrollVideo />}
-      >
-        <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
-          Vil du være på forkant? Gå{" "}
-          <StoryHighlight tone="violet" thick>
-            fuldt online
-          </StoryHighlight>{" "}
-          og automatisér det hele
-        </h2>
-        <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
-          Tag det næste skridt og slip fuldstændig for det manuelle arbejde i regnearket. Lad vores
-          indbyggede{" "}
-          <StoryDetail
-            label="AI"
-            detail="Autopilot genererer compliant vagtplaner og balancerer medarbejdernes ønsker automatisk."
-          />{" "}
-          håndtere den automatiske vagtplanlægning, så du optimerer de daglige arbejdsgange og altid
-          er garanteret fuld compliance.
-        </p>
-        <StoryCta href="/employer-signup?product=autopilot" label="Prøv fuld automatisering" />
+        <ChapterShell
+          step={5}
+          id="landing4-chapter-5"
+          accent="rgba(139,92,246,0.14)"
+          eyebrow={
+            <span className="text-violet-400">
+              {t("landing4.chapter5.eyebrow", "Autopilot")}
+            </span>
+          }
+          visual={<Chapter5ScrollVideo translations={translations} />}
+        >
+          <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
+            {t("landing4.chapter5.title_prefix", "Vil du være på forkant? Gå ")}
+            <StoryHighlight tone="violet" thick>
+              {t("landing4.chapter5.title_highlight", "fuldt online")}
+            </StoryHighlight>
+            {t("landing4.chapter5.title_suffix", " og automatisér det hele")}
+          </h2>
+          <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
+            {t(
+              "landing4.chapter5.body_prefix",
+              "Tag det næste skridt og slip fuldstændig for det manuelle arbejde i regnearket. Lad vores indbyggede "
+            )}
+            <StoryDetail
+              label={t("landing4.chapter5.detail.ai.label", "AI")}
+              detail={t(
+                "landing4.chapter5.detail.ai.tooltip",
+                "Autopilot genererer compliant vagtplaner og balancerer medarbejdernes ønsker automatisk."
+              )}
+            />
+            {t(
+              "landing4.chapter5.body_suffix",
+              " håndtere den automatiske vagtplanlægning, så du optimerer de daglige arbejdsgange og altid er garanteret fuld compliance."
+            )}
+          </p>
+          <StoryCta
+            href="/employer-signup?product=autopilot"
+            label={t("landing4.chapter5.cta", "Prøv fuld automatisering")}
+          />
         </ChapterShell>
       </div>
     </Landing4ScrollProvider>

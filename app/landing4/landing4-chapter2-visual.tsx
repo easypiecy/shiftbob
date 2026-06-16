@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { WEBSITE_ASSETS } from "@/src/config/website-assets";
+import { createTranslator } from "@/src/lib/translations-server";
 import { useChapterScrollPresence } from "./landing4-chapter-transition";
 
 const SECTION_ID = "landing4-chapter-2";
@@ -98,7 +99,12 @@ function useRandomLightningGlimmers(sectionId: string) {
   return active;
 }
 
-export function Chapter2ScrollVisual() {
+export function Chapter2ScrollVisual({
+  translations,
+}: {
+  translations: Record<string, string>;
+}) {
+  const t = createTranslator(translations);
   const presence = useChapterScrollPresence(SECTION_ID);
   const lightningActive = useRandomLightningGlimmers(SECTION_ID);
   const scale = 0.94 + presence * 0.06;
@@ -122,7 +128,7 @@ export function Chapter2ScrollVisual() {
         <div className="relative aspect-[16/10] overflow-hidden rounded-none shadow-[0_0_48px_rgba(56,189,248,0.12)] ring-1 ring-sky-500/20 sm:rounded-2xl">
           <Image
             src={WEBSITE_ASSETS.landingPlan}
-            alt="Digital vagtplan i regneark"
+            alt={t("landing4.visual.ch2.alt", "Digital vagtplan i regneark")}
             fill
             className="object-cover object-center"
             sizes="(max-width: 768px) 100vw, 520px"

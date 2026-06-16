@@ -13,9 +13,6 @@ import { SalesBotWidget } from "../landing2/sales-bot-widget";
 import { Landing4Story } from "./landing4-story";
 import { Landing4SatisfactionGuarantee } from "./landing4-satisfaction-guarantee";
 
-const LANDING_FOOTER_COMPANY_LINE =
-  "Whiff s.r.o. - Vlněna 5 - 602 00 Brno-střed - Czech Republic - support@shiftbob.io";
-
 export default async function Landing4Page() {
   const [map, lang] = await Promise.all([
     getUiTranslations(),
@@ -40,7 +37,7 @@ export default async function Landing4Page() {
               />
             </div>
             <span className="pb-1 text-lg font-semibold tracking-tight text-white sm:text-xl">
-              shiftbob.io
+              {t("landing4.nav.site_name", "shiftbob.io")}
             </span>
           </Link>
 
@@ -64,7 +61,7 @@ export default async function Landing4Page() {
       </header>
 
       <main>
-        <Landing4Story />
+        <Landing4Story translations={map} />
 
         <section id="landing4-products" className="scroll-mt-32 border-t border-white/10">
           <ProductChoices
@@ -79,7 +76,10 @@ export default async function Landing4Page() {
 
       <footer className="border-t border-zinc-800 bg-zinc-950/90">
         <div className="mx-auto w-full max-w-7xl px-4 py-6 text-center text-sm text-zinc-500 sm:px-6">
-          {LANDING_FOOTER_COMPANY_LINE}
+          {t(
+            "landing.footer.company_line",
+            "Whiff s.r.o. - Vlněna 5 - 602 00 Brno-střed - Czech Republic - support@shiftbob.io"
+          )}
         </div>
       </footer>
 

@@ -7,6 +7,76 @@ import { GEMINI_TEXT_MODEL } from "@/src/utils/ai/gemini";
 import { getAdminClient } from "@/src/utils/supabase/admin";
 import { createServerSupabase } from "@/src/utils/supabase/server";
 
+const SOURCE_LANG = "en-US";
+const BATCH_CHUNK_SIZE = 4;
+const BATCH_DELAY_MS = 900;
+const RATE_LIMIT_BACKOFF_MS = 4000;
+
+function sleep(ms: number) {
+  return new Promise<void>((resolve) => setTimeout(resolve, ms));
+}
+
+function isRateLimitError(message: string): boolean {
+  const lower = message.toLowerCase();
+  return (
+    lower.includes("429") ||
+    lower.includes("rate limit") ||
+    lower.includes("resource exhausted") ||
+    lower.includes("quota")
+  );
+}
+
+function revalidateTranslationConsumers() {
+  revalidatePath("/super-admin/translations");
+  revalidatePath("/landing");
+  revalidatePath("/landing2");
+  revalidatePath("/landing3");
+  revalidatePath("/landing4");
+}
+
+async function loadAllSourceRows(): Promise<
+  | {
+      ok: true;
+      rows: Array<{
+        translation_key: string;
+        text_value: string;
+        context_description: string;
+      }>;
+    }
+  | { ok: false; error: string }
+> {
+  const supabase = await createServerSupabase();
+  await assertSuperAdminAccess(supabase);
+
+  const rows: Array<{
+    translation_key: string;
+    text_value: string;
+    context_description: string;
+  }> = [];
+  const pageSize = 1000;
+  let from = 0;
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("ui_translations")
+      .select("translation_key, text_value, context_description")
+      .eq("language_code", SOURCE_LANG)
+      .order("translation_key")
+      .range(from, from + pageSize - 1);
+
+    if (error) {
+      return { ok: false, error: error.message };
+    }
+
+    const chunk = data ?? [];
+    rows.push(...chunk);
+    if (chunk.length < pageSize) break;
+    from += pageSize;
+  }
+
+  return { ok: true, rows };
+}
+
 /**
  * AI-oversættelse til brug fra Super Admin UI (UX-tekster).
  */
@@ -65,21 +135,144 @@ export async function translateWithAI(
       ]);
     };
 
-    // En enkelt retry gør batch-kørslen mere robust ved kortvarige netværksfejl.
     let response;
-    try {
-      response = await withTimeout(1);
-    } catch {
-      response = await withTimeout(2);
+    let lastError = "Ukendt fejl";
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        response = await withTimeout(attempt);
+        break;
+      } catch (e) {
+        lastError = e instanceof Error ? e.message : "Ukendt fejl";
+        if (isRateLimitError(lastError) && attempt < 3) {
+          await sleep(RATE_LIMIT_BACKOFF_MS * attempt);
+          continue;
+        }
+        if (attempt < 3) {
+          await sleep(600);
+          continue;
+        }
+        return { ok: false, error: lastError };
+      }
     }
 
-    const out = response.text?.trim();
+    const out = response?.text?.trim();
     if (!out) {
       return { ok: false, error: "Tomt svar fra Gemini." };
     }
     return { ok: true, text: out };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Ukendt fejl";
+    return { ok: false, error: msg };
+  }
+}
+
+export type TranslateEmptyBatchInput = {
+  languageCode: string;
+  languageLabel: string;
+  offset: number;
+  keyPrefix?: string;
+};
+
+export type TranslateEmptyBatchResult =
+  | {
+      ok: true;
+      filled: number;
+      processed: number;
+      totalEmpty: number;
+      nextOffset: number;
+      hasMore: boolean;
+      errors: string[];
+      filledKeys: string[];
+    }
+  | { ok: false; error: string };
+
+/**
+ * Oversætter et lille batch tomme felter server-side (undgår rate limits i browser-loop).
+ */
+export async function translateEmptyBatch(
+  input: TranslateEmptyBatchInput
+): Promise<TranslateEmptyBatchResult> {
+  try {
+    const supabase = await createServerSupabase();
+    await assertSuperAdminAccess(supabase);
+
+    const prefix = input.keyPrefix?.trim() ?? "";
+    const source = await loadAllSourceRows();
+    if (!source.ok) {
+      return { ok: false, error: source.error };
+    }
+
+    const target = await loadTargetTexts(input.languageCode);
+    if (!target.ok) {
+      return { ok: false, error: target.error };
+    }
+
+    const emptyRows = source.rows.filter((row) => {
+      if (prefix && !row.translation_key.startsWith(prefix)) return false;
+      const sourceText = row.text_value.trim();
+      if (!sourceText) return false;
+      const existing = String(target.map[row.translation_key] ?? "").trim();
+      return !existing;
+    });
+
+    const slice = emptyRows.slice(input.offset, input.offset + BATCH_CHUNK_SIZE);
+    const admin = getAdminClient();
+    let filled = 0;
+    const errors: string[] = [];
+    const filledKeys: string[] = [];
+
+    for (let i = 0; i < slice.length; i++) {
+      const row = slice[i];
+      if (i > 0) {
+        await sleep(BATCH_DELAY_MS);
+      }
+
+      const tr = await translateWithAI(
+        row.text_value,
+        row.context_description,
+        input.languageLabel
+      );
+      if (!tr.ok) {
+        errors.push(`${row.translation_key}: ${tr.error}`);
+        continue;
+      }
+
+      const { error } = await admin.from("ui_translations").upsert(
+        {
+          translation_key: row.translation_key,
+          language_code: input.languageCode,
+          text_value: tr.text,
+          context_description: row.context_description,
+        },
+        { onConflict: "translation_key,language_code" }
+      );
+
+      if (error) {
+        errors.push(`${row.translation_key}: ${error.message}`);
+        continue;
+      }
+
+      filled++;
+      filledKeys.push(row.translation_key);
+    }
+
+    if (filled > 0) {
+      revalidateTranslationConsumers();
+    }
+
+    const nextOffset = input.offset + slice.length;
+    return {
+      ok: true,
+      filled,
+      processed: slice.length,
+      totalEmpty: emptyRows.length,
+      nextOffset,
+      hasMore: nextOffset < emptyRows.length,
+      errors,
+      filledKeys,
+    };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Batch-oversættelse fejlede.";
     return { ok: false, error: msg };
   }
 }
@@ -115,7 +308,7 @@ export async function saveTranslation(
       return { ok: false, error: error.message };
     }
 
-    revalidatePath("/super-admin/translations");
+    revalidateTranslationConsumers();
     return { ok: true };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Kunne ikke gemme.";

@@ -1,6 +1,8 @@
 import { createServerSupabase } from "@/src/utils/supabase/server";
 import TranslationsEditor from "./translations-editor";
 
+export const maxDuration = 120;
+
 export default async function SuperAdminTranslationsPage() {
   const supabase = await createServerSupabase();
 

@@ -2,11 +2,17 @@
 
 import Image from "next/image";
 import { WEBSITE_ASSETS } from "@/src/config/website-assets";
+import { createTranslator } from "@/src/lib/translations-server";
 import { useChapterScrollPresence } from "./landing4-chapter-transition";
 
 const SECTION_ID = "landing4-chapter-4";
 
-export function Chapter4PhoneVisual() {
+export function Chapter4PhoneVisual({
+  translations,
+}: {
+  translations: Record<string, string>;
+}) {
+  const t = createTranslator(translations);
   const presence = useChapterScrollPresence(SECTION_ID);
   const translateX = -36 * (1 - presence);
   const scale = 0.95 + presence * 0.05;
@@ -57,7 +63,7 @@ export function Chapter4PhoneVisual() {
             <div className="relative -mt-1 aspect-[9/19.2]">
               <Image
                 src={WEBSITE_ASSETS.landingEmployeePhoto}
-                alt="Medarbejder-app"
+                alt={t("landing4.visual.ch4.alt", "Medarbejder-app")}
                 fill
                 className="object-cover object-top"
                 unoptimized
@@ -66,10 +72,10 @@ export function Chapter4PhoneVisual() {
 
               <div className="absolute bottom-11 left-2.5 right-2.5 space-y-1.5">
                 <div className="rounded-xl border border-sky-400/35 bg-sky-500/20 px-3 py-2 text-[11px] font-semibold text-sky-50 backdrop-blur-md">
-                  Shift 07-15 · Mon
+                  {t("landing4.visual.ch4.shift_card", "Shift 07-15 · Man")}
                 </div>
                 <div className="rounded-xl border border-violet-400/30 bg-violet-500/15 px-3 py-2 text-[11px] font-semibold text-violet-50 backdrop-blur-md">
-                  Request swap
+                  {t("landing4.visual.ch4.swap_card", "Anmod om bytte")}
                 </div>
               </div>
             </div>

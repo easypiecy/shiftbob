@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import Image from "next/image";
 import { WEBSITE_ASSETS } from "@/src/config/website-assets";
+import { createTranslator } from "@/src/lib/translations-server";
 import { StoryHighlight } from "./landing4-highlight";
 
 function useHeroParallax(ref: RefObject<HTMLElement | null>, speed = 0.42) {
@@ -32,7 +33,6 @@ function useHeroParallax(ref: RefObject<HTMLElement | null>, speed = 0.42) {
       const viewport = window.innerHeight;
       const heroHeight = node.offsetHeight;
 
-      // Progress 0 when hero top hits viewport top, 1 when hero has scrolled fully past
       const scrollProgress = Math.min(
         1,
         Math.max(0, (viewport - rect.top) / (viewport + heroHeight * 0.5))
@@ -64,7 +64,12 @@ function useHeroParallax(ref: RefObject<HTMLElement | null>, speed = 0.42) {
   return { offsetY, scale, arrowProgress };
 }
 
-export function Landing4Hero() {
+export function Landing4Hero({
+  translations,
+}: {
+  translations: Record<string, string>;
+}) {
+  const t = createTranslator(translations);
   const heroRef = useRef<HTMLElement>(null);
   const { offsetY, scale, arrowProgress } = useHeroParallax(heroRef);
   const arrowScale = 1 + arrowProgress * 7;
@@ -76,7 +81,6 @@ export function Landing4Hero() {
       ref={heroRef}
       className="relative flex min-h-[78vh] flex-col items-center justify-center overflow-hidden px-4 py-24 text-center sm:min-h-[88vh] sm:py-28"
     >
-      {/* Parallax EU flag background */}
       <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
         <div
           className="absolute -inset-[18%] will-change-transform"
@@ -95,7 +99,6 @@ export function Landing4Hero() {
           />
         </div>
 
-        {/* Dark overlays for readability */}
         <div className="absolute inset-0 bg-zinc-950/55" />
         <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/30 via-zinc-950/75 to-[#050508]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,transparent_0%,#050508_85%)]" />
@@ -103,16 +106,19 @@ export function Landing4Hero() {
 
       <div className="relative z-10 max-w-4xl">
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-sky-300/90">
-          Vagtplan som altid følger reglerne
+          {t("landing4.hero.eyebrow", "Vagtplan som altid følger reglerne")}
         </p>
         <h1 className="mt-4 text-4xl font-black leading-[1.05] tracking-tight text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.6)] sm:text-5xl lg:text-6xl">
-          Fra usikkerhed om EU-regler til fuld{" "}
+          {t("landing4.hero.title_prefix", "Fra usikkerhed om EU-regler til fuld ")}
           <StoryHighlight tone="violet" thick>
-            automatisering
+            {t("landing4.hero.title_highlight", "automatisering")}
           </StoryHighlight>
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-base text-zinc-300 sm:text-lg">
-          Scroll ned — vi guider dig trin for trin fra gratis regneark til app og Autopilot.
+          {t(
+            "landing4.hero.subtitle",
+            "Scroll ned — vi guider dig trin for trin fra gratis regneark til app og Autopilot."
+          )}
         </p>
         <div
           className="pointer-events-none mt-10 origin-center text-2xl font-light text-zinc-400 will-change-transform sm:text-3xl"

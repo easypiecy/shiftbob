@@ -2,9 +2,15 @@
 
 import Image from "next/image";
 import { WEBSITE_ASSETS } from "@/src/config/website-assets";
+import { createTranslator } from "@/src/lib/translations-server";
 import { useChapterScrollPresence } from "./landing4-chapter-transition";
 
-export function Chapter1ScrollVisual() {
+export function Chapter1ScrollVisual({
+  translations,
+}: {
+  translations: Record<string, string>;
+}) {
+  const t = createTranslator(translations);
   const fade = useChapterScrollPresence("landing4-chapter-1");
   const scale = 0.88 + fade * 0.12;
 
@@ -21,7 +27,10 @@ export function Chapter1ScrollVisual() {
         <div className="relative h-full w-full overflow-hidden rounded-full shadow-[0_0_56px_rgba(16,185,129,0.22)] ring-2 ring-emerald-500/25 ring-offset-4 ring-offset-zinc-950">
           <Image
             src={WEBSITE_ASSETS.landingWorry}
-            alt="Stresset arbejdsgiver overvældet af vagtplan og compliance"
+            alt={t(
+              "landing4.visual.ch1.alt",
+              "Stresset arbejdsgiver overvældet af vagtplan og compliance"
+            )}
             fill
             className="object-cover object-center"
             sizes="(max-width: 768px) 280px, 380px"
