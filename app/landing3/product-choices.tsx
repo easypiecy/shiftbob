@@ -70,13 +70,16 @@ function PlanCard({
   const localPriceHint = formatLocalPriceHint(plan.priceEurAmount, languageCode);
 
   return (
-    <article className="relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-zinc-800 bg-zinc-900/90 p-6 shadow-[0_0_40px_rgba(0,0,0,0.4)] ring-1 ring-zinc-700/50 transition duration-300 hover:-translate-y-1 hover:border-zinc-700 hover:shadow-[0_0_48px_rgba(56,189,248,0.12)]">
+    <div className="relative h-full">
       {plan.badge ? (
-        <span className="absolute right-5 top-5 z-10 rounded-full bg-[#4A90E2] px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-white shadow-[0_0_20px_rgba(74,144,226,0.45)]">
+        <span className="absolute right-6 top-0 z-20 -translate-y-1/2 rounded-full bg-[#4A90E2]/90 px-4 py-1.5 text-sm font-bold uppercase tracking-[0.08em] text-white shadow-[0_0_24px_rgba(74,144,226,0.4)] backdrop-blur-sm sm:right-8">
           {t(plan.badge.key, plan.badge.fallback)}
         </span>
       ) : null}
-      <div className="-mx-6 -mt-6 mb-3 flex min-h-[96px] items-start justify-between gap-3 bg-[linear-gradient(135deg,#0f172a_0%,#172033_58%,#1e3a5f_100%)] px-6 py-5 ring-1 ring-sky-500/10">
+      <article className="relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-zinc-800 bg-zinc-900/90 p-6 shadow-[0_0_40px_rgba(0,0,0,0.4)] ring-1 ring-zinc-700/50 transition duration-300 hover:-translate-y-1 hover:border-zinc-700 hover:shadow-[0_0_48px_rgba(56,189,248,0.12)]">
+      <div
+        className={`-mx-6 -mt-6 mb-3 flex min-h-[96px] items-start justify-between gap-3 bg-[linear-gradient(135deg,#0f172a_0%,#172033_58%,#1e3a5f_100%)] px-6 py-5 ring-1 ring-sky-500/10${plan.badge ? " pr-28 pt-6 sm:pr-32" : ""}`}
+      >
         <div className="min-w-0">
           <h3 className="text-2xl font-bold tracking-tight text-white">
             {t(plan.title.key, plan.title.fallback)}
@@ -162,6 +165,7 @@ function PlanCard({
         ))}
       </div>
     </article>
+    </div>
   );
 }
 
@@ -189,7 +193,7 @@ export function ProductChoices({
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             {t(
               "landing.plans.header.title",
-              "Pricing"
+              "Prices"
             )}
           </h2>
         </div>
