@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ProductChoices } from "../landing3/product-choices";
 import { ScrollToProductsButton } from "./scroll-to-products-button";
@@ -24,38 +23,30 @@ export default async function Landing4Page() {
     <div className="landing4-page min-h-full overflow-x-hidden bg-[#050508] text-zinc-100">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/90 shadow-[0_1px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 sm:py-5">
-          <Link href="/" className="flex items-end gap-3 sm:gap-4">
-            <div className="rounded-2xl bg-zinc-900 p-1.5 shadow-[0_0_24px_rgba(139,92,246,0.12)] ring-1 ring-violet-500/20 sm:p-2">
-              <Image
-                src={WEBSITE_ASSETS.landingLogo}
-                alt={t("landing.nav.logo_alt", "ShiftBob logo")}
-                width={300}
-                height={300}
-                className="h-14 w-14 object-contain sm:h-16 sm:w-16"
-                priority
-                unoptimized
-              />
-            </div>
-            <span className="pb-1 text-lg font-semibold tracking-tight text-white sm:text-xl">
-              {t("landing4.nav.site_name", "shiftbob.io")}
-            </span>
+          <Link
+            href="/"
+            className="text-lg font-semibold tracking-tight text-white sm:text-xl"
+          >
+            {t("landing4.nav.site_name", "shiftbob.io")}
           </Link>
 
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
             <UiLanguageSelect
               currentLanguage={lang}
               ariaLabel={t("landing.nav.language_aria", "Choose language")}
               id="landing4-ui-language"
             />
-            <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
-              <Link
-                href="/employer-login"
-                className="rounded-full border border-zinc-700 bg-zinc-900/80 px-4 py-2 text-sm font-semibold text-zinc-200 transition hover:border-zinc-600 hover:bg-zinc-800 hover:text-white"
-              >
-                {t("landing.nav.login", "Login")}
-              </Link>
-              <ScrollToProductsButton label={t("landing.nav.try_for_free", "Try for free")} />
-            </div>
+            <Link
+              href="/employer-login"
+              className="rounded-full border border-zinc-700 bg-zinc-900/80 px-4 py-2 text-sm font-semibold text-zinc-200 transition hover:border-zinc-600 hover:bg-zinc-800 hover:text-white"
+            >
+              {t("landing.nav.login", "Login")}
+            </Link>
+            <ScrollToProductsButton
+              label={t("landing.nav.try_for_free", "Try for free")}
+              targetId="landing4-chapter-2"
+              scrollOffset={112}
+            />
           </div>
         </div>
       </header>
