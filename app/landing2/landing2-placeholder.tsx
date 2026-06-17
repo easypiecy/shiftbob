@@ -8,7 +8,7 @@ type Landing2PlaceholderProps = {
   src?: string;
   alt?: string;
   className?: string;
-  rounded?: "2xl" | "3xl" | "full";
+  rounded?: "xl" | "2xl" | "3xl" | "full";
 };
 
 export function Landing2Placeholder({
@@ -19,7 +19,13 @@ export function Landing2Placeholder({
   rounded = "2xl",
 }: Landing2PlaceholderProps) {
   const radius =
-    rounded === "full" ? "rounded-full" : rounded === "3xl" ? "rounded-3xl" : "rounded-2xl";
+    rounded === "full"
+      ? "rounded-full"
+      : rounded === "3xl"
+        ? "rounded-3xl"
+        : rounded === "xl"
+          ? "rounded-xl"
+          : "rounded-2xl";
 
   if (src?.trim()) {
     return (

@@ -26,17 +26,18 @@ export function Chapter5ScrollVideo({
   const presenceRef = useRef(0);
 
   useEffect(() => {
-    const el = videoRef.current;
-    if (!el) return;
+    const video = videoRef.current;
+    if (!video) return;
 
     let frame = 0;
 
     function syncTime() {
-      if (durationRef.current <= 0) return;
+      const v = videoRef.current;
+      if (!v || durationRef.current <= 0) return;
       const target = presenceRef.current * durationRef.current;
-      if (Math.abs(el.currentTime - target) > 0.02) {
+      if (Math.abs(v.currentTime - target) > 0.02) {
         try {
-          el.currentTime = target;
+          v.currentTime = target;
         } catch {
           // Ignore seek errors while metadata is still loading.
         }
@@ -56,13 +57,15 @@ export function Chapter5ScrollVideo({
     }
 
     function onLoadedMetadata() {
-      durationRef.current = el.duration;
-      el.pause();
+      const v = videoRef.current;
+      if (!v) return;
+      durationRef.current = v.duration;
+      v.pause();
       syncTime();
     }
 
-    el.addEventListener("loadedmetadata", onLoadedMetadata);
-    if (el.readyState >= 1) onLoadedMetadata();
+    video.addEventListener("loadedmetadata", onLoadedMetadata);
+    if (video.readyState >= 1) onLoadedMetadata();
 
     updatePresence();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -70,7 +73,7 @@ export function Chapter5ScrollVideo({
 
     return () => {
       cancelAnimationFrame(frame);
-      el.removeEventListener("loadedmetadata", onLoadedMetadata);
+      video.removeEventListener("loadedmetadata", onLoadedMetadata);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
