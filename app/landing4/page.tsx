@@ -78,21 +78,22 @@ export default async function Landing4Page() {
 
       <SalesBotWidget
         languageCode={lang}
+        theme="landing4"
         iconUrl="https://pwooqmqdershicxpnfuo.supabase.co/storage/v1/object/public/website_assets/chat.png"
         logoUrl={WEBSITE_ASSETS.landingLogo}
         buttonLabel={t("landing.salesbot.button_aria", "Ask shiftBOB")}
-        panelTitle="shiftBOB"
+        panelTitle="shiftbob support"
         initialAssistantMessage={t(
           "landing.salesbot.initial_message",
-          "Ask me anything about ShiftBob and your shift plan."
+          "Do you have any questions for me?"
         )}
         inputPlaceholder={t(
           "landing.salesbot.input_placeholder",
-          "Ask about pricing, features, or onboarding..."
+          "Ask me anything about BOB"
         )}
         sendLabel={t("landing.salesbot.send", "Send")}
         closeLabel={t("landing.salesbot.close", "Close chat")}
-        supportButtonLabel={t("landing.salesbot.support_button", "Support ticket")}
+        supportButtonLabel="support ticket"
         supportPanelTitle={t("landing.salesbot.support_panel_title", "Create support ticket")}
         supportSubjectLabel={t("landing.salesbot.support_subject", "Subject")}
         supportMessageLabel={t("landing.salesbot.support_message", "Describe your issue")}

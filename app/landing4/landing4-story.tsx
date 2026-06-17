@@ -15,7 +15,7 @@ import { Chapter5ScrollVideo } from "./landing4-chapter5-video";
 import { ChapterProgressRail } from "./landing4-chapter-rail";
 import { Landing4Hero } from "./landing4-hero";
 import { Landing4ScrollProvider } from "./landing4-scroll-context";
-import { StoryDetail, StoryHighlightPhrase } from "./landing4-highlight";
+import { StoryDetailSegment, StoryHighlightPhrase } from "./landing4-highlight";
 import { Landing4GradientBorderLink } from "./landing4-cta-button";
 import { useInView } from "./use-in-view";
 
@@ -155,29 +155,29 @@ export function Landing4Story({
             />
           </h2>
           <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
-            {t(
-              "landing4.chapter1.body_prefix",
-              "De skærpede EU-direktiver stiller markant større krav til arbejdsgivere, når det gælder "
-            )}
-            <StoryDetail
+            <StoryDetailSegment
+              before={t(
+                "landing4.chapter1.body_prefix",
+                "De skærpede EU-direktiver stiller markant større krav til arbejdsgivere, når det gælder "
+              )}
               label={t("landing4.chapter1.detail.time_registration.label", "tidsregistrering")}
               detail={t(
                 "landing4.chapter1.detail.time_registration.tooltip",
                 "Dokumentation af faktisk arbejdstid er et centralt krav i de opdaterede direktiver."
               )}
+              after={t("landing4.chapter1.body_mid", " og ")}
             />
-            {t("landing4.chapter1.body_mid", " og ")}
-            <StoryDetail
+            <StoryDetailSegment
               label={t("landing4.chapter1.detail.rest_periods.label", "hviletidsbestemmelser")}
               detail={t(
                 "landing4.chapter1.detail.rest_periods.tooltip",
                 "FX 11-timers daglig hvile og ugentligt fridøgn — ShiftBob tjekker automatisk for brud."
               )}
+              after={t(
+                "landing4.chapter1.body_suffix",
+                ". Er du sikker på, at dine nuværende processer holder jer på den sikre side af loven?"
+              )}
             />
-            {t(
-              "landing4.chapter1.body_suffix",
-              ". Er du sikker på, at dine nuværende processer holder jer på den sikre side af loven?"
-            )}
           </p>
         </ChapterShell>
 
@@ -207,21 +207,21 @@ export function Landing4Story({
             />
           </h2>
           <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
-            {t(
-              "landing4.chapter2.body_prefix",
-              "Få det fulde overblik over dit team. Hent vores professionelle Excel-skabelon i dag og få indbygget "
-            )}
-            <StoryDetail
+            <StoryDetailSegment
+              before={t(
+                "landing4.chapter2.body_prefix",
+                "Få det fulde overblik over dit team. Hent vores professionelle Excel-skabelon i dag og få indbygget "
+              )}
               label={t("landing4.chapter2.detail.hour_calc.label", "timeberegning")}
               detail={t(
                 "landing4.chapter2.detail.hour_calc.tooltip",
                 "Automatiske summeringer pr. medarbejder og måned — klar til løn og overblik."
               )}
+              after={t(
+                "landing4.chapter2.body_suffix",
+                ", automatisk struktur og et klart overblik over jeres arbejdstid."
+              )}
             />
-            {t(
-              "landing4.chapter2.body_suffix",
-              ", automatisk struktur og et klart overblik over jeres arbejdstid."
-            )}
           </p>
           <StoryCta
             href="/employer-signup?product=basic"
@@ -323,21 +323,21 @@ export function Landing4Story({
             />
           </h2>
           <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
-            {t(
-              "landing4.chapter5.body_prefix",
-              "Tag det næste skridt og slip fuldstændig for det manuelle arbejde i regnearket. Lad vores indbyggede "
-            )}
-            <StoryDetail
+            <StoryDetailSegment
+              before={t(
+                "landing4.chapter5.body_prefix",
+                "Tag det næste skridt og slip fuldstændig for det manuelle arbejde i regnearket. Lad vores indbyggede "
+              )}
               label={t("landing4.chapter5.detail.ai.label", "AI")}
               detail={t(
                 "landing4.chapter5.detail.ai.tooltip",
                 "Autopilot genererer compliant vagtplaner og balancerer medarbejdernes ønsker automatisk."
               )}
+              after={t(
+                "landing4.chapter5.body_suffix",
+                " håndtere den automatiske vagtplanlægning, så du optimerer de daglige arbejdsgange og altid er garanteret fuld compliance."
+              )}
             />
-            {t(
-              "landing4.chapter5.body_suffix",
-              " håndtere den automatiske vagtplanlægning, så du optimerer de daglige arbejdsgange og altid er garanteret fuld compliance."
-            )}
           </p>
           <StoryCta
             href="/employer-signup?product=autopilot"

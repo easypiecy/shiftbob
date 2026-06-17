@@ -39,6 +39,7 @@ type Props = {
   resetLabel: string;
   dismissLabel?: string;
   dismissStorageKey?: string;
+  theme?: "default" | "landing4";
 };
 
 type SessionState = {
@@ -69,7 +70,9 @@ export function SalesBotWidget({
   resetLabel,
   dismissLabel,
   dismissStorageKey,
+  theme = "default",
 }: Props) {
+  const isLanding4 = theme === "landing4";
   const headerLogoSrc = logoUrl?.trim() || "/ShiftBob-circle-logo-dark-1024.png";
   const [open, setOpen] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -316,18 +319,38 @@ export function SalesBotWidget({
       </div>
 
       {open ? (
-        <section className="fixed bottom-24 right-6 z-[70] flex h-[540px] w-[min(92vw,390px)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl">
-          <header className="flex items-center justify-between border-b border-[#3A7FD1] bg-[#4A90E2] px-4 py-3">
-            <h2 className="flex items-center gap-2 text-base font-semibold text-white">
-              <span className="inline-flex items-center justify-center rounded-md bg-black p-0.5">
-                <Image
-                  src={headerLogoSrc}
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="h-6 w-6 object-contain"
-                />
-              </span>
+        <section
+          className={
+            isLanding4
+              ? "fixed bottom-24 right-6 z-[70] flex h-[540px] w-[min(92vw,390px)] flex-col overflow-hidden rounded-2xl border border-white/15 bg-zinc-950/95 shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_28px_90px_rgba(0,0,0,0.92),0_0_56px_rgba(56,189,248,0.14)] ring-1 ring-white/10 backdrop-blur-xl"
+              : "fixed bottom-24 right-6 z-[70] flex h-[540px] w-[min(92vw,390px)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl"
+          }
+        >
+          <header
+            className={
+              isLanding4
+                ? "flex items-center justify-between border-b border-white/10 bg-zinc-950/90 px-4 py-3.5 backdrop-blur-xl"
+                : "flex items-center justify-between border-b border-[#3A7FD1] bg-[#4A90E2] px-4 py-3"
+            }
+          >
+            <h2
+              className={
+                isLanding4
+                  ? "text-sm font-semibold tracking-tight text-white sm:text-base"
+                  : "flex items-center gap-2 text-base font-semibold text-white"
+              }
+            >
+              {!isLanding4 ? (
+                <span className="inline-flex items-center justify-center rounded-md bg-black p-0.5">
+                  <Image
+                    src={headerLogoSrc}
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="h-6 w-6 object-contain"
+                  />
+                </span>
+              ) : null}
               <span>{panelTitle}</span>
             </h2>
             <div className="flex items-center gap-1">
@@ -337,7 +360,11 @@ export function SalesBotWidget({
                   resetChat();
                   void initializeChat(true);
                 }}
-                className="rounded-md p-1 text-white/85 hover:bg-white/15 hover:text-white"
+                className={
+                  isLanding4
+                    ? "rounded-md p-1 text-zinc-400 transition hover:bg-white/10 hover:text-white"
+                    : "rounded-md p-1 text-white/85 hover:bg-white/15 hover:text-white"
+                }
                 aria-label={resetLabel}
                 title={resetLabel}
               >
@@ -346,7 +373,11 @@ export function SalesBotWidget({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded-md p-1 text-white/90 hover:bg-white/15 hover:text-white"
+                className={
+                  isLanding4
+                    ? "rounded-md p-1 text-zinc-300 transition hover:bg-white/10 hover:text-white"
+                    : "rounded-md p-1 text-white/90 hover:bg-white/15 hover:text-white"
+                }
                 aria-label={closeLabel}
                 title={closeLabel}
               >
@@ -355,21 +386,35 @@ export function SalesBotWidget({
             </div>
           </header>
 
-          <div className="flex-1 space-y-3 overflow-y-auto bg-zinc-50 px-3 py-3">
+          <div
+            className={
+              isLanding4
+                ? "flex-1 space-y-3 overflow-y-auto bg-[#050508] px-3 py-3"
+                : "flex-1 space-y-3 overflow-y-auto bg-zinc-50 px-3 py-3"
+            }
+          >
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={
                   message.role === "assistant"
-                    ? "max-w-[92%] rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-800"
-                    : "ml-auto max-w-[92%] rounded-xl bg-[#4A90E2] px-3 py-2 text-sm text-white"
+                    ? isLanding4
+                      ? "max-w-[92%] rounded-xl border border-white/10 bg-zinc-900/90 px-3 py-2 text-sm text-zinc-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+                      : "max-w-[92%] rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-800"
+                    : isLanding4
+                      ? "ml-auto max-w-[92%] rounded-xl bg-sky-600 px-3 py-2 text-sm text-white shadow-[0_0_20px_rgba(56,189,248,0.25)]"
+                      : "ml-auto max-w-[92%] rounded-xl bg-[#4A90E2] px-3 py-2 text-sm text-white"
                 }
               >
                 <p className="whitespace-pre-wrap">{message.text}</p>
                 {message.role === "assistant" && message.ctaLabel && message.ctaHref ? (
                   <a
                     href={message.ctaHref}
-                    className="mt-2 inline-flex text-sm font-semibold text-[#3A7FD1] underline underline-offset-2 hover:text-[#2b69af]"
+                    className={
+                      isLanding4
+                        ? "mt-2 inline-flex text-sm font-semibold text-sky-400 underline underline-offset-2 hover:text-sky-300"
+                        : "mt-2 inline-flex text-sm font-semibold text-[#3A7FD1] underline underline-offset-2 hover:text-[#2b69af]"
+                    }
                   >
                     {message.ctaLabel}
                   </a>
@@ -377,7 +422,13 @@ export function SalesBotWidget({
               </div>
             ))}
             {loading ? (
-              <div className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs text-zinc-600">
+              <div
+                className={
+                  isLanding4
+                    ? "inline-flex items-center gap-2 rounded-xl border border-white/10 bg-zinc-900/90 px-3 py-2 text-xs text-zinc-400"
+                    : "inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs text-zinc-600"
+                }
+              >
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
                 Thinking...
               </div>
@@ -386,9 +437,19 @@ export function SalesBotWidget({
             {supportOpen ? (
               <form
                 onSubmit={submitSupportTicket}
-                className="space-y-2 rounded-xl border border-zinc-200 bg-white p-3"
+                className={
+                  isLanding4
+                    ? "space-y-2 rounded-xl border border-white/10 bg-zinc-900/90 p-3"
+                    : "space-y-2 rounded-xl border border-zinc-200 bg-white p-3"
+                }
               >
-                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                <p
+                  className={
+                    isLanding4
+                      ? "text-xs font-semibold uppercase tracking-wide text-zinc-500"
+                      : "text-xs font-semibold uppercase tracking-wide text-zinc-500"
+                  }
+                >
                   {supportPanelTitle}
                 </p>
                 {!session?.loggedIn ? (
@@ -397,13 +458,21 @@ export function SalesBotWidget({
                       value={supportName}
                       onChange={(e) => setSupportName(e.target.value)}
                       placeholder={supportNameLabel}
-                      className="h-9 rounded-md border border-zinc-300 px-2 text-sm"
+                      className={
+                        isLanding4
+                          ? "h-9 rounded-md border border-zinc-700 bg-zinc-950 px-2 text-sm text-zinc-100 placeholder:text-zinc-500"
+                          : "h-9 rounded-md border border-zinc-300 px-2 text-sm"
+                      }
                     />
                     <input
                       value={supportEmail}
                       onChange={(e) => setSupportEmail(e.target.value)}
                       placeholder={supportEmailLabel}
-                      className="h-9 rounded-md border border-zinc-300 px-2 text-sm"
+                      className={
+                        isLanding4
+                          ? "h-9 rounded-md border border-zinc-700 bg-zinc-950 px-2 text-sm text-zinc-100 placeholder:text-zinc-500"
+                          : "h-9 rounded-md border border-zinc-300 px-2 text-sm"
+                      }
                     />
                   </div>
                 ) : null}
@@ -411,20 +480,32 @@ export function SalesBotWidget({
                   value={supportSubject}
                   onChange={(e) => setSupportSubject(e.target.value)}
                   placeholder={supportSubjectLabel}
-                  className="h-9 w-full rounded-md border border-zinc-300 px-2 text-sm"
+                  className={
+                    isLanding4
+                      ? "h-9 w-full rounded-md border border-zinc-700 bg-zinc-950 px-2 text-sm text-zinc-100 placeholder:text-zinc-500"
+                      : "h-9 w-full rounded-md border border-zinc-300 px-2 text-sm"
+                  }
                 />
                 <textarea
                   rows={4}
                   value={supportMessage}
                   onChange={(e) => setSupportMessage(e.target.value)}
                   placeholder={supportMessageLabel}
-                  className="w-full rounded-md border border-zinc-300 px-2 py-2 text-sm"
+                  className={
+                    isLanding4
+                      ? "w-full rounded-md border border-zinc-700 bg-zinc-950 px-2 py-2 text-sm text-zinc-100 placeholder:text-zinc-500"
+                      : "w-full rounded-md border border-zinc-300 px-2 py-2 text-sm"
+                  }
                 />
                 <div className="flex items-center justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setSupportOpen(false)}
-                    className="rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs text-zinc-700"
+                    className={
+                      isLanding4
+                        ? "rounded-md border border-zinc-600 px-2.5 py-1.5 text-xs text-zinc-300 hover:bg-zinc-800"
+                        : "rounded-md border border-zinc-300 px-2.5 py-1.5 text-xs text-zinc-700"
+                    }
                   >
                     {closeLabel}
                   </button>
@@ -446,12 +527,23 @@ export function SalesBotWidget({
             ) : null}
           </div>
 
-          <form onSubmit={onSubmit} className="border-t border-zinc-200 bg-white p-3">
+          <form
+            onSubmit={onSubmit}
+            className={
+              isLanding4
+                ? "border-t border-white/10 bg-zinc-950/95 p-3 backdrop-blur-xl"
+                : "border-t border-zinc-200 bg-white p-3"
+            }
+          >
             <div className="mb-2 flex justify-start">
               <button
                 type="button"
                 onClick={() => setSupportOpen((value) => !value)}
-                className="rounded-full border border-zinc-300 bg-yellow-100/60 px-3 py-1.5 text-sm text-zinc-700 hover:bg-yellow-100"
+                className={
+                  isLanding4
+                    ? "rounded-full border border-zinc-600 bg-zinc-800/80 px-3 py-1.5 text-sm font-semibold text-zinc-200 transition hover:border-zinc-500 hover:bg-zinc-700 hover:text-white"
+                    : "rounded-full border border-zinc-300 bg-yellow-100/60 px-3 py-1.5 text-sm text-zinc-700 hover:bg-yellow-100"
+                }
               >
                 {supportButtonLabel}
               </button>
@@ -461,7 +553,11 @@ export function SalesBotWidget({
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={inputPlaceholder}
-                className="h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
+                className={
+                  isLanding4
+                    ? "h-10 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-sky-500/50 focus:outline-none focus:ring-1 focus:ring-sky-500/30"
+                    : "h-10 w-full rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
+                }
               />
               <button
                 type="submit"

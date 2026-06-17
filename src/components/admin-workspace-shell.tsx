@@ -271,11 +271,11 @@ export function AdminWorkspaceShell({
         panelTitle="shiftBOB"
         initialAssistantMessage={t(
           "landing.salesbot.initial_message",
-          "Sporg mig om ShiftBob, vagtplaner eller regler."
+          "Har du nogle spørgsmål til mig?"
         )}
         inputPlaceholder={t(
           "landing.salesbot.input_placeholder",
-          "Skriv dit sporgsmal..."
+          "Spørg mig om alt vedrørende BOB"
         )}
         sendLabel={t("landing.salesbot.send", "Send")}
         closeLabel={t("landing.salesbot.close", "Luk chat")}

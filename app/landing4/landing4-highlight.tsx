@@ -15,19 +15,40 @@ const TONE_OFFSET: Record<string, number> = {
   white: 0.36,
 };
 
-/** Punctuation glued directly after highlight (no extra space). */
-const GLUED_AFTER = /^[?.!,;:)}\]—–-]/;
+/** . , ? : (and ! ;) glue flush after highlight/tooltip — no space before. */
+const GLUED_AFTER = /^[.,?:!;]/;
+const SPACE_BEFORE_GLUED = /\s+([.,?:!;])/g;
 
 function trimTrailingSpace(text: string) {
   return text.replace(/\s+$/, "");
 }
 
+function trimLabel(text: string) {
+  return text.trim();
+}
+
+/** Trim leading space and collapse erroneous spaces before glued punctuation in translations. */
+function normalizeAfterText(after: string): string {
+  return after.trimStart().replace(SPACE_BEFORE_GLUED, "$1");
+}
+
 function afterHighlightFragment(after?: string): ReactNode {
   if (after == null || after === "") return null;
-  const trimmed = after.trimStart();
-  if (!trimmed) return null;
-  if (GLUED_AFTER.test(trimmed)) return trimmed;
-  return <>{" "}{trimmed}</>;
+  const normalized = normalizeAfterText(after);
+  if (!normalized) return null;
+  if (GLUED_AFTER.test(normalized)) return normalized;
+  return <>{" "}{normalized}</>;
+}
+
+/** Connector words padded; sentence punctuation glues flush to label. */
+function detailAfterFragment(after?: string): ReactNode {
+  if (after == null || after === "") return null;
+  const normalized = normalizeAfterText(after);
+  if (!normalized) return null;
+  if (GLUED_AFTER.test(normalized)) return normalized;
+  const inner = normalized.trim();
+  if (!inner) return null;
+  return <>{" "}{inner}{" "}</>;
 }
 
 type HighlightTone = keyof typeof TONE_OFFSET;
@@ -50,15 +71,29 @@ export function StoryHighlightPhrase({
   thick?: boolean;
 }) {
   const beforeText = trimTrailingSpace(before);
+  const cleanHighlight = trimLabel(highlight);
+  const normalizedAfter = after != null ? normalizeAfterText(after) : "";
+  const afterIsGlued = normalizedAfter !== "" && GLUED_AFTER.test(normalizedAfter);
 
   return (
     <>
       {beforeText}
       {beforeText ? " " : null}
-      <StoryHighlight tone={tone} thick={thick}>
-        {highlight}
-      </StoryHighlight>
-      {afterHighlightFragment(after)}
+      {afterIsGlued ? (
+        <span className="inline">
+          <StoryHighlight tone={tone} thick={thick}>
+            {cleanHighlight}
+          </StoryHighlight>
+          {normalizedAfter}
+        </span>
+      ) : (
+        <>
+          <StoryHighlight tone={tone} thick={thick}>
+            {cleanHighlight}
+          </StoryHighlight>
+          {afterHighlightFragment(after)}
+        </>
+      )}
     </>
   );
 }
@@ -94,6 +129,46 @@ export function StoryHighlight({
   );
 }
 
+export function StoryDetailSegment({
+  before,
+  label,
+  detail,
+  after,
+}: {
+  before?: string;
+  label: string;
+  detail: string;
+  after?: string;
+}) {
+  const beforeText = before ? trimTrailingSpace(before) : "";
+  const cleanLabel = trimLabel(label);
+  const normalizedAfter = after != null ? normalizeAfterText(after) : "";
+  const afterIsGlued = normalizedAfter !== "" && GLUED_AFTER.test(normalizedAfter);
+  const detailNode = <StoryDetail label={cleanLabel} detail={detail} />;
+
+  return (
+    <>
+      {beforeText ? (
+        <>
+          {beforeText}
+          {" "}
+        </>
+      ) : null}
+      {afterIsGlued ? (
+        <span className="inline">
+          {detailNode}
+          {normalizedAfter}
+        </span>
+      ) : (
+        <>
+          {detailNode}
+          {detailAfterFragment(after)}
+        </>
+      )}
+    </>
+  );
+}
+
 export function StoryDetail({
   label,
   detail,
@@ -113,7 +188,7 @@ export function StoryDetail({
       onClick={() => setOpen((value) => !value)}
       onBlur={() => setOpen(false)}
     >
-      {label}
+      {trimLabel(label)}
       <span
         id={tooltipId}
         role="tooltip"

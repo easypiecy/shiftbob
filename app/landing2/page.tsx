@@ -97,11 +97,11 @@ export default async function Landing2Page() {
         panelTitle="shiftBOB"
         initialAssistantMessage={t(
           "landing.salesbot.initial_message",
-          "Ask me anything about ShiftBob and your shift plan."
+          "Do you have any questions for me?"
         )}
         inputPlaceholder={t(
           "landing.salesbot.input_placeholder",
-          "Ask about pricing, features, or onboarding..."
+          "Ask me anything about BOB"
         )}
         sendLabel={t("landing.salesbot.send", "Send")}
         closeLabel={t("landing.salesbot.close", "Close chat")}
