@@ -22,7 +22,7 @@ export default async function Landing4Page() {
   return (
     <div className="landing4-page min-h-full overflow-x-hidden bg-[#050508] text-zinc-100">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/90 shadow-[0_1px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 sm:py-5">
+        <div className="mx-auto flex w-full max-w-[95%] items-center justify-between gap-4 py-4 sm:py-5">
           <Link
             href="/"
             className="text-lg font-semibold tracking-tight text-white sm:text-xl"
