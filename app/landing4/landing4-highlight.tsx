@@ -15,13 +15,61 @@ const TONE_OFFSET: Record<string, number> = {
   white: 0.36,
 };
 
+/** Punctuation glued directly after highlight (no extra space). */
+const GLUED_AFTER = /^[?.!,;:)}\]—–-]/;
+
+function trimTrailingSpace(text: string) {
+  return text.replace(/\s+$/, "");
+}
+
+function afterHighlightFragment(after?: string): ReactNode {
+  if (after == null || after === "") return null;
+  const trimmed = after.trimStart();
+  if (!trimmed) return null;
+  if (GLUED_AFTER.test(trimmed)) return trimmed;
+  return <>{" "}{trimmed}</>;
+}
+
+type HighlightTone = keyof typeof TONE_OFFSET;
+
+/**
+ * Prefix + highlighted word + suffix with reliable spacing in all languages.
+ * Trims stray spaces from translation parts; AI often drops trailing/leading spaces.
+ */
+export function StoryHighlightPhrase({
+  before,
+  highlight,
+  after,
+  tone = "sky",
+  thick = false,
+}: {
+  before: string;
+  highlight: string;
+  after?: string;
+  tone?: HighlightTone;
+  thick?: boolean;
+}) {
+  const beforeText = trimTrailingSpace(before);
+
+  return (
+    <>
+      {beforeText}
+      {beforeText ? " " : null}
+      <StoryHighlight tone={tone} thick={thick}>
+        {highlight}
+      </StoryHighlight>
+      {afterHighlightFragment(after)}
+    </>
+  );
+}
+
 export function StoryHighlight({
   children,
   tone = "sky",
   thick = false,
 }: {
   children: ReactNode;
-  tone?: keyof typeof TONE_OFFSET;
+  tone?: HighlightTone;
   thick?: boolean;
 }) {
   const scrollProgress = useLanding4ScrollProgress();
@@ -29,7 +77,7 @@ export function StoryHighlight({
   const position = ((scrollProgress * 1.4 + offset) % 1) * 100;
 
   return (
-    <span className="group/hl relative inline-block font-black text-white">
+    <span className="group/hl relative inline font-black text-white">
       {children}
       <span
         className={`absolute -bottom-0.5 left-0 w-[92%] rounded-full opacity-90 transition-[background-position,opacity] duration-300 ease-out group-hover/hl:w-full group-hover/hl:opacity-100 ${

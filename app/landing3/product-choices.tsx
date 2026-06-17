@@ -169,15 +169,21 @@ export function ProductChoices({
   translations,
   languageCode,
   primaryCtaVariant = "blue",
+  sectionBorder = true,
+  sectionClassName = "bg-[linear-gradient(180deg,#0a0a10_0%,#0c0c12_100%)]",
 }: {
   translations: Record<string, string>;
   languageCode: string;
   primaryCtaVariant?: PrimaryCtaVariant;
+  sectionBorder?: boolean;
+  sectionClassName?: string;
 }) {
   const t = createTranslator(translations);
 
   return (
-    <section className="border-y border-zinc-800 bg-[linear-gradient(180deg,#0a0a10_0%,#0c0c12_100%)]">
+    <section
+      className={`${sectionClassName} ${sectionBorder ? "border-y border-zinc-800" : ""}`}
+    >
       <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-4xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">

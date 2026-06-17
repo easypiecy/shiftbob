@@ -10,7 +10,7 @@ export const LANDING4_CHAPTER_IDS = [
   "landing4-chapter-5",
 ] as const;
 
-/** Active chapter index (0–4), or -1 when still in the hero above chapter 1. */
+/** Active chapter index (0–4), or -1 in hero / -2 below last chapter (rail hidden). */
 export function useChapterScrollSpy(): number {
   const [activeChapter, setActiveChapter] = useState(-1);
 
@@ -28,7 +28,7 @@ export function useChapterScrollSpy(): number {
       const last = sections[sections.length - 1].getBoundingClientRect();
 
       if (first.top > marker) return -1;
-      if (last.top <= marker) return sections.length - 1;
+      if (last.bottom < marker) return -2;
 
       for (let i = 0; i < sections.length; i++) {
         const rect = sections[i].getBoundingClientRect();

@@ -4,12 +4,13 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import Image from "next/image";
 import { WEBSITE_ASSETS } from "@/src/config/website-assets";
 import { createTranslator } from "@/src/lib/translations-server";
-import { StoryHighlight } from "./landing4-highlight";
+import { StoryHighlightPhrase } from "./landing4-highlight";
 
 function useHeroParallax(ref: RefObject<HTMLElement | null>, speed = 0.42) {
   const [offsetY, setOffsetY] = useState(0);
   const [scale, setScale] = useState(1.12);
   const [arrowProgress, setArrowProgress] = useState(0);
+  const [arrowTop, setArrowTop] = useState(0);
 
   useEffect(() => {
     const el = ref.current;
@@ -20,6 +21,7 @@ function useHeroParallax(ref: RefObject<HTMLElement | null>, speed = 0.42) {
       setOffsetY(0);
       setScale(1.08);
       setArrowProgress(0);
+      setArrowTop(0);
       return;
     }
 
@@ -43,6 +45,8 @@ function useHeroParallax(ref: RefObject<HTMLElement | null>, speed = 0.42) {
 
       const arrowScroll = Math.min(1, Math.max(0, -rect.top / (heroHeight * 0.42)));
       setArrowProgress(arrowScroll);
+      const arrowTranslateY = arrowScroll * 140;
+      setArrowTop(rect.top + heroHeight * 0.78 + arrowTranslateY);
     }
 
     function onScroll() {
@@ -61,7 +65,7 @@ function useHeroParallax(ref: RefObject<HTMLElement | null>, speed = 0.42) {
     };
   }, [ref, speed]);
 
-  return { offsetY, scale, arrowProgress };
+  return { offsetY, scale, arrowProgress, arrowTop };
 }
 
 export function Landing4Hero({
@@ -71,17 +75,18 @@ export function Landing4Hero({
 }) {
   const t = createTranslator(translations);
   const heroRef = useRef<HTMLElement>(null);
-  const { offsetY, scale, arrowProgress } = useHeroParallax(heroRef);
+  const { offsetY, scale, arrowProgress, arrowTop } = useHeroParallax(heroRef);
   const arrowScale = 1 + arrowProgress * 7;
-  const arrowTranslateY = arrowProgress * 140;
   const arrowOpacity = 1 - arrowProgress;
+  const showArrow = arrowTop > 0 && arrowOpacity > 0.02;
 
   return (
+    <>
     <section
       ref={heroRef}
-      className="relative flex min-h-[78vh] flex-col items-center justify-center overflow-hidden px-4 py-24 text-center sm:min-h-[88vh] sm:py-28"
+      className="relative flex min-h-[78vh] flex-col items-center justify-center px-4 py-24 text-center sm:min-h-[88vh] sm:py-28"
     >
-      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
         <div
           className="absolute -inset-[18%] will-change-transform"
           style={{
@@ -109,10 +114,12 @@ export function Landing4Hero({
           {t("landing4.hero.eyebrow", "Vagtplan som altid følger reglerne")}
         </p>
         <h1 className="mt-4 text-4xl font-black leading-[1.05] tracking-tight text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.6)] sm:text-5xl lg:text-6xl">
-          {t("landing4.hero.title_prefix", "Fra usikkerhed om EU-regler til fuld ")}
-          <StoryHighlight tone="violet" thick>
-            {t("landing4.hero.title_highlight", "automatisering")}
-          </StoryHighlight>
+          <StoryHighlightPhrase
+            tone="violet"
+            thick
+            before={t("landing4.hero.title_prefix", "Fra usikkerhed om EU-regler til fuld ")}
+            highlight={t("landing4.hero.title_highlight", "automatisering")}
+          />
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-base text-zinc-300 sm:text-lg">
           {t(
@@ -120,17 +127,22 @@ export function Landing4Hero({
             "Scroll ned — vi guider dig trin for trin fra gratis regneark til app og Autopilot."
           )}
         </p>
-        <div
-          className="pointer-events-none mt-10 origin-center text-2xl font-light text-zinc-400 will-change-transform sm:text-3xl"
-          style={{
-            transform: `translate3d(0, ${arrowTranslateY}px, 0) scale(${arrowScale})`,
-            opacity: arrowOpacity,
-          }}
-          aria-hidden="true"
-        >
-          ↓
-        </div>
       </div>
     </section>
+
+    {showArrow ? (
+      <div
+        className="pointer-events-none fixed left-1/2 z-30 origin-center text-2xl font-light text-zinc-400 will-change-transform sm:text-3xl"
+        style={{
+          top: arrowTop,
+          transform: `translate3d(-50%, 0, 0) scale(${arrowScale})`,
+          opacity: arrowOpacity,
+        }}
+        aria-hidden="true"
+      >
+        ↓
+      </div>
+    ) : null}
+    </>
   );
 }

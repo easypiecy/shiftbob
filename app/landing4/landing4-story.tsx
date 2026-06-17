@@ -15,7 +15,7 @@ import { Chapter5ScrollVideo } from "./landing4-chapter5-video";
 import { ChapterProgressRail } from "./landing4-chapter-rail";
 import { Landing4Hero } from "./landing4-hero";
 import { Landing4ScrollProvider } from "./landing4-scroll-context";
-import { StoryDetail, StoryHighlight } from "./landing4-highlight";
+import { StoryDetail, StoryHighlightPhrase } from "./landing4-highlight";
 import { Landing4GradientBorderLink } from "./landing4-cta-button";
 import { useInView } from "./use-in-view";
 
@@ -49,7 +49,7 @@ function ChapterShell({
     <section
       id={id}
       ref={ref}
-      className={`relative scroll-mt-24 border-b border-white/5 py-16 sm:min-h-[92vh] sm:py-24 ${className}`}
+      className={`relative scroll-mt-24 py-16 sm:min-h-[92vh] sm:py-24 ${className}`}
     >
       {scrollBgColor ? <ChapterSectionScrollBg sectionId={id} color={scrollBgColor} /> : null}
 
@@ -146,11 +146,13 @@ export function Landing4Story({
           visual={<Chapter1ScrollVisual translations={translations} />}
         >
           <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
-            {t("landing4.chapter1.title_prefix", "Lever din vagtplan op til de seneste ")}
-            <StoryHighlight tone="emerald" thick>
-              {t("landing4.chapter1.title_highlight", "EU-regler")}
-            </StoryHighlight>
-            {t("landing4.chapter1.title_suffix", "?")}
+            <StoryHighlightPhrase
+              tone="emerald"
+              thick
+              before={t("landing4.chapter1.title_prefix", "Lever din vagtplan op til de seneste ")}
+              highlight={t("landing4.chapter1.title_highlight", "EU-regler")}
+              after={t("landing4.chapter1.title_suffix", "?")}
+            />
           </h2>
           <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
             {t(
@@ -194,13 +196,15 @@ export function Landing4Story({
           visual={<Chapter2ScrollVisual translations={translations} />}
         >
           <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
-            {t(
-              "landing4.chapter2.title_prefix",
-              "Download det ultimative regneark til vagtplanlægning — 100% "
-            )}
-            <StoryHighlight tone="emerald" thick>
-              {t("landing4.chapter2.title_highlight", "gratis")}
-            </StoryHighlight>
+            <StoryHighlightPhrase
+              tone="emerald"
+              thick
+              before={t(
+                "landing4.chapter2.title_prefix",
+                "Download det ultimative regneark til vagtplanlægning — 100% "
+              )}
+              highlight={t("landing4.chapter2.title_highlight", "gratis")}
+            />
           </h2>
           <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
             {t(
@@ -236,10 +240,12 @@ export function Landing4Story({
           visual={<Chapter3UploadVisual translations={translations} />}
         >
           <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
-            {t("landing4.chapter3.title_prefix", "Send os dit regneark, og få en gratis ")}
-            <StoryHighlight tone="sky" thick>
-              {t("landing4.chapter3.title_highlight", "compliance-rapport")}
-            </StoryHighlight>
+            <StoryHighlightPhrase
+              tone="sky"
+              thick
+              before={t("landing4.chapter3.title_prefix", "Send os dit regneark, og få en gratis ")}
+              highlight={t("landing4.chapter3.title_highlight", "compliance-rapport")}
+            />
           </h2>
           <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
             {t(
@@ -260,7 +266,7 @@ export function Landing4Story({
           id="landing4-chapter-4"
           accent="rgba(56,189,248,0.1)"
           reverseLayout
-          className="mt-8 sm:mt-12"
+          className="mt-10 sm:mt-14 lg:mt-16"
           eyebrow={
             <span className="text-sky-400">
               {t("landing4.chapter4.eyebrow", "Hybrid App")}
@@ -269,21 +275,26 @@ export function Landing4Story({
           visual={<Chapter4PhoneVisual translations={translations} />}
         >
           <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
-            {t(
-              "landing4.chapter4.title_prefix",
-              "Når du er klar: Giv dine medarbejdere vagtplanen direkte som "
-            )}
-            <StoryHighlight tone="sky" thick>
-              {t("landing4.chapter4.title_highlight", "app")}
-            </StoryHighlight>
+            <StoryHighlightPhrase
+              tone="sky"
+              thick
+              before={t(
+                "landing4.chapter4.title_prefix",
+                "Når du er klar: Giv dine medarbejdere vagtplanen direkte som "
+              )}
+              highlight={t("landing4.chapter4.title_highlight", "app")}
+            />
           </h2>
           <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
-            {t(
-              "landing4.chapter4.body_prefix",
-              "Vores intelligente regneark klarer automatisk oprettelsen af dine medarbejdere i systemet. Vil du give dit team direkte adgang til deres vagter, chat og vagtbytte på farten? Forbind regnearket med medarbejder-appen fra kun "
-            )}
-            <StoryHighlight tone="white">{t("landing4.chapter4.price", "49 EUR")}</StoryHighlight>
-            {t("landing4.chapter4.body_suffix", " om måneden.")}
+            <StoryHighlightPhrase
+              tone="white"
+              before={t(
+                "landing4.chapter4.body_prefix",
+                "Vores intelligente regneark klarer automatisk oprettelsen af dine medarbejdere i systemet. Vil du give dit team direkte adgang til deres vagter, chat og vagtbytte på farten? Forbind regnearket med medarbejder-appen fra kun "
+              )}
+              highlight={t("landing4.chapter4.price", "49 EUR")}
+              after={t("landing4.chapter4.body_suffix", " om måneden.")}
+            />
           </p>
           <StoryCta
             href="/employer-signup?product=hybrid_app"
@@ -303,11 +314,13 @@ export function Landing4Story({
           visual={<Chapter5ScrollVideo translations={translations} />}
         >
           <h2 className="text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.08]">
-            {t("landing4.chapter5.title_prefix", "Vil du være på forkant? Gå ")}
-            <StoryHighlight tone="violet" thick>
-              {t("landing4.chapter5.title_highlight", "fuldt online")}
-            </StoryHighlight>
-            {t("landing4.chapter5.title_suffix", " og automatisér det hele")}
+            <StoryHighlightPhrase
+              tone="violet"
+              thick
+              before={t("landing4.chapter5.title_prefix", "Vil du være på forkant? Gå ")}
+              highlight={t("landing4.chapter5.title_highlight", "fuldt online")}
+              after={t("landing4.chapter5.title_suffix", " og automatisér det hele")}
+            />
           </h2>
           <p className="mt-6 text-base leading-relaxed text-zinc-400 sm:text-lg">
             {t(

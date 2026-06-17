@@ -63,18 +63,20 @@ export default async function Landing4Page() {
       <main>
         <Landing4Story translations={map} />
 
-        <section id="landing4-products" className="scroll-mt-32 border-t border-white/10">
+        <section id="landing4-products" className="scroll-mt-32">
           <ProductChoices
             translations={map}
             languageCode={lang}
             primaryCtaVariant="gradient-border"
+            sectionBorder={false}
+            sectionClassName="bg-[#050508]"
           />
         </section>
 
         <Landing4SatisfactionGuarantee translations={map} />
       </main>
 
-      <footer className="border-t border-zinc-800 bg-zinc-950/90">
+      <footer className="bg-[#050508]">
         <div className="mx-auto w-full max-w-7xl px-4 py-6 text-center text-sm text-zinc-500 sm:px-6">
           {t(
             "landing.footer.company_line",

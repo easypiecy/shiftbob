@@ -199,7 +199,8 @@ export function ChapterTransitionScrollArrow({
 }: ChapterTransitionQuestionProps & { alignToTextColumn?: boolean }) {
   const progress = useChapterExitProgress(fromId, toId);
   const scale = 1 + progress * 7;
-  const translateY = progress * 140;
+  const startOffsetY = 10;
+  const translateY = startOffsetY + progress * 140;
   const opacity = 1 - progress;
 
   if (progress <= 0) return null;
@@ -218,7 +219,7 @@ export function ChapterTransitionScrollArrow({
 
   return (
     <div
-      className="pointer-events-none relative z-[3] -mt-36 mb-14 sm:-mt-44 sm:mb-16 lg:-mt-52 lg:mb-20"
+      className="pointer-events-none relative z-[3] -mt-32 mb-16 pt-2 sm:-mt-40 sm:mb-20 sm:pt-3 lg:-mt-48 lg:mb-24 lg:pt-3"
       aria-hidden="true"
     >
       {alignToTextColumn ? (

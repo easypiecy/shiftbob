@@ -38,11 +38,15 @@ export function ChapterProgressRail({
 }) {
   const t = createTranslator(translations);
   const activeChapter = useChapterScrollSpy();
+  const railVisible = activeChapter >= 0;
 
   return (
     <nav
-      className="fixed left-4 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-2 lg:flex xl:left-8"
+      className={`fixed left-4 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-2 transition-opacity duration-300 lg:flex xl:left-8 ${
+        railVisible ? "opacity-100" : "pointer-events-none opacity-0"
+      }`}
       aria-label={t("landing4.chapter.nav.aria", "Kapitel-navigation")}
+      aria-hidden={!railVisible}
     >
       {CHAPTER_LABEL_KEYS.map((key, index) => {
         const label = t(key, CHAPTER_LABEL_FALLBACKS[index]);

@@ -10,7 +10,7 @@ export function Landing4SatisfactionGuarantee({
 
   return (
     <section
-      className="border-t border-white/5 bg-[linear-gradient(180deg,#0a0a10_0%,#050508_100%)] py-12 sm:py-14"
+      className="bg-[#050508] py-12 sm:py-14"
       aria-label={t("landing4.guarantee.aria", "Tilfredshedsgaranti")}
     >
       <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-center gap-4 px-4 text-center sm:flex-row sm:gap-5 sm:px-6">
